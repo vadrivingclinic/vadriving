@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Mastering Right-of-Way Rules & Turn Signals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes signalBlink {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .time-estimate {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Turn Signal Demo */
+        .signal-demo {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            text-align: center;
+        }
+
+        .signal-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .signal-arrow {
+            font-size: 4rem;
+            opacity: 0.3;
+            transition: all 0.3s ease;
+        }
+
+        .signal-arrow.active {
+            opacity: 1;
+            color: var(--color-warning);
+            animation: signalBlink 1s infinite;
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+        }
+
+        .signal-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .signal-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid var(--color-primary);
+            color: var(--color-primary);
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .signal-btn:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .signal-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .stats-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--color-error);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .stats-title {
+            font-weight: 700;
+            color: var(--color-error);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .tips-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .tips-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tips-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tips-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        .distance-guide {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border: 2px dashed rgba(95, 23, 235, 0.3);
+        }
+
+        .distance-meter {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 10px 0;
+        }
+
+        .distance-label {
+            font-size: 1.1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .scenario-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .scenario-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .scenario-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .scenario-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .scenario-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .knowledge-check {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(95, 23, 235, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .key-points {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.6rem;
+            }
+
+            .scenario-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .signal-display {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Time Learning</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" 
+                     alt="VA Driving Clinic Logo" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Right-of-Way Rules • Module 2</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">10-Minute Essential Driving Communication</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Mastering Right-of-Way Rules & Turn Signals</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">⏱️</div>
+            <div class="time-estimate-text">
+                Complete this lesson in approximately <span class="time-highlight">10 minutes</span> to master essential turn signal communication and right-of-way rules
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Sections Completed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="quiz-score">0%</span>
+                <span class="stat-label">Quiz Score</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Time Learning</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Lesson Progress</span>
+                <span>Time Learning: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: Introduction -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🚗</span>
+                    Turn Signals: Essential Communication Tool
+                </h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #5f17eb;">📢</span> Why Turn Signals Matter
+                    </h3>
+                    <p class="subsection-content">
+                        Turn signals are an essential component of road safety, providing a means for drivers to communicate their intentions to other road users. Proper use of turn signals can prevent accidents, reduce confusion, and enhance the overall flow of traffic. They are your vehicle's voice on the road.
+                    </p>
+                    
+                    <div class="stats-box">
+                        <div class="stats-title">📊 Turn Signal Impact Statistics</div>
+                        <div class="stats-content">
+                            • 48% of drivers don't use turn signals when changing lanes<br>
+                            • 25% of drivers don't use turn signals when turning<br>
+                            • Proper signaling could prevent over 2 million accidents annually<br>
+                            • Lane change accidents drop by 71% when signals are used correctly
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Turn Signal Demo -->
+                <div class="signal-demo">
+                    <h3 class="subsection-title" style="margin-top: 0;">
+                        <span style="color: #f59e0b;">⚡</span> Turn Signal Demonstration
+                    </h3>
+                    <div class="signal-display">
+                        <div class="signal-arrow" id="left-arrow">⬅️</div>
+                        <div class="signal-arrow" id="right-arrow">➡️</div>
+                    </div>
+                    <p class="subsection-content" style="text-align: center; margin-bottom: 15px;">
+                        Turn signals should blink at a steady rate of 60-120 times per minute. Practice activating signals for different maneuvers.
+                    </p>
+                    <div class="signal-controls">
+                        <button class="signal-btn" data-direction="left">Left Turn</button>
+                        <button class="signal-btn" data-direction="right">Right Turn</button>
+                        <button class="signal-btn" data-direction="hazard">Hazard Lights</button>
+                        <button class="signal-btn" data-direction="off">Turn Off</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Proper Usage -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">⏰</span>
+                    Proper Turn Signal Usage & Timing
+                </h2>
+
+                <div class="distance-guide">
+                    <div class="distance-meter" id="distance-meter">100 ft</div>
+                    <div class="distance-label">Minimum signaling distance before turning</div>
+                    <p class="subsection-content" style="margin-top: 10px;">
+                        This translates to <strong>3-4 seconds</strong> before your intended maneuver. Look for a fixed point ahead and count: "One-one-thousand, two-one-thousand, three-one-thousand, four-one-thousand" before turning.
+                    </p>
+                </div>
+
+                <div class="scenario-cards">
+                    <div class="scenario-card">
+                        <div class="scenario-icon">🚦</div>
+                        <div class="scenario-title">Intersections</div>
+                        <div class="scenario-content">
+                            Signal at least 100 feet before the intersection. For city driving at 25 mph, this is about 4 car lengths. For highways at 65 mph, signal about 2 blocks in advance.
+                        </div>
+                    </div>
+
+                    <div class="scenario-card">
+                        <div class="scenario-icon">🛣️</div>
+                        <div class="scenario-title">Lane Changes</div>
+                        <div class="scenario-content">
+                            Signal, check mirrors, glance over shoulder, then change lanes. Maintain signal until completely in the new lane. Remember: Signal, Mirror, Shoulder, Go!
+                        </div>
+                    </div>
+
+                    <div class="scenario-card">
+                        <div class="scenario-icon">🔄</div>
+                        <div class="scenario-title">Roundabouts</div>
+                        <div class="scenario-content">
+                            Signal right to exit, left if continuing past first exit. Enter without signaling unless turning left immediately. Always yield to traffic already in the roundabout.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tips-box">
+                    <div class="tips-title">✅ Activation & Deactivation Rules</div>
+                    <ul class="tips-list">
+                        <li><strong>Activation:</strong> At least 100 feet or 3-4 seconds before the maneuver</li>
+                        <li><strong>Deactivation:</strong> Immediately after completing the turn or lane change</li>
+                        <li><strong>Exception:</strong> Use hazards when stopped on the roadway or driving significantly below speed limit</li>
+                        <li><strong>Night Driving:</strong> Signal earlier at night when visibility is reduced</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Section 3: Safety & Common Mistakes -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">⚠️</span>
+                    Safety Considerations & Common Mistakes
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">👁️ Visual Confirmation</h3>
+                    <p class="subsection-content">
+                        <strong>Never rely solely on another driver's turn signals.</strong> Always wait until you see the vehicle's tires begin to turn before proceeding. Many drivers signal but don't turn, or forget to turn off their signals. Watch the wheels, not just the lights!
+                    </p>
+                    
+                    <div class="stats-box">
+                        <div class="stats-title">🚨 Common Signal Mistakes</div>
+                        <div class="stats-content">
+                            • <strong>Early Deactivation:</strong> 32% of drivers turn off signals too soon<br>
+                            • <strong>No Signal:</strong> 48% of lane changes occur without signaling<br>
+                            • <strong>Wrong Signal:</strong> 12% of drivers occasionally signal wrong direction<br>
+                            • <strong"Signal Left, Turn Right:</strong> Dangerous mistake that causes confusion
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🅿️ Parking & Merging</h3>
+                    <p class="subsection-content">
+                        <strong>Parking:</strong> Use turn signals when pulling into or out of parking spots. This alerts pedestrians and other drivers to your movements in crowded parking lots.<br><br>
+                        <strong>Merging:</strong> When entering highways or changing lanes, signal early to give drivers in your target lane time to adjust. Check blind spots and maintain consistent speed while merging.
+                    </p>
+                </div>
+
+                <div class="key-points">
+                    <div class="key-points-title">💡 Advanced Signal Tips</div>
+                    <ul class="key-points-list">
+                        <li><strong>Weather Conditions:</strong> In rain, fog, or snow, signal earlier and consider using hazards for emergency stops</li>
+                        <li><strong>Following Distance:</strong> Maintain 3-4 seconds following distance so others can see your signals</li>
+                        <li><strong>Bulb Maintenance:</strong> Check turn signal bulbs monthly - faulty signals are a moving violation</li>
+                        <li><strong>Technology Use:</strong> Modern vehicles have blind spot monitors - but they supplement, don't replace, proper signaling</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Section 4: Right-of-Way Rules -->
+            <div class="section" style="animation-delay: 0.4s" data-section="4">
+                <div class="section-number">4</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🎯</span>
+                    Right-of-Way Rules & Yield Situations
+                </h2>
+
+                <div class="scenario-cards">
+                    <div class="scenario-card">
+                        <div class="scenario-icon">🚸</div>
+                        <div class="scenario-title">Pedestrians</div>
+                        <div class="scenario-content">
+                            <strong>Always yield to pedestrians in crosswalks.</strong> This includes marked and unmarked crosswalks at intersections. Even if you have a green light, pedestrians with a walk signal have right-of-way.
+                        </div>
+                    </div>
+
+                    <div class="scenario-card">
+                        <div class="scenario-icon">🚑</div>
+                        <div class="scenario-title">Emergency Vehicles</div>
+                        <div class="scenario-content">
+                            When lights or sirens are active, <strong>immediately yield right-of-way.</strong> Pull to the right side of the road and stop. Do not block intersections where emergency vehicles may need to pass.
+                        </div>
+                    </div>
+
+                    <div class="scenario-card">
+                        <div class="scenario-icon">🛑</div>
+                        <div class="scenario-title">Four-Way Stops</div>
+                        <div class="scenario-content">
+                            First to stop = first to go. If simultaneous, yield to the right. Straight traffic goes before turning traffic. When in doubt, yield - it's better to be safe than right.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🔄 Roundabouts & Rotaries</h3>
+                    <p class="subsection-content">
+                        <strong>Golden Rule: Traffic already in the roundabout has right-of-way.</strong> Yield before entering, signal when exiting. For multi-lane roundabouts, choose your lane before entering based on your exit.
+                    </p>
+                </div>
+
+                <div class="tips-box">
+                    <div class="tips-title">🚦 Right-of-Way Priority List</div>
+                    <ul class="tips-list">
+                        <li>1. <strong>Pedestrians</strong> in crosswalks</li>
+                        <li>2. <strong>Emergency vehicles</strong> with active signals</li>
+                        <li>3. <strong>Traffic already in intersection</strong></li>
+                        <li>4. <strong>Traffic on right</strong> at four-way stops</li>
+                        <li>5. <strong>Traffic on major road</strong> at intersections</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Check -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Knowledge Check: Test Your Understanding</h2>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. How far in advance should you activate your turn signal before making a turn?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>At the moment you begin turning</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>At least 100 feet or 3-4 seconds before turning</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>When you see your destination</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. What should you do when approaching a four-way stop with another vehicle arriving at the same time?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Speed up to get through first</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Yield to the vehicle on your right</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Honk your horn to establish dominance</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. When changing lanes, what is the proper sequence of actions?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Change lanes, then signal to let others know</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Signal, check mirrors, check blind spot, then change lanes</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Signal and change lanes simultaneously</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. Who has the right-of-way in a roundabout?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Vehicles entering the roundabout</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Vehicles already in the roundabout</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>The larger vehicle</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">5. When should you use hazard lights?</div>
+                <div class="options">
+                    <div class="option" data-question="5" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>When driving slowly in bad weather</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>When stopped on the roadway due to emergency</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Both A and B</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">Check Your Answers</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Your Results
+                </div>
+                <div class="score" id="score">0/5</div>
+                <div class="feedback" id="feedback">
+                    Review your answers below to see which concepts you've mastered and which need more attention.
+                </div>
+                <div class="key-points" style="margin-top: 20px;">
+                    <div class="key-points-title">🎯 Key Takeaways from This Lesson</div>
+                    <ul class="key-points-list">
+                        <li>Turn signals are communication devices - use them consistently and correctly</li>
+                        <li>Always signal at least 100 feet or 3-4 seconds before any maneuver</li>
+                        <li>Never rely solely on others' turn signals - watch their wheels</li>
+                        <li>Know right-of-way rules but be prepared to yield to avoid accidents</li>
+                        <li>Regular vehicle maintenance includes checking turn signal bulbs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> Lesson Completed!
+            </div>
+            <p>You've successfully completed the Mastering Right-of-Way Rules & Turn Signals lesson.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>Remember: Consistent turn signal use and understanding right-of-way rules are fundamental to safe driving. Practice these skills every time you drive.</p>
+        </div>
+    </div>
+
+    <script>
+        // Timer Configuration - Continuous timer
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let quizCompleted = false;
+        let signalInterval;
+        let currentSignal = null;
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const progressFill = document.getElementById('progress-fill');
+        const submitBtn = document.getElementById('submit-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+        const leftArrow = document.getElementById('left-arrow');
+        const rightArrow = document.getElementById('right-arrow');
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            // Clear any existing interval
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // Start new interval
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            // Update all timer displays
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            // Update progress based on sections read
+            updateProgress();
+            
+            // Update timer appearance based on time
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 300 && totalSeconds < 600) { // 5-10 minutes
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 600) { // 10 minutes or more
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 4; // We have 4 main sections
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Update completed count
+            completedCountEl.textContent = sectionsCompleted.size;
+        }
+
+        // Update quiz score display
+        function updateQuizScore(score, totalQuestions) {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            quizScoreEl.textContent = `${percentage}%`;
+        }
+
+        // Turn Signal Simulation
+        function activateSignal(direction) {
+            // Clear any existing signal interval
+            if (signalInterval) clearInterval(signalInterval);
+            
+            // Reset arrows
+            leftArrow.classList.remove('active');
+            rightArrow.classList.remove('active');
+            currentSignal = null;
+            
+            // Update signal buttons
+            document.querySelectorAll('.signal-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (direction === 'off') return;
+            
+            // Activate selected signal
+            document.querySelector(`.signal-btn[data-direction="${direction}"]`).classList.add('active');
+            currentSignal = direction;
+            
+            if (direction === 'left') {
+                signalInterval = setInterval(() => {
+                    leftArrow.classList.toggle('active');
+                }, 500);
+            } else if (direction === 'right') {
+                signalInterval = setInterval(() => {
+                    rightArrow.classList.toggle('active');
+                }, 500);
+            } else if (direction === 'hazard') {
+                signalInterval = setInterval(() => {
+                    leftArrow.classList.toggle('active');
+                    rightArrow.classList.toggle('active');
+                }, 500);
+            }
+        }
+
+        // Animate distance meter
+        function animateDistanceMeter() {
+            const meter = document.getElementById('distance-meter');
+            const distances = ['50 ft', '75 ft', '100 ft', '125 ft', '150 ft'];
+            let currentIndex = 0;
+            
+            setInterval(() => {
+                meter.textContent = distances[currentIndex];
+                currentIndex = (currentIndex + 1) % distances.length;
+                
+                // Add pulse animation
+                meter.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    meter.style.transform = 'scale(1)';
+                }, 200);
+            }, 2000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the continuous timer
+            startTimer();
+            
+            // Start distance meter animation
+            animateDistanceMeter();
+            
+            // Set up signal buttons
+            const signalButtons = document.querySelectorAll('.signal-btn');
+            signalButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    activateSignal(this.dataset.direction);
+                });
+            });
+            
+            // Set up option selection
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    // Remove selected class from all options in this question
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                            
+                            // Add visual feedback
+                            entry.target.style.boxShadow = '0 15px 35px rgba(95, 23, 235, 0.2)';
+                            setTimeout(() => {
+                                entry.target.style.boxShadow = 'var(--shadow-soft)';
+                            }, 1000);
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+            
+            // Auto-activate left signal as demo
+            setTimeout(() => {
+                activateSignal('left');
+                setTimeout(() => activateSignal('off'), 3000);
+            }, 1000);
+        });
+
+        function checkAnswers() {
+            // Mark quiz as completed
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'B',
+                4: 'B',
+                5: 'C'
+            };
+
+            let score = 0;
+            const totalQuestions = 5;
+            let feedbackHTML = '';
+
+            // Check each question
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#10b981';
+                        selectedOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                    } else {
+                        selectedOption.style.borderColor = '#ef4444';
+                        selectedOption.style.background = 'rgba(239, 68, 68, 0.1)';
+                        
+                        // Highlight correct answer
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#10b981';
+                            correctOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            // Update quiz score
+            updateQuizScore(score, totalQuestions);
+            
+            // Calculate percentage
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            // Show results
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            // Generate feedback based on score
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 Excellent! You\'ve mastered turn signal usage and right-of-way rules. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 Good job! You understand most concepts. Review the incorrect answers to strengthen your knowledge. ';
+            } else {
+                feedbackHTML = '📚 Review the lesson material and try again. Understanding these concepts is crucial for safe driving communication. ';
+            }
+            
+            feedbackHTML += 'Remember: Consistent turn signal use prevents accidents!';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            // Show results
+            document.getElementById('results').classList.add('show');
+            
+            // Show completion message
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            // Update timer to show "Completed" state
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+            timerElement.classList.remove('warning', 'critical');
+            
+            // Update progress bar to 100%
+            progressFill.style.width = '100%';
+            
+            // Deactivate any active signals
+            if (signalInterval) clearInterval(signalInterval);
+            leftArrow.classList.remove('active');
+            rightArrow.classList.remove('active');
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Optional: Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>
