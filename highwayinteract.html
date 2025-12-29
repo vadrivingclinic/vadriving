@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - 10-Minute Signs Mastery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #2563eb;
+            --color-primary-light: #3b82f6;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #ef4444;
+            --color-info: #0ea5e9;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --shadow-soft: 0 8px 20px rgba(37, 99, 235, 0.1);
+            --shadow-hover: 0 12px 28px rgba(37, 99, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--color-text);
+            line-height: 1.5;
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 8px rgba(37, 99, 235, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.8); }
+        }
+
+        .lesson-container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            height: 45px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .module-title {
+            font-size: 1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .lesson-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Timer */
+        .timer-container {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: white;
+            border-radius: 40px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: pulse 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Progress */
+        .progress-section {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            margin-bottom: 25px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .progress-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .progress-indicator {
+            flex-grow: 1;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .score-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            min-width: 250px;
+        }
+
+        .score-card {
+            background: rgba(37, 99, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(37, 99, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .score-card.active {
+            border-color: var(--color-primary);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .score-label {
+            font-size: 0.7rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+        }
+
+        /* Activity Navigation */
+        .activity-nav {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .activity-tab {
+            padding: 14px;
+            background: rgba(37, 99, 235, 0.1);
+            border: 2px solid rgba(37, 99, 235, 0.2);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            text-align: center;
+        }
+
+        .activity-tab:hover {
+            background: rgba(37, 99, 235, 0.2);
+            border-color: var(--color-primary);
+        }
+
+        .activity-tab.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .activity-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Activity Containers */
+        .activity-container {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .activity-container.active {
+            display: block;
+        }
+
+        /* Activity 1: Flash Cards */
+        .flashcard-activity {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            text-align: center;
+        }
+
+        .flashcard-container {
+            perspective: 1000px;
+            width: 280px;
+            height: 350px;
+            margin: 0 auto 25px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: white;
+            border: 3px solid var(--color-primary);
+        }
+
+        .flashcard-back {
+            background: white;
+            border: 3px solid var(--color-primary);
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .flashcard-question {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .flashcard-answer {
+            font-size: 1rem;
+            color: var(--color-text);
+            line-height: 1.4;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .flashcard-btn {
+            padding: 10px 25px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .flashcard-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .flashcard-counter {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        /* Activity 2: Quick Quiz */
+        .quick-quiz {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .quiz-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 8px;
+        }
+
+        .quiz-timer {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+        }
+
+        .quiz-question {
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 14px;
+            background: white;
+            border: 2px solid rgba(37, 99, 235, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--color-primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(37, 99, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(37, 99, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .quiz-option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        /* Activity 3: Rapid Fire */
+        .rapid-fire {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            text-align: center;
+        }
+
+        .rapid-header {
+            margin-bottom: 25px;
+        }
+
+        .rapid-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 8px;
+        }
+
+        .rapid-instructions {
+            color: var(--color-muted);
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .rapid-display {
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 25px;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid var(--color-primary);
+        }
+
+        .rapid-sign {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .rapid-options {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .rapid-btn {
+            padding: 12px 20px;
+            background: white;
+            border: 2px solid rgba(37, 99, 235, 0.2);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .rapid-btn:hover {
+            border-color: var(--color-primary);
+            transform: scale(1.05);
+        }
+
+        .rapid-btn.correct {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--color-success);
+            color: var(--color-success);
+        }
+
+        .rapid-btn.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--color-danger);
+            color: var(--color-danger);
+        }
+
+        .rapid-stats {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .rapid-stat {
+            text-align: center;
+        }
+
+        .rapid-stat-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 4px;
+        }
+
+        .rapid-stat-label {
+            font-size: 0.8rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 14px 35px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            min-width: 160px;
+        }
+
+        .action-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .action-btn.secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .action-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Feedback */
+        .feedback-area {
+            background: rgba(37, 99, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 18px;
+            margin: 20px 0;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feedback-message {
+            color: var(--color-text);
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .feedback-message.correct {
+            color: var(--color-success);
+            font-weight: 600;
+        }
+
+        .feedback-message.incorrect {
+            color: var(--color-danger);
+            font-weight: 600;
+        }
+
+        /* Completion Message */
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 35px;
+            margin-top: 25px;
+            text-align: center;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .completion-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .completion-stat {
+            text-align: center;
+        }
+
+        .completion-stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .completion-stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 15px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .activity-nav {
+                grid-template-columns: 1fr;
+            }
+
+            .flashcard-container {
+                width: 250px;
+                height: 320px;
+            }
+
+            .rapid-display {
+                width: 200px;
+                height: 200px;
+            }
+
+            .rapid-sign {
+                font-size: 2.8rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-btn {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" 
+                     alt="VA Driving Clinic Logo" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Signs Mastery</div>
+                    <div style="color: var(--color-muted); font-size: 0.85rem;">10-Minute Interactive Module</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Highway Signs Rapid Mastery</h1>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <div class="progress-indicator">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-label">
+                    <span>Module Progress</span>
+                    <span><span id="time-spent">0:00</span> / 10:00</span>
+                </div>
+            </div>
+
+            <div class="score-display">
+                <div class="score-card">
+                    <span class="score-value" id="current-score">0</span>
+                    <span class="score-label">Score</span>
+                </div>
+                <div class="score-card">
+                    <span class="score-value" id="accuracy-rate">0%</span>
+                    <span class="score-label">Accuracy</span>
+                </div>
+                <div class="score-card">
+                    <span class="score-value" id="signs-learned">0</span>
+                    <span class="score-label">Signs Learned</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Navigation -->
+        <div class="activity-nav">
+            <div class="activity-tab active" onclick="switchActivity(1)">
+                <div class="activity-icon">🎴</div>
+                <div>Flash Cards</div>
+            </div>
+            <div class="activity-tab" onclick="switchActivity(2)">
+                <div class="activity-icon">❓</div>
+                <div>Quick Quiz</div>
+            </div>
+            <div class="activity-tab" onclick="switchActivity(3)">
+                <div class="activity-icon">⚡</div>
+                <div>Rapid Fire</div>
+            </div>
+        </div>
+
+        <!-- Activity 1: Flash Cards -->
+        <div class="activity-container active" id="activity-1">
+            <div class="flashcard-activity">
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-front">
+                            <div class="flashcard-icon" id="card-icon">🛑</div>
+                            <div class="flashcard-question" id="card-question">
+                                What does this sign mean?
+                            </div>
+                            <div style="font-size: 0.9rem; opacity: 0.8;">Click to flip</div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div class="flashcard-answer" id="card-answer">
+                                STOP - Come to complete stop, yield to traffic, proceed when safe
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard-controls">
+                    <button class="flashcard-btn" onclick="previousCard()">← Previous</button>
+                    <button class="flashcard-btn" onclick="nextCard()">Next →</button>
+                </div>
+
+                <div class="flashcard-counter">
+                    Card <span id="card-counter">1</span>/<span id="total-cards">8</span>
+                </div>
+
+                <div class="feedback-area">
+                    <div class="feedback-title">💡 Pro Tip</div>
+                    <div class="feedback-message">
+                        Remember: Red = Stop/Prohibition, Yellow = Warning, Green = Direction, Blue = Services
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn secondary" onclick="markCardsComplete()">
+                        ✓ Complete Flash Cards
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity 2: Quick Quiz -->
+        <div class="activity-container" id="activity-2">
+            <div class="quick-quiz">
+                <div class="quiz-header">
+                    <h2 class="quiz-title">Quick Sign Quiz</h2>
+                    <p style="color: var(--color-muted); margin-bottom: 15px;">
+                        Test your knowledge with 5 quick questions
+                    </p>
+                    <div class="quiz-timer" id="quiz-timer">1:00</div>
+                </div>
+
+                <div id="quiz-content">
+                    <div class="quiz-question">
+                        <div class="question-text" id="quiz-question">
+                            What does a yellow diamond-shaped sign indicate?
+                        </div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectQuizOption(0)">
+                                <div class="option-label">A</div>
+                                <div>A regulatory requirement</div>
+                            </div>
+                            <div class="quiz-option" onclick="selectQuizOption(1)">
+                                <div class="option-label">B</div>
+                                <div>A warning or potential hazard</div>
+                            </div>
+                            <div class="quiz-option" onclick="selectQuizOption(2)">
+                                <div class="option-label">C</div>
+                                <div>Directional information</div>
+                            </div>
+                            <div class="quiz-option" onclick="selectQuizOption(3)">
+                                <div class="option-label">D</div>
+                                <div>A service location</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feedback-area" id="quiz-feedback" style="display: none;">
+                    <div class="feedback-title">📝 Feedback</div>
+                    <div class="feedback-message" id="quiz-feedback-message"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="checkQuizAnswer()" id="check-quiz-btn">
+                        Check Answer
+                    </button>
+                    <button class="action-btn secondary" onclick="nextQuizQuestion()" id="next-quiz-btn" style="display: none;">
+                        Next Question
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity 3: Rapid Fire -->
+        <div class="activity-container" id="activity-3">
+            <div class="rapid-fire">
+                <div class="rapid-header">
+                    <h2 class="rapid-title">⚡ Rapid Fire Challenge</h2>
+                    <p class="rapid-instructions">
+                        Identify as many signs as you can in 60 seconds!
+                    </p>
+                </div>
+
+                <div class="rapid-display">
+                    <div class="rapid-sign" id="rapid-sign">STOP</div>
+                </div>
+
+                <div class="rapid-options">
+                    <button class="rapid-btn" onclick="identifyRapidSign('regulatory')">
+                        Regulatory
+                    </button>
+                    <button class="rapid-btn" onclick="identifyRapidSign('warning')">
+                        Warning
+                    </button>
+                    <button class="rapid-btn" onclick="identifyRapidSign('guide')">
+                        Guide
+                    </button>
+                </div>
+
+                <div class="rapid-stats">
+                    <div class="rapid-stat">
+                        <div class="rapid-stat-value" id="rapid-score">0</div>
+                        <div class="rapid-stat-label">Score</div>
+                    </div>
+                    <div class="rapid-stat">
+                        <div class="rapid-stat-value" id="rapid-time">60</div>
+                        <div class="rapid-stat-label">Seconds</div>
+                    </div>
+                    <div class="rapid-stat">
+                        <div class="rapid-stat-value" id="rapid-accuracy">0%</div>
+                        <div class="rapid-stat-label">Accuracy</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="startRapidFire()" id="start-rapid-btn">
+                        Start Challenge
+                    </button>
+                    <button class="action-btn secondary" onclick="resetRapidFire()" id="reset-rapid-btn" style="display: none;">
+                        Try Again
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> Module Completed!
+            </div>
+            <p>You've mastered highway signs in just 10 minutes!</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            
+            <div class="completion-stats">
+                <div class="completion-stat">
+                    <div class="completion-stat-value" id="final-score">0</div>
+                    <div class="completion-stat-label">Final Score</div>
+                </div>
+                <div class="completion-stat">
+                    <div class="completion-stat-value" id="final-accuracy">0%</div>
+                    <div class="completion-stat-label">Accuracy</div>
+                </div>
+                <div class="completion-stat">
+                    <div class="completion-stat-value" id="total-signs">0</div>
+                    <div class="completion-stat-label">Signs Mastered</div>
+                </div>
+            </div>
+
+            <p style="margin-top: 20px; font-size: 1rem;">
+                Great job! You're ready to recognize signs confidently on the road.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // ========== GLOBAL STATE ==========
+        const moduleState = {
+            currentActivity: 1,
+            activitiesCompleted: new Set(),
+            totalScore: 0,
+            signsMastered: 0,
+            totalQuestions: 0,
+            correctAnswers: 0,
+            startTime: Date.now()
+        };
+
+        // ========== TIMER MANAGEMENT ==========
+        let moduleTimer;
+        let totalSeconds = 0;
+        const MODULE_DURATION = 600; // 10 minutes
+
+        function startModuleTimer() {
+            moduleTimer = setInterval(() => {
+                totalSeconds++;
+                updateTimerDisplay();
+                updateProgress();
+                
+                // Check if time is up
+                if (totalSeconds >= MODULE_DURATION) {
+                    completeModule();
+                }
+            }, 1000);
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            
+            // Update timer appearance
+            const timerElement = document.getElementById('timer');
+            const timeLeft = MODULE_DURATION - totalSeconds;
+            
+            if (timeLeft <= 60) {
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else if (timeLeft <= 180) {
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // ========== PROGRESS TRACKING ==========
+        function updateProgress() {
+            // Calculate progress based on activities completed and time
+            const activityProgress = (moduleState.activitiesCompleted.size / 3) * 60;
+            const timeProgress = Math.min((totalSeconds / MODULE_DURATION) * 40, 40);
+            const totalProgress = Math.min(activityProgress + timeProgress, 100);
+            
+            progressFill.style.width = `${totalProgress}%`;
+            
+            // Update score displays
+            currentScoreEl.textContent = moduleState.totalScore;
+            
+            const accuracy = moduleState.totalQuestions > 0 
+                ? Math.round((moduleState.correctAnswers / moduleState.totalQuestions) * 100)
+                : 0;
+            accuracyRateEl.textContent = `${accuracy}%`;
+            
+            signsLearnedEl.textContent = moduleState.signsMastered;
+        }
+
+        // ========== ACTIVITY NAVIGATION ==========
+        function switchActivity(activityNum) {
+            // Hide all activities
+            document.querySelectorAll('.activity-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.activity-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected activity
+            document.getElementById(`activity-${activityNum}`).classList.add('active');
+            
+            // Activate selected tab
+            document.querySelectorAll('.activity-tab')[activityNum - 1].classList.add('active');
+            
+            moduleState.currentActivity = activityNum;
+        }
+
+        // ========== ACTIVITY 1: FLASH CARDS ==========
+        const flashCards = [
+            {
+                icon: "🛑",
+                question: "What does this sign mean?",
+                answer: "STOP - Come to complete stop, yield to traffic, proceed when safe",
+                type: "regulatory",
+                color: "#ef4444"
+            },
+            {
+                icon: "⚠️",
+                question: "What does this triangular sign indicate?",
+                answer: "YIELD - Slow down, yield right of way to other vehicles/pedestrians",
+                type: "warning",
+                color: "#f59e0b"
+            },
+            {
+                icon: "55",
+                question: "What is this sign telling you?",
+                answer: "SPEED LIMIT - Maximum legal speed allowed on this road section",
+                type: "regulatory",
+                color: "black"
+            },
+            {
+                icon: "↷",
+                question: "What does this diamond sign warn about?",
+                answer: "CURVE AHEAD - Road curves to the right, adjust speed accordingly",
+                type: "warning",
+                color: "#f59e0b"
+            },
+            {
+                icon: "🚶",
+                question: "What should you do when you see this sign?",
+                answer: "PEDESTRIAN CROSSING - Slow down and watch for people crossing",
+                type: "warning",
+                color: "#f59e0b"
+            },
+            {
+                icon: "EXIT",
+                question: "What information does this sign provide?",
+                answer: "HIGHWAY EXIT - Upcoming exit information with destinations",
+                type: "guide",
+                color: "#10b981"
+            },
+            {
+                icon: "I-95",
+                question: "What is this sign called?",
+                answer: "ROUTE MARKER - Highway route number for navigation guidance",
+                type: "guide",
+                color: "#10b981"
+            },
+            {
+                icon: "🦌",
+                question: "What does this sign warn drivers about?",
+                answer: "DEER CROSSING - Wildlife crossing area, requires extra caution",
+                type: "warning",
+                color: "#f59e0b"
+            }
+        ];
+
+        let currentCardIndex = 0;
+
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            currentCardIndex = (currentCardIndex + 1) % flashCards.length;
+            updateCard();
+        }
+
+        function previousCard() {
+            currentCardIndex = (currentCardIndex - 1 + flashCards.length) % flashCards.length;
+            updateCard();
+        }
+
+        function updateCard() {
+            const card = flashCards[currentCardIndex];
+            document.getElementById('card-icon').textContent = card.icon;
+            document.getElementById('card-answer').textContent = card.answer;
+            document.getElementById('card-counter').textContent = currentCardIndex + 1;
+            document.getElementById('total-cards').textContent = flashCards.length;
+            document.getElementById('flashcard').classList.remove('flipped');
+            
+            // Update card color
+            const cardFront = document.querySelector('.flashcard-front');
+            cardFront.style.background = `linear-gradient(135deg, ${card.color === 'black' ? '#ffffff' : card.color}, ${card.color === 'black' ? '#e5e7eb' : card.color}aa)`;
+            cardFront.style.color = card.color === 'black' ? 'black' : card.color === '#f59e0b' ? 'black' : 'white';
+        }
+
+        function markCardsComplete() {
+            moduleState.activitiesCompleted.add(1);
+            moduleState.totalScore += 100;
+            moduleState.signsMastered = Math.min(moduleState.signsMastered + flashCards.length, 20);
+            
+            // Mark first few cards as learned for progress
+            flashCards.slice(0, 3).forEach(() => {
+                moduleState.totalQuestions++;
+                moduleState.correctAnswers++;
+            });
+            
+            updateProgress();
+            alert('✓ Flash cards completed! You earned 100 points.');
+            
+            // Move to next activity
+            if (!moduleState.activitiesCompleted.has(2)) {
+                switchActivity(2);
+            }
+        }
+
+        // ========== ACTIVITY 2: QUICK QUIZ ==========
+        const quizQuestions = [
+            {
+                question: "What does a yellow diamond-shaped sign indicate?",
+                options: [
+                    "A regulatory requirement",
+                    "A warning or potential hazard",
+                    "Directional information",
+                    "A service location"
+                ],
+                correct: 1,
+                explanation: "✅ Correct! Yellow diamond-shaped signs are warning signs."
+            },
+            {
+                question: "What color are regulatory signs typically?",
+                options: [
+                    "Yellow with black symbols",
+                    "White with black/red symbols",
+                    "Green with white symbols",
+                    "Blue with white symbols"
+                ],
+                correct: 1,
+                explanation: "✅ Right! Regulatory signs have white background with black or red."
+            },
+            {
+                question: "What shape is exclusively used for STOP signs?",
+                options: [
+                    "Triangle",
+                    "Diamond",
+                    "Octagon",
+                    "Rectangle"
+                ],
+                correct: 2,
+                explanation: "✅ Excellent! Octagon shape is for STOP signs only."
+            },
+            {
+                question: "What does a blue sign typically indicate?",
+                options: [
+                    "Stop or prohibition",
+                    "Warning or caution",
+                    "Services or information",
+                    "Construction zone"
+                ],
+                correct: 2,
+                explanation: "✅ Correct! Blue signs indicate services and information."
+            },
+            {
+                question: "What does an orange sign indicate?",
+                options: [
+                    "School zone ahead",
+                    "Construction or maintenance area",
+                    "Hospital nearby",
+                    "Rest area ahead"
+                ],
+                correct: 1,
+                explanation: "✅ Right! Orange signs warn about construction areas."
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let selectedQuizOption = null;
+        let quizTimer;
+        let quizTimeLeft = 60;
+
+        function loadQuizQuestion() {
+            const question = quizQuestions[currentQuizIndex];
+            document.getElementById('quiz-question').textContent = question.question;
+            
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach((option, index) => {
+                option.querySelector('.option-label + div').textContent = question.options[index];
+                option.classList.remove('selected');
+            });
+            
+            document.getElementById('quiz-feedback').style.display = 'none';
+            document.getElementById('check-quiz-btn').style.display = 'block';
+            document.getElementById('next-quiz-btn').style.display = 'none';
+            selectedQuizOption = null;
+        }
+
+        function selectQuizOption(index) {
+            selectedQuizOption = index;
+            document.querySelectorAll('.quiz-option').forEach((opt, idx) => {
+                opt.classList.remove('selected');
+                if (idx === index) {
+                    opt.classList.add('selected');
+                }
+            });
+        }
+
+        function checkQuizAnswer() {
+            if (selectedQuizOption === null) {
+                alert('Please select an answer first!');
+                return;
+            }
+
+            const question = quizQuestions[currentQuizIndex];
+            const isCorrect = selectedQuizOption === question.correct;
+            
+            moduleState.totalQuestions++;
+            if (isCorrect) {
+                moduleState.correctAnswers++;
+                moduleState.totalScore += 50;
+                moduleState.signsMastered = Math.min(moduleState.signsMastered + 1, 20);
+                document.getElementById('quiz-feedback-message').textContent = question.explanation;
+                document.getElementById('quiz-feedback-message').className = 'feedback-message correct';
+            } else {
+                document.getElementById('quiz-feedback-message').textContent = "❌ Not quite. " + question.explanation;
+                document.getElementById('quiz-feedback-message').className = 'feedback-message incorrect';
+            }
+            
+            document.getElementById('quiz-feedback').style.display = 'block';
+            document.getElementById('check-quiz-btn').style.display = 'none';
+            document.getElementById('next-quiz-btn').style.display = 'block';
+            
+            updateProgress();
+        }
+
+        function nextQuizQuestion() {
+            currentQuizIndex++;
+            if (currentQuizIndex < quizQuestions.length) {
+                loadQuizQuestion();
+            } else {
+                moduleState.activitiesCompleted.add(2);
+                moduleState.totalScore += 100; // Completion bonus
+                clearInterval(quizTimer);
+                alert('🎉 Quiz completed! You earned bonus points.');
+                updateProgress();
+                
+                // Move to next activity
+                if (!moduleState.activitiesCompleted.has(3)) {
+                    switchActivity(3);
+                }
+            }
+        }
+
+        function startQuizTimer() {
+            const timerElement = document.getElementById('quiz-timer');
+            quizTimer = setInterval(() => {
+                quizTimeLeft--;
+                timerElement.textContent = formatTime(quizTimeLeft);
+                
+                if (quizTimeLeft <= 0) {
+                    clearInterval(quizTimer);
+                    alert('Time\'s up! Moving to next activity.');
+                    moduleState.activitiesCompleted.add(2);
+                    switchActivity(3);
+                }
+            }, 1000);
+        }
+
+        // ========== ACTIVITY 3: RAPID FIRE ==========
+        const rapidSigns = [
+            { symbol: 'STOP', type: 'regulatory', color: '#ef4444' },
+            { symbol: 'YIELD', type: 'warning', color: '#f59e0b' },
+            { symbol: '55', type: 'regulatory', color: 'black' },
+            { symbol: '↷', type: 'warning', color: '#f59e0b' },
+            { symbol: '🚶', type: 'warning', color: '#f59e0b' },
+            { symbol: 'EXIT', type: 'guide', color: '#10b981' },
+            { symbol: 'I-95', type: 'guide', color: '#10b981' },
+            { symbol: '🦌', type: 'warning', color: '#f59e0b' },
+            { symbol: '🚫', type: 'regulatory', color: '#ef4444' },
+            { symbol: '↶', type: 'warning', color: '#f59e0b' }
+        ];
+
+        let rapidTimer;
+        let rapidTimeLeft = 60;
+        let rapidScore = 0;
+        let rapidCorrect = 0;
+        let rapidTotal = 0;
+        let currentRapidSign = 0;
+        let rapidActive = false;
+
+        function startRapidFire() {
+            if (rapidActive) return;
+            
+            rapidActive = true;
+            rapidTimeLeft = 60;
+            rapidScore = 0;
+            rapidCorrect = 0;
+            rapidTotal = 0;
+            currentRapidSign = 0;
+            
+            // Update UI
+            document.getElementById('start-rapid-btn').style.display = 'none';
+            document.getElementById('reset-rapid-btn').style.display = 'block';
+            document.querySelectorAll('.rapid-btn').forEach(btn => {
+                btn.classList.remove('correct', 'incorrect');
+            });
+            
+            // Start timer
+            rapidTimer = setInterval(() => {
+                rapidTimeLeft--;
+                document.getElementById('rapid-time').textContent = rapidTimeLeft;
+                
+                if (rapidTimeLeft <= 0) {
+                    endRapidFire();
+                }
+            }, 1000);
+            
+            // Show first sign
+            showNextRapidSign();
+        }
+
+        function showNextRapidSign() {
+            currentRapidSign = Math.floor(Math.random() * rapidSigns.length);
+            const sign = rapidSigns[currentRapidSign];
+            
+            document.getElementById('rapid-sign').textContent = sign.symbol;
+            document.getElementById('rapid-sign').style.color = sign.color === 'black' ? 'black' : 'white';
+            
+            // Reset button styles
+            document.querySelectorAll('.rapid-btn').forEach(btn => {
+                btn.classList.remove('correct', 'incorrect');
+            });
+        }
+
+        function identifyRapidSign(selectedType) {
+            if (!rapidActive) return;
+            
+            const sign = rapidSigns[currentRapidSign];
+            const isCorrect = selectedType === sign.type;
+            
+            rapidTotal++;
+            if (isCorrect) {
+                rapidCorrect++;
+                rapidScore += 10;
+                
+                // Time bonus for quick answers
+                if (rapidTimeLeft > 40) rapidScore += 5;
+                else if (rapidTimeLeft > 20) rapidScore += 3;
+                
+                // Highlight correct button
+                document.querySelectorAll('.rapid-btn').forEach(btn => {
+                    if (btn.textContent.trim().toLowerCase() === sign.type) {
+                        btn.classList.add('correct');
+                    }
+                });
+            } else {
+                // Highlight correct and incorrect buttons
+                document.querySelectorAll('.rapid-btn').forEach(btn => {
+                    if (btn.textContent.trim().toLowerCase() === sign.type) {
+                        btn.classList.add('correct');
+                    }
+                    if (btn.textContent.trim().toLowerCase() === selectedType) {
+                        btn.classList.add('incorrect');
+                    }
+                });
+            }
+            
+            // Update stats
+            updateRapidStats();
+            
+            // Show next sign after short delay
+            setTimeout(() => {
+                if (rapidActive) {
+                    showNextRapidSign();
+                }
+            }, 800);
+        }
+
+        function updateRapidStats() {
+            document.getElementById('rapid-score').textContent = rapidScore;
+            const accuracy = rapidTotal > 0 ? Math.round((rapidCorrect / rapidTotal) * 100) : 0;
+            document.getElementById('rapid-accuracy').textContent = `${accuracy}%`;
+        }
+
+        function endRapidFire() {
+            clearInterval(rapidTimer);
+            rapidActive = false;
+            
+            // Update module state
+            moduleState.activitiesCompleted.add(3);
+            moduleState.totalScore += rapidScore;
+            moduleState.totalQuestions += rapidTotal;
+            moduleState.correctAnswers += rapidCorrect;
+            moduleState.signsMastered = Math.min(moduleState.signsMastered + rapidCorrect, 30);
+            
+            updateProgress();
+            
+            // Check if all activities completed
+            if (moduleState.activitiesCompleted.size === 3) {
+                setTimeout(() => {
+                    completeModule();
+                }, 1500);
+            }
+        }
+
+        function resetRapidFire() {
+            clearInterval(rapidTimer);
+            rapidActive = false;
+            document.getElementById('start-rapid-btn').style.display = 'block';
+            document.getElementById('reset-rapid-btn').style.display = 'none';
+            document.getElementById('rapid-time').textContent = '60';
+            updateRapidStats();
+        }
+
+        // ========== COMPLETION ==========
+        function completeModule() {
+            clearInterval(moduleTimer);
+            if (rapidTimer) clearInterval(rapidTimer);
+            if (quizTimer) clearInterval(quizTimer);
+            
+            // Calculate final metrics
+            const accuracy = moduleState.totalQuestions > 0 
+                ? Math.round((moduleState.correctAnswers / moduleState.totalQuestions) * 100)
+                : 0;
+            
+            // Update completion message
+            document.getElementById('final-score').textContent = moduleState.totalScore;
+            document.getElementById('final-accuracy').textContent = `${accuracy}%`;
+            document.getElementById('total-signs').textContent = moduleState.signsMastered;
+            document.getElementById('completion-time').textContent = formatTime(totalSeconds);
+            
+            // Show completion message
+            completionMessage.classList.add('show');
+            completionMessage.scrollIntoView({ behavior: 'smooth' });
+            
+            // Update timer to show completion
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+        }
+
+        // ========== INITIALIZATION ==========
+        // Cache DOM elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const progressFill = document.getElementById('progress-fill');
+        const currentScoreEl = document.getElementById('current-score');
+        const accuracyRateEl = document.getElementById('accuracy-rate');
+        const signsLearnedEl = document.getElementById('signs-learned');
+        const completionMessage = document.getElementById('completion-message');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            startModuleTimer();
+            updateCard();
+            loadQuizQuestion();
+            startQuizTimer();
+            
+            // Initialize rapid fire stats
+            updateRapidStats();
+        });
+    </script>
+</body>
+</html>
