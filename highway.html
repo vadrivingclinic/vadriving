@@ -1,0 +1,2210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Highway & Street Signs Mastery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #1e40af;
+            --color-primary-light: #3b82f6;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #ef4444;
+            --color-info: #0ea5e9;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(30, 64, 175, 0.1);
+            --shadow-hover: 0 15px 35px rgba(30, 64, 175, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(30, 64, 175, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(30, 64, 175, 0.8); }
+        }
+
+        @keyframes countdown {
+            from { transform: scale(1); opacity: 1; }
+            to { transform: scale(1.5); opacity: 0; }
+        }
+
+        .lesson-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(30, 64, 175, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: pulse 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .time-estimate {
+            background: rgba(30, 64, 175, 0.1);
+            border: 2px solid rgba(30, 64, 175, 0.2);
+            border-radius: var(--radius-md);
+            padding: 20px 25px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.8rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1.1rem;
+            color: var(--color-text);
+            font-weight: 600;
+            flex-grow: 1;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.3em;
+        }
+
+        /* Progress Indicators */
+        .progress-section {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 30px;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .progress-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .progress-indicator {
+            flex-grow: 1;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(30, 64, 175, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1e40af, #3b82f6);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .score-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            min-width: 300px;
+        }
+
+        .score-card {
+            background: rgba(30, 64, 175, 0.05);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            text-align: center;
+            border: 2px solid rgba(30, 64, 175, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .score-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(30, 64, 175, 0.1);
+        }
+
+        .score-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .score-label {
+            font-size: 0.75rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        /* Content Navigation */
+        .content-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: rgba(30, 64, 175, 0.1);
+            border: 2px solid rgba(30, 64, 175, 0.2);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(30, 64, 175, 0.2);
+            border-color: var(--color-primary);
+        }
+
+        .nav-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Section 1: Reading Material */
+        .reading-material {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-subtitle {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin: 30px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(30, 64, 175, 0.1);
+        }
+
+        .content-text {
+            color: var(--color-text);
+            margin-bottom: 20px;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .content-text.highlight {
+            background: rgba(30, 64, 175, 0.05);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--color-primary);
+        }
+
+        /* Sign Categories */
+        .sign-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow-soft);
+            border: 2px solid rgba(30, 64, 175, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .category-icon.regulatory { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .category-icon.warning { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .category-icon.guide { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+        .category-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-text);
+        }
+
+        .sign-examples {
+            display: grid;
+            gap: 15px;
+        }
+
+        .sign-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(30, 64, 175, 0.03);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(30, 64, 175, 0.1);
+        }
+
+        .sign-symbol {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+
+        .sign-symbol.stop { background: #ef4444; color: white; }
+        .sign-symbol.yield { background: #f59e0b; color: white; border-radius: 50%; }
+        .sign-symbol.speed { background: white; color: black; border: 3px solid black; }
+        .sign-symbol.curve { background: #f59e0b; color: black; transform: rotate(45deg); }
+        .sign-symbol.pedestrian { background: #f59e0b; color: black; }
+        .sign-symbol.exit { background: #10b981; color: white; }
+
+        .sign-info {
+            flex-grow: 1;
+        }
+
+        .sign-name {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 5px;
+        }
+
+        .sign-meaning {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            line-height: 1.5;
+        }
+
+        /* Color Coding Section */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .color-item {
+            padding: 20px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .color-item.red { background: #ef4444; }
+        .color-item.yellow { background: #f59e0b; color: black; }
+        .color-item.green { background: #10b981; }
+        .color-item.blue { background: #3b82f6; }
+        .color-item.orange { background: #f97316; }
+
+        .color-name {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .color-purpose {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Section 2: Interactive Activities */
+        .activities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .activity-card {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 2px solid rgba(30, 64, 175, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .activity-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(30, 64, 175, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .activity-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-text);
+        }
+
+        .activity-description {
+            color: var(--color-muted);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        /* Activity: Sign Matching */
+        .matching-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .matching-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .matching-card {
+            aspect-ratio: 1;
+            background: rgba(30, 64, 175, 0.1);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            position: relative;
+            transform: rotateY(0deg);
+        }
+
+        .matching-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .matching-card.matched {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--color-success);
+            cursor: default;
+        }
+
+        .matching-card-front,
+        .matching-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        .matching-card-front {
+            background: var(--color-primary);
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .matching-card-back {
+            background: white;
+            border: 2px solid rgba(30, 64, 175, 0.2);
+            transform: rotateY(180deg);
+            text-align: center;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        /* Activity: Quick Quiz */
+        .quiz-container {
+            background: rgba(30, 64, 175, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            padding: 15px;
+            background: white;
+            border: 2px solid rgba(30, 64, 175, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--color-primary);
+            background: rgba(30, 64, 175, 0.05);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(30, 64, 175, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(30, 64, 175, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .quiz-option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        /* Activity: Sign Identification */
+        .sign-identification {
+            text-align: center;
+            padding: 30px;
+            background: rgba(30, 64, 175, 0.05);
+            border-radius: var(--radius-md);
+            margin: 20px 0;
+        }
+
+        .sign-display {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .sign-display.stop { background: #ef4444; border-radius: 50%; }
+        .sign-display.yield { background: #f59e0b; transform: rotate(180deg); }
+        .sign-display.speed { background: white; color: black; border: 5px solid black; font-size: 3rem; }
+        .sign-display.curve { background: #f59e0b; color: black; transform: rotate(45deg); }
+
+        .identification-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .identify-btn {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid rgba(30, 64, 175, 0.2);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .identify-btn:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        .identify-btn.correct {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--color-success);
+            color: var(--color-success);
+        }
+
+        .identify-btn.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--color-danger);
+            color: var(--color-danger);
+        }
+
+        /* Section 3: Comprehensive Quiz */
+        .comprehensive-quiz {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 30px;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .quiz-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .quiz-timer {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+        }
+
+        /* Section 4: Review & Results */
+        .review-section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .results-summary {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .results-score {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .performance-chart {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        @media (max-width: 768px) {
+            .performance-chart {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-item {
+            padding: 25px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            background: rgba(30, 64, 175, 0.05);
+        }
+
+        .chart-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+
+        .chart-label {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 16px 40px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            min-width: 180px;
+        }
+
+        .action-btn:hover {
+            background: #1e3a8a;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(30, 64, 175, 0.3);
+        }
+
+        .action-btn.secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(30, 64, 175, 0.1);
+        }
+
+        .action-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Feedback Messages */
+        .feedback-area {
+            background: rgba(30, 64, 175, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-message {
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .feedback-message.correct {
+            color: var(--color-success);
+            font-weight: 600;
+        }
+
+        .feedback-message.incorrect {
+            color: var(--color-danger);
+            font-weight: 600;
+        }
+
+        /* Completion Message */
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .completion-time {
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .completion-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .completion-stat {
+            text-align: center;
+        }
+
+        .completion-stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .completion-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .reading-material,
+            .activity-card,
+            .comprehensive-quiz,
+            .review-section {
+                padding: 25px;
+            }
+
+            .lesson-title {
+                font-size: 1.8rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Time Learning</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" 
+                     alt="VA Driving Clinic Logo" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Road Signs Mastery Module</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">20-Minute Comprehensive Lesson</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Highway & Street Signs Mastery</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">⏱️</div>
+            <div class="time-estimate-text">
+                Complete this comprehensive lesson in approximately <span class="time-highlight">20 minutes</span> to master all highway and street signs
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <div class="progress-indicator">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-label">
+                    <span>Overall Progress</span>
+                    <span>Time Spent: <span id="time-spent">0:00</span></span>
+                </div>
+            </div>
+
+            <div class="score-display">
+                <div class="score-card">
+                    <span class="score-value" id="activity-score">0</span>
+                    <span class="score-label">Activity Score</span>
+                </div>
+                <div class="score-card">
+                    <span class="score-value" id="knowledge-level">0%</span>
+                    <span class="score-label">Knowledge Level</span>
+                </div>
+                <div class="score-card">
+                    <span class="score-value" id="signs-mastered">0</span>
+                    <span class="score-label">Signs Mastered</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Navigation -->
+        <div class="content-nav">
+            <div class="nav-btn active" onclick="switchSection(1)">
+                <span>📚</span> Learn Signs
+            </div>
+            <div class="nav-btn" onclick="switchSection(2)">
+                <span>🎮</span> Practice Activities
+            </div>
+            <div class="nav-btn" onclick="switchSection(3)">
+                <span>📝</span> Final Quiz
+            </div>
+            <div class="nav-btn" onclick="switchSection(4)">
+                <span>📊</span> Review Results
+            </div>
+        </div>
+
+        <!-- Section 1: Reading Material -->
+        <div class="content-section active" id="section-1">
+            <div class="reading-material">
+                <h2 class="section-title">
+                    <span>🚸</span> Understanding Highway & Street Signs
+                </h2>
+
+                <p class="content-text">
+                    Highway and street signs are essential components of the road system, providing crucial information 
+                    and instructions to drivers, cyclists, and pedestrians. Understanding these signs is vital for safe 
+                    and efficient navigation of the roads.
+                </p>
+
+                <div class="content-text highlight">
+                    <strong>Key Insight:</strong> Proper interpretation of road signs prevents approximately 48% of 
+                    preventable accidents and improves traffic flow efficiency by 35%.
+                </div>
+
+                <h3 class="section-subtitle">📋 Types of Highway & Street Signs</h3>
+                <p class="content-text">
+                    Highway and street signs are categorized into three main types: regulatory signs, warning signs, 
+                    and guide signs. Each type serves a specific purpose in ensuring road safety and efficient traffic flow.
+                </p>
+
+                <!-- Sign Categories -->
+                <div class="sign-categories">
+                    <!-- Regulatory Signs -->
+                    <div class="category-card">
+                        <div class="category-header">
+                            <div class="category-icon regulatory">🚫</div>
+                            <div class="category-title">Regulatory Signs</div>
+                        </div>
+                        <p class="content-text" style="font-size: 0.95rem; margin-bottom: 20px;">
+                            Provide information about traffic laws and regulations that must be obeyed. Usually rectangular 
+                            or square with white background and black, red, or green letters/symbols.
+                        </p>
+                        <div class="sign-examples">
+                            <div class="sign-item">
+                                <div class="sign-symbol stop">STOP</div>
+                                <div class="sign-info">
+                                    <div class="sign-name">Stop Sign</div>
+                                    <div class="sign-meaning">Come to complete stop, yield to traffic, proceed when safe</div>
+                                </div>
+                            </div>
+                            <div class="sign-item">
+                                <div class="sign-symbol yield">YIELD</div>
+                                <div class="sign-info">
+                                    <div class="sign-name">Yield Sign</div>
+                                    <div class="sign-meaning">Slow down, yield right of way to other vehicles/pedestrians</div>
+                                </div>
+                            </div>
+                            <div class="sign-item">
+                                <div class="sign-symbol speed">55</div>
+                                <div class="sign-info">
+                                    <div class="sign-name">Speed Limit</div>
+                                    <div class="sign-meaning">Maximum legal speed allowed on this road section</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Warning Signs -->
+                    <div class="category-card">
+                        <div class="category-header">
+                            <div class="category-icon warning">⚠️</div>
+                            <div class="category-title">Warning Signs</div>
+                        </div>
+                        <p class="content-text" style="font-size: 0.95rem; margin-bottom: 20px;">
+                            Alert drivers to potential hazards or changes in road conditions ahead. Typically diamond-shaped 
+                            with yellow background and black symbols/letters.
+                        </p>
+                        <div class="sign-examples">
+                            <div class="sign-item">
+                                <div class="sign-symbol curve">↷</div>
+                                <div class="sign-info">
+                                    <div class="sign-name">Curve Ahead</div>
+                                    <div class="sign-meaning">Warns of upcoming road curve, indicates direction/sharpness</div>
+                                </div>
+                            </div>
+                            <div class="sign-item">
+                                <div class="sign-symbol pedestrian">🚶</div>
+                                <div class="sign-info">
+                                    <div class="sign-name">Pedestrian Crossing</div>
+                                    <div class="sign-meaning">Alert for pedestrian crossing areas, often near schools</div>
+                                </div>
+                            </div>
+                            <div class="sign-item">
+                                <div class="sign-symbol" style="background: #f59e0b; color: black; font-size: 1.5rem;">🦌</div>
+                                <div class="sign-info">
+                                    <div class="sign-name">Deer Crossing</div>
+                                    <div class="sign-meaning">Areas where wildlife may cross, requires extra caution</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Guide Signs -->
+                    <div class="category-card">
+                        <div class="category-header">
+                            <div class="category-icon guide">🛣️</div>
+                            <div class="category-title">Guide Signs</div>
+                        </div>
+                        <p class="content-text" style="font-size: 0.95rem; margin-bottom: 20px;">
+                            Provide directional and mileage information to help navigate. Usually rectangular with green 
+                            background and white letters/symbols.
+                        </p>
+                        <div class="sign-examples">
+                            <div class="sign-item">
+                                <div class="sign-symbol exit">EXIT 42</div>
+                                <div class="sign-info">
+                                    <div class="sign-name">Highway Exit</div>
+                                    <div class="sign-meaning">Upcoming exit information with numbers and destinations</div>
+                                </div>
+                            </div>
+                            <div class="sign-item">
+                                <div class="sign-symbol" style="background: #10b981; color: white;">I-95</div>
+                                <div class="sign-info">
+                                    <div class="sign-name">Route Marker</div>
+                                    <div class="sign-meaning">Highway/road route numbers for navigation</div>
+                                </div>
+                            </div>
+                            <div class="sign-item">
+                                <div class="sign-symbol" style="background: #3b82f6; color: white; font-size: 1.2rem;">HOSPITAL</div>
+                                <div class="sign-info">
+                                    <div class="sign-name">Service Signs</div>
+                                    <div class="sign-meaning">Indicates nearby services (blue background)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="section-subtitle">🎨 Color Coding System</h3>
+                <p class="content-text">
+                    Each color on road signs has a specific meaning that helps drivers quickly understand the sign's purpose.
+                </p>
+
+                <div class="color-grid">
+                    <div class="color-item red">
+                        <div class="color-name">RED</div>
+                        <div class="color-purpose">Stop, Yield, Prohibition</div>
+                    </div>
+                    <div class="color-item yellow">
+                        <div class="color-name">YELLOW</div>
+                        <div class="color-purpose">Warning, Caution</div>
+                    </div>
+                    <div class="color-item green">
+                        <div class="color-name">GREEN</div>
+                        <div class="color-purpose">Direction, Distance, Permissive</div>
+                    </div>
+                    <div class="color-item blue">
+                        <div class="color-name">BLUE</div>
+                        <div class="color-purpose">Services, Information</div>
+                    </div>
+                    <div class="color-item orange">
+                        <div class="color-name">ORANGE</div>
+                        <div class="color-purpose">Construction, Maintenance</div>
+                    </div>
+                </div>
+
+                <h3 class="section-subtitle">🔺 Shape Coding System</h3>
+                <p class="content-text">
+                    The shape of a sign is just as important as its color in communicating its meaning quickly and effectively.
+                </p>
+
+                <div class="sign-examples" style="margin-top: 20px;">
+                    <div class="sign-item">
+                        <div style="width: 60px; height: 60px; background: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">
+                            8
+                        </div>
+                        <div class="sign-info">
+                            <div class="sign-name">Octagon (8 sides)</div>
+                            <div class="sign-meaning">Exclusively for STOP signs - the only shape with this many sides</div>
+                        </div>
+                    </div>
+                    <div class="sign-item">
+                        <div style="width: 60px; height: 60px; background: #f59e0b; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">
+                            Y
+                        </div>
+                        <div class="sign-info">
+                            <div class="sign-name">Triangle</div>
+                            <div class="sign-meaning">Used exclusively for YIELD signs</div>
+                        </div>
+                    </div>
+                    <div class="sign-item">
+                        <div style="width: 60px; height: 60px; background: #f59e0b; transform: rotate(45deg); display: flex; align-items: center; justify-content: center; color: black; font-weight: bold; font-size: 1.2rem;">
+                            !
+                        </div>
+                        <div class="sign-info">
+                            <div class="sign-name">Diamond</div>
+                            <div class="sign-meaning">Warning signs - indicates potential hazards ahead</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn secondary" onclick="markSectionComplete(1)">
+                        ✓ Mark as Read
+                    </button>
+                    <button class="action-btn" onclick="switchSection(2)">
+                        Start Practice Activities →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Practice Activities -->
+        <div class="content-section" id="section-2">
+            <h2 class="section-title" style="margin-bottom: 30px;">
+                <span>🎮</span> Interactive Practice Activities
+            </h2>
+
+            <div class="activities-grid">
+                <!-- Activity 1: Sign Matching -->
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-icon">🔗</div>
+                        <div class="activity-title">Sign Matching Game</div>
+                    </div>
+                    <p class="activity-description">
+                        Match the sign symbols with their correct meanings. Flip cards to find matching pairs.
+                    </p>
+                    
+                    <div class="matching-grid" id="matching-grid">
+                        <!-- Cards will be generated by JavaScript -->
+                    </div>
+
+                    <div class="feedback-area" id="matching-feedback">
+                        <div class="feedback-title">Progress</div>
+                        <div class="feedback-message">
+                            Matches: <span id="matches-found">0</span>/8 | Attempts: <span id="matching-attempts">0</span>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="action-btn secondary" onclick="resetMatchingGame()">
+                            Reset Game
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Activity 2: Quick Quiz -->
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-icon">❓</div>
+                        <div class="activity-title">Quick Sign Quiz</div>
+                    </div>
+                    <p class="activity-description">
+                        Test your knowledge with quick multiple-choice questions about sign meanings.
+                    </p>
+                    
+                    <div class="quiz-container">
+                        <div class="quiz-question">
+                            <div class="question-text" id="quiz-question">
+                                What does a yellow diamond-shaped sign indicate?
+                            </div>
+                            <div class="quiz-options">
+                                <div class="quiz-option" onclick="selectQuizOption(1, 'A')">
+                                    <div class="option-label">A</div>
+                                    <div>A regulatory requirement</div>
+                                </div>
+                                <div class="quiz-option" onclick="selectQuizOption(1, 'B')">
+                                    <div class="option-label">B</div>
+                                    <div>A warning or potential hazard</div>
+                                </div>
+                                <div class="quiz-option" onclick="selectQuizOption(1, 'C')">
+                                    <div class="option-label">C</div>
+                                    <div>Directional information</div>
+                                </div>
+                                <div class="quiz-option" onclick="selectQuizOption(1, 'D')">
+                                    <div class="option-label">D</div>
+                                    <div>A service location</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feedback-area" id="quiz-feedback" style="display: none;">
+                        <div class="feedback-title">Feedback</div>
+                        <div class="feedback-message" id="quiz-feedback-message"></div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="action-btn" onclick="checkQuizAnswer()" id="check-quiz-btn">
+                            Check Answer
+                        </button>
+                        <button class="action-btn secondary" onclick="nextQuizQuestion()" id="next-quiz-btn" style="display: none; margin-left: 10px;">
+                            Next Question
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Activity 3: Sign Identification -->
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-icon">🔍</div>
+                        <div class="activity-title">Sign Identification</div>
+                    </div>
+                    <p class="activity-description">
+                        Identify the sign type based on its appearance. Choose the correct category.
+                    </p>
+                    
+                    <div class="sign-identification">
+                        <div class="sign-display" id="current-sign">STOP</div>
+                        <div class="identification-options">
+                            <button class="identify-btn" onclick="identifySign('regulatory')">
+                                Regulatory
+                            </button>
+                            <button class="identify-btn" onclick="identifySign('warning')">
+                                Warning
+                            </button>
+                            <button class="identify-btn" onclick="identifySign('guide')">
+                                Guide
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="feedback-area" id="identification-feedback" style="display: none;">
+                        <div class="feedback-title">Result</div>
+                        <div class="feedback-message" id="identification-message"></div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="action-btn secondary" onclick="nextIdentification()">
+                            Next Sign
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn secondary" onclick="switchSection(1)">
+                    ← Back to Learning
+                </button>
+                <button class="action-btn" onclick="completeActivities()">
+                    Complete Activities & Start Final Quiz →
+                </button>
+            </div>
+        </div>
+
+        <!-- Section 3: Final Quiz -->
+        <div class="content-section" id="section-3">
+            <div class="comprehensive-quiz">
+                <div class="quiz-header">
+                    <h2 class="quiz-title">📝 Final Comprehensive Quiz</h2>
+                    <p style="color: var(--color-muted); margin-bottom: 20px;">
+                        Complete this 10-question quiz to test your mastery of highway and street signs.
+                    </p>
+                    <div class="quiz-timer" id="quiz-timer">10:00</div>
+                </div>
+
+                <div id="quiz-questions">
+                    <!-- Questions will be loaded by JavaScript -->
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="submitFinalQuiz()" id="submit-quiz-btn">
+                        Submit Final Quiz
+                    </button>
+                    <button class="action-btn secondary" onclick="switchSection(2)">
+                        ← Back to Practice
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Review Results -->
+        <div class="content-section" id="section-4">
+            <div class="review-section">
+                <div class="results-summary">
+                    <h2 class="section-title">
+                        <span>📊</span> Your Performance Results
+                    </h2>
+                    <div class="results-score" id="final-score">0%</div>
+                    <p style="color: var(--color-muted); margin-bottom: 20px;">
+                        Overall mastery of highway and street signs
+                    </p>
+                </div>
+
+                <div class="performance-chart">
+                    <div class="chart-item">
+                        <div class="chart-value" id="regulatory-score">0%</div>
+                        <div class="chart-label">Regulatory Signs</div>
+                    </div>
+                    <div class="chart-item">
+                        <div class="chart-value" id="warning-score">0%</div>
+                        <div class="chart-label">Warning Signs</div>
+                    </div>
+                    <div class="chart-item">
+                        <div class="chart-value" id="guide-score">0%</div>
+                        <div class="chart-label">Guide Signs</div>
+                    </div>
+                </div>
+
+                <div class="feedback-area">
+                    <div class="feedback-title">📋 Performance Analysis</div>
+                    <div class="feedback-message" id="performance-analysis">
+                        Complete the activities and quiz to see your detailed performance analysis.
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn secondary" onclick="switchSection(1)">
+                        ← Review Learning Material
+                    </button>
+                    <button class="action-btn" onclick="completeLesson()">
+                        Complete Lesson
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> Lesson Mastered!
+            </div>
+            <p>Congratulations! You've successfully completed the Highway & Street Signs Mastery lesson.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            
+            <div class="completion-stats">
+                <div class="completion-stat">
+                    <div class="completion-stat-value" id="final-percentage">0%</div>
+                    <div class="completion-stat-label">Mastery Score</div>
+                </div>
+                <div class="completion-stat">
+                    <div class="completion-stat-value" id="total-signs">0</div>
+                    <div class="completion-stat-label">Signs Learned</div>
+                </div>
+                <div class="completion-stat">
+                    <div class="completion-stat-value" id="time-taken">0:00</div>
+                    <div class="completion-stat-label">Time Taken</div>
+                </div>
+            </div>
+
+            <p style="margin-top: 30px; font-size: 1.1rem;">
+                You're now equipped with essential knowledge for safe and confident driving!
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Global State
+        const lessonState = {
+            currentSection: 1,
+            sectionsCompleted: new Set([1]),
+            totalScore: 0,
+            signsMastered: 0,
+            totalQuestions: 0,
+            correctAnswers: 0,
+            activityScores: {
+                matching: 0,
+                quiz: 0,
+                identification: 0,
+                finalQuiz: 0
+            },
+            startTime: Date.now(),
+            quizTimeLeft: 600, // 10 minutes for final quiz
+            quizTimer: null
+        };
+
+        // Timer Configuration
+        let lessonTimer;
+        let totalSeconds = 0;
+
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const progressFill = document.getElementById('progress-fill');
+        const activityScoreEl = document.getElementById('activity-score');
+        const knowledgeLevelEl = document.getElementById('knowledge-level');
+        const signsMasteredEl = document.getElementById('signs-mastered');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+
+        // ========== TIMER FUNCTIONS ==========
+        function startTimer() {
+            lessonTimer = setInterval(() => {
+                totalSeconds++;
+                updateTimerDisplay();
+                updateProgress();
+            }, 1000);
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 1200) { // 20 minutes
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else if (totalSeconds >= 900) { // 15 minutes
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            }
+        }
+
+        // ========== PROGRESS TRACKING ==========
+        function updateProgress() {
+            // Calculate progress based on sections and activities
+            const sectionProgress = (lessonState.sectionsCompleted.size / 4) * 40;
+            const activityProgress = (Object.values(lessonState.activityScores).filter(score => score > 0).length / 4) * 40;
+            const quizProgress = lessonState.finalQuizCompleted ? 20 : 0;
+            const totalProgress = Math.min(sectionProgress + activityProgress + quizProgress, 100);
+            
+            progressFill.style.width = `${totalProgress}%`;
+            
+            // Update scores
+            activityScoreEl.textContent = lessonState.totalScore;
+            
+            const knowledgeLevel = lessonState.totalQuestions > 0 
+                ? Math.round((lessonState.correctAnswers / lessonState.totalQuestions) * 100)
+                : 0;
+            knowledgeLevelEl.textContent = `${knowledgeLevel}%`;
+            
+            signsMasteredEl.textContent = lessonState.signsMastered;
+        }
+
+        // ========== SECTION NAVIGATION ==========
+        function switchSection(sectionNum) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`section-${sectionNum}`).classList.add('active');
+            
+            // Activate selected nav button
+            document.querySelectorAll('.nav-btn')[sectionNum - 1].classList.add('active');
+            
+            lessonState.currentSection = sectionNum;
+            
+            // Start quiz timer if on quiz section
+            if (sectionNum === 3 && !lessonState.quizTimer) {
+                startQuizTimer();
+            }
+        }
+
+        function markSectionComplete(sectionNum) {
+            lessonState.sectionsCompleted.add(sectionNum);
+            updateProgress();
+            alert('✓ Section marked as complete!');
+        }
+
+        // ========== ACTIVITY 1: SIGN MATCHING ==========
+        const matchingPairs = [
+            { symbol: '🛑', meaning: 'Stop - Come to complete stop' },
+            { symbol: '⚠️', meaning: 'Yield - Slow down and give way' },
+            { symbol: '55', meaning: 'Speed Limit - Maximum allowed speed' },
+            { symbol: '↷', meaning: 'Curve Ahead - Road curves to the right' },
+            { symbol: '🚶', meaning: 'Pedestrian Crossing - Watch for people crossing' },
+            { symbol: '🦌', meaning: 'Deer Crossing - Wildlife crossing area' },
+            { symbol: 'EXIT', meaning: 'Highway Exit - Upcoming exit information' },
+            { symbol: 'I-95', meaning: 'Route Marker - Highway route number' }
+        ];
+
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let matchesFound = 0;
+        let matchingAttempts = 0;
+
+        function setupMatchingGame() {
+            const grid = document.getElementById('matching-grid');
+            grid.innerHTML = '';
+            
+            let cards = [];
+            matchingPairs.forEach((pair, index) => {
+                cards.push({ type: 'symbol', content: pair.symbol, pairId: index });
+                cards.push({ type: 'meaning', content: pair.meaning, pairId: index });
+            });
+            
+            cards = shuffleArray(cards);
+            
+            cards.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'matching-card';
+                cardElement.dataset.index = index;
+                cardElement.dataset.pairId = card.pairId;
+                cardElement.dataset.type = card.type;
+                
+                const front = document.createElement('div');
+                front.className = 'matching-card-front';
+                front.textContent = '?';
+                
+                const back = document.createElement('div');
+                back.className = 'matching-card-back';
+                back.textContent = card.content;
+                
+                cardElement.appendChild(front);
+                cardElement.appendChild(back);
+                cardElement.addEventListener('click', () => flipMatchingCard(cardElement));
+                
+                grid.appendChild(cardElement);
+            });
+            
+            updateMatchingFeedback();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function flipMatchingCard(card) {
+            if (lockBoard || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+            
+            card.classList.add('flipped');
+            
+            if (!firstCard) {
+                firstCard = card;
+                return;
+            }
+            
+            secondCard = card;
+            lockBoard = true;
+            matchingAttempts++;
+            
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            const isMatch = firstCard.dataset.pairId === secondCard.dataset.pairId;
+            
+            if (isMatch) {
+                firstCard.classList.add('matched');
+                secondCard.classList.add('matched');
+                matchesFound++;
+                
+                // Award points
+                lessonState.totalScore += 25;
+                lessonState.signsMastered += 2;
+                
+                if (matchesFound === matchingPairs.length) {
+                    lessonState.activityScores.matching = 100;
+                    updateMatchingFeedback(true);
+                }
+            } else {
+                setTimeout(() => {
+                    firstCard.classList.remove('flipped');
+                    secondCard.classList.remove('flipped');
+                }, 1000);
+            }
+            
+            updateMatchingFeedback();
+            resetBoard();
+            updateProgress();
+        }
+
+        function resetBoard() {
+            [firstCard, secondCard, lockBoard] = [null, null, false];
+        }
+
+        function resetMatchingGame() {
+            matchesFound = 0;
+            matchingAttempts = 0;
+            setupMatchingGame();
+            updateMatchingFeedback();
+        }
+
+        function updateMatchingFeedback(completed = false) {
+            const feedback = document.getElementById('matching-feedback');
+            const message = feedback.querySelector('.feedback-message');
+            
+            message.innerHTML = `Matches: <strong>${matchesFound}</strong>/8 | Attempts: <strong>${matchingAttempts}</strong>`;
+            
+            if (completed) {
+                message.innerHTML += '<br>🎉 Perfect! All matches found!';
+                message.classList.add('correct');
+            }
+        }
+
+        // ========== ACTIVITY 2: QUICK QUIZ ==========
+        const quizQuestions = [
+            {
+                question: "What does a yellow diamond-shaped sign indicate?",
+                options: [
+                    "A regulatory requirement",
+                    "A warning or potential hazard",
+                    "Directional information",
+                    "A service location"
+                ],
+                correct: 1,
+                explanation: "✅ Correct! Yellow diamond-shaped signs are warning signs that alert drivers to potential hazards."
+            },
+            {
+                question: "What color are regulatory signs typically?",
+                options: [
+                    "Yellow with black symbols",
+                    "White with black/red symbols",
+                    "Green with white symbols",
+                    "Blue with white symbols"
+                ],
+                correct: 1,
+                explanation: "✅ Right! Regulatory signs usually have white background with black or red symbols/letters."
+            },
+            {
+                question: "What shape is exclusively used for STOP signs?",
+                options: [
+                    "Triangle",
+                    "Diamond",
+                    "Octagon",
+                    "Rectangle"
+                ],
+                correct: 2,
+                explanation: "✅ Excellent! The octagon shape is reserved exclusively for STOP signs."
+            }
+        ];
+
+        let currentQuizQuestion = 0;
+        let selectedOption = null;
+
+        function selectQuizOption(questionNum, option) {
+            selectedOption = option;
+            document.querySelectorAll('.quiz-option').forEach((opt, index) => {
+                opt.classList.remove('selected');
+                if (opt.querySelector('.option-label').textContent === option) {
+                    opt.classList.add('selected');
+                }
+            });
+        }
+
+        function checkQuizAnswer() {
+            if (!selectedOption) {
+                alert('Please select an answer first!');
+                return;
+            }
+
+            const question = quizQuestions[currentQuizQuestion];
+            const isCorrect = selectedOption === String.fromCharCode(65 + question.correct);
+            
+            lessonState.totalQuestions++;
+            if (isCorrect) {
+                lessonState.correctAnswers++;
+                lessonState.totalScore += 30;
+                lessonState.signsMastered += 1;
+                document.getElementById('quiz-feedback-message').textContent = question.explanation;
+                document.getElementById('quiz-feedback-message').className = 'feedback-message correct';
+            } else {
+                document.getElementById('quiz-feedback-message').textContent = "❌ Not quite. " + question.explanation;
+                document.getElementById('quiz-feedback-message').className = 'feedback-message incorrect';
+            }
+            
+            document.getElementById('quiz-feedback').style.display = 'block';
+            document.getElementById('check-quiz-btn').style.display = 'none';
+            document.getElementById('next-quiz-btn').style.display = 'inline-block';
+            
+            updateProgress();
+        }
+
+        function nextQuizQuestion() {
+            currentQuizQuestion++;
+            if (currentQuizQuestion < quizQuestions.length) {
+                document.getElementById('quiz-question').textContent = quizQuestions[currentQuizQuestion].question;
+                document.querySelectorAll('.quiz-option .option-label + div').forEach((div, index) => {
+                    div.textContent = quizQuestions[currentQuizQuestion].options[index];
+                });
+                
+                document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+                document.getElementById('quiz-feedback').style.display = 'none';
+                document.getElementById('check-quiz-btn').style.display = 'inline-block';
+                document.getElementById('next-quiz-btn').style.display = 'none';
+                selectedOption = null;
+            } else {
+                lessonState.activityScores.quiz = Math.round((lessonState.correctAnswers / lessonState.totalQuestions) * 100);
+                alert('🎉 Quiz completed! Move to the next activity.');
+            }
+        }
+
+        // ========== ACTIVITY 3: SIGN IDENTIFICATION ==========
+        const identificationSigns = [
+            { symbol: 'STOP', type: 'regulatory', color: '#ef4444' },
+            { symbol: 'YIELD', type: 'warning', color: '#f59e0b' },
+            { symbol: '55', type: 'regulatory', color: 'white', textColor: 'black' },
+            { symbol: '↷', type: 'warning', color: '#f59e0b', textColor: 'black' },
+            { symbol: 'EXIT 42', type: 'guide', color: '#10b981' }
+        ];
+
+        let currentSignIndex = 0;
+        let identificationScore = 0;
+
+        function nextIdentification() {
+            currentSignIndex = (currentSignIndex + 1) % identificationSigns.length;
+            const sign = identificationSigns[currentSignIndex];
+            const signDisplay = document.getElementById('current-sign');
+            
+            signDisplay.textContent = sign.symbol;
+            signDisplay.className = 'sign-display';
+            signDisplay.style.background = sign.color;
+            signDisplay.style.color = sign.textColor || 'white';
+            
+            if (sign.symbol === 'YIELD') {
+                signDisplay.classList.add('yield');
+            } else if (sign.symbol === '55') {
+                signDisplay.classList.add('speed');
+            } else if (sign.symbol === '↷') {
+                signDisplay.classList.add('curve');
+            } else if (sign.symbol === 'STOP') {
+                signDisplay.classList.add('stop');
+            }
+            
+            // Reset buttons
+            document.querySelectorAll('.identify-btn').forEach(btn => {
+                btn.classList.remove('correct', 'incorrect');
+            });
+            
+            document.getElementById('identification-feedback').style.display = 'none';
+        }
+
+        function identifySign(selectedType) {
+            const sign = identificationSigns[currentSignIndex];
+            const isCorrect = selectedType === sign.type;
+            
+            lessonState.totalQuestions++;
+            if (isCorrect) {
+                identificationScore++;
+                lessonState.correctAnswers++;
+                lessonState.totalScore += 20;
+                lessonState.signsMastered += 1;
+                document.getElementById('identification-message').textContent = '✅ Correct! This is a ' + sign.type + ' sign.';
+                document.getElementById('identification-message').className = 'feedback-message correct';
+                
+                if (identificationScore >= 3) {
+                    lessonState.activityScores.identification = 100;
+                }
+            } else {
+                document.getElementById('identification-message').textContent = '❌ Incorrect. This is actually a ' + sign.type + ' sign.';
+                document.getElementById('identification-message').className = 'feedback-message incorrect';
+            }
+            
+            // Highlight correct/incorrect buttons
+            document.querySelectorAll('.identify-btn').forEach(btn => {
+                if (btn.textContent.trim().toLowerCase() === sign.type) {
+                    btn.classList.add('correct');
+                } else if (btn.textContent.trim().toLowerCase() === selectedType) {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            document.getElementById('identification-feedback').style.display = 'block';
+            updateProgress();
+        }
+
+        // ========== SECTION 3: FINAL QUIZ ==========
+        const finalQuizQuestions = [
+            {
+                question: "What is the primary purpose of regulatory signs?",
+                options: [
+                    "Provide directions to destinations",
+                    "Warn about potential hazards",
+                    "Inform about traffic laws that must be obeyed",
+                    "Indicate available services"
+                ],
+                correct: 2,
+                type: 'regulatory'
+            },
+            {
+                question: "Which sign shape is used exclusively for warning signs?",
+                options: [
+                    "Octagon",
+                    "Triangle",
+                    "Diamond",
+                    "Rectangle"
+                ],
+                correct: 2,
+                type: 'warning'
+            },
+            {
+                question: "What does a blue sign typically indicate?",
+                options: [
+                    "Stop or prohibition",
+                    "Warning or caution",
+                    "Services or information",
+                    "Construction zone"
+                ],
+                correct: 2,
+                type: 'guide'
+            },
+            {
+                question: "How many sides does a STOP sign have?",
+                options: [
+                    "4",
+                    "6",
+                    "8",
+                    "10"
+                ],
+                correct: 2,
+                type: 'regulatory'
+            },
+            {
+                question: "What should you do when you see a yellow pedestrian crossing sign?",
+                options: [
+                    "Increase speed to clear the area quickly",
+                    "Stop immediately and wait",
+                    "Slow down and watch for pedestrians",
+                    "Ignore it if no pedestrians are visible"
+                ],
+                correct: 2,
+                type: 'warning'
+            },
+            {
+                question: "What information do green guide signs typically provide?",
+                options: [
+                    "Speed limits and regulations",
+                    "Warnings about road conditions",
+                    "Directions, distances, and destinations",
+                    "Construction and detour information"
+                ],
+                correct: 2,
+                type: 'guide'
+            },
+            {
+                question: "What does an orange sign indicate?",
+                options: [
+                    "School zone ahead",
+                    "Construction or maintenance area",
+                    "Hospital nearby",
+                    "Rest area ahead"
+                ],
+                correct: 1,
+                type: 'warning'
+            },
+            {
+                question: "Which sign requires you to come to a complete stop?",
+                options: [
+                    "Yield sign",
+                    "Stop sign",
+                    "Speed limit sign",
+                    "Warning sign"
+                ],
+                correct: 1,
+                type: 'regulatory'
+            },
+            {
+                question: "What is the shape of a yield sign?",
+                options: [
+                    "Square",
+                    "Triangle",
+                    "Circle",
+                    "Pentagon"
+                ],
+                correct: 1,
+                type: 'warning'
+            },
+            {
+                question: "What does a sign with a white background and black letters usually indicate?",
+                options: [
+                    "Warning sign",
+                    "Regulatory sign",
+                    "Guide sign",
+                    "Service sign"
+                ],
+                correct: 1,
+                type: 'regulatory'
+            }
+        ];
+
+        function startQuizTimer() {
+            const timerElement = document.getElementById('quiz-timer');
+            lessonState.quizTimer = setInterval(() => {
+                lessonState.quizTimeLeft--;
+                timerElement.textContent = formatTime(lessonState.quizTimeLeft);
+                
+                if (lessonState.quizTimeLeft <= 0) {
+                    clearInterval(lessonState.quizTimer);
+                    submitFinalQuiz();
+                }
+            }, 1000);
+        }
+
+        function loadFinalQuiz() {
+            const container = document.getElementById('quiz-questions');
+            container.innerHTML = '';
+            
+            finalQuizQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'quiz-question';
+                questionDiv.innerHTML = `
+                    <div class="question-text">${index + 1}. ${q.question}</div>
+                    <div class="quiz-options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="quiz-option" onclick="selectFinalQuizOption(${index}, ${optIndex})">
+                                <div class="option-label">${String.fromCharCode(65 + optIndex)}</div>
+                                <div>${option}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        let finalQuizAnswers = new Array(finalQuizQuestions.length).fill(null);
+
+        function selectFinalQuizOption(questionIndex, optionIndex) {
+            finalQuizAnswers[questionIndex] = optionIndex;
+            
+            // Update UI
+            const questionDiv = document.getElementById('quiz-questions').children[questionIndex];
+            questionDiv.querySelectorAll('.quiz-option').forEach((opt, idx) => {
+                opt.classList.remove('selected');
+                if (idx === optionIndex) {
+                    opt.classList.add('selected');
+                }
+            });
+        }
+
+        function submitFinalQuiz() {
+            clearInterval(lessonState.quizTimer);
+            
+            let correctCount = 0;
+            const typeCounts = { regulatory: 0, warning: 0, guide: 0 };
+            const typeCorrect = { regulatory: 0, warning: 0, guide: 0 };
+            
+            finalQuizQuestions.forEach((q, index) => {
+                typeCounts[q.type] = (typeCounts[q.type] || 0) + 1;
+                
+                if (finalQuizAnswers[index] === q.correct) {
+                    correctCount++;
+                    typeCorrect[q.type] = (typeCorrect[q.type] || 0) + 1;
+                }
+            });
+            
+            // Calculate scores
+            const finalScore = Math.round((correctCount / finalQuizQuestions.length) * 100);
+            lessonState.activityScores.finalQuiz = finalScore;
+            lessonState.finalQuizCompleted = true;
+            lessonState.totalScore += finalScore * 2;
+            
+            // Update results display
+            document.getElementById('final-score').textContent = `${finalScore}%`;
+            document.getElementById('regulatory-score').textContent = 
+                typeCounts.regulatory > 0 ? `${Math.round((typeCorrect.regulatory / typeCounts.regulatory) * 100)}%` : '0%';
+            document.getElementById('warning-score').textContent = 
+                typeCounts.warning > 0 ? `${Math.round((typeCorrect.warning / typeCounts.warning) * 100)}%` : '0%';
+            document.getElementById('guide-score').textContent = 
+                typeCounts.guide > 0 ? `${Math.round((typeCorrect.guide / typeCounts.guide) * 100)}%` : '0%';
+            
+            // Generate feedback
+            let analysis = `You scored ${correctCount}/${finalQuizQuestions.length} (${finalScore}%) on the final quiz.`;
+            if (finalScore >= 80) {
+                analysis += " Excellent work! You've mastered highway and street signs.";
+            } else if (finalScore >= 60) {
+                analysis += " Good job! Review the areas where you had difficulty.";
+            } else {
+                analysis += " Review the learning material and try the activities again.";
+            }
+            
+            document.getElementById('performance-analysis').textContent = analysis;
+            
+            // Switch to results section
+            switchSection(4);
+            updateProgress();
+        }
+
+        // ========== COMPLETION FUNCTIONS ==========
+        function completeActivities() {
+            let completedCount = 0;
+            Object.values(lessonState.activityScores).forEach(score => {
+                if (score > 0) completedCount++;
+            });
+            
+            if (completedCount >= 2) {
+                switchSection(3);
+                loadFinalQuiz();
+            } else {
+                alert('Please complete at least 2 practice activities before taking the final quiz.');
+            }
+        }
+
+        function completeLesson() {
+            clearInterval(lessonTimer);
+            
+            // Calculate final metrics
+            const totalActivities = Object.values(lessonState.activityScores).filter(score => score > 0).length;
+            const averageScore = totalActivities > 0 
+                ? Object.values(lessonState.activityScores).reduce((a, b) => a + b, 0) / totalActivities
+                : 0;
+            
+            const masteryPercentage = Math.round(averageScore);
+            const signsLearned = Math.min(lessonState.signsMastered, 20);
+            
+            // Update completion message
+            document.getElementById('final-percentage').textContent = `${masteryPercentage}%`;
+            document.getElementById('total-signs').textContent = signsLearned;
+            document.getElementById('time-taken').textContent = formatTime(totalSeconds);
+            completionTime.textContent = formatTime(totalSeconds);
+            
+            // Show completion message
+            completionMessage.classList.add('show');
+            completionMessage.scrollIntoView({ behavior: 'smooth' });
+            
+            // Update timer to show completion
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+        }
+
+        // ========== INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            startTimer();
+            setupMatchingGame();
+            nextIdentification();
+            
+            // Initialize quiz
+            document.getElementById('quiz-question').textContent = quizQuestions[0].question;
+            document.querySelectorAll('.quiz-option .option-label + div').forEach((div, index) => {
+                div.textContent = quizQuestions[0].options[index];
+            });
+        });
+    </script>
+</body>
+</html>
