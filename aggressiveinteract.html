@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Aggressive Driving Prevention</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #f59e0b; /* Amber/orange theme for warning */
+            --color-primary-light: #fbbf24;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #dc2626;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(245, 158, 11, 0.1);
+            --shadow-hover: 0 15px 35px rgba(245, 158, 11, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #991b1b, #dc2626);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(245, 158, 11, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(245, 158, 11, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-warning);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-warning);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-warning);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .time-estimate {
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-warning);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-warning);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(245, 158, 11, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-warning);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-warning);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Warning/Stats Boxes */
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .solution-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .solution-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .solution-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .solution-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .solution-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        /* Behavior Grid */
+        .behavior-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .behavior-card {
+            background: rgba(245, 158, 11, 0.05);
+            border: 2px solid rgba(245, 158, 11, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .behavior-card:hover {
+            border-color: var(--color-warning);
+            transform: translateY(-3px);
+        }
+
+        .behavior-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .behavior-name {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .behavior-desc {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .behavior-danger {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(220, 38, 38, 0.1);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            color: var(--color-danger);
+            font-size: 0.85rem;
+        }
+
+        /* Case Study Cards */
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .case-card {
+            background: rgba(245, 158, 11, 0.05);
+            border: 2px solid rgba(245, 158, 11, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .case-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--color-warning);
+        }
+
+        .case-card:hover {
+            border-color: var(--color-warning);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.1);
+        }
+
+        .case-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .case-icon {
+            font-size: 1.5rem;
+        }
+
+        .case-location {
+            font-weight: 800;
+            color: var(--color-warning);
+            font-size: 1.1rem;
+        }
+
+        .case-details {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .case-outcome {
+            background: rgba(220, 38, 38, 0.05);
+            border-left: 3px solid var(--color-danger);
+            padding: 12px 15px;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            font-size: 0.85rem;
+            color: var(--color-text);
+        }
+
+        /* Interactive Scenario */
+        .scenario-container {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 30px;
+            border: 2px solid var(--color-warning);
+        }
+
+        .scenario-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .scenario-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            color: #e5e7eb;
+            text-align: center;
+        }
+
+        .scenario-choices {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .choice-btn {
+            padding: 15px 20px;
+            border-radius: var(--radius-md);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .choice-btn:hover {
+            background: rgba(245, 158, 11, 0.3);
+            border-color: var(--color-warning);
+            transform: translateY(-3px);
+        }
+
+        .choice-btn.selected {
+            background: rgba(245, 158, 11, 0.4);
+            border-color: var(--color-warning);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .choice-feedback {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .choice-feedback.correct {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+        }
+
+        .choice-feedback.incorrect {
+            background: rgba(220, 38, 38, 0.1);
+            border-left: 4px solid var(--color-danger);
+            animation: shake 0.5s ease;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-content {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Interactive Quiz */
+        .knowledge-check {
+            background: rgba(245, 158, 11, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(245, 158, 11, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-warning);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-warning);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-warning);
+            background: rgba(245, 158, 11, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(245, 158, 11, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-warning);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-warning);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-warning);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #d97706;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(245, 158, 11, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-warning);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-warning);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-warning);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .key-points {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-warning);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Calm Driving Pledge */
+        .pledge-container {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            text-align: center;
+            border: 2px solid var(--color-warning);
+        }
+
+        .pledge-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .pledge-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            color: #e5e7eb;
+        }
+
+        .pledge-signature {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 400px;
+            margin: 30px auto;
+        }
+
+        .pledge-input {
+            padding: 15px;
+            border-radius: var(--radius-md);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .pledge-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .pledge-btn {
+            background: var(--color-warning);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pledge-btn:hover {
+            background: #d97706;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .pledge-confirmation {
+            display: none;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--color-success);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .pledge-confirmation.show {
+            display: block;
+        }
+
+        /* Completion Message */
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.6rem;
+            }
+
+            .behavior-grid,
+            .case-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .scenario-choices {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Time Learning</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" 
+                     alt="VA Driving Clinic Logo" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Road Safety Module</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">10-Minute Aggressive Driving Prevention</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Aggressive Driving: Recognize & Prevent Road Rage</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">⏱️</div>
+            <div class="time-estimate-text">
+                Complete this important lesson in <span class="time-highlight">10 minutes</span> to master safe driving techniques and prevent aggressive behavior
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Sections Completed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="quiz-score">0%</span>
+                <span class="stat-label">Safety Score</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Time Learning</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Lesson Progress</span>
+                <span>Time Learning: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: Understanding Aggressive Driving -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">⚠️</span>
+                    Understanding Aggressive Driving
+                </h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #f59e0b;">🚗</span> What is Aggressive Driving?
+                    </h3>
+                    <p class="subsection-content">
+                        Aggressive driving refers to a pattern of dangerous behaviors on the road that are hostile, intimidating, and put everyone at risk. It's more than just bad driving—it's intentional behavior that disregards the safety of others.
+                    </p>
+                    
+                    <div class="warning-box">
+                        <div class="warning-title">📊 Critical Statistics</div>
+                        <div class="warning-content">
+                            • <strong>1 in 3</strong> of all crashes involve aggressive driving<br>
+                            • <strong>2 in 3</strong> of all traffic fatalities are related to aggressive driving<br>
+                            • Road rage incidents have increased by <strong>500%</strong> in the last decade<br>
+                            • Over <strong>80%</strong> of drivers admit to aggressive driving behavior
+                        </div>
+                    </div>
+
+                    <div class="behavior-grid">
+                        <div class="behavior-card">
+                            <div class="behavior-icon">🚨</div>
+                            <div class="behavior-name">Tailgating</div>
+                            <div class="behavior-desc">Following too closely, reducing reaction time and increasing crash risk</div>
+                            <div class="behavior-danger">Danger: 92% of rear-end collisions</div>
+                        </div>
+
+                        <div class="behavior-card">
+                            <div class="behavior-icon">⚡</div>
+                            <div class="behavior-name">Excessive Speeding</div>
+                            <div class="behavior-desc">Driving significantly over the speed limit in traffic</div>
+                            <div class="behavior-danger">Danger: 3x more likely to cause fatalities</div>
+                        </div>
+
+                        <div class="behavior-card">
+                            <div class="behavior-icon">🔄</div>
+                            <div class="behavior-name">Weaving Through Traffic</div>
+                            <div class="behavior-desc">Frequent, unsafe lane changes without signaling</div>
+                            <div class="behavior-danger">Danger: 78% higher crash risk</div>
+                        </div>
+
+                        <div class="behavior-card">
+                            <div class="behavior-icon">🛑</div>
+                            <div class="behavior-name">Red Light Running</div>
+                            <div class="behavior-desc">Intentionally driving through red traffic signals</div>
+                            <div class="behavior-danger">Danger: 219,000 annual crashes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Causes & Real Cases -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🎭</span>
+                    Causes & Real-Life Consequences
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🔥 Common Causes of Road Rage</h3>
+                    <div class="behavior-grid" style="margin-top: 15px;">
+                        <div class="behavior-card">
+                            <div class="behavior-icon">🚦</div>
+                            <div class="behavior-name">Traffic Congestion</div>
+                            <div class="behavior-desc">Heavy traffic and long delays trigger frustration and impatience</div>
+                        </div>
+
+                        <div class="behavior-card">
+                            <div class="behavior-icon">⏰</div>
+                            <div class="behavior-name">Running Late</div>
+                            <div class="behavior-desc">Time pressure leads to risky driving to make up lost minutes</div>
+                        </div>
+
+                        <div class="behavior-card">
+                            <div class="behavior-icon">🎭</div>
+                            <div class="behavior-name">Anonymity</div>
+                            <div class="behavior-desc">Feeling hidden in a vehicle removes social accountability</div>
+                        </div>
+
+                        <div class="behavior-card">
+                            <div class="behavior-icon">😠</div>
+                            <div class="behavior-name">Stress & Anger</div>
+                            <div class="behavior-desc">Personal stress spills over into driving behavior</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">📰 Real-Life 2024 Cases</h3>
+                    <div class="case-grid">
+                        <div class="case-card">
+                            <div class="case-header">
+                                <div class="case-icon">📍</div>
+                                <div class="case-location">New York City</div>
+                            </div>
+                            <div class="case-details">
+                                <strong>Road Rage Escalation:</strong> Driver frustrated with heavy traffic began tailgating and honking aggressively. Attempted dangerous overtake, causing multi-vehicle collision with multiple injuries.
+                            </div>
+                            <div class="case-outcome">
+                                <strong>Outcome:</strong> Multiple charges including reckless endangerment and assault with a vehicle
+                            </div>
+                        </div>
+
+                        <div class="case-card">
+                            <div class="case-header">
+                                <div class="case-icon">📍</div>
+                                <div class="case-location">Los Angeles, CA</div>
+                            </div>
+                            <div class="case-details">
+                                <strong>Fatal Speeding Incident:</strong> Driver weaving through traffic at excessive speeds lost control, collided with another vehicle, killing two passengers instantly.
+                            </div>
+                            <div class="case-outcome">
+                                <strong>Outcome:</strong> Vehicular manslaughter charges, potential 15-year sentence
+                            </div>
+                        </div>
+
+                        <div class="case-card">
+                            <div class="case-header">
+                                <div class="case-icon">📍</div>
+                                <div class="case-location">Texas Highway</div>
+                            </div>
+                            <div class="case-details">
+                                <strong>Highway Confrontation:</strong> Aggressive driver tailgating and flashing headlights intimidated another driver into abrupt lane change, causing chain-reaction crash.
+                            </div>
+                            <div class="case-outcome">
+                                <strong>Outcome:</strong> Multiple injury lawsuits, license suspension, criminal charges
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Prevention & Solutions -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🛡️</span>
+                    Prevention Strategies & Safe Responses
+                </h2>
+
+                <div class="solution-box">
+                    <div class="solution-title">🛡️ Your Defensive Driving Toolkit</div>
+                    <ul class="solution-list">
+                        <li><strong>Stay Calm:</strong> Practice deep breathing when frustrated. Count to ten before reacting.</li>
+                        <li><strong>Plan Ahead:</strong> Leave 10-15 minutes early to avoid time pressure.</li>
+                        <li><strong>Safe Following Distance:</strong> Maintain 3-4 seconds between you and the car ahead.</li>
+                        <li><strong>Don't Engage:</strong> Never make eye contact or gesture at aggressive drivers.</li>
+                        <li><strong>Move Over:</strong> Safely change lanes or exit to let aggressive drivers pass.</li>
+                        <li><strong>Report Safely:</strong> Note license plates and call 911 if behavior is dangerous.</li>
+                    </ul>
+                </div>
+
+                <!-- Interactive Scenario -->
+                <div class="scenario-container">
+                    <h3 class="scenario-title">🚦 Interactive Driving Scenario</h3>
+                    <p class="scenario-text">
+                        You're running 10 minutes late for an important appointment. The driver in front of you is going 10 mph under the speed limit in the left lane. They've been there for 2 miles and show no sign of moving over.
+                    </p>
+                    
+                    <div class="scenario-choices">
+                        <button class="choice-btn" data-choice="1" onclick="selectChoice(1)">
+                            <strong>A:</strong> Flash your headlights and tailgate closely to pressure them
+                        </button>
+                        <button class="choice-btn" data-choice="2" onclick="selectChoice(2)">
+                            <strong>B:</strong> Honk repeatedly and gesture for them to move over
+                        </button>
+                        <button class="choice-btn" data-choice="3" onclick="selectChoice(3)">
+                            <strong>C:</strong> Take the next exit to calm down and find an alternative route
+                        </button>
+                        <button class="choice-btn" data-choice="4" onclick="selectChoice(4)">
+                            <strong>D:</strong> Attempt to pass on the right when there's an opening
+                        </button>
+                    </div>
+
+                    <div class="choice-feedback" id="choice-feedback">
+                        <div class="feedback-title" id="feedback-title"></div>
+                        <div class="feedback-content" id="feedback-content"></div>
+                    </div>
+                </div>
+
+                <div class="warning-box" style="margin-top: 25px;">
+                    <div class="warning-title">📞 When to Report Aggressive Drivers</div>
+                    <div class="warning-content">
+                        <strong>Call 911 Immediately If:</strong><br>
+                        • Driver is clearly intoxicated or impaired<br>
+                        • Vehicle is being used as a weapon<br>
+                        • There is immediate danger to others<br>
+                        • Driver is threatening violence<br><br>
+                        
+                        <strong>What to Report:</strong><br>
+                        • License plate number and state<br>
+                        • Vehicle make, model, and color<br>
+                        • Location and direction of travel<br>
+                        • Specific dangerous behaviors observed
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Check -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Safety Knowledge Assessment</h2>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. What percentage of all traffic fatalities involve aggressive driving behaviors?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>15%</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>33%</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>66%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. What is the safest response when encountering an aggressive driver?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Make eye contact to show disapproval</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Retaliate to teach them a lesson</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Move over safely and avoid engagement</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. What should you do if you're running late and feeling frustrated in traffic?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Weave through traffic to save time</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Accept you'll be late and drive safely</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Tailgate to pressure slow drivers</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. When should you report an aggressive driver to authorities?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Only if they actually cause an accident</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>When they pose immediate danger to others</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Never - it's not your responsibility</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">Check Your Safety Knowledge</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Your Safety Assessment
+                </div>
+                <div class="score" id="score">0/4</div>
+                <div class="feedback" id="feedback">
+                    Review your answers to ensure you understand how to prevent and respond to aggressive driving.
+                </div>
+                <div class="key-points">
+                    <div class="key-points-title">🎯 Critical Safety Takeaways</div>
+                    <ul class="key-points-list">
+                        <li>Aggressive driving causes 2/3 of all traffic fatalities</li>
+                        <li>Always plan extra time to avoid time pressure</li>
+                        <li>Never engage with aggressive drivers - move over safely</li>
+                        <li>Report dangerous drivers who pose immediate threats</li>
+                        <li>Your safety is more important than being on time</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calm Driving Pledge -->
+        <div class="pledge-container">
+            <h2 class="pledge-title">Take the Calm Driving Pledge</h2>
+            <p class="pledge-text">
+                I commit to driving calmly and safely, regardless of traffic conditions or other drivers' behavior. 
+                I will plan ahead, stay patient, and never let frustration control my driving. 
+                I understand that arriving safely is always more important than arriving quickly.
+            </p>
+            
+            <div class="pledge-signature">
+                <input type="text" class="pledge-input" id="pledge-name" placeholder="Enter your name to sign the pledge">
+                <input type="email" class="pledge-input" id="pledge-email" placeholder="Enter your email (optional)">
+                <button class="pledge-btn" onclick="signPledge()">Sign the Calm Driving Pledge</button>
+            </div>
+            
+            <div class="pledge-confirmation" id="pledge-confirmation">
+                <div class="solution-title">✅ Thank you for your commitment to safety!</div>
+                <div class="warning-content">
+                    Your pledge has been recorded. Remember: Safe driving starts with a calm mind. 
+                    By controlling your reactions, you make the roads safer for everyone.
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> Module Completed!
+            </div>
+            <p>You've successfully completed the Aggressive Driving Prevention module.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>Remember: <strong>Stay calm, stay safe, and arrive alive.</strong> Your patience saves lives.</p>
+        </div>
+    </div>
+
+    <script>
+        // Timer Configuration
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let quizCompleted = false;
+        let scenarioCompleted = false;
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const progressFill = document.getElementById('progress-fill');
+        const submitBtn = document.getElementById('submit-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+        const choiceFeedback = document.getElementById('choice-feedback');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackContent = document.getElementById('feedback-content');
+
+        // Scenario feedback data
+        const scenarioFeedback = {
+            1: {
+                title: "❌ Dangerous Choice",
+                content: "Flashing lights and tailgating escalates the situation. This increases crash risk by 92% and could trigger road rage in the other driver. This is aggressive driving behavior.",
+                correct: false
+            },
+            2: {
+                title: "❌ Aggressive Response",
+                content: "Honking and gesturing shows aggression and frustration. This violates the 'don't engage' principle and could lead to confrontation or retaliation.",
+                correct: false
+            },
+            3: {
+                title: "✅ Safe & Smart Choice",
+                content: "Excellent decision! Taking an exit removes you from the frustrating situation. It gives you time to calm down, reassess, and find an alternative route safely. This is defensive driving.",
+                correct: true
+            },
+            4: {
+                title: "⚠️ Risky Maneuver",
+                content: "Passing on the right is dangerous and illegal in many situations. It surprises other drivers and increases collision risk. Always pass on the left when legal and safe.",
+                correct: false
+            }
+        };
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            updateProgress();
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 3;
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 600) { // 10 minutes
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else if (totalSeconds >= 300) { // 5 minutes
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update quiz score display
+        function updateQuizScore(score, totalQuestions) {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            quizScoreEl.textContent = `${percentage}%`;
+        }
+
+        // Scenario choice selection
+        function selectChoice(choiceNumber) {
+            // Remove selected class from all buttons
+            document.querySelectorAll('.choice-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked button
+            event.target.classList.add('selected');
+            
+            // Show feedback
+            const feedback = scenarioFeedback[choiceNumber];
+            feedbackTitle.innerHTML = feedback.title;
+            feedbackContent.textContent = feedback.content;
+            
+            choiceFeedback.classList.remove('correct', 'incorrect');
+            choiceFeedback.classList.add(feedback.correct ? 'correct' : 'incorrect');
+            choiceFeedback.style.display = 'block';
+            
+            // Mark scenario as completed
+            if (!scenarioCompleted) {
+                scenarioCompleted = true;
+                sectionsCompleted.add('scenario');
+                updateProgress();
+            }
+            
+            // Scroll feedback into view
+            choiceFeedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Sign pledge function
+        function signPledge() {
+            const name = document.getElementById('pledge-name').value.trim();
+            const email = document.getElementById('pledge-email').value.trim();
+            
+            if (!name) {
+                alert("Please enter your name to sign the pledge.");
+                return;
+            }
+            
+            document.getElementById('pledge-confirmation').classList.add('show');
+            document.getElementById('pledge-name').value = "";
+            document.getElementById('pledge-email').value = "";
+            
+            // Track pledge in localStorage
+            localStorage.setItem('calmDrivingPledge', JSON.stringify({
+                name: name,
+                email: email,
+                date: new Date().toISOString(),
+                module: 'Aggressive Driving Prevention'
+            }));
+            
+            // Mark as completed
+            sectionsCompleted.add('pledge');
+            updateProgress();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the continuous timer
+            startTimer();
+            
+            // Set up option selection
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+
+            // Check for existing pledge
+            const existingPledge = localStorage.getItem('calmDrivingPledge');
+            if (existingPledge) {
+                try {
+                    const pledgeData = JSON.parse(existingPledge);
+                    if (pledgeData.module === 'Aggressive Driving Prevention') {
+                        document.getElementById('pledge-confirmation').classList.add('show');
+                        sectionsCompleted.add('pledge');
+                        updateProgress();
+                    }
+                } catch (e) {
+                    console.log("Could not parse pledge data");
+                }
+            }
+        });
+
+        function checkAnswers() {
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'C',
+                2: 'C',
+                3: 'B',
+                4: 'B'
+            };
+
+            let score = 0;
+            const totalQuestions = 4;
+            let feedbackHTML = '';
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#10b981';
+                        selectedOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                    } else {
+                        selectedOption.style.borderColor = '#ef4444';
+                        selectedOption.style.background = 'rgba(239, 68, 68, 0.1)';
+                        
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#10b981';
+                            correctOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            updateQuizScore(score, totalQuestions);
+            
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 Excellent! You understand how to prevent and respond to aggressive driving. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 Good job! You understand most safety concepts. ';
+            } else {
+                feedbackHTML = '📚 Please review the material carefully. This knowledge could prevent accidents. ';
+            }
+            
+            feedbackHTML += 'Remember these critical safety principles:';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            document.getElementById('results').classList.add('show');
+            
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+            
+            progressFill.style.width = '100%';
+            
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>
