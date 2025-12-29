@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Drinking & Driving Awareness</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* Using your existing CSS structure with minor adjustments */
+        :root {
+            --color-primary: #dc2626; /* Red theme for danger/warning */
+            --color-primary-light: #ef4444;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #dc2626;
+            --color-danger: #991b1b; /* Darker red for emphasis */
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(220, 38, 38, 0.1);
+            --shadow-hover: 0 15px 35px rgba(220, 38, 38, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(220, 38, 38, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(220, 38, 38, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #991b1b, #dc2626);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(220, 38, 38, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(220, 38, 38, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-error);
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-error);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-error);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .time-estimate {
+            background: rgba(220, 38, 38, 0.1);
+            border: 2px solid rgba(220, 38, 38, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-error);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-error);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(220, 38, 38, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #dc2626, #ef4444);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(220, 38, 38, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-error);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-error);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(220, 38, 38, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-error);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Warning/Stats Boxes */
+        .warning-box {
+            background: rgba(220, 38, 38, 0.1);
+            border-left: 4px solid var(--color-error);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: var(--color-error);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .prevention-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .prevention-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prevention-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .prevention-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .prevention-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        /* Case Study Grid */
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .case-card {
+            background: rgba(220, 38, 38, 0.05);
+            border: 2px solid rgba(220, 38, 38, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .case-card:hover {
+            border-color: var(--color-error);
+            transform: translateY(-3px);
+        }
+
+        .case-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .case-state {
+            font-weight: 700;
+            color: var(--color-error);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .case-details {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .case-penalty {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(220, 38, 38, 0.1);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            color: var(--color-error);
+            font-size: 0.85rem;
+        }
+
+        /* BAC Simulation */
+        .bac-simulation {
+            background: rgba(16, 185, 129, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 20px;
+            border: 2px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .bac-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--color-success);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .bac-slider-container {
+            margin: 20px 0;
+        }
+
+        .bac-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444, #991b1b);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .bac-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: var(--color-error);
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .bac-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: var(--color-muted);
+        }
+
+        .bac-value-display {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-error);
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .bac-effects {
+            background: rgba(220, 38, 38, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--color-error);
+        }
+
+        .effects-title {
+            font-weight: 700;
+            color: var(--color-error);
+            margin-bottom: 10px;
+        }
+
+        .effects-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .effects-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .effects-list li:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+        }
+
+        /* Interactive Quiz */
+        .knowledge-check {
+            background: rgba(220, 38, 38, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(220, 38, 38, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-error);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(220, 38, 38, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(220, 38, 38, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-error);
+            background: rgba(220, 38, 38, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-error);
+            background: rgba(220, 38, 38, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(220, 38, 38, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-error);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-error);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-error);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #991b1b;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(220, 38, 38, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-error);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-error);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-error);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .key-points {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-error);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Pledge Section */
+        .pledge-container {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            text-align: center;
+            border: 2px solid var(--color-error);
+        }
+
+        .pledge-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .pledge-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            color: #e5e7eb;
+        }
+
+        .pledge-signature {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 400px;
+            margin: 30px auto;
+        }
+
+        .pledge-input {
+            padding: 15px;
+            border-radius: var(--radius-md);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .pledge-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .pledge-btn {
+            background: var(--color-error);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pledge-btn:hover {
+            background: #991b1b;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.4);
+        }
+
+        .pledge-confirmation {
+            display: none;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--color-success);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .pledge-confirmation.show {
+            display: block;
+        }
+
+        /* Completion Message */
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.6rem;
+            }
+
+            .case-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Time Learning</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" 
+                     alt="VA Driving Clinic Logo" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Impaired Driving Module</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">10-Minute Drunk Driving Prevention</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Drinking & Driving: The Deadly Consequences</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">⏱️</div>
+            <div class="time-estimate-text">
+                Complete this critical lesson in approximately <span class="time-highlight">10 minutes</span> to understand the deadly risks of impaired driving
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Sections Completed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="quiz-score">0%</span>
+                <span class="stat-label">Safety Score</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Time Learning</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Lesson Progress</span>
+                <span>Time Learning: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: The Dangers -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">⚠️</span>
+                    The Deadly Dangers of Drinking & Driving
+                </h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #dc2626;">🚫</span> Alcohol Impairment Effects
+                    </h3>
+                    <p class="subsection-content">
+                        Even small amounts of alcohol can significantly impair your driving ability. Alcohol affects your brain's processing speed, coordination, and judgment—all critical skills for safe driving.
+                    </p>
+                    
+                    <div class="warning-box">
+                        <div class="warning-title">📊 Deadly Statistics</div>
+                        <div class="warning-content">
+                            • In 2019, 10,142 people died in alcohol-impaired driving crashes<br>
+                            • This accounts for 28% of ALL traffic-related deaths in the United States<br>
+                            • Every day, about 32 people die in drunk-driving crashes<br>
+                            • The trend continues with devastating impact in 2024
+                        </div>
+                    </div>
+
+                    <div class="bac-simulation">
+                        <div class="bac-title">BAC (Blood Alcohol Concentration) Effects Simulator</div>
+                        <div class="bac-slider-container">
+                            <input type="range" min="0" max="30" value="0" class="bac-slider" id="bac-slider">
+                            <div class="bac-labels">
+                                <span>0.00% (Sober)</span>
+                                <span>0.08% (Legal Limit)</span>
+                                <span>0.15% (High Risk)</span>
+                                <span>0.30%+ (Dangerous)</span>
+                            </div>
+                        </div>
+                        <div class="bac-value-display" id="bac-display">0.00%</div>
+                        
+                        <div class="bac-effects" id="bac-effects">
+                            <div class="effects-title">Effects at 0.00% BAC:</div>
+                            <ul class="effects-list">
+                                <li>Normal driving ability</li>
+                                <li>Quick reaction time</li>
+                                <li>Clear judgment and coordination</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Real-Life Cases -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">⚖️</span>
+                    Real-Life Consequences: 2024 Cases
+                </h2>
+
+                <div class="case-grid">
+                    <div class="case-card">
+                        <div class="case-icon">📍</div>
+                        <div class="case-state">Union County, North Carolina</div>
+                        <div class="case-details">
+                            <strong>January 7, 2024:</strong> 20-year-old Samuel Reece Freeman caused a fatal crash after drinking. His 20-year-old passenger died at the scene.
+                        </div>
+                        <div class="case-penalty">Charges: Felony death by motor vehicle, reckless driving</div>
+                    </div>
+
+                    <div class="case-card">
+                        <div class="case-icon">📍</div>
+                        <div class="case-state">California</div>
+                        <div class="case-details">
+                            <strong>Multi-car collision on I-5:</strong> Driver with 0.15% BAC caused crash killing two people. Had prior DUI conviction.
+                        </div>
+                        <div class="case-penalty">Sentence: 10 years prison for vehicular manslaughter</div>
+                    </div>
+
+                    <div class="case-card">
+                        <div class="case-icon">📍</div>
+                        <div class="case-state">Texas</div>
+                        <div class="case-details">
+                            <strong>Pedestrian fatality:</strong> Driver with 0.20% BAC struck and killed a pedestrian while intoxicated.
+                        </div>
+                        <div class="case-penalty">Sentence: 15 years for intoxication manslaughter</div>
+                    </div>
+
+                    <div class="case-card">
+                        <div class="case-icon">📍</div>
+                        <div class="case-state">Florida</div>
+                        <div class="case-details">
+                            <strong>Family tragedy:</strong> Drunk driver with 0.18% BAC caused crash that killed a family of three.
+                        </div>
+                        <div class="case-penalty">Sentence: 25 years for DUI manslaughter</div>
+                    </div>
+                </div>
+
+                <div class="warning-box" style="margin-top: 20px;">
+                    <div class="warning-title">💔 The Human Cost</div>
+                    <div class="warning-content">
+                        These aren't just statistics—they represent real people: parents, children, siblings, and friends. 
+                        Every drunk driving incident leaves behind grieving families and communities torn apart by preventable tragedy.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Prevention -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🛡️</span>
+                    Prevention Strategies & Solutions
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">📱 Plan Ahead for Safety</h3>
+                    <p class="subsection-content">
+                        The most effective way to prevent drunk driving is to plan your transportation BEFORE you start drinking. 
+                        Making decisions about getting home should happen when you're still sober.
+                    </p>
+                    
+                    <div class="prevention-box">
+                        <div class="prevention-title">✅ Your Prevention Toolkit</div>
+                        <ul class="prevention-list">
+                            <li><strong>Designated Driver:</strong> Always have a sober driver in your group</li>
+                            <li><strong>Ride-Sharing:</strong> Use Uber, Lyft, or traditional taxi services</li>
+                            <li><strong>Public Transit:</strong> Plan your route using buses or trains</li>
+                            <li><strong>Stay Overnight:</strong> If you can't get home safely, stay where you are</li>
+                            <li><strong>Technology:</strong> Use apps that help prevent drunk driving</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">👥 Be a Responsible Friend</h3>
+                    <p class="subsection-content">
+                        If you see a friend about to drive impaired, it's your responsibility to intervene. 
+                        You could be saving their life and the lives of others on the road.
+                    </p>
+                    
+                    <div class="prevention-box">
+                        <div class="prevention-title">🤝 How to Help a Friend</div>
+                        <ul class="prevention-list">
+                            <li>Offer to call them a ride</li>
+                            <li>Take their keys away if necessary</li>
+                            <li>Provide a place to sleep</li>
+                            <li>Never let an impaired friend drive alone</li>
+                            <li>Educate others about the dangers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Check -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Safety Knowledge Assessment</h2>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. What percentage of all traffic-related deaths in 2019 were caused by alcohol-impaired driving?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>15%</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>28%</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>35%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. In the North Carolina case from January 2024, what was the driver charged with after causing a fatal crash?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Speeding ticket</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Felony death by motor vehicle</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Parking violation</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. What is the BEST prevention strategy if you plan to drink alcohol?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Drive slowly on your way home</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Arrange a designated driver BEFORE drinking</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Wait 30 minutes after your last drink</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. What should you do if a friend tries to drive after drinking?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Let them drive if they "feel okay"</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Take their keys and arrange safe transportation</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Follow them to make sure they get home</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">Check Your Safety Knowledge</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Your Safety Assessment
+                </div>
+                <div class="score" id="score">0/4</div>
+                <div class="feedback" id="feedback">
+                    Review your answers to ensure you understand the critical information about drinking and driving prevention.
+                </div>
+                <div class="key-points">
+                    <div class="key-points-title">🎯 Critical Safety Takeaways</div>
+                    <ul class="key-points-list">
+                        <li>Alcohol-impaired driving causes 28% of all traffic fatalities</li>
+                        <li>Real-life cases in 2024 show prison sentences ranging from 10-25 years</li>
+                        <li>Always plan transportation BEFORE you start drinking</li>
+                        <li>Intervene if a friend tries to drive impaired—you could save lives</li>
+                        <li>The only safe BAC for driving is 0.00%</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Safety Pledge -->
+        <div class="pledge-container">
+            <h2 class="pledge-title">Take the Safe Driving Pledge</h2>
+            <p class="pledge-text">
+                I understand the deadly consequences of drinking and driving. 
+                I commit to never driving under the influence of alcohol and to always 
+                make responsible transportation choices to protect myself and others on the road.
+            </p>
+            
+            <div class="pledge-signature">
+                <input type="text" class="pledge-input" id="pledge-name" placeholder="Enter your name to sign the pledge">
+                <input type="email" class="pledge-input" id="pledge-email" placeholder="Enter your email (optional)">
+                <button class="pledge-btn" onclick="signPledge()">Sign the Safety Pledge</button>
+            </div>
+            
+            <div class="pledge-confirmation" id="pledge-confirmation">
+                <div class="prevention-title">✅ Thank you for your commitment to safety!</div>
+                <div class="prevention-content">
+                    Your pledge has been recorded. Remember: The best way to prevent drinking and driving 
+                    is not to drive after drinking. You've taken an important step toward safer roads for everyone.
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> Module Completed!
+            </div>
+            <p>You've successfully completed the Drinking & Driving Awareness module.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>Remember: <strong>Never drive after drinking.</strong> Your commitment to safety saves lives.</p>
+        </div>
+    </div>
+
+    <script>
+        // Timer Configuration
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let quizCompleted = false;
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const progressFill = document.getElementById('progress-fill');
+        const submitBtn = document.getElementById('submit-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+        const bacSlider = document.getElementById('bac-slider');
+        const bacDisplay = document.getElementById('bac-display');
+        const bacEffects = document.getElementById('bac-effects');
+
+        // BAC Effects Data
+        const bacEffectsData = {
+            0: {
+                level: "0.00% (Sober)",
+                effects: [
+                    "Normal driving ability",
+                    "Quick reaction time",
+                    "Clear judgment and coordination",
+                    "No impairment"
+                ]
+            },
+            8: {
+                level: "0.08% (Legal Limit)",
+                effects: [
+                    "Reduced coordination and balance",
+                    "Poor judgment and decision-making",
+                    "Difficulty concentrating",
+                    "Impaired perception and memory"
+                ]
+            },
+            15: {
+                level: "0.15% (High Risk)",
+                effects: [
+                    "Substantial impairment in vehicle control",
+                    "Reduced ability to process visual information",
+                    "Difficulty paying attention to driving tasks",
+                    "Major loss of balance"
+                ]
+            },
+            20: {
+                level: "0.20% (Very Dangerous)",
+                effects: [
+                    "Severe motor impairment and loss of consciousness possible",
+                    "Nausea and vomiting likely",
+                    "Blackouts common",
+                    "Extremely dangerous driving condition"
+                ]
+            },
+            30: {
+                level: "0.30%+ (Life Threatening)",
+                effects: [
+                    "Loss of consciousness likely",
+                    "Severe risk of alcohol poisoning",
+                    "Coma possible at 0.40%",
+                    "Death possible at 0.45%+"
+                ]
+            }
+        };
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            updateProgress();
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 3;
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 600) { // 10 minutes
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else if (totalSeconds >= 300) { // 5 minutes
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update quiz score display
+        function updateQuizScore(score, totalQuestions) {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            quizScoreEl.textContent = `${percentage}%`;
+        }
+
+        // BAC Slider functionality
+        function updateBACDisplay() {
+            const value = parseInt(bacSlider.value);
+            let bacValue = (value / 100).toFixed(2);
+            let effectsText = "";
+            
+            // Find the closest BAC level
+            const levels = Object.keys(bacEffectsData).map(Number).sort((a, b) => a - b);
+            let closestLevel = 0;
+            
+            for (let level of levels) {
+                if (value >= level) {
+                    closestLevel = level;
+                }
+            }
+            
+            const currentEffects = bacEffectsData[closestLevel];
+            
+            bacDisplay.textContent = `${bacValue}%`;
+            bacDisplay.style.color = getBACColor(value);
+            
+            effectsText = `
+                <div class="effects-title">Effects at ${currentEffects.level}:</div>
+                <ul class="effects-list">
+                    ${currentEffects.effects.map(effect => `<li>${effect}</li>`).join('')}
+                </ul>
+            `;
+            
+            bacEffects.innerHTML = effectsText;
+        }
+
+        function getBACColor(value) {
+            if (value < 8) return "#10b981"; // Green
+            if (value < 15) return "#f59e0b"; // Yellow
+            if (value < 20) return "#ef4444"; // Red
+            return "#991b1b"; // Dark red
+        }
+
+        // Sign pledge function
+        function signPledge() {
+            const name = document.getElementById('pledge-name').value.trim();
+            const email = document.getElementById('pledge-email').value.trim();
+            
+            if (!name) {
+                alert("Please enter your name to sign the pledge.");
+                return;
+            }
+            
+            document.getElementById('pledge-confirmation').classList.add('show');
+            document.getElementById('pledge-name').value = "";
+            document.getElementById('pledge-email').value = "";
+            
+            // Track pledge in localStorage
+            localStorage.setItem('drivingSafetyPledge', JSON.stringify({
+                name: name,
+                email: email,
+                date: new Date().toISOString(),
+                module: 'Drinking & Driving Awareness'
+            }));
+            
+            // Mark as completed
+            sectionsCompleted.add('pledge');
+            updateProgress();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the continuous timer
+            startTimer();
+            
+            // Set up option selection
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+
+            // BAC Slider event
+            bacSlider.addEventListener('input', updateBACDisplay);
+            updateBACDisplay(); // Initial display
+
+            // Check for existing pledge
+            const existingPledge = localStorage.getItem('drivingSafetyPledge');
+            if (existingPledge) {
+                try {
+                    const pledgeData = JSON.parse(existingPledge);
+                    if (pledgeData.module === 'Drinking & Driving Awareness') {
+                        document.getElementById('pledge-confirmation').classList.add('show');
+                        sectionsCompleted.add('pledge');
+                        updateProgress();
+                    }
+                } catch (e) {
+                    console.log("Could not parse pledge data");
+                }
+            }
+        });
+
+        function checkAnswers() {
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'B',
+                4: 'B'
+            };
+
+            let score = 0;
+            const totalQuestions = 4;
+            let feedbackHTML = '';
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#10b981';
+                        selectedOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                    } else {
+                        selectedOption.style.borderColor = '#ef4444';
+                        selectedOption.style.background = 'rgba(239, 68, 68, 0.1)';
+                        
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#10b981';
+                            correctOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            updateQuizScore(score, totalQuestions);
+            
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 Excellent! You fully understand the dangers of drinking and driving. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 Good job! You understand most safety concepts. ';
+            } else {
+                feedbackHTML = '📚 Please review the material carefully. This information could save lives. ';
+            }
+            
+            feedbackHTML += 'Remember these critical safety points:';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            document.getElementById('results').classList.add('show');
+            
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+            
+            progressFill.style.width = '100%';
+            
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>
