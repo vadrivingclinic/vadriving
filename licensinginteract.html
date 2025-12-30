@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - DMV Procedures Simulation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes checkmark {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .simulation-container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .simulation-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .time-estimate {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        /* Progress Indicator */
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        /* Simulation Area */
+        .simulation-area {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            margin-bottom: 30px;
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .simulation-scenario {
+            margin-bottom: 30px;
+        }
+
+        .scenario-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scenario-content {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            background: rgba(95, 23, 235, 0.05);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--color-primary);
+            margin-bottom: 25px;
+        }
+
+        /* DMV Office Scene */
+        .dmv-scene {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: var(--radius-md);
+            border: 2px dashed rgba(95, 23, 235, 0.2);
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .dmv-scene {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Checklist Panel */
+        .checklist-panel {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .checklist-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: rgba(95, 23, 235, 0.03);
+            border-radius: var(--radius-sm);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            background: rgba(95, 23, 235, 0.08);
+            transform: translateX(5px);
+        }
+
+        .checklist-item.completed {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .checklist-checkbox {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid rgba(95, 23, 235, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item.completed .checklist-checkbox {
+            background: var(--color-success);
+            border-color: var(--color-success);
+            animation: checkmark 0.3s ease;
+        }
+
+        .checklist-item.completed .checklist-checkbox::after {
+            content: "✓";
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .checklist-text {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        /* Document Selection Area */
+        .document-area {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .document-shelf {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            border: 2px dashed rgba(95, 23, 235, 0.2);
+            min-height: 200px;
+        }
+
+        .document-item {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            cursor: grab;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .document-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(95, 23, 235, 0.1);
+            border-color: var(--color-primary);
+        }
+
+        .document-item.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            animation: pulse 1s infinite;
+        }
+
+        .document-icon {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .document-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        /* Document Drop Zone */
+        .drop-zone {
+            background: rgba(16, 185, 129, 0.1);
+            border: 3px dashed rgba(16, 185, 129, 0.3);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.active {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--color-success);
+            animation: glow 2s infinite;
+        }
+
+        .drop-zone-label {
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .drop-zone-label span {
+            color: var(--color-success);
+            font-weight: 800;
+        }
+
+        /* Service Counter */
+        .service-counter {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #374151;
+            height: 60px;
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            color: white;
+        }
+
+        .counter-number {
+            background: var(--color-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+
+        .counter-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .action-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .action-btn:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.3);
+        }
+
+        .action-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+        }
+
+        /* Feedback Panel */
+        .feedback-panel {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feedback-panel.show {
+            display: block;
+        }
+
+        .feedback-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback-content {
+            color: var(--color-text);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .improvement-tips {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 15px 20px;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin-top: 20px;
+        }
+
+        .tips-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 10px;
+        }
+
+        /* Completion Message */
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .simulation-area {
+                padding: 20px;
+            }
+
+            .simulation-title {
+                font-size: 1.6rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .document-shelf {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Time in Simulation</div>
+        </div>
+    </div>
+
+    <div class="simulation-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" 
+                     alt="VA Driving Clinic Logo" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">DMV Procedures Simulation</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">5-Minute Interactive Activity</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="simulation-title">Virginia DMV Procedures Simulation</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">🏢</div>
+            <div class="time-estimate-text">
+                Complete this DMV simulation in <span class="time-highlight">5 minutes</span> to master licensing procedures
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="documents-correct">0</span>
+                <span class="stat-label">Documents Correct</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="compliance-score">0%</span>
+                <span class="stat-label">Compliance Score</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Time in Simulation</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Simulation Progress</span>
+                <span>Scenario: <span id="current-scenario">1/3</span></span>
+            </div>
+        </div>
+
+        <!-- Simulation Area -->
+        <div class="simulation-area" id="simulation-area">
+            <!-- Scenario 1: Learner's Permit Application -->
+            <div class="simulation-scenario" id="scenario-1" style="display: block;">
+                <div class="scenario-title">
+                    <span>🎓</span> Scenario 1: Apply for Learner's Permit
+                </div>
+                <div class="scenario-content">
+                    You're 15 years 6 months old and want to apply for your learner's permit in Virginia. 
+                    <strong>Drag the correct documents</strong> from the shelf to the drop zone and complete the checklist below.
+                </div>
+
+                <!-- DMV Office Scene -->
+                <div class="dmv-scene">
+                    <div class="checklist-panel">
+                        <div class="checklist-title">📋 Application Checklist</div>
+                        <div class="checklist-item" id="check1-age">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Meet age requirement (15 years 6 months)</div>
+                        </div>
+                        <div class="checklist-item" id="check1-docs">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Gather required documents</div>
+                        </div>
+                        <div class="checklist-item" id="check1-test">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Pass knowledge and vision tests</div>
+                        </div>
+                        <div class="checklist-item" id="check1-fee">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Pay $4/year permit fee</div>
+                        </div>
+                    </div>
+
+                    <div class="document-area">
+                        <div class="drop-zone" id="drop-zone-1">
+                            <div class="drop-zone-label">
+                                Drag required documents here<br>
+                                <span>Required: Proof of Identity, Residency, SSN, Legal Presence</span>
+                            </div>
+                        </div>
+
+                        <div class="document-shelf">
+                            <div class="document-item" data-doc="birth-certificate" data-scenario="1">
+                                <div class="document-icon">📄</div>
+                                <div class="document-name">Birth Certificate</div>
+                            </div>
+                            <div class="document-item" data-doc="passport" data-scenario="1">
+                                <div class="document-icon">📒</div>
+                                <div class="document-name">U.S. Passport</div>
+                            </div>
+                            <div class="document-item" data-doc="utility-bill" data-scenario="1">
+                                <div class="document-icon">🏠</div>
+                                <div class="document-name">Utility Bill</div>
+                            </div>
+                            <div class="document-item" data-doc="social-security" data-scenario="1">
+                                <div class="document-icon">🔢</div>
+                                <div class="document-name">SSN Card</div>
+                            </div>
+                            <div class="document-item" data-doc="student-id" data-scenario="1">
+                                <div class="document-icon">🎓</div>
+                                <div class="document-name">Student ID</div>
+                            </div>
+                            <div class="document-item" data-doc="insurance-card" data-scenario="1">
+                                <div class="document-icon">🛡️</div>
+                                <div class="document-name">Insurance Card</div>
+                            </div>
+                            <div class="document-item" data-doc="library-card" data-scenario="1">
+                                <div class="document-icon">📚</div>
+                                <div class="document-name">Library Card</div>
+                            </div>
+                            <div class="document-item" data-doc="parent-consent" data-scenario="1">
+                                <div class="document-icon">👨‍👩‍👧‍👦</div>
+                                <div class="document-name">Parental Consent Form</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="service-counter">
+                        <div class="counter-number">C12</div>
+                        <div class="counter-label">Now Serving: Learner's Permit Applications</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 2: Vehicle Registration -->
+            <div class="simulation-scenario" id="scenario-2" style="display: none;">
+                <div class="scenario-title">
+                    <span>🚗</span> Scenario 2: Register a Vehicle
+                </div>
+                <div class="scenario-content">
+                    You just moved to Virginia and need to register your car within 30 days. 
+                    <strong>Select the correct documents</strong> and complete the registration checklist.
+                </div>
+
+                <!-- DMV Office Scene -->
+                <div class="dmv-scene">
+                    <div class="checklist-panel">
+                        <div class="checklist-title">📋 Registration Checklist</div>
+                        <div class="checklist-item" id="check2-timeframe">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Within 30 days of establishing residency</div>
+                        </div>
+                        <div class="checklist-item" id="check2-inspection">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Pass Virginia safety inspection</div>
+                        </div>
+                        <div class="checklist-item" id="check2-docs">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Gather required documents</div>
+                        </div>
+                        <div class="checklist-item" id="check2-insurance">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Provide Virginia insurance proof</div>
+                        </div>
+                    </div>
+
+                    <div class="document-area">
+                        <div class="drop-zone" id="drop-zone-2">
+                            <div class="drop-zone-label">
+                                Drag required documents here<br>
+                                <span>Required: Title, Insurance, Inspection, Application</span>
+                            </div>
+                        </div>
+
+                        <div class="document-shelf">
+                            <div class="document-item" data-doc="vehicle-title" data-scenario="2">
+                                <div class="document-icon">📑</div>
+                                <div class="document-name">Vehicle Title</div>
+                            </div>
+                            <div class="document-item" data-doc="insurance-proof" data-scenario="2">
+                                <div class="document-icon">📋</div>
+                                <div class="document-name">Insurance Card</div>
+                            </div>
+                            <div class="document-item" data-doc="inspection-sticker" data-scenario="2">
+                                <div class="document-icon">✅</div>
+                                <div class="document-name">Inspection Sticker</div>
+                            </div>
+                            <div class="document-item" data-doc="registration-form" data-scenario="2">
+                                <div class="document-icon">📝</div>
+                                <div class="document-name">Form VSA 14</div>
+                            </div>
+                            <div class="document-item" data-doc="bill-of-sale" data-scenario="2">
+                                <div class="document-icon">💵</div>
+                                <div class="document-name">Bill of Sale</div>
+                            </div>
+                            <div class="document-item" data-doc="driver-license" data-scenario="2">
+                                <div class="document-icon">🪪</div>
+                                <div class="document-name">Driver's License</div>
+                            </div>
+                            <div class="document-item" data-doc="maintenance-records" data-scenario="2">
+                                <div class="document-icon">🔧</div>
+                                <div class="document-name">Maintenance Records</div>
+                            </div>
+                            <div class="document-item" data-doc="personal-check" data-scenario="2">
+                                <div class="document-icon">💰</div>
+                                <div class="document-name">Payment ($40.75+)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="service-counter">
+                        <div class="counter-number">C15</div>
+                        <div class="counter-label">Now Serving: Vehicle Registration</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 3: License Renewal -->
+            <div class="simulation-scenario" id="scenario-3" style="display: none;">
+                <div class="scenario-title">
+                    <span>🔄</span> Scenario 3: License & Registration Renewal
+                </div>
+                <div class="scenario-content">
+                    Your driver's license and vehicle registration are about to expire. 
+                    <strong>Choose the correct renewal method</strong> and complete the checklist.
+                </div>
+
+                <!-- DMV Office Scene -->
+                <div class="dmv-scene">
+                    <div class="checklist-panel">
+                        <div class="checklist-title">📋 Renewal Checklist</div>
+                        <div class="checklist-item" id="check3-timing">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Renew before expiration date</div>
+                        </div>
+                        <div class="checklist-item" id="check3-method">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Choose correct renewal method</div>
+                        </div>
+                        <div class="checklist-item" id="check3-vision">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Pass vision screening if required</div>
+                        </div>
+                        <div class="checklist-item" id="check3-fee">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Pay renewal fees</div>
+                        </div>
+                    </div>
+
+                    <div class="document-area">
+                        <div class="drop-zone" id="drop-zone-3">
+                            <div class="drop-zone-label">
+                                Select your renewal method<br>
+                                <span>Choose based on your eligibility</span>
+                            </div>
+                        </div>
+
+                        <div class="document-shelf">
+                            <div class="document-item" data-doc="online-renewal" data-scenario="3">
+                                <div class="document-icon">💻</div>
+                                <div class="document-name">Online Renewal</div>
+                                <div class="document-desc" style="font-size: 0.75rem; color: var(--color-muted);">Available for most renewals</div>
+                            </div>
+                            <div class="document-item" data-doc="mail-renewal" data-scenario="3">
+                                <div class="document-icon">📮</div>
+                                <div class="document-name">Mail-in Renewal</div>
+                                <div class="document-desc" style="font-size: 0.75rem; color: var(--color-muted);">Use DMV renewal notice</div>
+                            </div>
+                            <div class="document-item" data-doc="in-person" data-scenario="3">
+                                <div class="document-icon">🏢</div>
+                                <div class="document-name">In-Person Renewal</div>
+                                <div class="document-desc" style="font-size: 0.75rem; color: var(--color-muted);">Required for certain cases</div>
+                            </div>
+                            <div class="document-item" data-doc="kiosk-renewal" data-scenario="3">
+                                <div class="document-icon">🏧</div>
+                                <div class="document-name">DMV Kiosk</div>
+                                <div class="document-desc" style="font-size: 0.75rem; color: var(--color-muted);">Select locations only</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="service-counter">
+                        <div class="counter-number">C08</div>
+                        <div class="counter-label">Now Serving: License Renewals</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn secondary" id="prev-btn" onclick="previousScenario()" disabled>← Previous</button>
+                <button class="action-btn" id="next-btn" onclick="nextScenario()">Next Scenario →</button>
+                <button class="action-btn" id="verify-btn" onclick="verifyScenario()" style="display: none;">Verify Documents ✓</button>
+            </div>
+
+            <!-- Feedback Panel -->
+            <div class="feedback-panel" id="feedback-panel">
+                <div class="feedback-title">
+                    <span>📊</span> Scenario Result
+                </div>
+                <div class="score-display" id="scenario-score">0/100</div>
+                <div class="feedback-content" id="scenario-feedback">
+                    Your document selection is being evaluated...
+                </div>
+                <div class="improvement-tips" id="improvement-tips" style="display: none;">
+                    <div class="tips-title">💡 DMV Tips</div>
+                    <div id="tips-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> Simulation Completed!
+            </div>
+            <p>You've successfully navigated 3 DMV scenarios.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <div class="score-display" id="final-score">0%</div>
+            <p>Your document selection and checklist completion demonstrate understanding of Virginia DMV procedures.</p>
+            <div style="margin-top: 20px; font-size: 0.9rem; opacity: 0.9;">
+                Remember: 85% of DMV transactions can be completed online at dmvNOW.virginia.gov
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulation Configuration
+        let timerInterval;
+        let totalSeconds = 0;
+        let currentScenario = 1;
+        let totalScenarios = 3;
+        let documentsCorrect = 0;
+        let complianceScore = 0;
+        let simulationCompleted = false;
+        
+        // Correct documents for each scenario
+        const correctDocuments = {
+            1: ['birth-certificate', 'passport', 'utility-bill', 'social-security', 'parent-consent'],
+            2: ['vehicle-title', 'insurance-proof', 'inspection-sticker', 'registration-form'],
+            3: ['online-renewal'] // Best/most common method
+        };
+
+        // User selections
+        let userSelections = {
+            1: { documents: [], checklist: [false, false, false, false] },
+            2: { documents: [], checklist: [false, false, false, false] },
+            3: { documents: [], checklist: [false, false, false, false] }
+        };
+
+        // Checklist texts
+        const checklistTexts = {
+            1: [
+                "✅ Correct! Minimum age for learner's permit is 15 years 6 months.",
+                "✅ Good! You gathered the required documents.",
+                "✅ Right! Knowledge and vision tests are required.",
+                "✅ Yes! Learner's permit fee is $4 per year."
+            ],
+            2: [
+                "✅ Correct! New residents have 30 days to register vehicles.",
+                "✅ Right! Virginia safety inspection is mandatory.",
+                "✅ Good! You selected the required documents.",
+                "✅ Yes! Minimum Virginia insurance coverage required."
+            ],
+            3: [
+                "✅ Correct! Renew before expiration to avoid penalties.",
+                "✅ Good choice! Online renewal is fastest for most cases.",
+                "✅ Right! Vision test required every 8 years for license renewal.",
+                "✅ Yes! License renewal fee is $32 every 8 years."
+            ]
+        };
+
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const progressFill = document.getElementById('progress-fill');
+        const currentScenarioEl = document.getElementById('current-scenario');
+        const documentsCorrectEl = document.getElementById('documents-correct');
+        const complianceScoreEl = document.getElementById('compliance-score');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const verifyBtn = document.getElementById('verify-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+        const finalScoreEl = document.getElementById('final-score');
+
+        // Format time as MM:SS
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Start the timer
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            
+            // Update timer appearance
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 300) { // 5 minutes
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 600) { // 10 minutes
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update progress
+        function updateProgress() {
+            const progressPercentage = ((currentScenario - 1) / totalScenarios) * 100;
+            progressFill.style.width = `${progressPercentage}%`;
+            currentScenarioEl.textContent = `${currentScenario}/${totalScenarios}`;
+            
+            // Update stats
+            documentsCorrectEl.textContent = documentsCorrect;
+            complianceScoreEl.textContent = `${Math.round(complianceScore)}%`;
+        }
+
+        // Show scenario
+        function showScenario(scenarioNum) {
+            // Hide all scenarios
+            for (let i = 1; i <= totalScenarios; i++) {
+                document.getElementById(`scenario-${i}`).style.display = 'none';
+            }
+            
+            // Show current scenario
+            document.getElementById(`scenario-${scenarioNum}`).style.display = 'block';
+            
+            // Update buttons
+            prevBtn.disabled = scenarioNum === 1;
+            
+            // Update next button text for last scenario
+            if (scenarioNum === totalScenarios) {
+                nextBtn.textContent = 'Complete Simulation →';
+            } else {
+                nextBtn.textContent = 'Next Scenario →';
+            }
+            
+            // Reset drop zone highlighting
+            const dropZone = document.getElementById(`drop-zone-${scenarioNum}`);
+            dropZone.classList.remove('active');
+            
+            // Show/hide verify button
+            const hasDocuments = userSelections[scenarioNum].documents.length > 0;
+            verifyBtn.style.display = hasDocuments ? 'block' : 'none';
+            
+            updateProgress();
+        }
+
+        // Initialize drag and drop
+        function initializeDragAndDrop() {
+            const documentItems = document.querySelectorAll('.document-item');
+            const dropZones = document.querySelectorAll('.drop-zone');
+            
+            // Add drag event listeners to documents
+            documentItems.forEach(item => {
+                item.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', this.dataset.doc + ',' + this.dataset.scenario);
+                    this.classList.add('dragging');
+                });
+                
+                item.addEventListener('dragend', function() {
+                    this.classList.remove('dragging');
+                });
+                
+                // Click to select (for mobile/touch)
+                item.addEventListener('click', function() {
+                    const scenario = parseInt(this.dataset.scenario);
+                    if (scenario !== currentScenario) return;
+                    
+                    const docId = this.dataset.doc;
+                    const dropZone = document.getElementById(`drop-zone-${scenario}`);
+                    
+                    // Toggle selection
+                    if (this.classList.contains('selected')) {
+                        // Remove from drop zone
+                        this.classList.remove('selected');
+                        const index = userSelections[scenario].documents.indexOf(docId);
+                        if (index > -1) {
+                            userSelections[scenario].documents.splice(index, 1);
+                        }
+                    } else {
+                        // Add to drop zone
+                        this.classList.add('selected');
+                        if (!userSelections[scenario].documents.includes(docId)) {
+                            userSelections[scenario].documents.push(docId);
+                        }
+                    }
+                    
+                    // Update drop zone
+                    updateDropZone(scenario);
+                    
+                    // Show verify button if documents selected
+                    verifyBtn.style.display = userSelections[scenario].documents.length > 0 ? 'block' : 'none';
+                    
+                    // Update stats
+                    documentsCorrect = calculateCorrectDocuments();
+                    updateProgress();
+                });
+            });
+            
+            // Add drop event listeners to drop zones
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('active');
+                });
+                
+                zone.addEventListener('dragleave', function() {
+                    this.classList.remove('active');
+                });
+                
+                zone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('active');
+                    
+                    const data = e.dataTransfer.getData('text/plain').split(',');
+                    const docId = data[0];
+                    const scenario = parseInt(data[1]);
+                    
+                    if (scenario !== currentScenario) return;
+                    
+                    // Add document to selection
+                    if (!userSelections[scenario].documents.includes(docId)) {
+                        userSelections[scenario].documents.push(docId);
+                        
+                        // Visual feedback
+                        const documentItem = document.querySelector(`.document-item[data-doc="${docId}"][data-scenario="${scenario}"]`);
+                        if (documentItem) {
+                            documentItem.classList.add('selected');
+                            documentItem.style.animation = 'bounce 0.5s';
+                            setTimeout(() => {
+                                documentItem.style.animation = '';
+                            }, 500);
+                        }
+                    }
+                    
+                    // Update drop zone
+                    updateDropZone(scenario);
+                    
+                    // Show verify button
+                    verifyBtn.style.display = 'block';
+                    
+                    // Update stats
+                    documentsCorrect = calculateCorrectDocuments();
+                    updateProgress();
+                });
+            });
+        }
+
+        // Update drop zone display
+        function updateDropZone(scenario) {
+            const dropZone = document.getElementById(`drop-zone-${scenario}`);
+            const count = userSelections[scenario].documents.length;
+            
+            if (count > 0) {
+                dropZone.innerHTML = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">📋</div>
+                        <div style="font-weight: 600; color: var(--color-primary);">
+                            ${count} document${count !== 1 ? 's' : ''} selected
+                        </div>
+                        <div style="font-size: 0.9rem; color: var(--color-muted); margin-top: 5px;">
+                            Click "Verify Documents" to check
+                        </div>
+                    </div>
+                `;
+                dropZone.classList.add('active');
+            } else {
+                dropZone.innerHTML = `
+                    <div class="drop-zone-label">
+                        Drag required documents here<br>
+                        <span>Required: ${getRequirementsText(scenario)}</span>
+                    </div>
+                `;
+                dropZone.classList.remove('active');
+            }
+        }
+
+        // Get requirements text for each scenario
+        function getRequirementsText(scenario) {
+            switch(scenario) {
+                case 1: return "Proof of Identity, Residency, SSN, Legal Presence";
+                case 2: return "Title, Insurance, Inspection, Application";
+                case 3: return "Choose based on your eligibility";
+                default: return "";
+            }
+        }
+
+        // Calculate correct documents
+        function calculateCorrectDocuments() {
+            let totalCorrect = 0;
+            
+            for (let i = 1; i <= totalScenarios; i++) {
+                const correct = correctDocuments[i];
+                const user = userSelections[i].documents;
+                
+                user.forEach(doc => {
+                    if (correct.includes(doc)) {
+                        totalCorrect++;
+                    }
+                });
+            }
+            
+            return totalCorrect;
+        }
+
+        // Next scenario
+        function nextScenario() {
+            if (currentScenario < totalScenarios) {
+                currentScenario++;
+                showScenario(currentScenario);
+            } else {
+                completeSimulation();
+            }
+        }
+
+        // Previous scenario
+        function previousScenario() {
+            if (currentScenario > 1) {
+                currentScenario--;
+                showScenario(currentScenario);
+            }
+        }
+
+        // Verify scenario
+        function verifyScenario() {
+            const scenario = currentScenario;
+            const user = userSelections[scenario];
+            const correct = correctDocuments[scenario];
+            
+            let score = 0;
+            let maxScore = 100;
+            let feedback = '';
+            
+            // Calculate document score (50 points)
+            const docPoints = 50 / correct.length;
+            let correctDocCount = 0;
+            
+            correct.forEach(doc => {
+                if (user.documents.includes(doc)) {
+                    score += docPoints;
+                    correctDocCount++;
+                }
+            });
+            
+            feedback += `📄 Documents: ${correctDocCount}/${correct.length} correct<br>`;
+            
+            // Auto-complete checklist based on document selection
+            const checklistItems = document.querySelectorAll(`#scenario-${scenario} .checklist-item`);
+            checklistItems.forEach((item, index) => {
+                item.classList.add('completed');
+                user.checklist[index] = true;
+                score += 12.5; // 12.5 points per checklist item (50 total)
+                
+                // Add checklist feedback
+                feedback += checklistTexts[scenario][index] + '<br>';
+            });
+            
+            // Calculate scenario score
+            const scenarioScore = Math.round(score);
+            
+            // Update compliance score
+            complianceScore = (complianceScore * (scenario - 1) + scenarioScore) / scenario;
+            
+            // Show feedback
+            document.getElementById('scenario-score').textContent = `${scenarioScore}/100`;
+            document.getElementById('scenario-feedback').innerHTML = feedback;
+            
+            // Show improvement tips if score < 70
+            if (scenarioScore < 70) {
+                document.getElementById('improvement-tips').style.display = 'block';
+                let tips = '';
+                
+                if (correctDocCount < correct.length) {
+                    tips += `• Required documents: ${correct.join(', ')}<br>`;
+                }
+                
+                if (scenario === 1) {
+                    tips += '• Learner\'s permit requires parental consent if under 18<br>';
+                } else if (scenario === 2) {
+                    tips += '• Vehicle registration requires Virginia insurance coverage<br>';
+                } else if (scenario === 3) {
+                    tips += '• Most renewals can be completed online for convenience<br>';
+                }
+                
+                document.getElementById('tips-content').innerHTML = tips;
+            } else {
+                document.getElementById('improvement-tips').style.display = 'none';
+            }
+            
+            document.getElementById('feedback-panel').classList.add('show');
+            
+            // Scroll to feedback
+            document.getElementById('feedback-panel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Update verify button
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = '✓ Verified';
+            verifyBtn.style.background = '#10b981';
+        }
+
+        // Complete simulation
+        function completeSimulation() {
+            simulationCompleted = true;
+            
+            // Calculate final score
+            let totalPossible = 300; // 100 points per scenario
+            let totalEarned = 0;
+            
+            for (let i = 1; i <= totalScenarios; i++) {
+                const correct = correctDocuments[i];
+                const user = userSelections[i];
+                
+                // Document score (50 points per scenario)
+                const docPoints = 50 / correct.length;
+                correct.forEach(doc => {
+                    if (user.documents.includes(doc)) {
+                        totalEarned += docPoints;
+                    }
+                });
+                
+                // Checklist score (50 points per scenario)
+                user.checklist.forEach(completed => {
+                    if (completed) {
+                        totalEarned += 12.5;
+                    }
+                });
+            }
+            
+            const finalPercentage = Math.round((totalEarned / totalPossible) * 100);
+            
+            // Update final score
+            finalScoreEl.textContent = `${finalPercentage}%`;
+            
+            // Show completion message
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            // Stop timer
+            clearInterval(timerInterval);
+            
+            // Update timer to show completed state
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+            
+            // Scroll to completion message
+            completionMessage.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize simulation
+        document.addEventListener('DOMContentLoaded', function() {
+            startTimer();
+            updateProgress();
+            initializeDragAndDrop();
+            
+            // Auto-check first checklist item (age requirement)
+            const ageCheck = document.getElementById('check1-age');
+            ageCheck.classList.add('completed');
+            userSelections[1].checklist[0] = true;
+            
+            // Auto-check second scenario first item (timeframe)
+            const timeframeCheck = document.getElementById('check2-timeframe');
+            timeframeCheck.classList.add('completed');
+            userSelections[2].checklist[0] = true;
+            
+            // Auto-check third scenario first item (timing)
+            const timingCheck = document.getElementById('check3-timing');
+            timingCheck.classList.add('completed');
+            userSelections[3].checklist[0] = true;
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' && currentScenario < totalScenarios) {
+                nextScenario();
+            } else if (e.key === 'ArrowLeft' && currentScenario > 1) {
+                previousScenario();
+            } else if (e.key === 'Enter' && !simulationCompleted) {
+                if (verifyBtn.style.display !== 'none') {
+                    verifyScenario();
+                } else {
+                    nextScenario();
+                }
+            } else if (e.key === 'v' && verifyBtn.style.display !== 'none') {
+                verifyScenario();
+            }
+        });
+    </script>
+</body>
+</html>
