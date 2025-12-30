@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - City vs Rural Roads Simulation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-soft: #8a5feb;
+            --color-secondary: #000000;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-info: #3b82f6;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-light: #f9fafb;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 15px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        /* Main Container */
+        .page {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 20px;
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        /* Header */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .course-name {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .week-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.1);
+            font-size: 0.7rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .week-label-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        .badge-mode {
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.08);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-primary);
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            line-height: 1.1;
+            color: var(--color-text);
+            margin-bottom: 8px;
+        }
+
+        .module-subtitle {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Time Banner */
+        .time-banner {
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .time-icon {
+            font-size: 1rem;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .time-content h3 {
+            color: var(--color-primary);
+            font-size: 0.8rem;
+            margin-bottom: 3px;
+            font-weight: 700;
+        }
+
+        .time-content p {
+            color: var(--color-text);
+            font-size: 0.75rem;
+            margin: 0;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 0.9em;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 20px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .progress-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .progress-percentage {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-primary-soft));
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Simulation Container */
+        .simulation-container {
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .simulation-container.active {
+            display: block;
+        }
+
+        /* Scenario Selector */
+        .scenario-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .scenario-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 12px 15px;
+            background: rgba(95, 23, 235, 0.05);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            color: var(--color-primary);
+            font-size: 0.8rem;
+        }
+
+        .scenario-btn:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .scenario-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+            animation: pulse 2s infinite;
+        }
+
+        /* Driving Simulation */
+        .driving-simulation {
+            background: var(--color-light);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .simulation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .scenario-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .scenario-icon {
+            font-size: 1.2rem;
+        }
+
+        .simulation-time {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-muted);
+            background: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        /* Road Visualization */
+        .road-visualization {
+            width: 100%;
+            height: 200px;
+            background: #1a1a1a;
+            border-radius: var(--radius-sm);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 3px solid #333;
+        }
+
+        .road-lane {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: repeating-linear-gradient(
+                90deg,
+                #ffffff 0,
+                #ffffff 20px,
+                transparent 20px,
+                transparent 40px
+            );
+        }
+
+        .car {
+            position: absolute;
+            width: 40px;
+            height: 25px;
+            background: var(--color-primary);
+            border-radius: 4px;
+            transition: all 0.5s ease;
+            z-index: 10;
+        }
+
+        .player-car {
+            background: var(--color-success);
+            z-index: 20;
+        }
+
+        .other-car {
+            background: var(--color-warning);
+        }
+
+        .pedestrian {
+            position: absolute;
+            width: 15px;
+            height: 30px;
+            background: var(--color-info);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .animal {
+            position: absolute;
+            width: 25px;
+            height: 20px;
+            background: var(--color-error);
+            border-radius: 10px;
+        }
+
+        .traffic-light {
+            position: absolute;
+            width: 15px;
+            height: 35px;
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .traffic-light::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #222;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .traffic-light.red::after {
+            background: #ef4444;
+            box-shadow: 0 0 10px #ef4444;
+        }
+
+        .traffic-light.green::after {
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .control-btn {
+            padding: 10px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.75rem;
+            text-align: center;
+            color: var(--color-primary);
+        }
+
+        .control-btn:hover {
+            background: rgba(95, 23, 235, 0.1);
+            border-color: var(--color-primary);
+        }
+
+        .control-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        /* Hazard Detection */
+        .hazard-detection {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .hazard-title {
+            color: var(--color-primary);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hazard-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .hazard-item {
+            padding: 8px 10px;
+            background: white;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            font-size: 0.8rem;
+            color: var(--color-text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .hazard-item.detected {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--color-success);
+            color: var(--color-success);
+        }
+
+        .hazard-item.missed {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--color-error);
+            color: var(--color-error);
+            animation: shake 0.5s ease;
+        }
+
+        .hazard-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .hazard-item.detected .hazard-icon {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .hazard-item.missed .hazard-icon {
+            background: var(--color-error);
+            color: white;
+        }
+
+        /* Decision Making */
+        .decision-making {
+            background: rgba(95, 23, 235, 0.03);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px dashed rgba(95, 23, 235, 0.2);
+        }
+
+        .decision-title {
+            color: var(--color-primary);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .decision-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .decision-option {
+            padding: 12px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            color: var(--color-text);
+        }
+
+        .decision-option:hover {
+            border-color: var(--color-primary);
+            transform: translateX(5px);
+        }
+
+        .decision-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+        }
+
+        .decision-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--color-error);
+        }
+
+        /* Results Display */
+        .results-display {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid var(--color-primary);
+        }
+
+        .results-display.show {
+            display: block;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .results-header h3 {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .results-score {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            text-shadow: 0 0 15px rgba(95, 23, 235, 0.7);
+            animation: pulse 2s infinite;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .result-stat {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            color: #e5e7eb;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .comparison-insights {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .insights-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .insights-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .insights-list li {
+            font-size: 0.8rem;
+            color: #e5e7eb;
+            line-height: 1.5;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .insight-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background: #4c0fcf;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-icon {
+            font-size: 1em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <!-- Header -->
+        <header class="brand-row">
+            <div class="brand">
+                <img
+                    src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png"
+                    alt="VA Driving Clinic logo"
+                    class="brand-logo"
+                />
+                <div class="course-meta">
+                    <span class="course-name">VA Driving Clinic • Quick Simulation</span>
+                    <div class="week-label">
+                        <span class="week-label-dot"></span>
+                        <span>City vs Rural Roads</span>
+                    </div>
+                </div>
+            </div>
+            <span class="badge-mode">5-Min Challenge</span>
+        </header>
+
+        <h1>City Roads vs. Rural Roads Challenge</h1>
+        <p class="module-subtitle">
+            Experience the key differences between city and rural driving in this 5-minute simulation.
+            Navigate through unique hazards and make critical driving decisions.
+        </p>
+
+        <!-- Time Banner -->
+        <div class="time-banner">
+            <div class="time-icon">
+                ⏱️
+            </div>
+            <div class="time-content">
+                <h3>5-Minute Road Simulation</h3>
+                <p>Complete both scenarios in <span class="time-highlight">5 minutes</span> to master urban and rural driving.</p>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <span class="progress-label">Simulation Progress</span>
+                <span class="progress-percentage" id="progress-percentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Scenario Selector -->
+        <div class="scenario-selector">
+            <button class="scenario-btn active" data-scenario="city">
+                🏙️ City Road Challenge
+            </button>
+            <button class="scenario-btn" data-scenario="rural">
+                🌳 Rural Road Challenge
+            </button>
+        </div>
+
+        <!-- City Road Simulation -->
+        <div class="simulation-container active" id="city-simulation">
+            <div class="driving-simulation">
+                <div class="simulation-header">
+                    <div class="scenario-title">
+                        <span class="scenario-icon">🏙️</span>
+                        City Road Challenge
+                    </div>
+                    <div class="simulation-time">Time: <span id="city-time">0:00</span></div>
+                </div>
+
+                <div class="road-visualization" id="city-road">
+                    <!-- City road elements will be added here -->
+                </div>
+
+                <div class="controls-panel">
+                    <button class="control-btn" data-action="speed-down">⬇️ Slow Down</button>
+                    <button class="control-btn active" data-action="maintain-speed">⏱️ Maintain Speed</button>
+                    <button class="control-btn" data-action="speed-up">⬆️ Speed Up</button>
+                    <button class="control-btn" data-action="lane-change">↔️ Change Lane</button>
+                    <button class="control-btn" data-action="horn">📢 Use Horn</button>
+                </div>
+
+                <div class="hazard-detection">
+                    <div class="hazard-title">⚠️ City Hazards to Detect</div>
+                    <ul class="hazard-list" id="city-hazards">
+                        <li class="hazard-item" data-hazard="pedestrian">
+                            <span class="hazard-icon">👤</span>
+                            <span>Pedestrians crossing</span>
+                        </li>
+                        <li class="hazard-item" data-hazard="cyclist">
+                            <span class="hazard-icon">🚲</span>
+                            <span>Cyclists in bike lane</span>
+                        </li>
+                        <li class="hazard-item" data-hazard="double-parked">
+                            <span class="hazard-icon">🚗</span>
+                            <span>Double-parked vehicles</span>
+                        </li>
+                        <li class="hazard-item" data-hazard="intersection">
+                            <span class="hazard-icon">🚦</span>
+                            <span>Complex intersections</span>
+                        </li>
+                        <li class="hazard-item" data-hazard="traffic-jam">
+                            <span class="hazard-icon">🚙</span>
+                            <span>Sudden traffic jams</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="decision-making">
+                    <div class="decision-title">❓ Critical Decision Point</div>
+                    <div class="decision-options">
+                        <div class="decision-option" data-decision="A">
+                            A. Accelerate to beat the yellow light
+                        </div>
+                        <div class="decision-option" data-decision="B">
+                            B. Prepare to stop safely
+                        </div>
+                        <div class="decision-option" data-decision="C">
+                            C. Honk and proceed quickly
+                        </div>
+                        <div class="decision-option" data-decision="D">
+                            D. Change lanes to avoid stopping
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="start-city">
+                        <span class="btn-icon">▶</span>
+                        Start City Challenge
+                    </button>
+                    <button class="btn btn-secondary" id="complete-city">
+                        <span class="btn-icon">✓</span>
+                        Complete & Continue
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rural Road Simulation -->
+        <div class="simulation-container" id="rural-simulation">
+            <div class="driving-simulation">
+                <div class="simulation-header">
+                    <div class="scenario-title">
+                        <span class="scenario-icon">🌳</span>
+                        Rural Road Challenge
+                    </div>
+                    <div class="simulation-time">Time: <span id="rural-time">0:00</span></div>
+                </div>
+
+                <div class="road-visualization" id="rural-road">
+                    <!-- Rural road elements will be added here -->
+                </div>
+
+                <div class="controls-panel">
+                    <button class="control-btn" data-action="high-beams">🔦 High Beams</button>
+                    <button class="control-btn active" data-action="maintain-speed">⏱️ Maintain Speed</button>
+                    <button class="control-btn" data-action="speed-up">⬆️ Speed Up</button>
+                    <button class="control-btn" data-action="reduce-speed">⬇️ Reduce Speed</button>
+                    <button class="control-btn" data-action="horn">📢 Use Horn</button>
+                </div>
+
+                <div class="hazard-detection">
+                    <div class="hazard-title">⚠️ Rural Hazards to Detect</div>
+                    <ul class="hazard-list" id="rural-hazards">
+                        <li class="hazard-item" data-hazard="deer">
+                            <span class="hazard-icon">🦌</span>
+                            <span>Deer crossing road</span>
+                        </li>
+                        <li class="hazard-item" data-hazard="sharp-curve">
+                            <span class="hazard-icon">↪️</span>
+                            <span>Sharp blind curves</span>
+                        </li>
+                        <li class="hazard-item" data-hazard="tractor">
+                            <span class="hazard-icon">🚜</span>
+                            <span>Slow-moving farm equipment</span>
+                        </li>
+                        <li class="hazard-item" data-hazard="potholes">
+                            <span class="hazard-icon">🕳️</span>
+                            <span>Road damage & potholes</span>
+                        </li>
+                        <li class="hazard-item" data-hazard="oncoming">
+                            <span class="hazard-icon">🚗</span>
+                            <span>Oncoming traffic on narrow road</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="decision-making">
+                    <div class="decision-title">❓ Critical Decision Point</div>
+                    <div class="decision-options">
+                        <div class="decision-option" data-decision="A">
+                            A. Maintain speed and flash lights
+                        </div>
+                        <div class="decision-option" data-decision="B">
+                            B. Slow down and prepare to stop
+                        </div>
+                        <div class="decision-option" data-decision="C">
+                            C. Swerve into opposite lane
+                        </div>
+                        <div class="decision-option" data-decision="D">
+                            D. Speed up to pass quickly
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="start-rural">
+                        <span class="btn-icon">▶</span>
+                        Start Rural Challenge
+                    </button>
+                    <button class="btn btn-secondary" id="complete-rural">
+                        <span class="btn-icon">📊</span>
+                        View Final Results
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Display -->
+        <div class="results-display" id="results-display">
+            <div class="results-header">
+                <h3>Road Challenge Results</h3>
+                <div class="results-score" id="final-score">0%</div>
+                <p style="color: #e5e7eb; font-size: 0.8rem;">Your performance across both road types</p>
+            </div>
+            
+            <div class="results-stats">
+                <div class="result-stat">
+                    <div class="result-value" id="city-score">0%</div>
+                    <div class="result-label">City Score</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="rural-score">0%</div>
+                    <div class="result-label">Rural Score</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="hazards-detected">0</div>
+                    <div class="result-label">Hazards Detected</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="correct-decisions">0</div>
+                    <div class="result-label">Correct Decisions</div>
+                </div>
+            </div>
+
+            <div class="comparison-insights">
+                <div class="insights-title">📊 Key Differences Identified</div>
+                <ul class="insights-list">
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>City Roads:</strong> Higher pedestrian/cyclist activity, more traffic signals, frequent stops, complex intersections</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Rural Roads:</strong> Wildlife hazards, poor lighting at night, winding roads, limited emergency services</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Speed Management:</strong> City requires frequent speed adjustments, rural requires sustained appropriate speeds</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Hazard Anticipation:</strong> City hazards are predictable (crosswalks, signals), rural hazards are unpredictable (animals, farm equipment)</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="action-buttons" style="margin-top: 20px;">
+                <button class="btn btn-primary" id="retake-challenge">
+                    <span class="btn-icon">🔄</span>
+                    Retake Challenge
+                </button>
+                <button class="btn btn-secondary" onclick="window.print()">
+                    <span class="btn-icon">🖨️</span>
+                    Print Results
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // State Management
+            const state = {
+                currentScenario: 'city',
+                city: {
+                    completed: false,
+                    time: 0,
+                    hazardsDetected: 0,
+                    totalHazards: 5,
+                    decisionCorrect: false,
+                    score: 0,
+                    timer: null
+                },
+                rural: {
+                    completed: false,
+                    time: 0,
+                    hazardsDetected: 0,
+                    totalHazards: 5,
+                    decisionCorrect: false,
+                    score: 0,
+                    timer: null
+                }
+            };
+
+            // DOM Elements
+            const scenarioBtns = document.querySelectorAll('.scenario-btn');
+            const scenarioContainers = document.querySelectorAll('.simulation-container');
+            const progressFill = document.getElementById('progress-fill');
+            const progressPercentage = document.getElementById('progress-percentage');
+            const resultsDisplay = document.getElementById('results-display');
+            
+            // City elements
+            const startCityBtn = document.getElementById('start-city');
+            const completeCityBtn = document.getElementById('complete-city');
+            const cityTimeEl = document.getElementById('city-time');
+            const cityRoad = document.getElementById('city-road');
+            const cityHazards = document.querySelectorAll('#city-hazards .hazard-item');
+            
+            // Rural elements
+            const startRuralBtn = document.getElementById('start-rural');
+            const completeRuralBtn = document.getElementById('complete-rural');
+            const ruralTimeEl = document.getElementById('rural-time');
+            const ruralRoad = document.getElementById('rural-road');
+            const ruralHazards = document.querySelectorAll('#rural-hazards .hazard-item');
+            
+            // Results elements
+            const finalScore = document.getElementById('final-score');
+            const cityScoreEl = document.getElementById('city-score');
+            const ruralScoreEl = document.getElementById('rural-score');
+            const hazardsDetectedEl = document.getElementById('hazards-detected');
+            const correctDecisionsEl = document.getElementById('correct-decisions');
+            
+            // Control buttons
+            const controlBtns = document.querySelectorAll('.control-btn');
+            const decisionOptions = document.querySelectorAll('.decision-option');
+
+            // Update progress
+            function updateProgress() {
+                const completedCount = (state.city.completed ? 1 : 0) + (state.rural.completed ? 1 : 0);
+                const percentage = Math.round((completedCount / 2) * 100);
+                
+                progressFill.style.width = `${percentage}%`;
+                progressPercentage.textContent = `${percentage}%`;
+                
+                if (completedCount === 2) {
+                    progressFill.style.background = 'linear-gradient(90deg, #10b981, #34d399)';
+                }
+            }
+
+            // Switch scenario
+            scenarioBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const scenario = btn.dataset.scenario;
+                    
+                    // Update buttons
+                    scenarioBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Update containers
+                    scenarioContainers.forEach(container => {
+                        container.classList.remove('active');
+                        if (container.id === `${scenario}-simulation`) {
+                            container.classList.add('active');
+                        }
+                    });
+                    
+                    state.currentScenario = scenario;
+                });
+            });
+
+            // ------------------------------------------------------------------
+            // CITY ROAD SIMULATION
+            // ------------------------------------------------------------------
+            function startCitySimulation() {
+                if (state.city.timer) return;
+                
+                // Reset city state
+                state.city.hazardsDetected = 0;
+                state.city.time = 0;
+                state.city.decisionCorrect = false;
+                
+                // Start timer
+                state.city.timer = setInterval(() => {
+                    state.city.time++;
+                    const minutes = Math.floor(state.city.time / 60);
+                    const seconds = state.city.time % 60;
+                    cityTimeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+                
+                // Create city road visualization
+                createCityRoad();
+                
+                // Enable hazard detection
+                cityHazards.forEach(hazard => {
+                    hazard.classList.remove('detected', 'missed');
+                });
+                
+                // Reset decision options
+                decisionOptions.forEach(option => {
+                    option.classList.remove('correct', 'incorrect');
+                });
+                
+                // Update button
+                startCityBtn.disabled = true;
+                startCityBtn.innerHTML = '<span class="btn-icon">▶</span> Simulation Running';
+                startCityBtn.style.opacity = '0.7';
+            }
+
+            function createCityRoad() {
+                cityRoad.innerHTML = '';
+                
+                // Create lanes
+                for (let i = 0; i < 3; i++) {
+                    const lane = document.createElement('div');
+                    lane.className = 'road-lane';
+                    lane.style.top = `${60 + i * 40}px`;
+                    cityRoad.appendChild(lane);
+                }
+                
+                // Create player car
+                const playerCar = document.createElement('div');
+                playerCar.className = 'car player-car';
+                playerCar.style.left = '50px';
+                playerCar.style.top = '70px';
+                cityRoad.appendChild(playerCar);
+                
+                // Create other cars
+                const otherCar1 = document.createElement('div');
+                otherCar1.className = 'car other-car';
+                otherCar1.style.left = '200px';
+                otherCar1.style.top = '70px';
+                cityRoad.appendChild(otherCar1);
+                
+                const otherCar2 = document.createElement('div');
+                otherCar2.className = 'car other-car';
+                otherCar2.style.left = '350px';
+                otherCar2.style.top = '110px';
+                cityRoad.appendChild(otherCar2);
+                
+                // Create pedestrians
+                const pedestrian1 = document.createElement('div');
+                pedestrian1.className = 'pedestrian';
+                pedestrian1.style.left = '150px';
+                pedestrian1.style.top = '150px';
+                pedestrian1.dataset.hazard = 'pedestrian';
+                cityRoad.appendChild(pedestrian1);
+                
+                const pedestrian2 = document.createElement('div');
+                pedestrian2.className = 'pedestrian';
+                pedestrian2.style.left = '280px';
+                pedestrian2.style.top = '30px';
+                pedestrian2.dataset.hazard = 'pedestrian';
+                cityRoad.appendChild(pedestrian2);
+                
+                // Create cyclist
+                const cyclist = document.createElement('div');
+                cyclist.className = 'pedestrian';
+                cyclist.style.left = '400px';
+                cyclist.style.top = '170px';
+                cyclist.style.width = '25px';
+                cyclist.style.background = '#3b82f6';
+                cyclist.dataset.hazard = 'cyclist';
+                cityRoad.appendChild(cyclist);
+                
+                // Create traffic light
+                const trafficLight = document.createElement('div');
+                trafficLight.className = 'traffic-light red';
+                trafficLight.style.left = '500px';
+                trafficLight.style.top = '50px';
+                trafficLight.dataset.hazard = 'intersection';
+                cityRoad.appendChild(trafficLight);
+                
+                // Create parked car
+                const parkedCar = document.createElement('div');
+                parkedCar.className = 'car other-car';
+                parkedCar.style.left = '600px';
+                parkedCar.style.top = '30px';
+                parkedCar.style.background = '#6b7280';
+                parkedCar.dataset.hazard = 'double-parked';
+                cityRoad.appendChild(parkedCar);
+                
+                // Add click events for hazards
+                const hazardElements = cityRoad.querySelectorAll('[data-hazard]');
+                hazardElements.forEach(element => {
+                    element.addEventListener('click', () => {
+                        const hazardType = element.dataset.hazard;
+                        detectCityHazard(hazardType);
+                    });
+                });
+                
+                // Animate elements
+                animateCityScene();
+            }
+
+            function animateCityScene() {
+                const cars = cityRoad.querySelectorAll('.car');
+                const pedestrians = cityRoad.querySelectorAll('.pedestrian');
+                const trafficLight = cityRoad.querySelector('.traffic-light');
+                
+                // Animate cars
+                cars.forEach(car => {
+                    if (!car.classList.contains('player-car')) {
+                        const currentLeft = parseInt(car.style.left);
+                        car.style.left = `${(currentLeft + 1) % 700}px`;
+                    }
+                });
+                
+                // Animate pedestrians
+                pedestrians.forEach(pedestrian => {
+                    const currentTop = parseInt(pedestrian.style.top);
+                    if (pedestrian.dataset.hazard === 'pedestrian') {
+                        pedestrian.style.top = `${currentTop + (Math.random() > 0.5 ? 1 : -1)}px`;
+                    }
+                });
+                
+                // Change traffic light
+                if (trafficLight) {
+                    setTimeout(() => {
+                        trafficLight.classList.remove('red');
+                        trafficLight.classList.add('green');
+                    }, 3000);
+                }
+                
+                // Continue animation
+                if (state.city.timer) {
+                    requestAnimationFrame(animateCityScene);
+                }
+            }
+
+            function detectCityHazard(hazardType) {
+                const hazardItem = document.querySelector(`#city-hazards .hazard-item[data-hazard="${hazardType}"]`);
+                if (hazardItem && !hazardItem.classList.contains('detected')) {
+                    hazardItem.classList.add('detected');
+                    state.city.hazardsDetected++;
+                }
+            }
+
+            // Control button handlers for city
+            controlBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!state.city.timer) return;
+                    
+                    const action = this.dataset.action;
+                    
+                    // Update active button
+                    controlBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Handle actions
+                    switch(action) {
+                        case 'speed-down':
+                            // Simulate slowing down
+                            break;
+                        case 'speed-up':
+                            // Simulate speeding up
+                            break;
+                        case 'lane-change':
+                            // Simulate lane change
+                            break;
+                        case 'horn':
+                            // Simulate horn use
+                            break;
+                    }
+                });
+            });
+
+            // Decision options for city
+            decisionOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    if (!state.city.timer) return;
+                    
+                    const decision = this.dataset.decision;
+                    
+                    // Mark all options as inactive
+                    decisionOptions.forEach(opt => {
+                        opt.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    // Check if correct (B is correct for city scenario)
+                    if (decision === 'B') {
+                        this.classList.add('correct');
+                        state.city.decisionCorrect = true;
+                    } else {
+                        this.classList.add('incorrect');
+                        state.city.decisionCorrect = false;
+                    }
+                });
+            });
+
+            // Complete city simulation
+            completeCityBtn.addEventListener('click', () => {
+                if (!state.city.timer) return;
+                
+                // Stop timer
+                clearInterval(state.city.timer);
+                state.city.timer = null;
+                
+                // Calculate score
+                const hazardScore = (state.city.hazardsDetected / state.city.totalHazards) * 50;
+                const decisionScore = state.city.decisionCorrect ? 30 : 0;
+                const timeScore = Math.max(0, 20 - (state.city.time / 10));
+                state.city.score = Math.round(hazardScore + decisionScore + timeScore);
+                
+                // Mark as completed
+                state.city.completed = true;
+                
+                // Enable start button
+                startCityBtn.disabled = false;
+                startCityBtn.innerHTML = '<span class="btn-icon">▶</span> Restart City Challenge';
+                startCityBtn.style.opacity = '1';
+                
+                // Switch to rural simulation
+                document.querySelector('[data-scenario="rural"]').click();
+                
+                updateProgress();
+            });
+
+            // ------------------------------------------------------------------
+            // RURAL ROAD SIMULATION
+            // ------------------------------------------------------------------
+            function startRuralSimulation() {
+                if (state.rural.timer) return;
+                
+                // Reset rural state
+                state.rural.hazardsDetected = 0;
+                state.rural.time = 0;
+                state.rural.decisionCorrect = false;
+                
+                // Start timer
+                state.rural.timer = setInterval(() => {
+                    state.rural.time++;
+                    const minutes = Math.floor(state.rural.time / 60);
+                    const seconds = state.rural.time % 60;
+                    ruralTimeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+                
+                // Create rural road visualization
+                createRuralRoad();
+                
+                // Enable hazard detection
+                ruralHazards.forEach(hazard => {
+                    hazard.classList.remove('detected', 'missed');
+                });
+                
+                // Reset decision options
+                document.querySelectorAll('#rural-simulation .decision-option').forEach(option => {
+                    option.classList.remove('correct', 'incorrect');
+                });
+                
+                // Update button
+                startRuralBtn.disabled = true;
+                startRuralBtn.innerHTML = '<span class="btn-icon">▶</span> Simulation Running';
+                startRuralBtn.style.opacity = '0.7';
+            }
+
+            function createRuralRoad() {
+                ruralRoad.innerHTML = '';
+                
+                // Create winding road path
+                const roadPath = document.createElement('div');
+                roadPath.style.position = 'absolute';
+                roadPath.style.width = '100%';
+                roadPath.style.height = '100%';
+                roadPath.style.background = 'linear-gradient(90deg, #333 0%, #444 100%)';
+                roadPath.style.clipPath = 'polygon(0% 40%, 20% 40%, 40% 60%, 60% 40%, 80% 60%, 100% 40%, 100% 60%, 80% 80%, 60% 60%, 40% 80%, 20% 60%, 0% 60%)';
+                ruralRoad.appendChild(roadPath);
+                
+                // Create player car
+                const playerCar = document.createElement('div');
+                playerCar.className = 'car player-car';
+                playerCar.style.left = '50px';
+                playerCar.style.top = '90px';
+                ruralRoad.appendChild(playerCar);
+                
+                // Create deer
+                const deer = document.createElement('div');
+                deer.className = 'animal';
+                deer.style.left = '250px';
+                deer.style.top = '100px';
+                deer.dataset.hazard = 'deer';
+                ruralRoad.appendChild(deer);
+                
+                // Create tractor
+                const tractor = document.createElement('div');
+                tractor.className = 'car other-car';
+                tractor.style.left = '400px';
+                tractor.style.top = '80px';
+                tractor.style.background = '#8b5a2b';
+                tractor.style.width = '60px';
+                tractor.dataset.hazard = 'tractor';
+                ruralRoad.appendChild(tractor);
+                
+                // Create potholes
+                const pothole1 = document.createElement('div');
+                pothole1.className = 'animal';
+                pothole1.style.left = '150px';
+                pothole1.style.top = '150px';
+                pothole1.style.background = '#666';
+                pothole1.dataset.hazard = 'potholes';
+                ruralRoad.appendChild(pothole1);
+                
+                const pothole2 = document.createElement('div');
+                pothole2.className = 'animal';
+                pothole2.style.left = '500px';
+                pothole2.style.top = '50px';
+                pothole2.style.background = '#666';
+                pothole2.dataset.hazard = 'potholes';
+                ruralRoad.appendChild(pothole2);
+                
+                // Create oncoming car
+                const oncomingCar = document.createElement('div');
+                oncomingCar.className = 'car other-car';
+                oncomingCar.style.left = '600px';
+                oncomingCar.style.top = '70px';
+                oncomingCar.style.background = '#ef4444';
+                oncomingCar.dataset.hazard = 'oncoming';
+                ruralRoad.appendChild(oncomingCar);
+                
+                // Add click events for hazards
+                const hazardElements = ruralRoad.querySelectorAll('[data-hazard]');
+                hazardElements.forEach(element => {
+                    element.addEventListener('click', () => {
+                        const hazardType = element.dataset.hazard;
+                        detectRuralHazard(hazardType);
+                    });
+                });
+                
+                // Animate elements
+                animateRuralScene();
+            }
+
+            function animateRuralScene() {
+                const deer = ruralRoad.querySelector('[data-hazard="deer"]');
+                const tractor = ruralRoad.querySelector('[data-hazard="tractor"]');
+                const oncomingCar = ruralRoad.querySelector('[data-hazard="oncoming"]');
+                
+                // Animate deer
+                if (deer) {
+                    const currentTop = parseInt(deer.style.top);
+                    deer.style.top = `${currentTop + (Math.random() > 0.7 ? 2 : -1)}px`;
+                }
+                
+                // Animate tractor (slow movement)
+                if (tractor) {
+                    const currentLeft = parseInt(tractor.style.left);
+                    tractor.style.left = `${(currentLeft + 0.5) % 700}px`;
+                }
+                
+                // Animate oncoming car
+                if (oncomingCar) {
+                    const currentLeft = parseInt(oncomingCar.style.left);
+                    oncomingCar.style.left = `${(currentLeft - 2 + 700) % 700}px`;
+                }
+                
+                // Continue animation
+                if (state.rural.timer) {
+                    requestAnimationFrame(animateRuralScene);
+                }
+            }
+
+            function detectRuralHazard(hazardType) {
+                const hazardItem = document.querySelector(`#rural-hazards .hazard-item[data-hazard="${hazardType}"]`);
+                if (hazardItem && !hazardItem.classList.contains('detected')) {
+                    hazardItem.classList.add('detected');
+                    state.rural.hazardsDetected++;
+                }
+            }
+
+            // Decision options for rural
+            document.querySelectorAll('#rural-simulation .decision-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    if (!state.rural.timer) return;
+                    
+                    const decision = this.dataset.decision;
+                    
+                    // Mark all options as inactive
+                    document.querySelectorAll('#rural-simulation .decision-option').forEach(opt => {
+                        opt.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    // Check if correct (B is correct for rural scenario)
+                    if (decision === 'B') {
+                        this.classList.add('correct');
+                        state.rural.decisionCorrect = true;
+                    } else {
+                        this.classList.add('incorrect');
+                        state.rural.decisionCorrect = false;
+                    }
+                });
+            });
+
+            // Complete rural simulation and show results
+            completeRuralBtn.addEventListener('click', () => {
+                if (!state.rural.timer) return;
+                
+                // Stop timer
+                clearInterval(state.rural.timer);
+                state.rural.timer = null;
+                
+                // Calculate score
+                const hazardScore = (state.rural.hazardsDetected / state.rural.totalHazards) * 50;
+                const decisionScore = state.rural.decisionCorrect ? 30 : 0;
+                const timeScore = Math.max(0, 20 - (state.rural.time / 10));
+                state.rural.score = Math.round(hazardScore + decisionScore + timeScore);
+                
+                // Mark as completed
+                state.rural.completed = true;
+                
+                // Show results
+                showResults();
+                
+                updateProgress();
+            });
+
+            // ------------------------------------------------------------------
+            // RESULTS AND RESET
+            // ------------------------------------------------------------------
+            function showResults() {
+                // Calculate final scores
+                const totalHazardsDetected = state.city.hazardsDetected + state.rural.hazardsDetected;
+                const correctDecisions = (state.city.decisionCorrect ? 1 : 0) + (state.rural.decisionCorrect ? 1 : 0);
+                const averageScore = Math.round((state.city.score + state.rural.score) / 2);
+                
+                // Update results display
+                finalScore.textContent = `${averageScore}%`;
+                cityScoreEl.textContent = `${state.city.score}%`;
+                ruralScoreEl.textContent = `${state.rural.score}%`;
+                hazardsDetectedEl.textContent = `${totalHazardsDetected}/10`;
+                correctDecisionsEl.textContent = `${correctDecisions}/2`;
+                
+                // Show results
+                resultsDisplay.classList.add('show');
+                resultsDisplay.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Reset everything
+            document.getElementById('retake-challenge').addEventListener('click', () => {
+                // Reset state
+                state.city.completed = false;
+                state.city.time = 0;
+                state.city.hazardsDetected = 0;
+                state.city.decisionCorrect = false;
+                state.city.score = 0;
+                
+                state.rural.completed = false;
+                state.rural.time = 0;
+                state.rural.hazardsDetected = 0;
+                state.rural.decisionCorrect = false;
+                state.rural.score = 0;
+                
+                // Reset timers
+                if (state.city.timer) clearInterval(state.city.timer);
+                if (state.rural.timer) clearInterval(state.rural.timer);
+                state.city.timer = null;
+                state.rural.timer = null;
+                
+                // Reset UI
+                cityTimeEl.textContent = '0:00';
+                ruralTimeEl.textContent = '0:00';
+                
+                startCityBtn.disabled = false;
+                startCityBtn.innerHTML = '<span class="btn-icon">▶</span> Start City Challenge';
+                startCityBtn.style.opacity = '1';
+                
+                startRuralBtn.disabled = false;
+                startRuralBtn.innerHTML = '<span class="btn-icon">▶</span> Start Rural Challenge';
+                startRuralBtn.style.opacity = '1';
+                
+                // Switch to first simulation
+                document.querySelector('[data-scenario="city"]').click();
+                
+                // Hide results
+                resultsDisplay.classList.remove('show');
+                
+                updateProgress();
+            });
+
+            // Event Listeners
+            startCityBtn.addEventListener('click', startCitySimulation);
+            startRuralBtn.addEventListener('click', startRuralSimulation);
+            
+            // Initialize
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
