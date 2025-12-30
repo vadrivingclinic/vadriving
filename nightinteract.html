@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Night Driving Safety</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #3b82f6; /* Blue theme for night/darkness */
+            --color-primary-light: #60a5fa;
+            --color-secondary: #1e3a8a;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #dc2626;
+            --color-night: #1e40af;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(59, 130, 246, 0.1);
+            --shadow-hover: 0 15px 35px rgba(59, 130, 246, 0.15);
+            --shadow-glow: 0 0 30px rgba(59, 130, 246, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #dbeafe 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: var(--shadow-glow); }
+            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.5); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200px 0; }
+            100% { background-position: 200px 0; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(30, 64, 175, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(59, 130, 246, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-night);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-night);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .time-estimate {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-night);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-night);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1e40af, #3b82f6);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-night);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-night);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-night);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Warning/Stats Boxes */
+        .danger-box {
+            background: rgba(220, 38, 38, 0.1);
+            border-left: 4px solid var(--color-danger);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .danger-title {
+            font-weight: 700;
+            color: var(--color-danger);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .danger-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .safety-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--color-primary);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .safety-title {
+            font-weight: 700;
+            color: var(--color-night);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .safety-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .safety-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .safety-list li:before {
+            content: "⭐";
+            position: absolute;
+            left: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Challenge Grid */
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .challenge-card {
+            background: rgba(30, 64, 175, 0.05);
+            border: 2px solid rgba(30, 64, 175, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .challenge-card:hover {
+            border-color: var(--color-night);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(30, 64, 175, 0.1);
+        }
+
+        .challenge-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .challenge-name {
+            font-weight: 700;
+            color: var(--color-night);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .challenge-desc {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .challenge-impact {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(220, 38, 38, 0.1);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            color: var(--color-danger);
+            font-size: 0.85rem;
+        }
+
+        /* Visibility Comparison */
+        .visibility-comparison {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin: 25px 0;
+            border: 2px solid var(--color-night);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visibility-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .comparison-time {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .comparison-percentage {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary-light);
+            margin: 15px 0;
+        }
+
+        .comparison-description {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        /* Headlight Simulator */
+        .headlight-simulator {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px solid var(--color-warning);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .simulator-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .simulator-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 600px) {
+            .simulator-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .control-group {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .control-label {
+            font-size: 1rem;
+            color: white;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .beam-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .beam-btn {
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .beam-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: var(--color-primary);
+        }
+
+        .beam-btn.active {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+
+        .simulation-display {
+            height: 200px;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            border-radius: var(--radius-md);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .beam-light {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 0;
+            background: linear-gradient(to top, 
+                rgba(255, 255, 200, 0.8) 0%,
+                rgba(255, 255, 180, 0.6) 20%,
+                rgba(255, 255, 150, 0.4) 40%,
+                rgba(255, 255, 120, 0.2) 60%,
+                rgba(255, 255, 100, 0.1) 80%,
+                transparent 100%);
+            border-radius: 50% 50% 0 0;
+            transition: all 0.5s ease;
+        }
+
+        .beam-light.low {
+            height: 100px;
+            width: 200px;
+            filter: blur(15px);
+        }
+
+        .beam-light.high {
+            height: 180px;
+            width: 400px;
+            filter: blur(10px);
+        }
+
+        .road-line {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .simulation-feedback {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--color-success);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .simulation-feedback.show {
+            display: block;
+        }
+
+        /* UPDATE: Changed text color in simulation feedback */
+        .simulation-feedback .safety-title {
+            color: white !important;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .simulation-feedback .safety-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .simulation-feedback .safety-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+            color: white !important;
+        }
+
+        .simulation-feedback .safety-list li:before {
+            content: "⭐";
+            position: absolute;
+            left: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Fatigue Simulator */
+        .fatigue-simulator {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin: 25px 0;
+            border: 2px solid var(--color-warning);
+        }
+
+        .fatigue-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .fatigue-slider-container {
+            margin: 25px 0;
+        }
+
+        .fatigue-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(90deg, #10b981, #f59e0b, #dc2626);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .fatigue-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: var(--color-warning);
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .fatigue-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+        }
+
+        .fatigue-display {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-warning);
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .fatigue-effects {
+            background: rgba(220, 38, 38, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--color-danger);
+        }
+
+        .effects-title {
+            font-weight: 700;
+            color: var(--color-danger);
+            margin-bottom: 10px;
+        }
+
+        .effects-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .effects-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+            color: #e5e7eb;
+        }
+
+        .effects-list li:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+        }
+
+        /* Vehicle Maintenance Grid */
+        .maintenance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .maintenance-card {
+            background: rgba(59, 130, 246, 0.05);
+            border: 2px solid rgba(59, 130, 246, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .maintenance-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+        }
+
+        .maintenance-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .maintenance-item {
+            font-weight: 700;
+            color: var(--color-night);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .maintenance-check {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            color: var(--color-success);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Interactive Quiz */
+        .knowledge-check {
+            background: rgba(59, 130, 246, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(59, 130, 246, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-night);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(59, 130, 246, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(59, 130, 246, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-night);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-night);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-night);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #1e3a8a;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(30, 64, 175, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(59, 130, 246, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-night);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-night);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-night);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .key-points {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-night);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Night Driving Pledge */
+        .pledge-container {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            text-align: center;
+            border: 2px solid var(--color-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pledge-container::before {
+            content: '🌙';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 3rem;
+            opacity: 0.2;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .pledge-container::after {
+            content: '⭐';
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 2rem;
+            opacity: 0.2;
+            animation: float 3s ease-in-out infinite reverse;
+        }
+
+        .pledge-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .pledge-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            color: #e5e7eb;
+        }
+
+        .pledge-signature {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 400px;
+            margin: 30px auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pledge-input {
+            padding: 15px;
+            border-radius: var(--radius-md);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .pledge-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .pledge-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pledge-btn:hover {
+            background: #2563eb;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+        }
+
+        .pledge-confirmation {
+            display: none;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--color-success);
+            animation: fadeIn 0.5s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pledge-confirmation.show {
+            display: block;
+        }
+
+        /* Completion Message */
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.6rem;
+            }
+
+            .challenge-grid,
+            .maintenance-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">🌙</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Time Learning</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" 
+                     alt="VA Driving Clinic Logo" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Night Driving Safety</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">10-Minute Night Driving Mastery</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Night Driving: Mastering the Dark Roads</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">🌙</div>
+            <div class="time-estimate-text">
+                Master essential night driving skills in <span class="time-highlight">10 minutes</span> - reduce your nighttime crash risk by 70%
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Sections Completed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="quiz-score">0%</span>
+                <span class="stat-label">Safety Score</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Time Learning</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Lesson Progress</span>
+                <span>Time Learning: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: Night Driving Challenges -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🌑</span>
+                    Night Driving Challenges
+                </h2>
+                
+                <div class="danger-box">
+                    <div class="danger-title">📊 Critical Night Driving Statistics</div>
+                    <div class="danger-content">
+                        • Crash death rates are <strong>3 times higher</strong> at night than during the day<br>
+                        • Visibility is reduced by <strong>70%</strong> compared to daytime<br>
+                        • 50% of all fatal crashes occur between 6 PM and 6 AM<br>
+                        • Reaction time slows by <strong>25%</strong> in low light conditions
+                    </div>
+                </div>
+
+                <div class="challenge-grid">
+                    <div class="challenge-card">
+                        <div class="challenge-icon">👁️</div>
+                        <div class="challenge-name">Reduced Visibility</div>
+                        <div class="challenge-desc">
+                            Limited natural light makes it harder to see pedestrians, animals, road signs, and hazards.
+                        </div>
+                        <div class="challenge-impact">
+                            ⚠️ 70% less visibility than daytime
+                        </div>
+                    </div>
+
+                    <div class="challenge-card">
+                        <div class="challenge-icon">💡</div>
+                        <div class="challenge-name">Headlight Glare</div>
+                        <div class="challenge-desc">
+                            Oncoming headlights can temporarily blind you, causing dangerous moments of impaired vision.
+                        </div>
+                        <div class="challenge-impact">
+                            ⚠️ 2-5 seconds of temporary blindness
+                        </div>
+                    </div>
+
+                    <div class="challenge-card">
+                        <div class="challenge-icon">😴</div>
+                        <div class="challenge-name">Driver Fatigue</div>
+                        <div class="challenge-desc">
+                            Natural sleep cycles and darkness increase drowsiness, slowing reaction times by 25%.
+                        </div>
+                        <div class="challenge-impact">
+                            ⚠️ 25% slower reaction time
+                        </div>
+                    </div>
+
+                    <div class="challenge-card">
+                        <div class="challenge-icon">🦌</div>
+                        <div class="challenge-name">Wildlife Activity</div>
+                        <div class="challenge-desc">
+                            Most animals are active at dawn and dusk, increasing collision risks in rural areas.
+                        </div>
+                        <div class="challenge-impact">
+                            ⚠️ 1+ million animal collisions annually
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visibility Comparison -->
+                <div class="visibility-comparison">
+                    <h3 class="visibility-title">👁️ Day vs Night Visibility Comparison</h3>
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <div class="comparison-icon">☀️</div>
+                            <div class="comparison-time">Daytime Driving</div>
+                            <div class="comparison-percentage">100%</div>
+                            <div class="comparison-description">
+                                Full natural light<br>
+                                Clear color perception<br>
+                                Maximum depth perception<br>
+                                Optimal reaction time
+                            </div>
+                        </div>
+                        <div class="comparison-card">
+                            <div class="comparison-icon">🌙</div>
+                            <div class="comparison-time">Night Driving</div>
+                            <div class="comparison-percentage">30%</div>
+                            <div class="comparison-description">
+                                70% reduced visibility<br>
+                                Limited color perception<br>
+                                Depth perception impaired<br>
+                                25% slower reactions
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Headlight Mastery -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">💡</span>
+                    Headlight Mastery & Glare Management
+                </h2>
+
+                <!-- Headlight Simulator -->
+                <div class="headlight-simulator">
+                    <h3 class="simulator-title">💡 Interactive Headlight Simulator</h3>
+                    <p class="subsection-content" style="text-align: center; color: #cbd5e1;">
+                        Test different headlight settings to see how they affect visibility and glare
+                    </p>
+                    
+                    <div class="simulator-controls">
+                        <div class="control-group">
+                            <div class="control-label">Your Headlights</div>
+                            <div class="beam-toggle">
+                                <button class="beam-btn" data-beam="low">Low Beams</button>
+                                <button class="beam-btn" data-beam="high">High Beams</button>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">Oncoming Traffic</div>
+                            <div class="beam-toggle">
+                                <button class="beam-btn" data-oncoming="none">No Traffic</button>
+                                <button class="beam-btn" data-oncoming="oncoming">Oncoming Cars</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="simulation-display" id="simulation-display">
+                        <div class="beam-light low" id="beam-light"></div>
+                        <div class="road-line"></div>
+                    </div>
+                    
+                    <div class="simulation-feedback show" id="simulation-feedback">
+                        <div class="safety-title" style="color: white !important;">💡 Headlight Safety Tips</div>
+                        <ul class="safety-list">
+                            <li style="color: white !important;"><strong>Use high beams</strong> only in rural areas with no oncoming traffic</li>
+                            <li style="color: white !important;"><strong>Dim to low beams</strong> when within 500 feet of oncoming vehicles</li>
+                            <li style="color: white !important;"><strong>Dim to low beams</strong> when following within 300 feet of another vehicle</li>
+                            <li style="color: white !important;"><strong>Never use high beams</strong> in fog - they reflect back and reduce visibility</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="safety-box">
+                    <div class="safety-title">🌟 Glare Reduction Strategies</div>
+                    <ul class="safety-list">
+                        <li><strong>Look Right:</strong> Focus on right edge of road when facing bright headlights</li>
+                        <li><strong>Clean Windows:</strong> Dirty windows scatter light and increase glare</li>
+                        <li><strong>Adjust Mirrors:</strong> Use night setting on rearview mirror to reduce glare</li>
+                        <li><strong>Use Visor:</strong> Block overhead streetlights and signs</li>
+                        <li><strong>Increase Distance:</strong> More space from bright taillights ahead</li>
+                    </ul>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🦌 Wildlife Encounter Protocol</h3>
+                    <div class="challenge-grid" style="margin-top: 15px;">
+                        <div class="challenge-card">
+                            <div class="challenge-icon">👀</div>
+                            <div class="challenge-name">Scan Shoulders</div>
+                            <div class="challenge-desc">
+                                Continuously scan road shoulders for animal eye reflections (they glow in headlights)
+                            </div>
+                        </div>
+
+                        <div class="challenge-card">
+                            <div class="challenge-icon">🦌</div>
+                            <div class="challenge-name">Expect Multiples</div>
+                            <div class="challenge-desc">
+                                Animals rarely travel alone. If you see one, slow down and watch for more
+                            </div>
+                        </div>
+
+                        <div class="challenge-card">
+                            <div class="challenge-icon">🚗</div>
+                            <div class="challenge-name">Brake, Don't Swerve</div>
+                            <div class="challenge-desc">
+                                Brake firmly and stay in your lane. Swerving often causes worse accidents
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Safety Strategies & Maintenance -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🛡️</span>
+                    Safety Strategies & Vehicle Preparation
+                </h2>
+
+                <!-- Fatigue Simulator -->
+                <div class="fatigue-simulator">
+                    <h3 class="fatigue-title">😴 Fatigue & Reaction Time Simulator</h3>
+                    <p class="subsection-content" style="text-align: center; color: #cbd5e1;">
+                        See how fatigue levels affect your reaction time and driving ability
+                    </p>
+                    
+                    <div class="fatigue-slider-container">
+                        <input type="range" min="1" max="100" value="30" class="fatigue-slider" id="fatigue-slider">
+                        <div class="fatigue-labels">
+                            <span>Alert (0-4 hrs)</span>
+                            <span>Tired (4-8 hrs)</span>
+                            <span>Drowsy (8-12 hrs)</span>
+                            <span>Impaired (12+ hrs)</span>
+                        </div>
+                    </div>
+                    <div class="fatigue-display" id="fatigue-display">Normal Reaction Time</div>
+                    
+                    <div class="fatigue-effects" id="fatigue-effects">
+                        <div class="effects-title">⚠️ Fatigue Effects at Current Level</div>
+                        <ul class="effects-list">
+                            <li>Normal reaction time (0.5-0.8 seconds)</li>
+                            <li>Good concentration and decision-making</li>
+                            <li>Standard driving performance</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="safety-box">
+                    <div class="safety-title">🌙 The NIGHT Driving Method</div>
+                    <ul class="safety-list">
+                        <li><strong>N - No Distractions:</strong> Phone away, radio low, focus 100% on driving</li>
+                        <li><strong>I - Increase Distance:</strong> 4+ seconds following distance (double daytime)</li>
+                        <li><strong>G - Glare Management:</strong> Look right, clean windows, adjust mirrors</li>
+                        <li><strong>H - Headlights Correct:</strong> Proper use of low/high beams</li>
+                        <li><strong>T - Time Management:</strong> Allow extra time, take breaks every 2 hours</li>
+                    </ul>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🔧 Essential Vehicle Maintenance</h3>
+                    <div class="maintenance-grid">
+                        <div class="maintenance-card">
+                            <div class="maintenance-icon">💡</div>
+                            <div class="maintenance-item">Headlights & Taillights</div>
+                            <div class="challenge-desc">
+                                Clean lenses monthly, check alignment, replace burned-out bulbs immediately
+                            </div>
+                            <div class="maintenance-check">
+                                <span>✅</span> Monthly cleaning recommended
+                            </div>
+                        </div>
+
+                        <div class="maintenance-card">
+                            <div class="maintenance-icon">🚗</div>
+                            <div class="maintenance-item">Windshield & Windows</div>
+                            <div class="challenge-desc">
+                                Clean inside and out weekly, replace wipers every 6-12 months
+                            </div>
+                            <div class="maintenance-check">
+                                <span>✅</span> Weekly cleaning essential
+                            </div>
+                        </div>
+
+                        <div class="maintenance-card">
+                            <div class="maintenance-icon">🪞</div>
+                            <div class="maintenance-item">Mirrors</div>
+                            <div class="challenge-desc">
+                                Clean daily, adjust properly, use anti-glare setting on rearview
+                            </div>
+                            <div class="maintenance-check">
+                                <span>✅</span> Daily check recommended
+                            </div>
+                        </div>
+
+                        <div class="maintenance-card">
+                            <div class="maintenance-icon">🛞</div>
+                            <div class="maintenance-item">Tires & Brakes</div>
+                            <div class="challenge-desc">
+                                Check pressure weekly, inspect tread monthly, test brakes regularly
+                            </div>
+                            <div class="maintenance-check">
+                                <span>✅</span> Weekly pressure check
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="danger-box">
+                    <div class="danger-title">⏰ When to Pull Over</div>
+                    <div class="danger-content">
+                        <strong>Immediately pull over if you experience:</strong><br>
+                        • Frequent yawning or heavy eyelids<br>
+                        • Difficulty focusing or remembering last few miles<br>
+                        • Drifting between lanes or hitting rumble strips<br>
+                        • Missing exits or traffic signs<br>
+                        • Tailgating or varying speed unintentionally<br><br>
+                        
+                        <strong>Take a 20-minute power nap or switch drivers.</strong> Coffee only provides temporary alertness.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Check -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Night Driving Safety Assessment</h2>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. How much higher are crash death rates at night compared to daytime?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>2 times higher</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>3 times higher</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>4 times higher</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. When should you dim your high beams for oncoming traffic?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Within 100 feet</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Within 500 feet</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Within 1000 feet</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. What's the recommended following distance at night?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>2 seconds (same as daytime)</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>3 seconds</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>4+ seconds (double daytime)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. What should you do when facing blinding headlight glare?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Flash your high beams back</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Look at the right edge of the road</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Speed up to pass quickly</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">Complete Night Driving Assessment</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Your Night Driving Proficiency
+                </div>
+                <div class="score" id="score">0/4</div>
+                <div class="feedback" id="feedback">
+                    Review your answers to ensure you've mastered essential night driving safety concepts.
+                </div>
+                <div class="key-points">
+                    <div class="key-points-title">🎯 Essential Night Driving Principles</div>
+                    <ul class="key-points-list">
+                        <li>Night crash death rates are 3 times higher than daytime</li>
+                        <li>Dim high beams within 500 feet of oncoming traffic</li>
+                        <li>Maintain 4+ seconds following distance at night</li>
+                        <li>Look at right edge of road to avoid headlight glare</li>
+                        <li>Clean all lights and windows before night driving</li>
+                        <li>Pull over immediately if you feel drowsy</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Night Driving Pledge -->
+        <div class="pledge-container">
+            <h2 class="pledge-title">Take the Night Driving Safety Pledge</h2>
+            <p class="pledge-text">
+                I pledge to prioritize safety every time I drive at night. I will prepare my vehicle, 
+                manage fatigue, use headlights properly, and maintain extra caution. I understand that 
+                night driving requires special skills and attention, and I commit to protecting myself 
+                and others on the dark roads.
+            </p>
+            
+            <div class="pledge-signature">
+                <input type="text" class="pledge-input" id="pledge-name" placeholder="Enter your name to sign the pledge">
+                <input type="email" class="pledge-input" id="pledge-email" placeholder="Enter your email (optional)">
+                <button class="pledge-btn" onclick="signPledge()">Sign the Night Driving Pledge</button>
+            </div>
+            
+            <div class="pledge-confirmation" id="pledge-confirmation">
+                <div class="safety-title">✅ Thank you for your commitment to night driving safety!</div>
+                <div class="danger-content" style="color: #e5e7eb;">
+                    Your pledge has been recorded. Remember: Night driving demands extra caution. 
+                    By applying what you've learned, you reduce your crash risk by up to 70%.
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🌙</span> Night Driving Mastery Achieved!
+            </div>
+            <p>You've successfully completed the Night Driving Safety module.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p><strong>Remember:</strong> See and be seen. Arrive alive, drive safely through the night.</p>
+        </div>
+    </div>
+
+    <script>
+        // Timer Configuration
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let quizCompleted = false;
+        let headlightSimulatorCompleted = false;
+        let fatigueSimulatorCompleted = false;
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const progressFill = document.getElementById('progress-fill');
+        const submitBtn = document.getElementById('submit-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+        const beamLight = document.getElementById('beam-light');
+        const simulationFeedback = document.getElementById('simulation-feedback');
+        const fatigueSlider = document.getElementById('fatigue-slider');
+        const fatigueDisplay = document.getElementById('fatigue-display');
+        const fatigueEffects = document.getElementById('fatigue-effects');
+
+        // Headlight simulation state
+        let currentBeam = 'low';
+        let oncomingTraffic = false;
+
+        // Fatigue simulation data
+        const fatigueData = {
+            1: { 
+                level: "Alert & Fresh", 
+                reaction: "0.5-0.8 seconds",
+                effects: [
+                    "Normal reaction time (0.5-0.8 seconds)",
+                    "Good concentration and decision-making",
+                    "Standard driving performance",
+                    "Safe for extended driving"
+                ]
+            },
+            30: { 
+                level: "Slightly Tired", 
+                reaction: "0.8-1.2 seconds",
+                effects: [
+                    "Reaction time slowed by 10-20%",
+                    "Minor concentration lapses",
+                    "Increased risk of microsleeps",
+                    "Take a break within 1 hour"
+                ]
+            },
+            60: { 
+                level: "Drowsy", 
+                reaction: "1.2-1.8 seconds",
+                effects: [
+                    "Reaction time slowed by 30-40%",
+                    "Frequent attention lapses",
+                    "Risk of nodding off",
+                    "Immediate break required"
+                ]
+            },
+            80: { 
+                level: "Very Drowsy", 
+                reaction: "1.8-3.0 seconds",
+                effects: [
+                    "Reaction time slowed by 50-70%",
+                    "Severe impairment equivalent to 0.05% BAC",
+                    "High crash risk",
+                    "Must stop driving immediately"
+                ]
+            },
+            100: { 
+                level: "Extremely Fatigued", 
+                reaction: "3.0+ seconds",
+                effects: [
+                    "Extremely dangerous to drive",
+                    "Similar impairment to 0.08% BAC",
+                    "Microsleeps likely",
+                    "Pull over immediately for 20-minute nap"
+                ]
+            }
+        };
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            updateProgress();
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 3;
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 600) { // 10 minutes
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else if (totalSeconds >= 300) { // 5 minutes
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update quiz score display
+        function updateQuizScore(score, totalQuestions) {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            quizScoreEl.textContent = `${percentage}%`;
+        }
+
+        // Headlight simulator functionality
+        function updateHeadlightSimulation() {
+            // Update beam appearance
+            beamLight.className = 'beam-light';
+            beamLight.classList.add(currentBeam);
+            
+            // Add glare effect if oncoming traffic with high beams
+            if (oncomingTraffic && currentBeam === 'high') {
+                beamLight.style.opacity = '0.5';
+                beamLight.style.filter = 'blur(20px)';
+            } else {
+                beamLight.style.opacity = '1';
+                beamLight.style.filter = currentBeam === 'high' ? 'blur(10px)' : 'blur(15px)';
+            }
+            
+            // Show feedback
+            simulationFeedback.classList.add('show');
+            
+            // Mark as completed
+            if (!headlightSimulatorCompleted) {
+                headlightSimulatorCompleted = true;
+                sectionsCompleted.add('headlight-simulator');
+                updateProgress();
+            }
+        }
+
+        // Fatigue simulator functionality
+        function updateFatigueSimulation() {
+            const value = parseInt(fatigueSlider.value);
+            
+            // Find closest fatigue level
+            const levels = Object.keys(fatigueData).map(Number).sort((a, b) => a - b);
+            let closestLevel = 30; // Default
+            
+            for (let level of levels) {
+                if (value <= level) {
+                    closestLevel = level;
+                    break;
+                }
+            }
+            
+            // If at the end, use the last value
+            if (value > levels[levels.length - 1]) {
+                closestLevel = levels[levels.length - 1];
+            }
+            
+            const data = fatigueData[closestLevel];
+            fatigueDisplay.textContent = `${data.level} (${data.reaction})`;
+            
+            // Change color based on fatigue level
+            if (closestLevel <= 30) {
+                fatigueDisplay.style.color = "#10b981"; // Green for safe
+            } else if (closestLevel <= 60) {
+                fatigueDisplay.style.color = "#f59e0b"; // Yellow for caution
+            } else {
+                fatigueDisplay.style.color = "#dc2626"; // Red for dangerous
+            }
+            
+            // Update effects list
+            const effectsText = `
+                <div class="effects-title">⚠️ Fatigue Effects at Current Level</div>
+                <ul class="effects-list">
+                    ${data.effects.map(effect => `<li>${effect}</li>`).join('')}
+                </ul>
+            `;
+            
+            fatigueEffects.innerHTML = effectsText;
+            
+            // Mark as completed
+            if (!fatigueSimulatorCompleted) {
+                fatigueSimulatorCompleted = true;
+                sectionsCompleted.add('fatigue-simulator');
+                updateProgress();
+            }
+        }
+
+        // Sign pledge function
+        function signPledge() {
+            const name = document.getElementById('pledge-name').value.trim();
+            const email = document.getElementById('pledge-email').value.trim();
+            
+            if (!name) {
+                alert("Please enter your name to sign the pledge.");
+                return;
+            }
+            
+            document.getElementById('pledge-confirmation').classList.add('show');
+            document.getElementById('pledge-name').value = "";
+            document.getElementById('pledge-email').value = "";
+            
+            // Track pledge in localStorage
+            localStorage.setItem('nightDrivingPledge', JSON.stringify({
+                name: name,
+                email: email,
+                date: new Date().toISOString(),
+                module: 'Night Driving Safety'
+            }));
+            
+            // Mark as completed
+            sectionsCompleted.add('pledge');
+            updateProgress();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the continuous timer
+            startTimer();
+            
+            // Set up option selection
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+
+            // Headlight simulator event listeners
+            document.querySelectorAll('.beam-btn[data-beam]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.beam-btn[data-beam]').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentBeam = this.dataset.beam;
+                    updateHeadlightSimulation();
+                });
+            });
+
+            document.querySelectorAll('.beam-btn[data-oncoming]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.beam-btn[data-oncoming]').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    oncomingTraffic = this.dataset.oncoming === 'oncoming';
+                    updateHeadlightSimulation();
+                });
+            });
+
+            // Initialize headlight simulator
+            document.querySelector('.beam-btn[data-beam="low"]').classList.add('active');
+            document.querySelector('.beam-btn[data-oncoming="none"]').classList.add('active');
+            updateHeadlightSimulation();
+
+            // Fatigue slider event
+            fatigueSlider.addEventListener('input', updateFatigueSimulation);
+            updateFatigueSimulation(); // Initial display
+
+            // Check for existing pledge
+            const existingPledge = localStorage.getItem('nightDrivingPledge');
+            if (existingPledge) {
+                try {
+                    const pledgeData = JSON.parse(existingPledge);
+                    if (pledgeData.module === 'Night Driving Safety') {
+                        document.getElementById('pledge-confirmation').classList.add('show');
+                        sectionsCompleted.add('pledge');
+                        updateProgress();
+                    }
+                } catch (e) {
+                    console.log("Could not parse pledge data");
+                }
+            }
+        });
+
+        function checkAnswers() {
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'C',
+                4: 'B'
+            };
+
+            let score = 0;
+            const totalQuestions = 4;
+            let feedbackHTML = '';
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#10b981';
+                        selectedOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                    } else {
+                        selectedOption.style.borderColor = '#ef4444';
+                        selectedOption.style.background = 'rgba(239, 68, 68, 0.1)';
+                        
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#10b981';
+                            correctOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            updateQuizScore(score, totalQuestions);
+            
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            if (score === totalQuestions) {
+                feedbackHTML = '🌙 Perfect! You have mastered all essential night driving concepts. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '⭐ Excellent! You understand most night driving safety principles. ';
+            } else {
+                feedbackHTML = '📚 Good effort! Review the material to strengthen your night driving knowledge. ';
+            }
+            
+            feedbackHTML += 'Keep these night driving principles in mind:';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            document.getElementById('results').classList.add('show');
+            
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+            
+            progressFill.style.width = '100%';
+            
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>
