@@ -1,0 +1,2594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Drowsy Driving Prevention</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --color-info: #3b82f6;
+            --color-sleep: #8b5cf6;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes roadLines {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes eyeBlink {
+            0%, 100% { height: 40px; }
+            50% { height: 5px; }
+        }
+
+        @keyframes drowsyPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-display { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .time-estimate {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(95, 23, 235, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Drowsiness Simulation */
+        .drowsiness-simulation {
+            width: 100%;
+            height: 180px;
+            background: #1a1a1a;
+            border-radius: var(--radius-md);
+            margin: 25px 0;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .eye-simulation {
+            width: 300px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .eye {
+            width: 60px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #333;
+        }
+
+        .eye-lid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: #1a1a1a;
+            transition: height 0.3s ease;
+            border-radius: 50%;
+        }
+
+        .eye-pupil {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 25px;
+            height: 25px;
+            background: #000;
+            border-radius: 50%;
+            border: 4px solid #333;
+        }
+
+        .alertness-meter {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .alertness-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
+            border-radius: 10px;
+            width: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .drowsiness-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            display: none;
+            animation: drowsyPulse 1s infinite;
+        }
+
+        .alert-indicator {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            display: block;
+        }
+
+        /* Interactive Elements */
+        .interactive-box {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .interactive-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .interactive-content {
+            color: var(--color-text);
+        }
+
+        .simulation {
+            background: rgba(16, 185, 129, 0.05);
+            border: 2px dashed rgba(16, 185, 129, 0.3);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .simulation-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .simulation-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .simulation-btn {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.3);
+            color: var(--color-primary);
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .simulation-btn:hover {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .simulation-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .scenario {
+            background: rgba(245, 158, 11, 0.05);
+            border-left: 4px solid var(--color-warning);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .scenario-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scenario-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .scenario-option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .scenario-option:hover {
+            border-color: var(--color-warning);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .scenario-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+        }
+
+        .scenario-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .scenario-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .scenario-feedback {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .scenario-feedback.correct {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--color-success);
+        }
+
+        .scenario-feedback.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--color-error);
+        }
+
+        .stats-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .stats-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--color-info);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .info-title {
+            font-weight: 700;
+            color: var(--color-info);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .sleep-box {
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 4px solid var(--color-sleep);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .sleep-title {
+            font-weight: 700;
+            color: var(--color-sleep);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sleep-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .tips-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .tips-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tips-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tips-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: rgba(95, 23, 235, 0.05);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(95, 23, 235, 0.1);
+        }
+
+        .feature-card.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            animation: pulse 1s;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-name {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+
+        .feature-desc {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .knowledge-check {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(95, 23, 235, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .key-points {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .risk-meter {
+            width: 100%;
+            height: 30px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .risk-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
+            border-radius: 15px;
+            width: 0%;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .risk-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .checklist {
+            margin: 20px 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            border-color: rgba(95, 23, 235, 0.3);
+        }
+
+        .checklist-item.completed {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .checklist-label {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .sleep-cycle {
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6, #60a5fa, #93c5fd);
+            border-radius: var(--radius-md);
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sleep-stage {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .reaction-test {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .reaction-button {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: white;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .reaction-button:hover {
+            transform: scale(1.05);
+        }
+
+        .reaction-button.active {
+            background: #10b981;
+        }
+
+        .time-slider {
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .time-slider input[type="range"] {
+            width: 100%;
+            height: 10px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.8rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .drowsiness-simulation {
+                height: 150px;
+            }
+
+            .eye-simulation {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Time Learning</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" 
+                     alt="VA Driving Clinic Logo" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Drowsy Driving Prevention</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">15-Minute Alertness Mastery</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Drowsy Driving: Stay Awake, Stay Alive</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">⏱️</div>
+            <div class="time-estimate-text">
+                Complete this interactive safety course in <span class="time-highlight">15 minutes</span> to master drowsy driving prevention
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Sections Completed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="alertness-score">100%</span>
+                <span class="stat-label">Alertness Score</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="interaction-count">0</span>
+                <span class="stat-label">Interactions</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Time Learning</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Course Progress</span>
+                <span>Time Learning: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: The Drowsy Driving Crisis -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🚨</span>
+                    The Drowsy Driving Crisis
+                </h2>
+                
+                <!-- Eye Simulation -->
+                <div class="drowsiness-simulation">
+                    <div class="alert-indicator" id="alert-indicator">✅ ALERT</div>
+                    <div class="drowsiness-indicator" id="drowsiness-indicator">😴 DROWSY</div>
+                    <div class="eye-simulation">
+                        <div class="eye" id="left-eye">
+                            <div class="eye-lid" id="left-lid"></div>
+                            <div class="eye-pupil"></div>
+                        </div>
+                        <div class="eye" id="right-eye">
+                            <div class="eye-lid" id="right-lid"></div>
+                            <div class="eye-pupil"></div>
+                        </div>
+                    </div>
+                    <div class="alertness-meter">
+                        <div class="alertness-fill" id="alertness-fill"></div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>📊</span> The Alarming Statistics
+                    </h3>
+                    <p class="subsection-content">
+                        Drowsy driving is one of the most underreported and dangerous behaviors on our roads. 
+                        Unlike alcohol impairment, there's no breathalyzer for fatigue—but the effects can be just as deadly.
+                    </p>
+                    
+                    <div class="stats-box">
+                        <div class="stats-title">📈 National Highway Traffic Safety Administration (NHTSA) Data</div>
+                        <div class="stats-content">
+                            • <strong>100,000+</strong> crashes annually caused by drowsy driving<br>
+                            • <strong>71,000+</strong> injuries each year<br>
+                            • <strong>1,550+</strong> fatalities annually<br>
+                            • <strong>1 in 6</strong> deadly crashes involves a drowsy driver (AAA)<br>
+                            • <strong>96%</strong> of drivers view drowsy driving as unacceptable, yet 37% admit to doing it
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>⚖️</span> Interactive: Drowsy vs. Drunk Driving
+                    </h3>
+                    
+                    <div class="simulation">
+                        <div class="simulation-title">
+                            <span>🧪</span> Fatigue Impact Comparison
+                        </div>
+                        <p>Adjust hours of sleep to see how fatigue compares to blood alcohol concentration:</p>
+                        
+                        <div class="time-slider">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Hours of Sleep: <span id="sleep-hours">7</span> hours</label>
+                            <input type="range" min="0" max="8" value="7" class="slider" id="sleep-slider" style="width: 100%;">
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; margin: 20px 0;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 800; color: var(--color-primary);" id="bac-equivalent">0.00%</div>
+                                <div style="font-size: 0.9rem; color: var(--color-muted);">BAC Equivalent</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 800; color: var(--color-primary);" id="reaction-increase">0%</div>
+                                <div style="font-size: 0.9rem; color: var(--color-muted);">Reaction Time Increase</div>
+                            </div>
+                        </div>
+                        
+                        <button class="simulation-btn" onclick="updateEyeSimulation()">Simulate Eye Response</button>
+                        
+                        <div id="fatigue-feedback" style="display: none; margin-top: 15px; padding: 10px; border-radius: var(--radius-sm);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Causes & Risk Factors -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🔍</span>
+                    Causes & Risk Factors
+                </h2>
+
+                <div class="feature-grid">
+                    <div class="feature-card" data-cause="sleep">
+                        <div class="feature-icon">😴</div>
+                        <div class="feature-name">Sleep Deprivation</div>
+                        <div class="feature-desc">Adults need 7-9 hours; most get less than 7</div>
+                    </div>
+
+                    <div class="feature-card" data-cause="shift">
+                        <div class="feature-icon">🌙</div>
+                        <div class="feature-name">Shift Work</div>
+                        <div class="feature-desc">Night workers have 30% higher crash risk</div>
+                    </div>
+
+                    <div class="feature-card" data-cause="disorders">
+                        <div class="feature-icon">🩺</div>
+                        <div class="feature-name">Sleep Disorders</div>
+                        <div class="feature-desc">Sleep apnea increases risk by 7x</div>
+                    </div>
+
+                    <div class="feature-card" data-cause="medications">
+                        <div class="feature-icon">💊</div>
+                        <div class="feature-name">Medications</div>
+                        <div class="feature-desc">500+ medications cause drowsiness</div>
+                    </div>
+                </div>
+
+                <!-- Cause Information Display -->
+                <div class="interactive-box" id="cause-info" style="display: none;">
+                    <div class="interactive-title">
+                        <span>ℹ️</span> <span id="cause-title">Risk Factor Information</span>
+                    </div>
+                    <div class="interactive-content" id="cause-details">
+                        Click on a risk factor above to learn more about it.
+                    </div>
+                </div>
+
+                <!-- Sleep Cycle Visualization -->
+                <div class="sleep-cycle">
+                    <div class="sleep-stage" style="left: 0%; width: 5%; background: rgba(30, 58, 138, 0.9);">Awake</div>
+                    <div class="sleep-stage" style="left: 5%; width: 45%; background: rgba(59, 130, 246, 0.9);">Light Sleep</div>
+                    <div class="sleep-stage" style="left: 50%; width: 25%; background: rgba(96, 165, 250, 0.9);">Deep Sleep</div>
+                    <div class="sleep-stage" style="left: 75%; width: 25%; background: rgba(147, 197, 253, 0.9);">REM Sleep</div>
+                </div>
+
+                <div class="sleep-box">
+                    <div class="sleep-title">
+                        <span>💤</span> Understanding Sleep Cycles
+                    </div>
+                    <div class="sleep-content">
+                        • Each cycle lasts <strong>90-110 minutes</strong><br>
+                        • Need <strong>4-5 cycles</strong> (7-9 hours) for full restoration<br>
+                        • Missing REM sleep reduces alertness by <strong>40%</strong><br>
+                        • Disrupted cycles (night shifts) = <strong>chronic fatigue</strong><br>
+                        • After 18 hours awake = equivalent to <strong>0.05% BAC</strong>
+                    </div>
+                </div>
+
+                <!-- Personal Risk Assessment -->
+                <div class="scenario">
+                    <div class="scenario-title">
+                        <span>📋</span> Interactive: Personal Risk Assessment
+                    </div>
+                    <p>Check factors that apply to you:</p>
+                    
+                    <div class="checklist">
+                        <div class="checklist-item" data-risk="15">
+                            <input type="checkbox" class="checklist-checkbox" id="risk1">
+                            <label class="checklist-label" for="risk1">Regularly get less than 7 hours sleep</label>
+                        </div>
+                        <div class="checklist-item" data-risk="20">
+                            <input type="checkbox" class="checklist-checkbox" id="risk2">
+                            <label class="checklist-label" for="risk2">Work night shifts or rotating shifts</label>
+                        </div>
+                        <div class="checklist-item" data-risk="25">
+                            <input type="checkbox" class="checklist-checkbox" id="risk3">
+                            <label class="checklist-label" for="risk3">Take medications that cause drowsiness</label>
+                        </div>
+                        <div class="checklist-item" data-risk="10">
+                            <input type="checkbox" class="checklist-checkbox" id="risk4">
+                            <label class="checklist-label" for="risk4">Drive between 12 AM - 6 AM regularly</label>
+                        </div>
+                        <div class="checklist-item" data-risk="30">
+                            <input type="checkbox" class="checklist-checkbox" id="risk5">
+                            <label class="checklist-label" for="risk5">Have diagnosed sleep disorder (apnea, insomnia)</label>
+                        </div>
+                    </div>
+                    
+                    <button class="simulation-btn" onclick="calculateDrowsyRisk()">Calculate Your Risk</button>
+                    
+                    <div class="risk-label">
+                        <span>Drowsy Driving Risk Level</span>
+                        <span id="risk-percentage">0%</span>
+                    </div>
+                    <div class="risk-meter">
+                        <div class="risk-fill" id="risk-fill" style="width: 0%; background: linear-gradient(90deg, #10b981 0%, #10b981 0%);"></div>
+                    </div>
+                    <div id="risk-feedback" style="display: none; margin-top: 15px; padding: 10px; border-radius: var(--radius-sm);"></div>
+                </div>
+            </div>
+
+            <!-- Section 3: Prevention Strategies -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🛡️</span>
+                    Prevention Strategies
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>💤</span> Sleep Schedule Planner
+                    </h3>
+                    <p class="subsection-content">
+                        Consistent sleep is the most effective prevention. Use this planner to optimize your sleep schedule.
+                    </p>
+                    
+                    <div class="simulation">
+                        <div class="simulation-title">
+                            <span>📅</span> Interactive: Sleep Schedule Builder
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Your target wake-up time:</label>
+                            <select id="wake-time" style="width: 100%; padding: 10px; border-radius: var(--radius-sm); border: 2px solid rgba(95, 23, 235, 0.2);">
+                                <option value="6">6:00 AM</option>
+                                <option value="7" selected>7:00 AM</option>
+                                <option value="8">8:00 AM</option>
+                                <option value="9">9:00 AM</option>
+                            </select>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Sleep quality goal:</label>
+                            <div class="simulation-controls">
+                                <button class="simulation-btn" data-quality="good" onclick="setSleepQuality('good')">Good (7+ hours)</button>
+                                <button class="simulation-btn" data-quality="optimal" onclick="setSleepQuality('optimal')">Optimal (8 hours)</button>
+                                <button class="simulation-btn" data-quality="excellent" onclick="setSleepQuality('excellent')">Excellent (9 hours)</button>
+                            </div>
+                        </div>
+                        
+                        <button class="simulation-btn" onclick="generateSleepSchedule()">Generate Sleep Schedule</button>
+                        
+                        <div id="sleep-schedule" style="display: none; margin-top: 20px; padding: 15px; background: rgba(139, 92, 246, 0.1); border-radius: var(--radius-md);">
+                            <div style="font-weight: 700; color: var(--color-sleep); margin-bottom: 10px;">Recommended Sleep Schedule:</div>
+                            <div id="schedule-details" style="margin-bottom: 10px;"></div>
+                            <div id="sleep-tips" style="font-size: 0.9rem; color: var(--color-text);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>🛣️</span> Road Trip Planning
+                    </h3>
+                    
+                    <div class="tips-box">
+                        <div class="tips-title">✅ Pre-Trip Preparation Checklist</div>
+                        <ul class="tips-list">
+                            <li>Get 7+ hours sleep for 2 nights before trip</li>
+                            <li>Plan breaks every 100 miles or 2 hours</li>
+                            <li>Avoid driving 1-3 PM (post-lunch dip)</li>
+                            <li>Avoid driving 2-6 AM (circadian low)</li>
+                            <li>Share driving with rested passengers</li>
+                            <li>Pack healthy snacks and water</li>
+                            <li>Download engaging podcasts/audiobooks</li>
+                        </ul>
+                    </div>
+
+                    <!-- Break Planning Calculator -->
+                    <div class="interactive-box">
+                        <div class="interactive-title">
+                            <span>🗺️</span> Interactive: Trip Break Planner
+                        </div>
+                        <p>Plan safe breaks for your journey:</p>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Trip Distance: <span id="distance-value">300</span> miles</label>
+                            <input type="range" min="100" max="600" value="300" class="slider" id="distance-slider" style="width: 100%;">
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Time of Travel:</label>
+                            <div class="simulation-controls">
+                                <button class="simulation-btn" data-time="day" onclick="setTravelTime('day')">Day</button>
+                                <button class="simulation-btn" data-time="night" onclick="setTravelTime('night')">Night</button>
+                                <button class="simulation-btn" data-time="mixed" onclick="setTravelTime('mixed')">Mixed</button>
+                            </div>
+                        </div>
+                        
+                        <button class="simulation-btn" onclick="calculateTripBreaks()">Calculate Break Schedule</button>
+                        
+                        <div id="trip-breaks" style="display: none; margin-top: 15px; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: var(--radius-md);">
+                            <div style="font-weight: 700; color: var(--color-success); margin-bottom: 5px;">Recommended Break Schedule:</div>
+                            <div id="break-details"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-title">
+                        <span>⚠️</span> Immediate Response Protocol
+                    </div>
+                    <div class="warning-content">
+                        When you notice ANY of these signs:<br>
+                        1. <strong>Pull over immediately</strong> at next safe location<br>
+                        2. <strong>Take a 20-minute nap</strong> (restores alertness by 34%)<br>
+                        3. <strong>Get out and walk</strong> for 5-10 minutes<br>
+                        4. <strong>Drink water</strong> and splash face if possible<br>
+                        5. <strong>Wait 15 minutes</strong> before driving again<br>
+                        6. If still drowsy, <strong>find overnight accommodation</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Technology & Legal Measures -->
+            <div class="section" style="animation-delay: 0.4s" data-section="4">
+                <div class="section-number">4</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🤖</span>
+                    Technology & Legal Solutions
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>📱</span> Modern Safety Technology
+                    </h3>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card" data-tech="detection">
+                            <div class="feature-icon">👁️</div>
+                            <div class="feature-name">Driver Monitoring</div>
+                            <div class="feature-desc">Cameras track eye closure and head position</div>
+                        </div>
+
+                        <div class="feature-card" data-tech="lane">
+                            <div class="feature-icon">↔️</div>
+                            <div class="feature-name">Lane Keep Assist</div>
+                            <div class="feature-desc">Detects unintentional lane drifting</div>
+                        </div>
+
+                        <div class="feature-card" data-tech="steering">
+                            <div class="feature-icon">🎮</div>
+                            <div class="feature-name">Steering Pattern Analysis</div>
+                            <div class="feature-desc">Identifies micro-corrections (sign of fatigue)</div>
+                        </div>
+
+                        <div class="feature-card" data-tech="apps">
+                            <div class="feature-icon">📲</div>
+                            <div class="feature-name">Alertness Apps</div>
+                            <div class="feature-desc">Use smartphone sensors to detect drowsiness</div>
+                        </div>
+                    </div>
+
+                    <!-- Tech Information Display -->
+                    <div class="interactive-box" id="tech-info" style="display: none;">
+                        <div class="interactive-title">
+                            <span>ℹ️</span> <span id="tech-title">Technology Information</span>
+                        </div>
+                        <div class="interactive-content" id="tech-details">
+                            Click on a technology above to learn more about it.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>⚖️</span> Legal & Workplace Measures
+                    </h3>
+                    
+                    <div class="info-box">
+                        <div class="info-title">
+                            <span>🏛️</span> Current Regulations
+                        </div>
+                        <div class="info-content">
+                            • <strong>Commercial drivers:</strong> 11 hours driving max, 10 hours off duty<br>
+                            • <strong>14-hour duty limit</strong> for commercial vehicle operators<br>
+                            • <strong>30-minute break</strong> required after 8 hours driving<br>
+                            • <strong>34-hour restart</strong> provision for weekly reset<br>
+                            • <strong>Electronic logging devices</strong> (ELDs) mandatory for tracking
+                        </div>
+                    </div>
+
+                    <!-- Workplace Policy Scenario -->
+                    <div class="scenario">
+                        <div class="scenario-title">
+                            <span>💼</span> Scenario: Employer Responsibility
+                        </div>
+                        <p>As a manager, an employee tells you they're too tired to drive home after a 12-hour shift. What should you do?</p>
+                        <div class="scenario-options">
+                            <div class="scenario-option" data-correct="false">Tell them to drink coffee and drive carefully</div>
+                            <div class="scenario-option" data-correct="true">Provide accommodation or taxi reimbursement</div>
+                            <div class="scenario-option" data-correct="false">Say they should have planned better</div>
+                            <div class="scenario-option" data-correct="false">Allow them to sleep at their desk for 30 minutes</div>
+                        </div>
+                        <div class="scenario-feedback" id="workplace-feedback" style="display: none;">
+                            <strong>Employers have a duty of care.</strong> Providing safe transportation or accommodation prevents potential tragedies and reduces liability.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>⏱️</span> Interactive: Reaction Time Challenge
+                    </h3>
+                    
+                    <div class="simulation">
+                        <div class="simulation-title">
+                            <span>🎯</span> Test Your Alert Reaction Time
+                        </div>
+                        <p>Click the button as soon as it turns green to see how fatigue affects reaction:</p>
+                        
+                        <div class="reaction-test">
+                            <button class="reaction-button" id="reaction-button" onclick="stopReactionTest()">WAIT...</button>
+                            <div id="reaction-result" style="font-size: 1.2rem; font-weight: 600; margin-top: 15px;"></div>
+                        </div>
+                        
+                        <div id="reaction-feedback" style="display: none; margin-top: 20px; padding: 15px; background: rgba(95, 23, 235, 0.1); border-radius: var(--radius-md);">
+                            <div style="font-weight: 700; color: var(--color-primary); margin-bottom: 5px;">Fatigue Impact Analysis:</div>
+                            <div style="font-size: 0.9rem;">
+                                At 60 mph, each additional 0.1 second of reaction time equals <strong>8.8 feet</strong> of extra stopping distance.<br>
+                                Drowsy drivers experience <strong>50-100% longer</strong> reaction times—enough to turn a near-miss into a collision.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Final Statistics -->
+                <div class="stats-box">
+                    <div class="stats-title">📊 Prevention Effectiveness</div>
+                    <div class="stats-content">
+                        • Proper sleep reduces crash risk by <strong>48%</strong><br>
+                        • Scheduled breaks prevent <strong>30%</strong> of drowsy driving incidents<br>
+                        • Driver monitoring systems reduce fatigue-related crashes by <strong>37%</strong><br>
+                        • Employer policies decrease work-related drowsy driving by <strong>52%</strong><br>
+                        • Education programs increase prevention behaviors by <strong>65%</strong>
+                    </div>
+                </div>
+
+                <!-- Emergency Protocol -->
+                <div class="warning-box">
+                    <div class="warning-title">
+                        <span>🆘</span> Emergency Drowsiness Protocol
+                    </div>
+                    <div class="warning-content">
+                        If you experience ANY of these symptoms while driving:<br>
+                        1. <strong>Yawning repeatedly</strong> or blinking frequently<br>
+                        2. <strong>Difficulty focusing</strong> or keeping eyes open<br>
+                        3. <strong>Missing exits</strong> or traffic signs<br>
+                        4. <strong>Drifting from lane</strong> or hitting rumble strips<br>
+                        5. <strong>Cannot remember</strong> last few miles driven<br>
+                        <strong>→ PULL OVER IMMEDIATELY AND REST</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Knowledge Assessment -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Final Safety Assessment</h2>
+            <p style="text-align: center; margin-bottom: 20px; color: var(--color-muted);">
+                Test your understanding of drowsy driving prevention
+            </p>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. How many hours of sleep do adults typically need per night?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>5-6 hours</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>7-9 hours</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>10-12 hours</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. After being awake for 18 hours, reaction time impairment is equivalent to what blood alcohol concentration?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>0.02%</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>0.05%</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>0.08%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. What is the recommended maximum driving time between breaks?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>1 hour</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>2 hours</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>4 hours</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. Which symptom is NOT typically associated with drowsy driving?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Frequent yawning</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Drifting from lane</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Increased concentration</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">5. What should you do if you feel drowsy while driving?</div>
+                <div class="options">
+                    <div class="option" data-question="5" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Turn up the radio</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Open the windows</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Pull over and rest</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkFinalAssessment()">Complete Safety Assessment</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Your Safety Mastery Results
+                </div>
+                <div class="score" id="score">0/5</div>
+                <div class="feedback" id="feedback">
+                    Review your answers to identify areas for improvement.
+                </div>
+                <div class="key-points" style="margin-top: 20px;">
+                    <div class="key-points-title">🎯 Key Prevention Principles Mastered</div>
+                    <ul class="key-points-list">
+                        <li>Prioritize 7-9 hours of quality sleep before driving</li>
+                        <li>Take breaks every 100 miles or 2 hours on long trips</li>
+                        <li>Recognize and respond immediately to drowsiness signs</li>
+                        <li>Use available technology to monitor alertness</li>
+                        <li>Never push through fatigue—safety comes first</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> Safety Mastery Achieved!
+            </div>
+            <p>You've successfully completed the Drowsy Driving Prevention course.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>You completed <span id="interactions-total">0</span> interactive exercises and achieved an alertness score of <span id="final-percentage">100%</span>.</p>
+            <p style="margin-top: 15px; font-weight: 600; font-size: 1.1rem;">
+                Remember: No meeting, appointment, or deadline is worth risking lives. When tired, pull over and rest.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Timer Configuration
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let interactionCount = 0;
+        let currentAlertnessScore = 100;
+        let maxAlertnessScore = 100;
+        let quizCompleted = false;
+        let reactionStartTime = 0;
+        let reactionTestActive = false;
+        let currentSleepQuality = 'optimal';
+        let currentTravelTime = 'day';
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const interactionCountEl = document.getElementById('interaction-count');
+        const alertnessScoreEl = document.getElementById('alertness-score');
+        const progressFill = document.getElementById('progress-fill');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+        const interactionsTotalEl = document.getElementById('interactions-total');
+        const finalPercentageEl = document.getElementById('final-percentage');
+        const leftLid = document.getElementById('left-lid');
+        const rightLid = document.getElementById('right-lid');
+        const alertnessFill = document.getElementById('alertness-fill');
+        const drowsinessIndicator = document.getElementById('drowsiness-indicator');
+        const alertIndicator = document.getElementById('alert-indicator');
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            // Clear any existing interval
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // Start new interval
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+                
+                // Simulate eye blinking every 30 seconds
+                if (totalSeconds % 30 === 0) {
+                    simulateEyeBlink();
+                }
+                
+                // Simulate drowsiness if alertness is low
+                if (totalSeconds % 45 === 0 && currentAlertnessScore < 70) {
+                    simulateDrowsiness();
+                }
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            // Update all timer displays
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            // Update progress based on sections read
+            updateProgress();
+        }
+
+        // Simulate eye blinking
+        function simulateEyeBlink() {
+            leftLid.style.height = '5px';
+            rightLid.style.height = '5px';
+            
+            setTimeout(() => {
+                leftLid.style.height = '40px';
+                rightLid.style.height = '40px';
+            }, 200);
+        }
+
+        // Simulate drowsiness effect
+        function simulateDrowsiness() {
+            if (currentAlertnessScore < 50) {
+                leftLid.style.height = '20px';
+                rightLid.style.height = '20px';
+                drowsinessIndicator.style.display = 'block';
+                alertIndicator.style.display = 'none';
+                
+                setTimeout(() => {
+                    if (currentAlertnessScore >= 70) {
+                        leftLid.style.height = '40px';
+                        rightLid.style.height = '40px';
+                        alertIndicator.style.display = 'block';
+                        drowsinessIndicator.style.display = 'none';
+                    }
+                }, 3000);
+            }
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 4;
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Update completed count
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            // Update timer appearance based on time
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 900) { // 15 minutes or more
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 1200) { // 20 minutes or more
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update interaction count
+        function incrementInteraction() {
+            interactionCount++;
+            interactionCountEl.textContent = interactionCount;
+            interactionsTotalEl.textContent = interactionCount;
+        }
+
+        // Update alertness score
+        function updateAlertnessScore(points) {
+            currentAlertnessScore = Math.max(0, Math.min(currentAlertnessScore + points, maxAlertnessScore));
+            alertnessScoreEl.textContent = `${Math.round(currentAlertnessScore)}%`;
+            finalPercentageEl.textContent = `${Math.round(currentAlertnessScore)}%`;
+            
+            // Update eye simulation based on alertness
+            const eyeOpenness = (currentAlertnessScore / 100) * 40;
+            leftLid.style.height = `${eyeOpenness}px`;
+            rightLid.style.height = `${eyeOpenness}px`;
+            
+            // Update alertness meter
+            alertnessFill.style.width = `${currentAlertnessScore}%`;
+            
+            // Update indicators
+            if (currentAlertnessScore > 70) {
+                alertIndicator.style.display = 'block';
+                drowsinessIndicator.style.display = 'none';
+                alertnessFill.style.background = 'linear-gradient(90deg, #ef4444 0%, #f59e0b 50%, #10b981 100%)';
+            } else if (currentAlertnessScore > 30) {
+                alertIndicator.style.display = 'none';
+                drowsinessIndicator.style.display = 'block';
+                drowsinessIndicator.textContent = '⚠️ LOW ALERTNESS';
+                drowsinessIndicator.style.background = 'rgba(245, 158, 11, 0.9)';
+                alertnessFill.style.background = 'linear-gradient(90deg, #ef4444 0%, #f59e0b 100%)';
+            } else {
+                alertIndicator.style.display = 'none';
+                drowsinessIndicator.style.display = 'block';
+                drowsinessIndicator.textContent = '😴 DROWSY';
+                drowsinessIndicator.style.background = 'rgba(239, 68, 68, 0.9)';
+                alertnessFill.style.background = 'linear-gradient(90deg, #ef4444 0%, #ef4444 100%)';
+            }
+        }
+
+        // Interactive Functions
+        function updateEyeSimulation() {
+            const sleepHours = parseInt(document.getElementById('sleep-slider').value);
+            const sleepDisplay = document.getElementById('sleep-hours');
+            const bacDisplay = document.getElementById('bac-equivalent');
+            const reactionDisplay = document.getElementById('reaction-increase');
+            const feedback = document.getElementById('fatigue-feedback');
+            
+            sleepDisplay.textContent = `${sleepHours} hours`;
+            
+            // Calculate BAC equivalent and reaction time increase
+            let bacEquivalent = 0;
+            let reactionIncrease = 0;
+            
+            if (sleepHours >= 7) {
+                bacEquivalent = 0.00;
+                reactionIncrease = 0;
+            } else if (sleepHours >= 6) {
+                bacEquivalent = 0.02;
+                reactionIncrease = 10;
+            } else if (sleepHours >= 5) {
+                bacEquivalent = 0.05;
+                reactionIncrease = 30;
+            } else if (sleepHours >= 4) {
+                bacEquivalent = 0.08;
+                reactionIncrease = 50;
+            } else {
+                bacEquivalent = 0.10;
+                reactionIncrease = 100;
+            }
+            
+            bacDisplay.textContent = `${bacEquivalent.toFixed(2)}%`;
+            reactionDisplay.textContent = `${reactionIncrease}%`;
+            
+            // Update eye simulation
+            const eyeOpenness = Math.max(5, (sleepHours / 8) * 40);
+            leftLid.style.height = `${eyeOpenness}px`;
+            rightLid.style.height = `${eyeOpenness}px`;
+            
+            // Update alertness score
+            const alertnessPoints = sleepHours * 12.5; // 100/8 = 12.5 points per hour
+            updateAlertnessScore(alertnessPoints - currentAlertnessScore);
+            
+            // Provide feedback
+            if (sleepHours >= 7) {
+                feedback.innerHTML = '<strong>Well-rested!</strong> You\'re at optimal alertness for driving.';
+                feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+                feedback.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+                feedback.style.color = '#10b981';
+            } else if (sleepHours >= 5) {
+                feedback.innerHTML = `<strong>Moderate impairment.</strong> Equivalent to ${bacEquivalent.toFixed(2)}% BAC. Consider delaying your trip.`;
+                feedback.style.background = 'rgba(245, 158, 11, 0.1)';
+                feedback.style.border = '1px solid rgba(245, 158, 11, 0.3)';
+                feedback.style.color = '#f59e0b';
+            } else {
+                feedback.innerHTML = `<strong>Severely impaired.</strong> Equivalent to ${bacEquivalent.toFixed(2)}% BAC. Do NOT drive.`;
+                feedback.style.background = 'rgba(239, 68, 68, 0.1)';
+                feedback.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+                feedback.style.color = '#ef4444';
+            }
+            
+            feedback.style.display = 'block';
+            incrementInteraction();
+        }
+
+        function calculateDrowsyRisk() {
+            const checkboxes = document.querySelectorAll('.checklist-checkbox:checked');
+            let totalRisk = 0;
+            
+            checkboxes.forEach(checkbox => {
+                const item = checkbox.closest('.checklist-item');
+                const risk = parseInt(item.dataset.risk);
+                totalRisk += risk;
+                item.classList.add('completed');
+            });
+            
+            const riskPercentage = Math.min(totalRisk, 100);
+            const riskFill = document.getElementById('risk-fill');
+            const riskDisplay = document.getElementById('risk-percentage');
+            const feedback = document.getElementById('risk-feedback');
+            
+            // Calculate alertness score (inverse of risk)
+            const alertnessPoints = 100 - riskPercentage;
+            updateAlertnessScore(alertnessPoints - currentAlertnessScore);
+            
+            riskFill.style.width = `${riskPercentage}%`;
+            
+            // Update gradient based on risk level
+            if (riskPercentage <= 25) {
+                riskFill.style.background = 'linear-gradient(90deg, #10b981 0%, #10b981 100%)';
+                feedback.innerHTML = '<strong>Low risk!</strong> You have good driving habits.';
+                feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+                feedback.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+                feedback.style.color = '#10b981';
+            } else if (riskPercentage <= 50) {
+                riskFill.style.background = 'linear-gradient(90deg, #10b981 0%, #f59e0b 100%)';
+                feedback.innerHTML = '<strong>Moderate risk.</strong> Implement prevention strategies.';
+                feedback.style.background = 'rgba(245, 158, 11, 0.1)';
+                feedback.style.border = '1px solid rgba(245, 158, 11, 0.3)';
+                feedback.style.color = '#f59e0b';
+            } else if (riskPercentage <= 75) {
+                riskFill.style.background = 'linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%)';
+                feedback.innerHTML = '<strong>High risk.</strong> Seriously consider lifestyle changes.';
+                feedback.style.background = 'rgba(239, 68, 68, 0.1)';
+                feedback.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+                feedback.style.color = '#ef4444';
+            } else {
+                riskFill.style.background = 'linear-gradient(90deg, #ef4444 0%, #ef4444 100%)';
+                feedback.innerHTML = '<strong>Critical risk.</strong> Do not drive until you address these factors.';
+                feedback.style.background = 'rgba(239, 68, 68, 0.2)';
+                feedback.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+                feedback.style.color = '#ef4444';
+            }
+            
+            riskDisplay.textContent = `${riskPercentage}%`;
+            feedback.style.display = 'block';
+            incrementInteraction();
+        }
+
+        function setSleepQuality(quality) {
+            currentSleepQuality = quality;
+            const buttons = document.querySelectorAll('.simulation-btn[data-quality]');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.quality === quality) {
+                    btn.classList.add('active');
+                }
+            });
+            incrementInteraction();
+        }
+
+        function generateSleepSchedule() {
+            const wakeTime = parseInt(document.getElementById('wake-time').value);
+            const scheduleDiv = document.getElementById('sleep-schedule');
+            const scheduleDetails = document.getElementById('schedule-details');
+            const sleepTips = document.getElementById('sleep-tips');
+            
+            let targetSleepHours = 8;
+            switch(currentSleepQuality) {
+                case 'good':
+                    targetSleepHours = 7;
+                    break;
+                case 'optimal':
+                    targetSleepHours = 8;
+                    break;
+                case 'excellent':
+                    targetSleepHours = 9;
+                    break;
+            }
+            
+            // Calculate bed times (accounting for 15-20 minutes to fall asleep)
+            const bedTime1 = (wakeTime - targetSleepHours) % 24;
+            const bedTime2 = (wakeTime - targetSleepHours - 1) % 24;
+            
+            const formatTime = (hour) => {
+                const period = hour >= 12 ? 'PM' : 'AM';
+                const displayHour = hour % 12 || 12;
+                return `${displayHour}:00 ${period}`;
+            };
+            
+            scheduleDetails.innerHTML = `
+                <div>• Target sleep: <strong>${targetSleepHours} hours</strong></div>
+                <div>• Wake up: <strong>${formatTime(wakeTime)}</strong></div>
+                <div>• Ideal bedtime: <strong>${formatTime(bedTime1)}</strong></div>
+                <div>• Alternative: <strong>${formatTime(bedTime2)}</strong> (accounts for sleep latency)</div>
+                <div>• Wind down start: <strong>${formatTime((bedTime1 - 1) % 24)}</strong></div>
+            `;
+            
+            sleepTips.textContent = `Tips: Avoid screens 1 hour before bed. Keep bedroom cool (65-68°F). Consistent schedule improves sleep quality by 40%.`;
+            
+            scheduleDiv.style.display = 'block';
+            updateAlertnessScore(15);
+            incrementInteraction();
+        }
+
+        function setTravelTime(time) {
+            currentTravelTime = time;
+            const buttons = document.querySelectorAll('.simulation-btn[data-time]');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.time === time) {
+                    btn.classList.add('active');
+                }
+            });
+            incrementInteraction();
+        }
+
+        function calculateTripBreaks() {
+            const distance = parseInt(document.getElementById('distance-slider').value);
+            const distanceValue = document.getElementById('distance-value');
+            const breaksDiv = document.getElementById('trip-breaks');
+            const breakDetails = document.getElementById('break-details');
+            
+            distanceValue.textContent = distance;
+            
+            // Calculate breaks based on distance and travel time
+            let breakInterval = 100; // Default: every 100 miles
+            let breakDuration = 15; // Default: 15 minutes
+            
+            switch(currentTravelTime) {
+                case 'night':
+                    breakInterval = 75; // More frequent breaks at night
+                    breakDuration = 20;
+                    break;
+                case 'mixed':
+                    breakInterval = 90;
+                    breakDuration = 15;
+                    break;
+            }
+            
+            const numberOfBreaks = Math.max(1, Math.ceil(distance / breakInterval));
+            const breakLocations = [];
+            
+            for (let i = 1; i <= numberOfBreaks; i++) {
+                const breakLocation = Math.round((distance / numberOfBreaks) * i);
+                breakLocations.push(`${breakLocation} miles`);
+            }
+            
+            breakDetails.innerHTML = `
+                <div>• <strong>${numberOfBreaks}</strong> recommended breaks</div>
+                <div>• Every <strong>${breakInterval}</strong> miles or <strong>${Math.round(breakInterval/60*60)}</strong> minutes</div>
+                <div>• Break duration: <strong>${breakDuration}</strong> minutes each</div>
+                <div>• Suggested break points: ${breakLocations.join(', ')}</div>
+                <div>• Total break time: <strong>${numberOfBreaks * breakDuration}</strong> minutes</div>
+            `;
+            
+            breaksDiv.style.display = 'block';
+            updateAlertnessScore(10);
+            incrementInteraction();
+        }
+
+        function startReactionTest() {
+            const button = document.getElementById('reaction-button');
+            const resultDisplay = document.getElementById('reaction-result');
+            const feedbackDiv = document.getElementById('reaction-feedback');
+            
+            button.textContent = 'WAIT...';
+            button.style.background = '#ef4444';
+            button.classList.remove('active');
+            resultDisplay.textContent = '';
+            feedbackDiv.style.display = 'none';
+            reactionTestActive = true;
+            
+            // Random delay between 2-5 seconds
+            const delay = 2000 + Math.random() * 3000;
+            
+            setTimeout(() => {
+                if (reactionTestActive) {
+                    button.textContent = 'CLICK NOW!';
+                    button.style.background = '#10b981';
+                    button.classList.add('active');
+                    reactionStartTime = Date.now();
+                }
+            }, delay);
+            
+            incrementInteraction();
+        }
+
+        function stopReactionTest() {
+            if (!reactionTestActive || !reactionStartTime) return;
+            
+            const stopTime = Date.now();
+            const reactionTime = (stopTime - reactionStartTime) / 1000;
+            const button = document.getElementById('reaction-button');
+            const resultDisplay = document.getElementById('reaction-result');
+            const feedbackDiv = document.getElementById('reaction-feedback');
+            
+            reactionTestActive = false;
+            button.textContent = 'WAIT...';
+            button.style.background = '#ef4444';
+            button.classList.remove('active');
+            
+            resultDisplay.textContent = `Reaction time: ${reactionTime.toFixed(2)} seconds`;
+            
+            // Calculate distance traveled at 60 mph during reaction time
+            const mph = 60;
+            const fps = mph * 1.46667;
+            const distance = (reactionTime * fps).toFixed(1);
+            
+            feedbackDiv.innerHTML = `
+                <div style="font-weight: 700; color: var(--color-primary); margin-bottom: 5px;">Impact Analysis:</div>
+                <div style="font-size: 0.9rem;">
+                    At 60 mph, you traveled <strong>${distance} feet</strong> during your reaction time.<br>
+                    With drowsy driving, reaction times can increase to <strong>${(reactionTime*1.5).toFixed(2)}-${(reactionTime*2).toFixed(2)} seconds</strong>, 
+                    meaning you'd travel <strong>${(distance*1.5).toFixed(1)}-${(distance*2).toFixed(1)} feet</strong> before reacting!
+                </div>
+            `;
+            
+            feedbackDiv.style.display = 'block';
+            
+            if (reactionTime < 0.3) {
+                updateAlertnessScore(20);
+            } else if (reactionTime < 0.5) {
+                updateAlertnessScore(15);
+            } else {
+                updateAlertnessScore(10);
+            }
+            
+            incrementInteraction();
+        }
+
+        function checkFinalAssessment() {
+            // Mark quiz as completed
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'B',
+                4: 'C',
+                5: 'C'
+            };
+
+            let score = 0;
+            const totalQuestions = 5;
+            let feedbackHTML = '';
+
+            // Check each question
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#10b981';
+                        selectedOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                        updateAlertnessScore(10);
+                    } else {
+                        selectedOption.style.borderColor = '#ef4444';
+                        selectedOption.style.background = 'rgba(239, 68, 68, 0.1)';
+                        updateAlertnessScore(-5);
+                        
+                        // Highlight correct answer
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#10b981';
+                            correctOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            // Calculate percentage
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            // Show results
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            // Generate feedback based on score
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 <strong>Perfect score!</strong> You\'ve mastered drowsy driving prevention. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 <strong>Good job!</strong> You understand key prevention strategies. ';
+            } else {
+                feedbackHTML = '📚 <strong>Review needed.</strong> Please review the course material. ';
+            }
+            
+            feedbackHTML += 'Your commitment to staying alert saves lives.';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            // Show results
+            document.getElementById('results').classList.add('show');
+            
+            // Show completion message
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            // Update timer to show "Completed" state
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+            
+            // Update progress bar to 100%
+            progressFill.style.width = '100%';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            
+            incrementInteraction();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the continuous timer
+            startTimer();
+            
+            // Set up sleep slider
+            const sleepSlider = document.getElementById('sleep-slider');
+            sleepSlider.addEventListener('input', function() {
+                document.getElementById('sleep-hours').textContent = `${this.value} hours`;
+            });
+
+            // Set up distance slider
+            const distanceSlider = document.getElementById('distance-slider');
+            distanceSlider.addEventListener('input', function() {
+                document.getElementById('distance-value').textContent = this.value;
+            });
+
+            // Set initial sleep quality
+            setSleepQuality('optimal');
+            
+            // Set initial travel time
+            setTravelTime('day');
+            
+            // Set up cause cards
+            const causeCards = document.querySelectorAll('.feature-card[data-cause]');
+            const causeInfo = document.getElementById('cause-info');
+            const causeTitle = document.getElementById('cause-title');
+            const causeDetails = document.getElementById('cause-details');
+            
+            const causeInfoMap = {
+                'sleep': {
+                    title: 'Sleep Deprivation',
+                    details: 'The most common cause. After 24 hours awake = 0.10% BAC impairment. Chronic sleep debt builds up and cannot be "caught up" on weekends. 35% of adults sleep less than 7 hours nightly.'
+                },
+                'shift': {
+                    title: 'Shift Work',
+                    details: 'Night workers have 30% higher crash risk. Circadian rhythm disruption causes permanent fatigue. Most dangerous hours: 2-6 AM. Rotating shifts are worst, increasing risk by 40%.'
+                },
+                'disorders': {
+                    title: 'Sleep Disorders',
+                    details: 'Sleep apnea increases crash risk 7x. Insomnia affects 30% of adults. Narcolepsy causes sudden sleep attacks. Undiagnosed disorders affect 80% of sufferers.'
+                },
+                'medications': {
+                    title: 'Medications',
+                    details: '500+ prescription drugs cause drowsiness. Common culprits: antihistamines, antidepressants, muscle relaxants, opioids. Warning labels ignored by 60% of users.'
+                }
+            };
+            
+            causeCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const cause = this.dataset.cause;
+                    const info = causeInfoMap[cause];
+                    
+                    if (info) {
+                        causeTitle.textContent = info.title;
+                        causeDetails.textContent = info.details;
+                        causeInfo.style.display = 'block';
+                        
+                        causeCards.forEach(c => c.classList.remove('selected'));
+                        this.classList.add('selected');
+                        incrementInteraction();
+                    }
+                });
+            });
+            
+            // Set up technology cards
+            const techCards = document.querySelectorAll('.feature-card[data-tech]');
+            const techInfo = document.getElementById('tech-info');
+            const techTitle = document.getElementById('tech-title');
+            const techDetails = document.getElementById('tech-details');
+            
+            const techInfoMap = {
+                'detection': {
+                    title: 'Driver Monitoring Systems',
+                    details: 'Infrared cameras track eye closure (PERCLOS metric). Alerts when eyes closed >20% of time. Some use facial recognition for personalized alerts. Reduces fatigue crashes by 37%.'
+                },
+                'lane': {
+                    title: 'Lane Keep Assist',
+                    details: 'Uses cameras to detect lane markings. Provides steering correction when drifting. Haptic feedback through steering wheel. Visual and audible warnings for repeated drifting.'
+                },
+                'steering': {
+                    title: 'Steering Pattern Analysis',
+                    details: 'Monitors micro-corrections (sign of fatigue). Baseline established during alert driving. Algorithms detect fatigue patterns. Alerts increase with continued impairment.'
+                },
+                'apps': {
+                    title: 'Alertness Apps',
+                    details: 'Smartphone apps use front camera and accelerometer. Some use voice analysis for fatigue detection. GPS tracks driving times and suggests breaks. Connect to vehicle systems in some models.'
+                }
+            };
+            
+            techCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const tech = this.dataset.tech;
+                    const info = techInfoMap[tech];
+                    
+                    if (info) {
+                        techTitle.textContent = info.title;
+                        techDetails.textContent = info.details;
+                        techInfo.style.display = 'block';
+                        
+                        techCards.forEach(c => c.classList.remove('selected'));
+                        this.classList.add('selected');
+                        incrementInteraction();
+                    }
+                });
+            });
+            
+            // Set up scenario options
+            const scenarioOptions = document.querySelectorAll('.scenario-option');
+            scenarioOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selection from other options in same parent
+                    const parent = this.parentElement;
+                    const siblings = parent.querySelectorAll('.scenario-option');
+                    siblings.forEach(sib => sib.classList.remove('selected'));
+                    
+                    this.classList.add('selected');
+                    
+                    // Show feedback for workplace scenario
+                    if (this.closest('.scenario') && this.closest('.scenario').querySelector('#workplace-feedback')) {
+                        const feedback = document.getElementById('workplace-feedback');
+                        if (this.dataset.correct === 'true') {
+                            feedback.classList.add('correct');
+                            feedback.classList.remove('incorrect');
+                            feedback.style.display = 'block';
+                            updateAlertnessScore(15);
+                        } else {
+                            feedback.classList.add('incorrect');
+                            feedback.classList.remove('correct');
+                            feedback.style.display = 'block';
+                            updateAlertnessScore(-10);
+                        }
+                    }
+                    
+                    incrementInteraction();
+                });
+            });
+
+            // Set up checklist items
+            const checklistItems = document.querySelectorAll('.checklist-checkbox');
+            checklistItems.forEach(item => {
+                item.addEventListener('change', function() {
+                    incrementInteraction();
+                });
+            });
+
+            // Set up final assessment options
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    // Remove selected class from all options in this question
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                            updateAlertnessScore(5); // Bonus for completing sections
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+            
+            // Initialize reaction test
+            const reactionButton = document.getElementById('reaction-button');
+            reactionButton.addEventListener('click', startReactionTest);
+            
+            // Initialize eye simulation
+            updateAlertnessScore(0); // This will set initial eye state
+        });
+
+        // Optional: Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkFinalAssessment();
+            }
+        });
+    </script>
+</body>
+</html>
