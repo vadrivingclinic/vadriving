@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Module 2: Occupant Protection Systems</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-soft: #8a5feb;
+            --color-secondary: #000000;
+            --color-accent: #7c3aed;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-info: #3b82f6;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-dark: #000000;
+            --color-light: #f9fafb;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+            --shadow-card: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Main Container */
+        .page {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        @media (max-width: 900px) {
+            .page { padding: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 0; }
+            .page {
+                border-radius: 0;
+                box-shadow: none;
+                padding: 16px 12px 20px;
+            }
+        }
+
+        /* Header */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            max-width: 100%;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .brand-logo:hover { 
+            transform: scale(1.05); 
+            animation: glow 2s infinite;
+        }
+
+        .course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 100%;
+        }
+
+        .course-name {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .week-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.1);
+            font-size: 0.8rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .week-label-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        .badge-mode {
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.08);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-primary);
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .badge-mode:hover {
+            background: rgba(95, 23, 235, 0.15);
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            line-height: 1.1;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .module-subtitle {
+            font-size: 1rem;
+            color: var(--color-muted);
+            max-width: 800px;
+            margin-bottom: 28px;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+            line-height: 1.7;
+        }
+
+        /* Time Estimate Banner */
+        .time-estimate-banner {
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .time-estimate-content h3 {
+            color: var(--color-primary);
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .time-estimate-content p {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.1em;
+        }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .progress-tracker::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50px;
+            right: 50px;
+            height: 3px;
+            background: rgba(95, 23, 235, 0.1);
+            z-index: 1;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+            transform: scale(1.1);
+            animation: pulse 2s infinite;
+        }
+
+        .progress-step.completed .step-circle {
+            background: var(--color-success);
+            border-color: var(--color-success);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            color: var(--color-muted);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        /* Activity Grid */
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .activity-grid { grid-template-columns: 1fr; }
+        }
+
+        .activity-card {
+            background: var(--color-bg);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--color-primary);
+        }
+
+        .activity-card:hover::before { 
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .activity-card.completed {
+            border-color: var(--color-success);
+        }
+
+        .activity-card.completed::before {
+            background: var(--color-success);
+            opacity: 1;
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .activity-number {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .activity-status {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: rgba(95, 23, 235, 0.08);
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.15);
+        }
+
+        .activity-card.completed .activity-status {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .activity-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 12px;
+        }
+
+        .activity-description {
+            font-size: 0.95rem;
+            color: var(--color-muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* Activity Time Estimate */
+        .activity-time-estimate {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 8px 12px;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .activity-time-icon {
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+
+        .activity-time-text {
+            font-size: 0.85rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        /* Seat Belt Simulation */
+        .seatbelt-simulation {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .seatbelt-diagram {
+            width: 100%;
+            max-width: 400px;
+            height: 250px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: var(--radius-md);
+            position: relative;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            overflow: hidden;
+        }
+
+        .car-seat {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 70%;
+            background: #4a5568;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .occupant {
+            position: absolute;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 100px;
+            background: #718096;
+            border-radius: 30px 30px 0 0;
+        }
+
+        .seatbelt {
+            position: absolute;
+            background: #ef4444;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .seatbelt.lap-belt {
+            width: 70%;
+            height: 8px;
+            bottom: 40%;
+            left: 15%;
+            border-radius: 4px;
+        }
+
+        .seatbelt.shoulder-belt {
+            width: 8px;
+            height: 60%;
+            top: 10%;
+            left: 60%;
+            border-radius: 4px;
+        }
+
+        .seatbelt.correct {
+            background: var(--color-success);
+            animation: glow 2s infinite;
+        }
+
+        .seatbelt.incorrect {
+            background: var(--color-error);
+            animation: shake 0.5s ease;
+        }
+
+        .belt-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .belt-btn {
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--color-primary);
+            background: white;
+            color: var(--color-primary);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .belt-btn:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(95, 23, 235, 0.3);
+        }
+
+        .belt-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .belt-position-indicator {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-top: 8px;
+            text-align: center;
+            padding: 8px 16px;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            min-width: 200px;
+        }
+
+        /* Child Seat Selector */
+        .child-seat-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .child-seat-selector { grid-template-columns: 1fr; }
+        }
+
+        .seat-option {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .seat-option:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.1);
+        }
+
+        .seat-option.selected {
+            background: rgba(95, 23, 235, 0.1);
+            border-color: var(--color-primary);
+            transform: scale(1.05);
+        }
+
+        .seat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .seat-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+        }
+
+        .seat-description {
+            font-size: 0.8rem;
+            color: var(--color-muted);
+            line-height: 1.4;
+        }
+
+        /* Safety Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .feature-grid { grid-template-columns: 1fr; }
+        }
+
+        .feature-card {
+            background: rgba(95, 23, 235, 0.03);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(95, 23, 235, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+
+        .feature-title {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 8px;
+        }
+
+        .feature-description {
+            font-size: 0.8rem;
+            color: var(--color-muted);
+            line-height: 1.5;
+        }
+
+        /* Quiz Activity */
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .quiz-question {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .quiz-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .option-label {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            color: var(--color-primary);
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .quiz-option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .quiz-option.correct .option-label {
+            background: var(--color-success);
+            color: white;
+            border-color: var(--color-success);
+        }
+
+        /* Feedback */
+        .feedback-container {
+            background: rgba(95, 23, 235, 0.03);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            margin-top: 20px;
+            display: none;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .feedback-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feedback-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .feedback-icon {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .feedback-icon.correct { 
+            color: var(--color-success); 
+        }
+        
+        .feedback-icon.incorrect { 
+            color: var(--color-error); 
+        }
+
+        .feedback-content {
+            font-size: 0.9rem;
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .feedback-content strong { 
+            color: var(--color-primary); 
+            font-weight: 700;
+        }
+
+        .stat-highlight {
+            background: rgba(95, 23, 235, 0.1);
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            margin: 10px 0;
+            border-left: 3px solid var(--color-primary);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.4);
+            animation: glow 1.5s infinite;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.2);
+        }
+
+        .btn-icon { 
+            font-size: 1.2em; 
+            font-weight: bold;
+        }
+
+        /* Results Panel */
+        .results-panel {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 40px;
+            margin-top: 40px;
+            display: none;
+            animation: fadeInUp 0.6s ease;
+            border: 2px solid var(--color-primary);
+        }
+
+        .results-panel.show { 
+            display: block; 
+            animation: glow 2s infinite;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .results-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            text-align: center;
+            margin: 30px 0;
+            text-shadow: 0 0 20px rgba(95, 23, 235, 0.7);
+            animation: pulse 2s infinite;
+        }
+
+        .safety-insights {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .insights-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .insights-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .insights-list li {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            font-size: 0.95rem;
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+
+        .insight-dot {
+            width: 8px;
+            height: 8px;
+            margin-top: 10px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <main class="page" aria-labelledby="module-heading">
+        <!-- Header -->
+        <header class="brand-row">
+            <div class="brand">
+                <img
+                    src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png"
+                    alt="VA Driving Clinic logo"
+                    class="brand-logo"
+                />
+                <div class="course-meta">
+                    <span class="course-name">VA Driving Clinic • Module 2</span>
+                    <div class="week-label">
+                        <span class="week-label-dot"></span>
+                        <span>Occupant Protection Systems</span>
+                    </div>
+                </div>
+            </div>
+            <span class="badge-mode">Safety Simulation</span>
+        </header>
+
+        <h1 id="module-heading">Master Vehicle Occupant Protection</h1>
+        <p class="module-subtitle">
+            A comprehensive interactive module covering seat belts, airbags, child safety seats, and advanced safety features. 
+            Learn through hands-on simulations that demonstrate proper use and the life-saving benefits of occupant protection systems.
+        </p>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate-banner">
+            <div class="time-estimate-icon">
+                ⏱️
+            </div>
+            <div class="time-estimate-content">
+                <h3>Module Time Estimate</h3>
+                <p>Complete all 3 activities in approximately <span class="time-highlight">8-10 minutes</span>. This module combines interactive simulations with critical safety statistics to reinforce proper protection habits.</p>
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Activities Completed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="accuracy-rate">0%</span>
+                <span class="stat-label">Safety Mastery</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Time Learning</span>
+            </div>
+        </div>
+
+        <!-- Progress Tracker -->
+        <div class="progress-tracker">
+            <div class="progress-step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Seat Belt Mastery</div>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Child Safety Seats</div>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Safety Features Quiz</div>
+            </div>
+        </div>
+
+        <!-- Activity Grid -->
+        <div class="activity-grid">
+            <!-- Activity 1: Seat Belt Simulation -->
+            <section class="activity-card" id="activity-1" data-activity="1">
+                <div class="activity-header">
+                    <span class="activity-number">Activity 1</span>
+                    <span class="activity-status">Not Started</span>
+                </div>
+                <h3 class="activity-title">Seat Belt Positioning & Effectiveness</h3>
+                <p class="activity-description">
+                    Interact with this seat belt simulation to learn proper positioning and adjustment. 
+                    Understand how seat belts reduce injury risk by 45-50% and prevent ejection during crashes.
+                </p>
+
+                <div class="activity-time-estimate">
+                    <span class="activity-time-icon">⏱️</span>
+                    <span class="activity-time-text">Estimated time: <strong>2-3 minutes</strong></span>
+                </div>
+
+                <div class="seatbelt-simulation">
+                    <div class="seatbelt-diagram" id="seatbelt-diagram">
+                        <div class="car-seat"></div>
+                        <div class="occupant"></div>
+                        <div class="seatbelt lap-belt incorrect" id="lap-belt"></div>
+                        <div class="seatbelt shoulder-belt incorrect" id="shoulder-belt"></div>
+                    </div>
+                    
+                    <div class="belt-position-indicator" id="belt-instruction">
+                        ⚠️ Incorrect: Lap belt on stomach, shoulder belt on neck
+                    </div>
+                    
+                    <div class="belt-controls">
+                        <button class="belt-btn" data-adjust="lap-high">Lap Belt: High (Hips)</button>
+                        <button class="belt-btn" data-adjust="lap-low">Lap Belt: Low (Stomach)</button>
+                        <button class="belt-btn" data-adjust="shoulder-correct">Shoulder: Chest</button>
+                        <button class="belt-btn" data-adjust="shoulder-neck">Shoulder: Neck</button>
+                        <button class="belt-btn" data-adjust="tightness">Adjust Tightness</button>
+                    </div>
+                </div>
+
+                <!-- Feedback -->
+                <div class="feedback-container" id="feedback-1">
+                    <div class="feedback-title">
+                        <span class="feedback-icon correct">✓</span>
+                        Seat Belt Mastery Achieved
+                    </div>
+                    <div class="feedback-content">
+                        <strong>Correct Positioning Verified:</strong><br><br>
+                        • <strong>Lap Belt:</strong> Across hips and pelvis, not stomach<br>
+                        • <strong>Shoulder Belt:</strong> Across chest and shoulder, away from neck<br>
+                        • <strong>Tightness:</strong> Snug fit without slack or twisting<br><br>
+                        
+                        <div class="stat-highlight">
+                            <strong>NHTSA Statistics:</strong><br>
+                            • Reduces death risk by 45% for front-seat passengers<br>
+                            • Reduces serious injury risk by 50%<br>
+                            • Prevents ejection in 75% of rollover crashes
+                        </div>
+                        
+                        <strong>Safety Reminder:</strong> Seat belts are most effective when worn correctly. 
+                        Always ensure the belt is not twisted and the retractor mechanism is functioning properly.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Activity 2: Child Safety Seats -->
+            <section class="activity-card" id="activity-2" data-activity="2">
+                <div class="activity-header">
+                    <span class="activity-number">Activity 2</span>
+                    <span class="activity-status">Not Started</span>
+                </div>
+                <h3 class="activity-title">Child Safety Seat Selection & Installation</h3>
+                <p class="activity-description">
+                    Select the appropriate child safety seat based on age, weight, and height. 
+                    Learn proper installation techniques that reduce fatal injury risk by up to 71%.
+                </p>
+
+                <div class="activity-time-estimate">
+                    <span class="activity-time-icon">⏱️</span>
+                    <span class="activity-time-text">Estimated time: <strong>3-4 minutes</strong></span>
+                </div>
+
+                <div class="child-seat-selector" id="seat-selector">
+                    <div class="seat-option" data-seat-type="rear-facing" data-age="0-2" data-weight="up-to-40lb">
+                        <div class="seat-icon">👶</div>
+                        <div class="seat-label">Rear-Facing Seat</div>
+                        <div class="seat-description">
+                            For infants & toddlers up to age 2 or until they reach seat limits (typically 40 lbs)
+                        </div>
+                    </div>
+                    
+                    <div class="seat-option" data-seat-type="forward-facing" data-age="2-5" data-weight="40-65lb">
+                        <div class="seat-icon">🧒</div>
+                        <div class="seat-label">Forward-Facing Seat</div>
+                        <div class="seat-description">
+                            For children who outgrow rear-facing seats, with 5-point harness
+                        </div>
+                    </div>
+                    
+                    <div class="seat-option" data-seat-type="booster" data-age="5-12" data-weight="40-100lb">
+                        <div class="seat-icon">👦</div>
+                        <div class="seat-label">Booster Seat</div>
+                        <div class="seat-description">
+                            For older children until seat belt fits properly (typically 4'9" tall)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-grid" style="margin-top: 20px;">
+                    <div class="feature-card">
+                        <div class="feature-icon">📍</div>
+                        <div class="feature-title">Installation Check</div>
+                        <div class="feature-description">
+                            Seat should not move more than 1 inch side-to-side or front-to-back when installed correctly
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <div class="feature-title">Harness Position</div>
+                        <div class="feature-description">
+                            Harness straps at or below shoulders for rear-facing, at or above for forward-facing
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📏</div>
+                        <div class="feature-title">Chest Clip</div>
+                        <div class="feature-description">
+                            Position at armpit level to keep harness straps properly positioned on shoulders
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚠️</div>
+                        <div class="feature-title">Airbag Warning</div>
+                        <div class="feature-description">
+                            Children under 13 should ride in back seat to avoid injury from front airbags
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback -->
+                <div class="feedback-container" id="feedback-2">
+                    <div class="feedback-title">
+                        <span class="feedback-icon correct">✓</span>
+                        Child Safety Seat Knowledge Complete
+                    </div>
+                    <div class="feedback-content">
+                        <strong>Correct Seat Selection:</strong><br>
+                        • <strong>Rear-Facing:</strong> Up to age 2 or seat limits<br>
+                        • <strong>Forward-Facing:</strong> Age 2-5 with harness<br>
+                        • <strong>Booster Seat:</strong> Until seat belt fits properly (approx. 4'9")<br><br>
+                        
+                        <div class="stat-highlight">
+                            <strong>Effectiveness Statistics:</strong><br>
+                            • Reduces fatal injury by 71% for infants<br>
+                            • Reduces fatal injury by 54% for toddlers<br>
+                            • Booster seats reduce serious injury by 45% vs seat belts alone
+                        </div>
+                        
+                        <strong>Legal Requirement:</strong> Most jurisdictions require child safety seats until at least age 8. 
+                        Many states require booster seats up to age 12 or specific height/weight requirements.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Activity 3: Safety Features Quiz -->
+            <section class="activity-card" id="activity-3" data-activity="3">
+                <div class="activity-header">
+                    <span class="activity-number">Activity 3</span>
+                    <span class="activity-status">Not Started</span>
+                </div>
+                <h3 class="activity-title">Advanced Safety Features Knowledge</h3>
+                <p class="activity-description">
+                    Test your understanding of airbags, headrests, ABS, ESC, and other safety systems.
+                    Select the best answer for each question based on proper use and effectiveness data.
+                </p>
+
+                <div class="activity-time-estimate">
+                    <span class="activity-time-icon">⏱️</span>
+                    <span class="activity-time-text">Estimated time: <strong>2-3 minutes</strong></span>
+                </div>
+
+                <div class="quiz-container" id="quiz-container">
+                    <!-- Question 1 -->
+                    <div class="quiz-question">1. What is the minimum safe distance from the steering wheel airbag cover according to NHTSA?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="1" data-option="A">
+                            <span class="option-label">A</span>
+                            <span>6 inches</span>
+                        </div>
+                        <div class="quiz-option" data-question="1" data-option="B">
+                            <span class="option-label">B</span>
+                            <span>10 inches</span>
+                        </div>
+                        <div class="quiz-option" data-question="1" data-option="C">
+                            <span class="option-label">C</span>
+                            <span>14 inches</span>
+                        </div>
+                        <div class="quiz-option" data-question="1" data-option="D">
+                            <span class="option-label">D</span>
+                            <span>18 inches</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="quiz-question">2. What is the primary function of Anti-lock Braking System (ABS)?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="2" data-option="A">
+                            <span class="option-label">A</span>
+                            <span>Reduce braking distance on dry pavement</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="B">
+                            <span class="option-label">B</span>
+                            <span>Prevent wheel lockup and maintain steering control</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="C">
+                            <span class="option-label">C</span>
+                            <span>Automatically apply brakes in emergency situations</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="D">
+                            <span class="option-label">D</span>
+                            <span>Reduce brake wear and maintenance costs</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="quiz-question">3. How should headrests be positioned for optimal whiplash protection?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="3" data-option="A">
+                            <span class="option-label">A</span>
+                            <span>Top level with top of head, close to back of head</span>
+                        </div>
+                        <div class="quiz-option" data-question="3" data-option="B">
+                            <span class="option-label">B</span>
+                            <span>Middle of headrest aligned with ears</span>
+                        </div>
+                        <div class="quiz-option" data-question="3" data-option="C">
+                            <span class="option-label">C</span>
+                            <span>Bottom of headrest at shoulder level</span>
+                        </div>
+                        <div class="quiz-option" data-question="3" data-option="D">
+                            <span class="option-label">D</span>
+                            <span>Position doesn't matter for whiplash protection</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="quiz-question">4. What injury reduction do airbags provide in frontal crashes?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="4" data-option="A">
+                            <span class="option-label">A</span>
+                            <span>Head injuries by 25%, chest injuries by 50%</span>
+                        </div>
+                        <div class="quiz-option" data-question="4" data-option="B">
+                            <span class="option-label">B</span>
+                            <span>All injuries by 75%</span>
+                        </div>
+                        <div class="quiz-option" data-question="4" data-option="C">
+                            <span class="option-label">C</span>
+                            <span>Leg injuries by 40%, arm injuries by 30%</span>
+                        </div>
+                        <div class="quiz-option" data-question="4" data-option="D">
+                            <span class="option-label">D</span>
+                            <span>No significant reduction when seat belts are worn</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback -->
+                <div class="feedback-container" id="feedback-3">
+                    <div class="feedback-title">
+                        <span class="feedback-icon correct">✓</span>
+                        Safety Features Quiz Results
+                    </div>
+                    <div class="feedback-content">
+                        <strong>Correct Answers:</strong><br>
+                        1. <strong>B - 10 inches minimum distance from airbag cover</strong><br>
+                        2. <strong>B - Prevent wheel lockup and maintain steering control</strong><br>
+                        3. <strong>A - Top level with top of head, close to back of head</strong><br>
+                        4. <strong>A - Head injuries by 25%, chest injuries by 50%</strong><br><br>
+                        
+                        <strong>Key Safety Insights:</strong><br>
+                        • Airbags are supplemental protection and work best with seat belts<br>
+                        • Electronic Stability Control (ESC) reduces rollover risk by 80% for SUVs<br>
+                        • Side airbags reduce death risk by 45% in side-impact crashes<br>
+                        • Proper headrest positioning can reduce whiplash injury by 40%<br><br>
+                        
+                        <div class="stat-highlight">
+                            <strong>Integrated Safety Approach:</strong><br>
+                            Seat belts + airbags + proper seating position + adjusted headrests = Maximum protection
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-secondary" id="reset-all-btn">
+                <span class="btn-icon">↻</span>
+                Reset All Activities
+            </button>
+            <button class="btn btn-secondary" id="check-answers-btn">
+                <span class="btn-icon">✓</span>
+                Check All Answers
+            </button>
+            <button class="btn btn-primary" id="view-results-btn">
+                <span class="btn-icon">📊</span>
+                View Final Results
+            </button>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="results-panel" id="results-panel">
+            <div class="results-header">
+                <h2 class="results-title">Occupant Protection Proficiency</h2>
+                <div class="score-display" id="final-score">0%</div>
+            </div>
+            
+            <div class="safety-insights">
+                <h3 class="insights-title">
+                    <span>🛡️</span> Life-Saving Statistics
+                </h3>
+                <ul class="insights-list">
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Seat Belt Effectiveness:</strong> When worn correctly, seat belts reduce the risk of death by 45% for front-seat passengers and serious injury by 50%. In 2024, seat belts saved an estimated 15,000 lives in the United States alone.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Child Safety Seats:</strong> Proper use of child safety seats reduces fatal injury by 71% for infants and 54% for toddlers. Booster seats reduce serious injury risk by 45% compared to seat belts alone for children aged 4-8.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Airbag Protection:</strong> Frontal airbags reduce driver fatalities by 29% in frontal crashes. When combined with seat belts, airbags reduce head injury risk by 75% compared to unbelted occupants without airbags.</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="safety-insights" style="margin-top: 20px;">
+                <h3 class="insights-title">
+                    <span>🚗</span> Best Practices for Maximum Protection
+                </h3>
+                <ul class="insights-list">
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Pre-Drive Checklist:</strong> Always check that all occupants are properly secured before starting the vehicle. Ensure seat belts are not twisted, child seats are tightly installed, and headrests are properly adjusted.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Seating Position:</strong> Maintain at least 10 inches between your chest and the steering wheel. Sit upright with back against the seat and feet flat on the floor for optimal airbag and seat belt effectiveness.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Regular Maintenance:</strong> Periodically check seat belt retractors, child seat expiration dates, and ensure airbag warning lights are functioning. Replace any safety equipment after a crash, even if no damage is visible.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // State Management
+            const state = {
+                activities: {
+                    1: { completed: false, correct: 0, total: 5, score: 0, adjustments: {} },
+                    2: { completed: false, correct: 0, total: 3, score: 0, seatSelected: null },
+                    3: { completed: false, correct: 0, total: 4, score: 0, answers: {} }
+                },
+                startedAt: new Date(),
+                timeSpent: 0
+            };
+
+            // Correct answers for Activity 3 (quiz)
+            const quizAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'A',
+                4: 'A'
+            };
+
+            // DOM Elements
+            const progressSteps = document.querySelectorAll('.progress-step');
+            const activityCards = document.querySelectorAll('.activity-card');
+            const completedCount = document.getElementById('completed-count');
+            const accuracyRate = document.getElementById('accuracy-rate');
+            const timeSpentEl = document.getElementById('time-spent');
+            const resetBtn = document.getElementById('reset-all-btn');
+            const checkBtn = document.getElementById('check-answers-btn');
+            const resultsBtn = document.getElementById('view-results-btn');
+            const resultsPanel = document.getElementById('results-panel');
+            const finalScore = document.getElementById('final-score');
+
+            // Timer for time spent
+            function updateTimer() {
+                const now = new Date();
+                const diff = Math.floor((now - state.startedAt) / 1000);
+                state.timeSpent = diff;
+                const minutes = Math.floor(diff / 60);
+                const seconds = diff % 60;
+                timeSpentEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Update stats display
+                let completed = 0;
+                let totalCorrect = 0;
+                let totalItems = 0;
+                
+                Object.values(state.activities).forEach(activity => {
+                    if (activity.completed) completed++;
+                    totalCorrect += activity.correct;
+                    totalItems += activity.total;
+                });
+                
+                completedCount.textContent = completed;
+                const accuracy = totalItems > 0 ? Math.round((totalCorrect / totalItems) * 100) : 0;
+                accuracyRate.textContent = `${accuracy}%`;
+            }
+
+            setInterval(updateTimer, 1000);
+
+            // Update Progress Summary
+            function updateProgressSummary() {
+                let completed = 0;
+                let totalCorrect = 0;
+                let totalItems = 0;
+                
+                Object.values(state.activities).forEach(activity => {
+                    if (activity.completed) completed++;
+                    totalCorrect += activity.correct;
+                    totalItems += activity.total;
+                });
+
+                // Update progress steps
+                progressSteps.forEach((step, index) => {
+                    if (index < completed) {
+                        step.classList.add('completed');
+                        step.classList.remove('active');
+                    } else if (index === completed) {
+                        step.classList.add('active');
+                        step.classList.remove('completed');
+                    } else {
+                        step.classList.remove('active', 'completed');
+                    }
+                });
+            }
+
+            // Activity 1: Seat Belt Simulation
+            function initActivity1() {
+                const lapBelt = document.getElementById('lap-belt');
+                const shoulderBelt = document.getElementById('shoulder-belt');
+                const instruction = document.getElementById('belt-instruction');
+                const beltBtns = document.querySelectorAll('.belt-btn');
+                const status = document.querySelector('#activity-1 .activity-status');
+                const feedback = document.getElementById('feedback-1');
+                
+                let correctAdjustments = 0;
+                let beltState = {
+                    lapPosition: 'low', // 'high' or 'low'
+                    shoulderPosition: 'neck', // 'chest' or 'neck'
+                    tightness: 'loose' // 'tight' or 'loose'
+                };
+                
+                // Update belt visual and instruction
+                function updateBeltDisplay() {
+                    // Update lap belt
+                    if (beltState.lapPosition === 'high') {
+                        lapBelt.style.bottom = '45%';
+                        lapBelt.classList.remove('incorrect');
+                        lapBelt.classList.add('correct');
+                    } else {
+                        lapBelt.style.bottom = '50%';
+                        lapBelt.classList.remove('correct');
+                        lapBelt.classList.add('incorrect');
+                    }
+                    
+                    // Update shoulder belt
+                    if (beltState.shoulderPosition === 'chest') {
+                        shoulderBelt.style.left = '55%';
+                        shoulderBelt.classList.remove('incorrect');
+                        shoulderBelt.classList.add('correct');
+                    } else {
+                        shoulderBelt.style.left = '65%';
+                        shoulderBelt.classList.remove('correct');
+                        shoulderBelt.classList.add('incorrect');
+                    }
+                    
+                    // Update instruction
+                    let instructionText = '';
+                    if (beltState.lapPosition === 'high' && beltState.shoulderPosition === 'chest' && beltState.tightness === 'tight') {
+                        instructionText = '✅ Perfect: Lap belt on hips, shoulder belt on chest, snug fit';
+                        if (!state.activities[1].completed) {
+                            correctAdjustments = 5;
+                            checkActivity1();
+                        }
+                    } else {
+                        const issues = [];
+                        if (beltState.lapPosition !== 'high') issues.push('lap belt on stomach');
+                        if (beltState.shoulderPosition !== 'chest') issues.push('shoulder belt on neck');
+                        if (beltState.tightness !== 'tight') issues.push('loose fit');
+                        instructionText = `⚠️ Needs adjustment: ${issues.join(', ')}`;
+                        
+                        // Count correct adjustments for progress
+                        correctAdjustments = 0;
+                        if (beltState.lapPosition === 'high') correctAdjustments++;
+                        if (beltState.shoulderPosition === 'chest') correctAdjustments++;
+                        if (beltState.tightness === 'tight') correctAdjustments++;
+                        
+                        state.activities[1].correct = correctAdjustments;
+                    }
+                    
+                    instruction.textContent = instructionText;
+                }
+                
+                // Button event listeners
+                beltBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const adjustment = this.dataset.adjust;
+                        
+                        // Update belt state
+                        if (adjustment === 'lap-high') {
+                            beltState.lapPosition = 'high';
+                        } else if (adjustment === 'lap-low') {
+                            beltState.lapPosition = 'low';
+                        } else if (adjustment === 'shoulder-correct') {
+                            beltState.shoulderPosition = 'chest';
+                        } else if (adjustment === 'shoulder-neck') {
+                            beltState.shoulderPosition = 'neck';
+                        } else if (adjustment === 'tightness') {
+                            beltState.tightness = beltState.tightness === 'tight' ? 'loose' : 'tight';
+                        }
+                        
+                        // Update visual feedback
+                        updateBeltDisplay();
+                        
+                        // Store adjustments
+                        state.activities[1].adjustments = beltState;
+                        
+                        // Mark activity as started
+                        if (status.textContent === 'Not Started') {
+                            status.textContent = 'In Progress';
+                        }
+                    });
+                });
+                
+                function checkActivity1() {
+                    state.activities[1].completed = true;
+                    state.activities[1].score = Math.round((correctAdjustments / 3) * 100);
+                    
+                    status.textContent = 'Completed';
+                    status.style.color = '#10b981';
+                    document.querySelector('#activity-1').classList.add('completed');
+                    feedback.classList.add('show');
+                    
+                    updateProgressSummary();
+                }
+                
+                // Initialize display
+                updateBeltDisplay();
+            }
+
+            // Activity 2: Child Safety Seats
+            function initActivity2() {
+                const seatOptions = document.querySelectorAll('.seat-option');
+                const status = document.querySelector('#activity-2 .activity-status');
+                const feedback = document.getElementById('feedback-2');
+                
+                seatOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        // Remove selected class from all options
+                        seatOptions.forEach(opt => opt.classList.remove('selected'));
+                        
+                        // Add selected class to clicked option
+                        this.classList.add('selected');
+                        
+                        // Store selection
+                        const seatType = this.dataset.seatType;
+                        const ageRange = this.dataset.age;
+                        const weightRange = this.dataset.weight;
+                        
+                        state.activities[2].seatSelected = {
+                            type: seatType,
+                            age: ageRange,
+                            weight: weightRange
+                        };
+                        
+                        // Mark activity as started
+                        if (status.textContent === 'Not Started') {
+                            status.textContent = 'In Progress';
+                        }
+                        
+                        // Check if all information is provided
+                        if (seatType && ageRange && weightRange) {
+                            checkActivity2();
+                        }
+                    });
+                });
+                
+                function checkActivity2() {
+                    state.activities[2].completed = true;
+                    state.activities[2].correct = 3; // All three criteria selected
+                    state.activities[2].score = 100;
+                    
+                    status.textContent = 'Completed';
+                    status.style.color = '#10b981';
+                    document.querySelector('#activity-2').classList.add('completed');
+                    feedback.classList.add('show');
+                    
+                    updateProgressSummary();
+                }
+            }
+
+            // Activity 3: Safety Features Quiz
+            function initActivity3() {
+                const quizOptions = document.querySelectorAll('#activity-3 .quiz-option');
+                const feedback = document.getElementById('feedback-3');
+                const status = document.querySelector('#activity-3 .activity-status');
+                
+                let answeredQuestions = 0;
+                
+                quizOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const question = this.dataset.question;
+                        const selectedOption = this.dataset.option;
+                        
+                        // Remove selected class from all options for this question
+                        const allOptionsForQuestion = document.querySelectorAll(`[data-question="${question}"]`);
+                        allOptionsForQuestion.forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                        
+                        // Add selected class to clicked option
+                        this.classList.add('selected');
+                        
+                        // Store the answer
+                        state.activities[3].answers[question] = selectedOption;
+                        
+                        // Check if all questions are answered
+                        answeredQuestions = Object.keys(state.activities[3].answers).length;
+                        if (answeredQuestions === 4 && !state.activities[3].completed) {
+                            checkActivity3();
+                        }
+                    });
+                });
+                
+                function checkActivity3() {
+                    let correctCount = 0;
+                    
+                    // Check each answer
+                    Object.keys(quizAnswers).forEach(question => {
+                        const userAnswer = state.activities[3].answers[question];
+                        const correctAnswer = quizAnswers[question];
+                        
+                        if (userAnswer === correctAnswer) {
+                            correctCount++;
+                            
+                            // Mark correct option
+                            const correctOption = document.querySelector(`[data-question="${question}"][data-option="${correctAnswer}"]`);
+                            correctOption.classList.add('correct');
+                        } else {
+                            // Mark incorrect user selection
+                            const userOption = document.querySelector(`[data-question="${question}"][data-option="${userAnswer}"]`);
+                            if (userOption) userOption.classList.add('incorrect');
+                            
+                            // Mark correct answer
+                            const correctOption = document.querySelector(`[data-question="${question}"][data-option="${correctAnswer}"]`);
+                            correctOption.classList.add('correct');
+                        }
+                    });
+                    
+                    state.activities[3].completed = true;
+                    state.activities[3].correct = correctCount;
+                    state.activities[3].score = Math.round((correctCount / 4) * 100);
+                    
+                    status.textContent = 'Completed';
+                    status.style.color = '#10b981';
+                    document.querySelector('#activity-3').classList.add('completed');
+                    feedback.classList.add('show');
+                    
+                    updateProgressSummary();
+                }
+            }
+
+            // Reset All Activities
+            function resetAllActivities() {
+                // Reset state
+                state.activities = {
+                    1: { completed: false, correct: 0, total: 5, score: 0, adjustments: {} },
+                    2: { completed: false, correct: 0, total: 3, score: 0, seatSelected: null },
+                    3: { completed: false, correct: 0, total: 4, score: 0, answers: {} }
+                };
+                
+                // Reset UI
+                activityCards.forEach(card => {
+                    card.classList.remove('completed');
+                    const status = card.querySelector('.activity-status');
+                    status.textContent = 'Not Started';
+                    status.style.color = '';
+                    const feedback = card.querySelector('.feedback-container');
+                    feedback.classList.remove('show');
+                });
+                
+                // Reset Activity 1
+                const lapBelt = document.getElementById('lap-belt');
+                const shoulderBelt = document.getElementById('shoulder-belt');
+                const instruction = document.getElementById('belt-instruction');
+                
+                lapBelt.style.bottom = '50%';
+                lapBelt.classList.remove('correct');
+                lapBelt.classList.add('incorrect');
+                
+                shoulderBelt.style.left = '65%';
+                shoulderBelt.classList.remove('correct');
+                shoulderBelt.classList.add('incorrect');
+                
+                instruction.textContent = '⚠️ Incorrect: Lap belt on stomach, shoulder belt on neck';
+                
+                // Reset Activity 2
+                document.querySelectorAll('.seat-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                // Reset Activity 3
+                document.querySelectorAll('#activity-3 .quiz-option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                // Reset results
+                resultsPanel.classList.remove('show');
+                
+                // Reset timer
+                state.startedAt = new Date();
+                state.timeSpent = 0;
+                updateTimer();
+                
+                // Update progress
+                updateProgressSummary();
+            }
+
+            // Check All Answers
+            function checkAllAnswers() {
+                // Force check all activities
+                if (!state.activities[1].completed) {
+                    // Set correct belt position
+                    const lapBelt = document.getElementById('lap-belt');
+                    const shoulderBelt = document.getElementById('shoulder-belt');
+                    const instruction = document.getElementById('belt-instruction');
+                    
+                    lapBelt.style.bottom = '45%';
+                    lapBelt.classList.remove('incorrect');
+                    lapBelt.classList.add('correct');
+                    
+                    shoulderBelt.style.left = '55%';
+                    shoulderBelt.classList.remove('incorrect');
+                    shoulderBelt.classList.add('correct');
+                    
+                    instruction.textContent = '✅ Perfect: Lap belt on hips, shoulder belt on chest, snug fit';
+                    
+                    state.activities[1].completed = true;
+                    state.activities[1].correct = 5;
+                    state.activities[1].score = 100;
+                    document.querySelector('#activity-1 .activity-status').textContent = 'Completed';
+                    document.querySelector('#activity-1').classList.add('completed');
+                    document.querySelector('#feedback-1').classList.add('show');
+                }
+                
+                if (!state.activities[2].completed) {
+                    // Select rear-facing seat as example
+                    const rearFacingSeat = document.querySelector('[data-seat-type="rear-facing"]');
+                    rearFacingSeat.classList.add('selected');
+                    
+                    state.activities[2].completed = true;
+                    state.activities[2].correct = 3;
+                    state.activities[2].score = 100;
+                    document.querySelector('#activity-2 .activity-status').textContent = 'Completed';
+                    document.querySelector('#activity-2').classList.add('completed');
+                    document.querySelector('#feedback-2').classList.add('show');
+                }
+                
+                if (!state.activities[3].completed) {
+                    // Auto-select correct answers
+                    Object.keys(quizAnswers).forEach(question => {
+                        const correctOption = document.querySelector(`[data-question="${question}"][data-option="${quizAnswers[question]}"]`);
+                        if (correctOption) {
+                            correctOption.classList.add('selected', 'correct');
+                            state.activities[3].answers[question] = quizAnswers[question];
+                        }
+                    });
+                    
+                    state.activities[3].completed = true;
+                    state.activities[3].correct = 4;
+                    state.activities[3].score = 100;
+                    document.querySelector('#activity-3 .activity-status').textContent = 'Completed';
+                    document.querySelector('#activity-3').classList.add('completed');
+                    document.querySelector('#feedback-3').classList.add('show');
+                }
+                
+                updateProgressSummary();
+            }
+
+            // View Final Results
+            function viewFinalResults() {
+                let totalScore = 0;
+                let activityCount = 0;
+                
+                Object.values(state.activities).forEach(activity => {
+                    if (activity.completed) {
+                        totalScore += activity.score;
+                        activityCount++;
+                    }
+                });
+                
+                const averageScore = activityCount > 0 ? Math.round(totalScore / activityCount) : 0;
+                finalScore.textContent = `${averageScore}%`;
+                
+                resultsPanel.classList.add('show');
+                resultsPanel.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Initialize all activities
+            initActivity1();
+            initActivity2();
+            initActivity3();
+
+            // Event listeners
+            resetBtn.addEventListener('click', resetAllActivities);
+            checkBtn.addEventListener('click', checkAllAnswers);
+            resultsBtn.addEventListener('click', viewFinalResults);
+
+            // Initial progress update
+            updateTimer();
+            updateProgressSummary();
+        });
+    </script>
+</body>
+</html>
