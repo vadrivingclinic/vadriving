@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Module 3: New Driving Techniques</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-eco: #10b981;
+            --color-tech: #3b82f6;
+            --color-urban: #8b5cf6;
+            --color-ev: #f59e0b;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 30px;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        /* Header */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+        }
+
+        .course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .course-name {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .week-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.1);
+            font-size: 0.8rem;
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            margin-bottom: 10px;
+        }
+
+        .module-subtitle {
+            color: var(--color-muted);
+            margin-bottom: 28px;
+            max-width: 800px;
+        }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .progress-tracker::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50px;
+            right: 50px;
+            height: 3px;
+            background: rgba(95, 23, 235, 0.1);
+            z-index: 1;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+        }
+
+        .progress-step.active .step-circle {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        /* Activity Cards */
+        .activity-card {
+            background: var(--color-bg);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .activity-number {
+            font-weight: 800;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .activity-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: rgba(95, 23, 235, 0.08);
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .activity-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        /* Eco-Driving Simulation */
+        .eco-simulation {
+            background: rgba(16, 185, 129, 0.05);
+            border: 2px solid rgba(16, 185, 129, 0.2);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .fuel-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+
+        .fuel-gauge {
+            width: 200px;
+            height: 100px;
+            position: relative;
+        }
+
+        .gauge-background {
+            width: 100%;
+            height: 100%;
+            background: #f3f4f6;
+            border-radius: 100px 100px 0 0;
+            overflow: hidden;
+        }
+
+        .gauge-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(to top, #10b981, #34d399);
+            transition: height 0.5s ease;
+        }
+
+        .mpg-value {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--color-eco);
+            text-align: center;
+        }
+
+        .driving-controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            padding: 12px;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            background: white;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(16, 185, 129, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--color-eco);
+        }
+
+        /* ADAS Simulation */
+        .adas-simulation {
+            background: rgba(59, 130, 246, 0.05);
+            border: 2px solid rgba(59, 130, 246, 0.2);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .car-diagram {
+            width: 300px;
+            height: 150px;
+            margin: 20px auto;
+            position: relative;
+            background: #f3f4f6;
+            border-radius: var(--radius-sm);
+        }
+
+        .sensor {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ef4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+        }
+
+        .adas-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .feature-btn {
+            padding: 12px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            background: white;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .feature-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .feature-btn.active {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: var(--color-tech);
+        }
+
+        /* Urban Navigation */
+        .urban-simulation {
+            background: rgba(139, 92, 246, 0.05);
+            border: 2px solid rgba(139, 92, 246, 0.2);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .roundabout {
+            width: 200px;
+            height: 200px;
+            border: 3px solid var(--color-urban);
+            border-radius: 50%;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .vehicle {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: var(--color-urban);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: all 0.5s ease;
+        }
+
+        .urban-scenarios {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .scenario-btn {
+            padding: 12px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            background: white;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .scenario-btn:hover {
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        /* EV Simulation */
+        .ev-simulation {
+            background: rgba(245, 158, 11, 0.05);
+            border: 2px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .battery-display {
+            width: 100%;
+            height: 40px;
+            background: #f3f4f6;
+            border-radius: var(--radius-sm);
+            margin: 20px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .battery-level {
+            height: 100%;
+            background: linear-gradient(to right, #f59e0b, #fbbf24);
+            width: 70%;
+            transition: width 0.5s ease;
+        }
+
+        .ev-controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .ev-btn {
+            padding: 12px;
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            background: white;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ev-btn:hover {
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .ev-btn.active {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: var(--color-ev);
+        }
+
+        /* Feedback */
+        .feedback {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--color-primary);
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .page { padding: 20px; }
+            .driving-controls,
+            .adas-features,
+            .urban-scenarios,
+            .ev-controls {
+                grid-template-columns: 1fr;
+            }
+            .fuel-display {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <!-- Header -->
+        <header class="brand-row">
+            <div class="brand">
+                <img
+                    src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png"
+                    alt="VA Driving Clinic logo"
+                    class="brand-logo"
+                />
+                <div class="course-meta">
+                    <span class="course-name">VA Driving Clinic • Module 3</span>
+                    <div class="week-label">
+                        <span>New Driving Techniques</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <h1>Master Modern Driving Techniques</h1>
+        <p class="module-subtitle">
+            Explore cutting-edge driving methods that enhance safety, efficiency, and environmental responsibility.
+            This 5-minute simulation covers eco-driving, ADAS technology, urban navigation, and EV adaptation.
+        </p>
+
+        <!-- Progress Tracker -->
+        <div class="progress-tracker">
+            <div class="progress-step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div>Eco-Driving</div>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="step-circle">2</div>
+                <div>ADAS Tech</div>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="step-circle">3</div>
+                <div>Urban & EV</div>
+            </div>
+        </div>
+
+        <!-- Activity 1: Eco-Driving -->
+        <div class="activity-card" id="activity-1">
+            <div class="activity-header">
+                <span class="activity-number">Activity 1</span>
+                <span class="activity-status">Not Started</span>
+            </div>
+            <h3 class="activity-title">Eco-Driving Simulation</h3>
+            <p>Learn how smooth driving techniques can improve fuel efficiency by up to 25%.</p>
+
+            <div class="eco-simulation">
+                <div class="fuel-display">
+                    <div class="fuel-gauge">
+                        <div class="gauge-background">
+                            <div class="gauge-fill" id="fuel-level"></div>
+                        </div>
+                    </div>
+                    <div class="mpg-value" id="mpg-display">25 MPG</div>
+                </div>
+
+                <div class="driving-controls">
+                    <button class="control-btn" data-action="aggressive">
+                        🚀 Aggressive Driving
+                    </button>
+                    <button class="control-btn" data-action="smooth">
+                        🍃 Smooth Acceleration
+                    </button>
+                    <button class="control-btn" data-action="cruise">
+                        ⚡ Cruise Control
+                    </button>
+                    <button class="control-btn" data-action="coasting">
+                        🌊 Coasting
+                    </button>
+                </div>
+            </div>
+
+            <div class="feedback" id="feedback-1">
+                <h4>✅ Eco-Driving Results</h4>
+                <p><strong>Smooth acceleration</strong> saves 15-20% fuel vs aggressive driving.</p>
+                <p><strong>Cruise control</strong> maintains optimal speed for efficiency.</p>
+                <p><strong>Coasting</strong> recovers energy that would be lost in braking.</p>
+            </div>
+        </div>
+
+        <!-- Activity 2: ADAS Technology -->
+        <div class="activity-card" id="activity-2">
+            <div class="activity-header">
+                <span class="activity-number">Activity 2</span>
+                <span class="activity-status">Not Started</span>
+            </div>
+            <h3 class="activity-title">ADAS Technology Demo</h3>
+            <p>Explore how Advanced Driver Assistance Systems enhance safety.</p>
+
+            <div class="adas-simulation">
+                <div class="car-diagram">
+                    <div class="sensor" style="top: 20px; left: 50%; transform: translateX(-50%);">AEB</div>
+                    <div class="sensor" style="top: 50%; left: 10px; transform: translateY(-50%);">BSM</div>
+                    <div class="sensor" style="top: 50%; right: 10px; transform: translateY(-50%);">BSM</div>
+                    <div class="sensor" style="bottom: 20px; left: 30%;">PA</div>
+                    <div class="sensor" style="bottom: 20px; right: 30%;">PA</div>
+                </div>
+
+                <div class="adas-features">
+                    <button class="feature-btn" data-feature="acc">
+                        🚗 Adaptive Cruise Control
+                    </button>
+                    <button class="feature-btn" data-feature="lka">
+                        🛣️ Lane Keeping Assist
+                    </button>
+                    <button class="feature-btn" data-feature="bsm">
+                        👁️ Blind Spot Monitoring
+                    </button>
+                    <button class="feature-btn" data-feature="aeb">
+                        🛑 Automatic Emergency Braking
+                    </button>
+                </div>
+            </div>
+
+            <div class="feedback" id="feedback-2">
+                <h4>✅ ADAS Safety Benefits</h4>
+                <p><strong>ACC</strong> reduces rear-end collisions by 40%.</p>
+                <p><strong>LKA</strong> prevents 15% of lane departure accidents.</p>
+                <p><strong>BSM</strong> alerts to vehicles in blind spots during lane changes.</p>
+                <p><strong>AEB</strong> can prevent 38% of frontal collisions.</p>
+            </div>
+        </div>
+
+        <!-- Activity 3: Urban & EV -->
+        <div class="activity-card" id="activity-3">
+            <div class="activity-header">
+                <span class="activity-number">Activity 3</span>
+                <span class="activity-status">Not Started</span>
+            </div>
+            <h3 class="activity-title">Urban Navigation & EV Adaptation</h3>
+            <p>Master modern urban driving and electric vehicle techniques.</p>
+
+            <div class="urban-simulation">
+                <h4>Roundabout Navigation</h4>
+                <div class="roundabout">
+                    <div class="vehicle" id="your-car" style="bottom: 10px; left: 50%; transform: translateX(-50%);">YOU</div>
+                    <div class="vehicle" style="top: 10px; left: 50%; transform: translateX(-50%);">A</div>
+                    <div class="vehicle" style="top: 50%; right: 10px; transform: translateY(-50%);">B</div>
+                </div>
+
+                <div class="urban-scenarios">
+                    <button class="scenario-btn" data-scenario="yield">
+                        ⚠️ Yield to Traffic
+                    </button>
+                    <button class="scenario-btn" data-scenario="enter">
+                        🚦 Enter Roundabout
+                    </button>
+                    <button class="scenario-btn" data-scenario="bike">
+                        🚴 Bike Lane Awareness
+                    </button>
+                    <button class="scenario-btn" data-scenario="pedestrian">
+                        🚶 Pedestrian Priority
+                    </button>
+                </div>
+            </div>
+
+            <div class="ev-simulation">
+                <h4>Electric Vehicle Techniques</h4>
+                <div class="battery-display">
+                    <div class="battery-level" id="battery-level"></div>
+                </div>
+                <div>Range: <span id="range-display">240 miles</span></div>
+
+                <div class="ev-controls">
+                    <button class="ev-btn" data-ev="regen">
+                        🔄 Regenerative Braking
+                    </button>
+                    <button class="ev-btn" data-ev="eco">
+                        🌿 Eco Mode
+                    </button>
+                    <button class="ev-btn" data-ev="precondition">
+                        ⏰ Preconditioning
+                    </button>
+                    <button class="ev-btn" data-ev="charging">
+                        🔌 Smart Charging
+                    </button>
+                </div>
+            </div>
+
+            <div class="feedback" id="feedback-3">
+                <h4>✅ Modern Driving Mastery</h4>
+                <p><strong>Roundabouts:</strong> Reduce conflict points by 75% vs intersections.</p>
+                <p><strong>Regenerative braking</strong> recovers 15-20% of energy.</p>
+                <p><strong>Eco mode</strong> extends EV range by 10-15%.</p>
+                <p><strong>Smart charging</strong> can save 30% on electricity costs.</p>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-secondary" id="reset-btn">
+                ↻ Reset Simulation
+            </button>
+            <button class="btn btn-primary" id="complete-btn">
+                ✅ Complete Module
+            </button>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // State tracking
+            const state = {
+                ecoDriving: { completed: false, score: 0 },
+                adasTech: { completed: false, score: 0 },
+                urbanEV: { completed: false, score: 0 }
+            };
+
+            // DOM Elements
+            const progressSteps = document.querySelectorAll('.progress-step');
+            const resetBtn = document.getElementById('reset-btn');
+            const completeBtn = document.getElementById('complete-btn');
+
+            // Eco-Driving Simulation
+            const ecoControls = document.querySelectorAll('.control-btn');
+            const mpgDisplay = document.getElementById('mpg-display');
+            const fuelLevel = document.getElementById('fuel-level');
+            
+            ecoControls.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    ecoControls.forEach(b => b.classList.remove('active'));
+                    // Add active to clicked
+                    this.classList.add('active');
+                    
+                    const action = this.dataset.action;
+                    let mpg = 25;
+                    let fuelHeight = 60;
+                    
+                    switch(action) {
+                        case 'aggressive':
+                            mpg = 18;
+                            fuelHeight = 40;
+                            break;
+                        case 'smooth':
+                            mpg = 30;
+                            fuelHeight = 75;
+                            break;
+                        case 'cruise':
+                            mpg = 32;
+                            fuelHeight = 80;
+                            break;
+                        case 'coasting':
+                            mpg = 35;
+                            fuelHeight = 85;
+                            break;
+                    }
+                    
+                    // Update display
+                    mpgDisplay.textContent = `${mpg} MPG`;
+                    fuelLevel.style.height = `${fuelHeight}%`;
+                    
+                    // Complete activity
+                    if (!state.ecoDriving.completed) {
+                        state.ecoDriving.completed = true;
+                        state.ecoDriving.score = mpg > 25 ? 100 : 70;
+                        document.querySelector('#activity-1 .activity-status').textContent = 'Completed';
+                        document.getElementById('feedback-1').classList.add('show');
+                        updateProgress();
+                    }
+                });
+            });
+
+            // ADAS Technology
+            const featureBtns = document.querySelectorAll('.feature-btn');
+            
+            featureBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    
+                    const activeFeatures = document.querySelectorAll('.feature-btn.active');
+                    if (activeFeatures.length >= 2 && !state.adasTech.completed) {
+                        state.adasTech.completed = true;
+                        state.adasTech.score = 100;
+                        document.querySelector('#activity-2 .activity-status').textContent = 'Completed';
+                        document.getElementById('feedback-2').classList.add('show');
+                        updateProgress();
+                    }
+                });
+            });
+
+            // Urban & EV Simulation
+            const scenarioBtns = document.querySelectorAll('.scenario-btn');
+            const evBtns = document.querySelectorAll('.ev-btn');
+            const batteryLevel = document.getElementById('battery-level');
+            const rangeDisplay = document.getElementById('range-display');
+            const yourCar = document.getElementById('your-car');
+            
+            // Urban scenarios
+            scenarioBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const scenario = this.dataset.scenario;
+                    
+                    switch(scenario) {
+                        case 'enter':
+                            yourCar.style.bottom = '50%';
+                            yourCar.style.left = '70%';
+                            yourCar.style.transform = 'translate(-50%, -50%) rotate(90deg)';
+                            break;
+                        case 'yield':
+                            yourCar.style.bottom = '10px';
+                            yourCar.style.left = '50%';
+                            yourCar.style.transform = 'translateX(-50%)';
+                            break;
+                    }
+                    
+                    this.classList.add('active');
+                });
+            });
+
+            // EV controls
+            evBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    evBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const feature = this.dataset.ev;
+                    let range = 240;
+                    let battery = 70;
+                    
+                    switch(feature) {
+                        case 'regen':
+                            range = 270;
+                            battery = 75;
+                            break;
+                        case 'eco':
+                            range = 280;
+                            battery = 80;
+                            break;
+                        case 'precondition':
+                            range = 260;
+                            battery = 72;
+                            break;
+                        case 'charging':
+                            range = 250;
+                            battery = 71;
+                            break;
+                    }
+                    
+                    batteryLevel.style.width = `${battery}%`;
+                    rangeDisplay.textContent = `${range} miles`;
+                    
+                    if (!state.urbanEV.completed) {
+                        state.urbanEV.completed = true;
+                        state.urbanEV.score = 100;
+                        document.querySelector('#activity-3 .activity-status').textContent = 'Completed';
+                        document.getElementById('feedback-3').classList.add('show');
+                        updateProgress();
+                    }
+                });
+            });
+
+            // Update progress tracker
+            function updateProgress() {
+                let completedCount = 0;
+                if (state.ecoDriving.completed) completedCount++;
+                if (state.adasTech.completed) completedCount++;
+                if (state.urbanEV.completed) completedCount++;
+                
+                // Update progress steps
+                progressSteps.forEach((step, index) => {
+                    step.classList.remove('active');
+                    if (index < completedCount) {
+                        step.classList.add('active');
+                    }
+                });
+                
+                // Activate next step
+                if (completedCount < 3) {
+                    progressSteps[completedCount].classList.add('active');
+                }
+                
+                // Enable complete button when all done
+                if (completedCount === 3) {
+                    completeBtn.disabled = false;
+                }
+            }
+
+            // Reset simulation
+            resetBtn.addEventListener('click', function() {
+                // Reset state
+                Object.keys(state).forEach(key => {
+                    state[key] = { completed: false, score: 0 };
+                });
+                
+                // Reset UI
+                document.querySelectorAll('.activity-status').forEach(el => {
+                    el.textContent = 'Not Started';
+                });
+                
+                document.querySelectorAll('.control-btn, .feature-btn, .scenario-btn, .ev-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                document.querySelectorAll('.feedback').forEach(fb => {
+                    fb.classList.remove('show');
+                });
+                
+                // Reset displays
+                mpgDisplay.textContent = '25 MPG';
+                fuelLevel.style.height = '60%';
+                batteryLevel.style.width = '70%';
+                rangeDisplay.textContent = '240 miles';
+                
+                // Reset car position
+                yourCar.style.bottom = '10px';
+                yourCar.style.left = '50%';
+                yourCar.style.transform = 'translateX(-50%)';
+                
+                // Reset progress
+                progressSteps.forEach((step, index) => {
+                    step.classList.remove('active');
+                });
+                progressSteps[0].classList.add('active');
+                
+                completeBtn.disabled = true;
+            });
+
+            // Complete module
+            completeBtn.addEventListener('click', function() {
+                const totalScore = (state.ecoDriving.score + state.adasTech.score + state.urbanEV.score) / 3;
+                alert(`🎉 Module Complete!\nYour Score: ${Math.round(totalScore)}%\n\nYou've mastered modern driving techniques including:\n• Eco-driving for 25% better fuel efficiency\n• ADAS technology for enhanced safety\n• Urban navigation and EV adaptation`);
+            });
+
+            // Initialize
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
