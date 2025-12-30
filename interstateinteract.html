@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Interstate Highway System Simulator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #ef4444;
+            --color-info: #3b82f6;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes correct {
+            0%, 100% { background-color: #10b981; }
+            50% { background-color: #34d399; }
+        }
+
+        @keyframes incorrect {
+            0%, 100% { background-color: #ef4444; }
+            50% { background-color: #f87171; }
+        }
+
+        .simulation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+
+        /* Timer */
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(95, 23, 235, 0.2);
+        }
+
+        /* Stats */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Main Content */
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Map Section */
+        .map-section {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: var(--radius-sm);
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #e2e8f0;
+        }
+
+        /* Interstate Shields */
+        .interstate-shield {
+            position: absolute;
+            width: 60px;
+            height: 70px;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: move;
+            user-select: none;
+            transition: transform 0.3s ease;
+        }
+
+        .interstate-shield:hover {
+            transform: scale(1.1);
+        }
+
+        .interstate-shield.even {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+
+        .interstate-shield.odd {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+        }
+
+        .interstate-shield.auxiliary {
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+        }
+
+        .shield-number {
+            font-size: 1.5rem;
+            font-weight: 900;
+        }
+
+        .shield-type {
+            position: absolute;
+            bottom: -25px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #475569;
+            white-space: nowrap;
+        }
+
+        /* Compass */
+        .compass {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            border: 3px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #1e40af;
+            font-size: 1.2rem;
+        }
+
+        /* Control Section */
+        .control-section {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Quiz */
+        .quiz-container {
+            margin-bottom: 25px;
+        }
+
+        .question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 15px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .option:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+            font-weight: 600;
+        }
+
+        .option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+            animation: correct 1s;
+        }
+
+        .option.incorrect {
+            border-color: var(--color-danger);
+            background: rgba(239, 68, 68, 0.1);
+            animation: incorrect 1s;
+        }
+
+        /* Challenge */
+        .challenge-container {
+            background: rgba(59, 130, 246, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 2px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .challenge-title {
+            font-weight: 700;
+            color: var(--color-info);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .challenge-description {
+            font-size: 0.95rem;
+            color: #475569;
+            margin-bottom: 15px;
+        }
+
+        .challenge-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .number-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #cbd5e1;
+            border-radius: var(--radius-sm);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .number-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        /* Buttons */
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4c0fcf;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        /* Feedback */
+        .feedback-container {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feedback-container.correct {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid var(--color-success);
+            display: block;
+        }
+
+        .feedback-container.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid var(--color-danger);
+            display: block;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feedback-title.correct {
+            color: var(--color-success);
+        }
+
+        .feedback-title.incorrect {
+            color: var(--color-danger);
+        }
+
+        .feedback-content {
+            font-size: 0.95rem;
+            color: #475569;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-top: 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .results-content {
+            background: white;
+            padding: 40px;
+            border-radius: var(--radius-md);
+            max-width: 500px;
+            width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+        }
+
+        .results-score {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 20px 0;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .results-stat {
+            background: rgba(95, 23, 235, 0.05);
+            padding: 15px;
+            border-radius: var(--radius-sm);
+        }
+
+        .results-stat-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+
+        .results-stat-label {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .results-message {
+            font-size: 1.1rem;
+            color: #475569;
+            margin-bottom: 30px;
+        }
+
+        /* Legend */
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1e40af;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .legend-color.even {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+
+        .legend-color.odd {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+        }
+
+        .legend-color.auxiliary {
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+        }
+    </style>
+</head>
+<body>
+    <div class="simulation-container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="title">Interstate Highway System Simulator</h1>
+            <p class="subtitle">
+                Master the U.S. Interstate numbering system in 5 minutes. 
+                Drag highways to correct positions, answer questions, and complete challenges.
+            </p>
+        </div>
+
+        <!-- Timer -->
+        <div class="timer-container">
+            <div class="timer" id="timer">05:00</div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" id="score">0</div>
+                <div class="stat-label">Score</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="correct-answers">0</div>
+                <div class="stat-label">Correct Answers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="highways-placed">0</div>
+                <div class="stat-label">Highways Placed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="time-remaining">5:00</div>
+                <div class="stat-label">Time Remaining</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Map Section -->
+            <div class="map-section">
+                <h2 class="map-title">🗺️ U.S. Interstate Map</h2>
+                <div class="map-container" id="map-container">
+                    <!-- Interstate Shields will be placed here -->
+                    <div class="compass">N</div>
+                    
+                    <!-- Legend -->
+                    <div class="legend">
+                        <div class="legend-title">Highway Types</div>
+                        <div class="legend-item">
+                            <div class="legend-color even"></div>
+                            <span>Even = East-West</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color odd"></div>
+                            <span>Odd = North-South</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color auxiliary"></div>
+                            <span>Auxiliary Routes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control Section -->
+            <div class="control-section">
+                <h2 class="control-title">🎯 Interactive Challenges</h2>
+                
+                <!-- Quiz -->
+                <div class="quiz-container" id="quiz-1">
+                    <div class="question">1. What does an even-numbered Interstate indicate?</div>
+                    <div class="options">
+                        <div class="option" data-correct="true">East-West direction</div>
+                        <div class="option" data-correct="false">North-South direction</div>
+                        <div class="option" data-correct="false">Auxiliary route</div>
+                        <div class="option" data-correct="false">Business loop</div>
+                    </div>
+                </div>
+
+                <div class="quiz-container" id="quiz-2">
+                    <div class="question">2. How are auxiliary Interstate numbers determined?</div>
+                    <div class="options">
+                        <div class="option" data-correct="false">Random assignment</div>
+                        <div class="option" data-correct="true">Last two digits match parent highway</div>
+                        <div class="option" data-correct="false">Based on state boundaries</div>
+                        <div class="option" data-correct="false">By alphabetical order</div>
+                    </div>
+                </div>
+
+                <!-- Number Challenge -->
+                <div class="challenge-container" id="number-challenge">
+                    <div class="challenge-title">🔢 Highway Number Challenge</div>
+                    <div class="challenge-description">
+                        Given these highways: I-5, I-10, I-35, I-80, I-95<br>
+                        Drag them to their correct general locations on the map.
+                    </div>
+                    
+                    <div class="button-container">
+                        <button class="btn btn-primary" id="check-placements">Check Placements</button>
+                        <button class="btn btn-secondary" id="reset-highways">Reset Highways</button>
+                    </div>
+                </div>
+
+                <!-- Auxiliary Challenge -->
+                <div class="challenge-container">
+                    <div class="challenge-title">🔄 Auxiliary Route Challenge</div>
+                    <div class="challenge-description">
+                        If I-95 is the parent highway, what would its auxiliary routes be numbered?
+                    </div>
+                    <div class="challenge-input">
+                        <input type="text" class="number-input" id="auxiliary-input" placeholder="e.g., I-195, I-295" maxlength="15">
+                        <button class="btn btn-primary" id="check-auxiliary">Check Answer</button>
+                    </div>
+                </div>
+
+                <!-- Feedback -->
+                <div class="feedback-container" id="feedback">
+                    <div class="feedback-title" id="feedback-title">
+                        <span id="feedback-icon">✅</span>
+                        <span id="feedback-header">Correct!</span>
+                    </div>
+                    <div class="feedback-content" id="feedback-content">
+                        Your answer is correct!
+                    </div>
+                </div>
+
+                <!-- Progress -->
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-label">
+                        <span>Simulation Progress</span>
+                        <span id="progress-percentage">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div class="results-screen" id="results-screen">
+        <div class="results-content">
+            <h2 class="results-title">Simulation Complete!</h2>
+            <div class="results-score" id="final-score">0%</div>
+            
+            <div class="results-stats">
+                <div class="results-stat">
+                    <div class="results-stat-number" id="final-correct">0</div>
+                    <div class="results-stat-label">Correct Answers</div>
+                </div>
+                <div class="results-stat">
+                    <div class="results-stat-number" id="final-highways">0</div>
+                    <div class="results-stat-label">Highways Placed</div>
+                </div>
+                <div class="results-stat">
+                    <div class="results-stat-number" id="final-time">5:00</div>
+                    <div class="results-stat-label">Time Used</div>
+                </div>
+                <div class="results-stat">
+                    <div class="results-stat-number" id="final-percentage">0%</div>
+                    <div class="results-stat-label">Mastery Level</div>
+                </div>
+            </div>
+            
+            <p class="results-message" id="results-message">
+                You've completed the Interstate Highway System simulation!
+            </p>
+            
+            <div class="button-container">
+                <button class="btn btn-primary" id="restart-btn">Try Again</button>
+                <button class="btn btn-secondary" onclick="window.location.reload()">Back to Start</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let score = 0;
+        let correctAnswers = 0;
+        let highwaysPlaced = 0;
+        let timeRemaining = 300; // 5 minutes in seconds
+        let simulationActive = true;
+        let simulationInterval;
+        let draggedHighway = null;
+        let placedHighways = new Set();
+
+        // DOM Elements
+        const timerElement = document.getElementById('timer');
+        const timeRemainingElement = document.getElementById('time-remaining');
+        const scoreElement = document.getElementById('score');
+        const correctAnswersElement = document.getElementById('correct-answers');
+        const highwaysPlacedElement = document.getElementById('highways-placed');
+        const progressFill = document.getElementById('progress-fill');
+        const progressPercentage = document.getElementById('progress-percentage');
+        const mapContainer = document.getElementById('map-container');
+        const feedback = document.getElementById('feedback');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackHeader = document.getElementById('feedback-header');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const feedbackContent = document.getElementById('feedback-content');
+        const resultsScreen = document.getElementById('results-screen');
+        const finalScore = document.getElementById('final-score');
+        const finalCorrect = document.getElementById('final-correct');
+        const finalHighways = document.getElementById('final-highways');
+        const finalTime = document.getElementById('final-time');
+        const finalPercentage = document.getElementById('final-percentage');
+        const resultsMessage = document.getElementById('results-message');
+
+        // Interstate Data
+        const interstates = [
+            { number: 5, type: 'odd', description: 'West Coast N-S (CA to WA)' },
+            { number: 10, type: 'even', description: 'Southern E-W (CA to FL)' },
+            { number: 35, type: 'odd', description: 'Central N-S (TX to MN)' },
+            { number: 80, type: 'even', description: 'Northern E-W (CA to NJ)' },
+            { number: 95, type: 'odd', description: 'East Coast N-S (FL to ME)' },
+            { number: 495, type: 'auxiliary', description: 'DC Beltway (I-95 loop)' },
+            { number: 395, type: 'auxiliary', description: 'DC Spur (I-95 spur)' },
+            { number: 405, type: 'auxiliary', description: 'LA/SD Beltway (I-5 loop)' }
+        ];
+
+        // Format time as MM:SS
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Update UI
+        function updateUI() {
+            scoreElement.textContent = score;
+            correctAnswersElement.textContent = correctAnswers;
+            highwaysPlacedElement.textContent = highwaysPlaced;
+            timerElement.textContent = formatTime(timeRemaining);
+            timeRemainingElement.textContent = formatTime(timeRemaining);
+            
+            // Update progress
+            const progress = ((300 - timeRemaining) / 300) * 100;
+            progressFill.style.width = `${progress}%`;
+            progressPercentage.textContent = `${Math.round(progress)}%`;
+        }
+
+        // Create interstate shields
+        function createInterstateShields() {
+            interstates.forEach((highway, index) => {
+                const shield = document.createElement('div');
+                shield.className = `interstate-shield ${highway.type}`;
+                shield.id = `shield-${highway.number}`;
+                shield.innerHTML = `
+                    <div class="shield-number">I-${highway.number}</div>
+                    <div class="shield-type">${highway.type === 'auxiliary' ? 'Auxiliary' : 'Primary'}</div>
+                `;
+                
+                // Position randomly for drag challenge
+                const x = 50 + (index % 3) * 100;
+                const y = 100 + Math.floor(index / 3) * 100;
+                shield.style.left = `${x}px`;
+                shield.style.top = `${y}px`;
+                
+                // Add drag functionality
+                shield.setAttribute('draggable', 'true');
+                shield.addEventListener('dragstart', handleDragStart);
+                shield.addEventListener('dragend', handleDragEnd);
+                
+                mapContainer.appendChild(shield);
+            });
+        }
+
+        // Drag and drop handlers
+        function handleDragStart(e) {
+            draggedHighway = e.target;
+            e.target.style.opacity = '0.7';
+            
+            // Store data
+            e.dataTransfer.setData('text/plain', e.target.id);
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            e.target.style.opacity = '1';
+            draggedHighway = null;
+        }
+
+        // Handle map drop
+        mapContainer.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        });
+
+        mapContainer.addEventListener('drop', function(e) {
+            e.preventDefault();
+            const id = e.dataTransfer.getData('text/plain');
+            const shield = document.getElementById(id);
+            
+            if (shield && draggedHighway) {
+                // Get drop position relative to map
+                const rect = mapContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left - 30;
+                const y = e.clientY - rect.top - 35;
+                
+                // Update position
+                shield.style.left = `${x}px`;
+                shield.style.top = `${y}px`;
+                
+                // Check if highway is placed in correct zone
+                checkHighwayPlacement(shield, x, y);
+                
+                // Update stats if first placement
+                if (!placedHighways.has(id)) {
+                    placedHighways.add(id);
+                    highwaysPlaced++;
+                    updateUI();
+                }
+            }
+        });
+
+        // Check highway placement
+        function checkHighwayPlacement(shield, x, y) {
+            const number = parseInt(shield.id.replace('shield-', ''));
+            const highway = interstates.find(h => h.number === number);
+            
+            if (!highway) return;
+            
+            // Determine correct zone based on highway type and number
+            let isCorrect = false;
+            let feedbackMsg = '';
+            
+            if (highway.type === 'even') {
+                // East-West highways: lower numbers south, higher numbers north
+                const expectedY = number <= 20 ? 300 : number <= 40 ? 200 : number <= 60 ? 150 : 100;
+                isCorrect = Math.abs(y - expectedY) < 50;
+                feedbackMsg = isCorrect ? 
+                    `Correct! I-${number} runs East-West in the ${number <= 20 ? 'south' : number <= 40 ? 'central' : 'north'}.` :
+                    `I-${number} should be placed ${number <= 20 ? 'further south' : number <= 40 ? 'more central' : 'further north'}.`;
+            } 
+            else if (highway.type === 'odd') {
+                // North-South highways: lower numbers west, higher numbers east
+                const expectedX = number <= 20 ? 100 : number <= 40 ? 200 : number <= 60 ? 300 : 400;
+                isCorrect = Math.abs(x - expectedX) < 50;
+                feedbackMsg = isCorrect ?
+                    `Correct! I-${number} runs North-South on the ${number <= 20 ? 'west' : number <= 40 ? 'central' : 'east'} coast.` :
+                    `I-${number} should be placed ${number <= 20 ? 'further west' : number <= 40 ? 'more central' : 'further east'}.`;
+            }
+            else if (highway.type === 'auxiliary') {
+                // Auxiliary routes near parent highway
+                const parentNumber = parseInt(number.toString().slice(-2));
+                const parentHighway = interstates.find(h => h.number === parentNumber);
+                
+                if (parentHighway) {
+                    isCorrect = true; // Simple check for auxiliary routes
+                    feedbackMsg = `I-${number} is an auxiliary route of I-${parentNumber}.`;
+                }
+            }
+            
+            // Visual feedback
+            if (isCorrect) {
+                shield.style.boxShadow = '0 0 15px rgba(16, 185, 129, 0.8)';
+                score += 10;
+                if (!shield.classList.contains('placed-correctly')) {
+                    correctAnswers++;
+                    shield.classList.add('placed-correctly');
+                }
+            } else {
+                shield.style.boxShadow = '0 0 15px rgba(239, 68, 68, 0.8)';
+            }
+            
+            updateUI();
+            showFeedback(isCorrect, feedbackMsg);
+        }
+
+        // Check all placements
+        function checkAllPlacements() {
+            document.querySelectorAll('.interstate-shield').forEach(shield => {
+                const rect = shield.getBoundingClientRect();
+                const mapRect = mapContainer.getBoundingClientRect();
+                const x = rect.left - mapRect.left + 30;
+                const y = rect.top - mapRect.top + 35;
+                
+                checkHighwayPlacement(shield, x, y);
+            });
+        }
+
+        // Reset highways
+        function resetHighways() {
+            placedHighways.clear();
+            highwaysPlaced = 0;
+            
+            document.querySelectorAll('.interstate-shield').forEach((shield, index) => {
+                const x = 50 + (index % 3) * 100;
+                const y = 100 + Math.floor(index / 3) * 100;
+                shield.style.left = `${x}px`;
+                shield.style.top = `${y}px`;
+                shield.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+                shield.classList.remove('placed-correctly');
+            });
+            
+            updateUI();
+            showFeedback(true, 'All highways have been reset to starting positions.');
+        }
+
+        // Show feedback
+        function showFeedback(isCorrect, message) {
+            feedback.className = `feedback-container ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackTitle.className = `feedback-title ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackHeader.textContent = isCorrect ? 'Correct!' : 'Needs Adjustment';
+            feedbackIcon.textContent = isCorrect ? '✅' : '⚠️';
+            feedbackContent.textContent = message;
+            
+            feedback.style.display = 'block';
+            
+            // Hide feedback after 3 seconds
+            setTimeout(() => {
+                feedback.style.display = 'none';
+            }, 3000);
+        }
+
+        // Handle quiz answers
+        function setupQuiz() {
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selection from siblings
+                    this.parentElement.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Select this option
+                    this.classList.add('selected');
+                    
+                    // Check answer
+                    const isCorrect = this.dataset.correct === 'true';
+                    
+                    // Visual feedback
+                    this.parentElement.querySelectorAll('.option').forEach(opt => {
+                        if (opt.dataset.correct === 'true') {
+                            opt.classList.add('correct');
+                        } else if (opt === this && !isCorrect) {
+                            opt.classList.add('incorrect');
+                        }
+                    });
+                    
+                    // Update score
+                    if (isCorrect && !this.classList.contains('answered')) {
+                        score += 20;
+                        correctAnswers++;
+                        this.classList.add('answered');
+                        
+                        showFeedback(true, 'Excellent! You understand the Interstate numbering system.');
+                    } else if (!isCorrect) {
+                        showFeedback(false, 'That\'s not quite right. Review the rules and try again.');
+                    }
+                    
+                    updateUI();
+                });
+            });
+        }
+
+        // Handle auxiliary challenge
+        function setupAuxiliaryChallenge() {
+            document.getElementById('check-auxiliary').addEventListener('click', function() {
+                const input = document.getElementById('auxiliary-input').value.trim();
+                const answers = ['195', '295', '395', '495', '595', '695', '795', '895', '195', '295', '395', '495'];
+                
+                // Extract numbers from input
+                const numbers = input.match(/\d+/g) || [];
+                let correctCount = 0;
+                
+                numbers.forEach(num => {
+                    if (answers.includes(num)) {
+                        correctCount++;
+                    }
+                });
+                
+                if (correctCount > 0) {
+                    score += correctCount * 15;
+                    correctAnswers++;
+                    showFeedback(true, `Correct! I-${numbers.join(', I-')} are valid auxiliary routes of I-95.`);
+                } else {
+                    showFeedback(false, 'Auxiliary routes of I-95 would be numbered I-195, I-295, I-395, etc.');
+                }
+                
+                updateUI();
+            });
+        }
+
+        // Start simulation
+        function startSimulation() {
+            simulationInterval = setInterval(() => {
+                if (timeRemaining > 0) {
+                    timeRemaining--;
+                    updateUI();
+                    
+                    // Check for completion
+                    if (correctAnswers >= 5 && highwaysPlaced >= 5) {
+                        endSimulation('success');
+                    }
+                } else {
+                    endSimulation('time_up');
+                }
+            }, 1000);
+        }
+
+        // End simulation
+        function endSimulation(reason) {
+            simulationActive = false;
+            clearInterval(simulationInterval);
+            
+            // Calculate final score
+            const timeBonus = Math.floor(timeRemaining / 10);
+            const finalScoreValue = score + timeBonus;
+            const masteryPercentage = Math.min(100, Math.floor((correctAnswers / 8) * 100));
+            
+            // Update results screen
+            finalScore.textContent = `${finalScoreValue}`;
+            finalCorrect.textContent = correctAnswers;
+            finalHighways.textContent = highwaysPlaced;
+            finalTime.textContent = formatTime(300 - timeRemaining);
+            finalPercentage.textContent = `${masteryPercentage}%`;
+            
+            // Set message based on performance
+            let message = '';
+            if (masteryPercentage >= 90) {
+                message = 'Expert level! You\'ve mastered the Interstate numbering system.';
+            } else if (masteryPercentage >= 70) {
+                message = 'Great job! You have a solid understanding of the system.';
+            } else if (masteryPercentage >= 50) {
+                message = 'Good effort! Review the rules to improve your knowledge.';
+            } else {
+                message = 'Keep practicing! The numbering system takes time to master.';
+            }
+            
+            resultsMessage.textContent = message;
+            resultsScreen.style.display = 'flex';
+        }
+
+        // Initialize
+        function init() {
+            createInterstateShields();
+            setupQuiz();
+            setupAuxiliaryChallenge();
+            updateUI();
+            startSimulation();
+            
+            // Event listeners
+            document.getElementById('check-placements').addEventListener('click', checkAllPlacements);
+            document.getElementById('reset-highways').addEventListener('click', resetHighways);
+            document.getElementById('restart-btn').addEventListener('click', function() {
+                location.reload();
+            });
+        }
+
+        // Start when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
