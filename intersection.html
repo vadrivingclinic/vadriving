@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Intersection Safety</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-danger: #ef4444;
+            --color-warning: #f59e0b;
+            --color-success: #10b981;
+            --color-caution: #f59e0b;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .title-highlight {
+            color: var(--color-primary);
+            text-shadow: 0 0 10px rgba(95, 23, 235, 0.2);
+        }
+
+        .time-estimate {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title-icon {
+            font-size: 1.4rem;
+        }
+
+        .subsection {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .danger-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--color-danger);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .danger-title {
+            font-weight: 700;
+            color: var(--color-danger);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .danger-content {
+            color: var(--color-primary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .warning-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .warning-list li {
+            margin-bottom: 10px;
+            padding-left: 30px;
+            position: relative;
+            color: var(--color-primary);
+        }
+
+        .warning-list li:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .success-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .success-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .success-list li {
+            margin-bottom: 10px;
+            padding-left: 30px;
+            position: relative;
+            color: var(--color-text);
+        }
+
+        .success-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .intersection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .intersection-card {
+            background: rgba(95, 23, 235, 0.05);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intersection-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .intersection-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            opacity: 0.7;
+        }
+
+        .intersection-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .intersection-name {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .intersection-description {
+            color: var(--color-primary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .challenge-card {
+            background: rgba(95, 23, 235, 0.05);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .challenge-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(95, 23, 235, 0.1);
+        }
+
+        .challenge-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .challenge-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+        }
+
+        .challenge-content {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .knowledge-check {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(95, 23, 235, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+            box-shadow: 0 0 15px rgba(95, 23, 235, 0.1);
+        }
+
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+            border: 2px solid rgba(95, 23, 235, 0.3);
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+            box-shadow: 0 0 10px rgba(95, 23, 235, 0.3);
+        }
+
+        .submit-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 40px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 5px 20px rgba(95, 23, 235, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(95, 23, 235, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            margin-top: 30px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.3rem;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 25px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+            font-size: 1.05rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .key-points {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.2rem;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 12px;
+            padding-left: 30px;
+            position: relative;
+            color: var(--color-text);
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .completion-time {
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.8rem;
+            }
+
+            .intersection-grid,
+            .challenge-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">🚦</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Time Learning</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" 
+                     alt="VA Driving Clinic Logo" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Intersection Safety Module</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">10-Minute Essential Guide</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Approaching <span class="title-highlight">Intersections</span> Safely</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">🚦</div>
+            <div class="time-estimate-text">
+                Complete this lesson in <span class="time-highlight">10 minutes</span> to master intersection safety
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Sections Completed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="quiz-score">0%</span>
+                <span class="stat-label">Quiz Score</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Time Learning</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Lesson Progress</span>
+                <span>Time Learning: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: Types & Challenges -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">⚠️</span>
+                    Understanding <span class="title-highlight">Intersection</span> Challenges
+                </h2>
+                
+                <div class="danger-box">
+                    <div class="danger-title">📊 Critical Intersection Statistics</div>
+                    <div class="danger-content">
+                        • <strong>40%</strong> of all traffic collisions occur at intersections<br>
+                        • Intersection accidents account for <strong>20%</strong> of traffic fatalities<br>
+                        • <strong>96%</strong> of intersection crashes involve driver error<br>
+                        • Red-light running causes <strong>200,000+</strong> injuries annually
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #5f17eb;">🚥</span> Four Main Types of Intersections
+                    </h3>
+                    
+                    <div class="intersection-grid">
+                        <div class="intersection-card">
+                            <div class="intersection-icon">🛑🚦</div>
+                            <div class="intersection-name">Controlled Intersections</div>
+                            <div class="intersection-description">
+                                Feature traffic control devices like stop signs, yield signs, or traffic lights. Right-of-way is clearly indicated by signals and signs.
+                            </div>
+                        </div>
+
+                        <div class="intersection-card">
+                            <div class="intersection-icon">❓</div>
+                            <div class="intersection-name">Uncontrolled Intersections</div>
+                            <div class="intersection-description">
+                                No traffic control devices present. Drivers must use right-of-way rules: vehicle on left yields to vehicle on right.
+                            </div>
+                        </div>
+
+                        <div class="intersection-card">
+                            <div class="intersection-icon">🔄</div>
+                            <div class="intersection-name">Roundabouts</div>
+                            <div class="intersection-description">
+                                Circular intersections with one-way traffic flow. Vehicles entering must yield to traffic already circulating.
+                            </div>
+                        </div>
+
+                        <div class="intersection-card">
+                            <div class="intersection-icon">┴</div>
+                            <div class="intersection-name">T-Intersections</div>
+                            <div class="intersection-description">
+                                One road ends at a perpendicular road. Traffic on terminating road must yield to through traffic.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #ef4444;">🚨</span> Common Intersection Challenges
+                    </h3>
+                    
+                    <div class="challenge-grid">
+                        <div class="challenge-card">
+                            <div class="challenge-icon">👁️</div>
+                            <div class="challenge-title">Limited Visibility</div>
+                            <div class="challenge-content">
+                                Buildings, trees, parked cars, and weather conditions can obstruct views of oncoming traffic, pedestrians, and cyclists.
+                            </div>
+                        </div>
+
+                        <div class="challenge-card">
+                            <div class="challenge-icon">🧩</div>
+                            <div class="challenge-title">Complex Navigation</div>
+                            <div class="challenge-content">
+                                Multiple lanes, turning lanes, crosswalks, and signals create confusing scenarios requiring split-second decisions.
+                            </div>
+                        </div>
+
+                        <div class="challenge-card">
+                            <div class="challenge-icon">🚗🚗</div>
+                            <div class="challenge-title">High Traffic Volume</div>
+                            <div class="challenge-content">
+                                Urban intersections experience heavy congestion, increasing accident risks and requiring heightened attention.
+                            </div>
+                        </div>
+
+                        <div class="challenge-card">
+                            <div class="challenge-icon">🚶🚴</div>
+                            <div class="challenge-title">Vulnerable Road Users</div>
+                            <div class="challenge-content">
+                                Pedestrians and cyclists frequently cross at intersections, requiring constant scanning and yielding.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Best Practices -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🛡️</span>
+                    <span class="title-highlight">Essential</span> Safety Practices
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #5f17eb;">✅</span> 7-Step Intersection Approach
+                    </h3>
+                    
+                    <div class="success-box">
+                        <div class="success-title">🎯 Systematic Intersection Approach</div>
+                        <ul class="success-list">
+                            <li><strong>1. Scan Ahead:</strong> Look 12-15 seconds ahead for upcoming intersections</li>
+                            <li><strong>2. Reduce Speed:</strong> Begin slowing down 150-200 feet before intersection</li>
+                            <li><strong>3. Check Controls:</strong> Identify traffic signals, signs, and lane markings</li>
+                            <li><strong>4. Look Left-Right-Left:</strong> Perform systematic visual scan before entering</li>
+                            <li><strong>5. Signal Intentions:</strong> Use turn signals 100 feet before intersection</li>
+                            <li><strong>6. Clear Path:</strong> Ensure your path is clear of all hazards</li>
+                            <li><strong>7. Proceed Smoothly:</strong> Maintain steady speed without sudden movements</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #10b981;">🚦</span> Controlled Intersection Protocols
+                    </h3>
+                    
+                    <div class="warning-box">
+                        <div class="warning-title">⚠️ Traffic Light Safety Rules</div>
+                        <ul class="warning-list">
+                            <li><strong>Green Light:</strong> Proceed only when intersection is clear</li>
+                            <li><strong>Yellow Light:</strong> Prepare to stop unless unsafe to do so</li>
+                            <li><strong>Red Light:</strong> Complete stop before crosswalk or stop line</li>
+                            <li><strong>Right on Red:</strong> Permitted after complete stop and clearance check</li>
+                            <li><strong>Flashing Lights:</strong> Treat as stop or yield signs accordingly</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <div class="success-title">✅ Stop Sign Procedures</div>
+                        <ul class="success-list">
+                            <li>Come to complete stop at white stop line or before crosswalk</li>
+                            <li>If no line or crosswalk, stop before entering intersection</li>
+                            <li>First to stop = first to proceed (if multiple vehicles)</li>
+                            <li>Simultaneous stops: rightmost vehicle proceeds first</li>
+                            <li>Scan all directions before and during movement</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #f59e0b;">🔄</span> Roundabout Navigation
+                    </h3>
+                    
+                    <div class="success-box">
+                        <div class="success-title">✅ Roundabout Safety Sequence</div>
+                        <ul class="success-list">
+                            <li><strong>Approach:</strong> Reduce speed, choose correct lane for destination</li>
+                            <li><strong>Yield:</strong> Yield to all traffic already in roundabout</li>
+                            <li><strong>Enter:</strong> Enter only when safe gap exists, do not stop in roundabout</li>
+                            <li><strong>Navigate:</strong> Stay in lane, maintain slow but steady speed</li>
+                            <li><strong>Exit:</strong> Signal right before exit, watch for pedestrians</li>
+                            <li><strong>Emergency Vehicles:</strong> Continue to exit, then pull over</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Special Scenarios & Skills -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🌟</span>
+                    <span class="title-highlight">Advanced</span> Skills & Scenarios
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🌙 Night & Low-Visibility Intersections</h3>
+                    
+                    <div class="warning-box">
+                        <div class="warning-title">⚠️ Reduced Visibility Precautions</div>
+                        <ul class="warning-list">
+                            <li>Increase scanning distance and reduce speed by 20%</li>
+                            <li>Use high beams when no oncoming traffic (dim 500 ft before)</li>
+                            <li>Watch for reflective clothing and vehicle lights</li>
+                            <li>Be extra cautious at unlit or poorly marked intersections</li>
+                            <li>Assume other drivers may not see you or traffic signals</li>
+                        </ul>
+                    </div>
+
+                    <div class="danger-box">
+                        <div class="danger-title">📊 Night Intersection Statistics</div>
+                        <div class="danger-content">
+                            • <strong>60%</strong> of intersection fatalities occur at night<br>
+                            • Nighttime intersection crashes are <strong>3x</strong> more likely to be fatal<br>
+                            • Reduced visibility contributes to <strong>45%</strong> of nighttime intersection errors
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🌧️ Adverse Weather Conditions</h3>
+                    
+                    <div class="success-box">
+                        <div class="success-title">✅ Weather-Specific Adjustments</div>
+                        <ul class="success-list">
+                            <li><strong>Rain:</strong> Double following distance, watch for hydroplaning</li>
+                            <li><strong>Snow/Ice:</strong> Triple stopping distance, avoid sudden maneuvers</li>
+                            <li><strong>Fog:</strong> Use low beams, increase scanning frequency</li>
+                            <li><strong>Glare:</strong> Use sun visors, polarized sunglasses when needed</li>
+                            <li><strong>All Conditions:</strong> Increase scanning, reduce speed, signal early</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <div class="warning-title">⚠️ Wet Weather Intersection Tips</div>
+                        <ul class="warning-list">
+                            <li>Brake early and gently to avoid skidding</li>
+                            <li>Watch for standing water that could hide potholes</li>
+                            <li>Increase scanning for pedestrians with umbrellas</li>
+                            <li>Be prepared for reduced tire traction on painted lines</li>
+                            <li>Allow extra time for turns and lane changes</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🚗🚛 Heavy Traffic & Large Vehicles</h3>
+                    
+                    <div class="warning-box">
+                        <div class="warning-title">⚠️ Sharing Intersections with Large Vehicles</div>
+                        <ul class="warning-list">
+                            <li>Never stop beside large trucks in intersections (blind spots)</li>
+                            <li>Give trucks extra space for wide turns</li>
+                            <li>Watch for turn signals on trailers, not just cabs</li>
+                            <li>Be patient - trucks need more time to accelerate and stop</li>
+                            <li>Never cut in front of large vehicles at intersections</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <div class="success-title">✅ High-Traffic Intersection Strategies</div>
+                        <ul class="success-list">
+                            <li><strong>Plan Ahead:</strong> Know your route and lane requirements</li>
+                            <li><strong>Stay Patient:</strong> Avoid aggressive maneuvers and honking</li>
+                            <li><strong>Maintain Buffer:</strong> Keep space cushions around your vehicle</li>
+                            <li><strong>Watch Patterns:</strong> Observe traffic flow and light timing</li>
+                            <li><strong>Eye Contact:</strong> Establish visual contact with other drivers when possible</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <div class="key-points-title">🎯 Intersection Safety Mastery</div>
+                    <ul class="key-points-list">
+                        <li><strong>Scan Constantly:</strong> Your eyes should never stop moving at intersections</li>
+                        <li><strong>Control Speed:</strong> Approach at speeds that allow complete stopping</li>
+                        <li><strong>Communicate Clearly:</strong> Use signals early and maintain them through turns</li>
+                        <li><strong>Respect Right-of-Way:</strong> Know when to yield and when to proceed</li>
+                        <li><strong>Expect the Unexpected:</strong> Always anticipate other drivers' errors</li>
+                        <li><strong>Practice Defensive Driving:</strong> Your safety depends on your actions, not just others'</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Check -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">🚦 Intersection Safety Assessment</h2>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. At an uncontrolled intersection, who has the right-of-way?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>The vehicle that arrives first</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>The vehicle on the right</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>The larger vehicle</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. When approaching a yellow traffic light, what should you do?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Speed up to clear the intersection</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Prepare to stop if it's safe to do so</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Continue at your current speed</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. What percentage of intersection crashes involve driver error?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>About 50%</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>About 75%</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>About 96%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. When entering a roundabout, you should:</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Yield to traffic already in the roundabout</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Proceed immediately if no one is close</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Stop completely before entering</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">Check Your Intersection Knowledge</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Your Intersection Safety Results
+                </div>
+                <div class="score" id="score">0/4</div>
+                <div class="feedback" id="feedback">
+                    Review your answers to see which intersection safety concepts you've mastered.
+                </div>
+                <div class="key-points" style="margin-top: 20px;">
+                    <div class="key-points-title">🎯 Essential Intersection Takeaways</div>
+                    <ul class="key-points-list">
+                        <li>40% of collisions occur at intersections - they demand extra attention</li>
+                        <li>Always scan left-right-left before and during intersection navigation</li>
+                        <li>Know and respect right-of-way rules for all intersection types</li>
+                        <li>Signal your intentions clearly and early</li>
+                        <li>Adjust speed and scanning for weather, visibility, and traffic conditions</li>
+                        <li>Practice defensive driving - anticipate others' mistakes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> Intersection Safety Mastered!
+            </div>
+            <p>You've successfully completed the Approaching Intersections lesson. Remember, intersections are where careful driving matters most.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>Apply these safety practices at every intersection. Your vigilance and proper technique can prevent accidents and save lives.</p>
+        </div>
+    </div>
+
+    <script>
+        // Timer Configuration
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let quizCompleted = false;
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const progressFill = document.getElementById('progress-fill');
+        const submitBtn = document.getElementById('submit-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            updateProgress();
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 3;
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 600) { // 10 minutes or more
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 900) { // 15 minutes or more
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update quiz score display
+        function updateQuizScore(score, totalQuestions) {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            quizScoreEl.textContent = `${percentage}%`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the continuous timer
+            startTimer();
+            
+            // Set up option selection
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+        });
+
+        function checkAnswers() {
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'C',
+                4: 'A'
+            };
+
+            let score = 0;
+            const totalQuestions = 4;
+            let feedbackHTML = '';
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#10b981';
+                        selectedOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                    } else {
+                        selectedOption.style.borderColor = '#ef4444';
+                        selectedOption.style.background = 'rgba(239, 68, 68, 0.1)';
+                        
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#10b981';
+                            correctOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            updateQuizScore(score, totalQuestions);
+            
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 Excellent! You\'ve mastered essential intersection safety concepts. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 Good understanding of intersection navigation. ';
+            } else {
+                feedbackHTML = '📚 Review the lesson material. Intersection safety is critical. ';
+            }
+            
+            feedbackHTML += 'Apply these concepts at every intersection you encounter.';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            document.getElementById('results').classList.add('show');
+            
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+            
+            progressFill.style.width = '100%';
+            
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>
