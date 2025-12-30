@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Module 3: Safe Passing Techniques</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-soft: #8a5feb;
+            --color-secondary: #000000;
+            --color-accent: #7c3aed;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-dark: #000000;
+            --color-light: #f9fafb;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+            --shadow-card: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            padding: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        @keyframes warningFlash {
+            0%, 100% { background-color: transparent; }
+            50% { background-color: rgba(239, 68, 68, 0.1); }
+        }
+
+        @keyframes safePass {
+            0% { left: 0; }
+            30% { left: 60%; }
+            70% { left: 60%; }
+            100% { left: 100%; }
+        }
+
+        /* Main Container */
+        .page {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 0; }
+            .page {
+                border-radius: 0;
+                box-shadow: none;
+                padding: 16px 12px 20px;
+            }
+        }
+
+        /* Header */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            width: 100%;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            max-width: 100%;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 100%;
+        }
+
+        .course-name {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .week-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.1);
+            font-size: 0.8rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .week-label-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            line-height: 1.1;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .module-subtitle {
+            font-size: 1rem;
+            color: var(--color-muted);
+            max-width: 800px;
+            margin-bottom: 28px;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+            line-height: 1.7;
+        }
+
+        /* Time Banner */
+        .time-banner {
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .time-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .time-content h3 {
+            color: var(--color-primary);
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        /* Module Stats */
+        .module-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .module-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        /* Content Sections */
+        .content-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .section-card {
+            background: var(--color-bg);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0.5;
+        }
+
+        .section-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--color-primary);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title-icon {
+            font-size: 1.8rem;
+        }
+
+        /* Passing Simulation */
+        .simulation-container {
+            background: rgba(95, 23, 235, 0.03);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            margin: 25px 0;
+        }
+
+        .simulation-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Road Simulation */
+        .road-simulation {
+            height: 300px;
+            background: #1f2937;
+            border-radius: var(--radius-sm);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 3px solid #374151;
+        }
+
+        .lane-markings {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .center-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: repeating-linear-gradient(
+                to right,
+                #fbbf24,
+                #fbbf24 20px,
+                transparent 20px,
+                transparent 40px
+            );
+            transform: translateY(-50%);
+        }
+
+        .lane-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                #ffffff,
+                #ffffff 20px,
+                transparent 20px,
+                transparent 40px
+            );
+            transform: translate(-50%, -50%);
+        }
+
+        .vehicle {
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            border-radius: 5px;
+            transition: all 2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            z-index: 10;
+        }
+
+        .your-vehicle {
+            background: var(--color-primary);
+            color: white;
+            bottom: 40px;
+        }
+
+        .vehicle-being-passed {
+            background: #6b7280;
+            color: white;
+            bottom: 40px;
+        }
+
+        .oncoming-vehicle {
+            background: #ef4444;
+            color: white;
+            top: 40px;
+        }
+
+        .no-passing-zone {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(239, 68, 68, 0.1),
+                rgba(239, 68, 68, 0.1) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            border-left: 3px solid #ef4444;
+            border-right: 3px solid #ef4444;
+        }
+
+        .zone-label {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ef4444;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Controls */
+        .simulation-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .control-btn {
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--color-primary);
+            background: white;
+            color: var(--color-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .control-btn.danger {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .control-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .control-btn.danger.active {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Feedback Display */
+        .feedback-display {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            margin-top: 20px;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .feedback-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+        }
+
+        .feedback-item.success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 3px solid var(--color-success);
+            color: var(--color-success);
+        }
+
+        .feedback-item.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid var(--color-warning);
+            color: var(--color-warning);
+        }
+
+        .feedback-item.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid var(--color-error);
+            color: var(--color-error);
+            animation: warningFlash 1s ease;
+        }
+
+        .feedback-icon {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Passing Checklist */
+        .checklist-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .checklist-item {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .checklist-item:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .checklist-item.completed {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: var(--color-success);
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid rgba(95, 23, 235, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item.completed .checklist-checkbox {
+            background: var(--color-success);
+            border-color: var(--color-success);
+            color: white;
+        }
+
+        .checklist-content h4 {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .checklist-content p {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            line-height: 1.5;
+        }
+
+        /* Scenario Cards */
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 25px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .scenario-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .scenario-card.active {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .scenario-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .scenario-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .scenario-description {
+            font-size: 0.9rem;
+            color: var(--color-text);
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        /* Quiz Section */
+        .quiz-section {
+            margin-top: 40px;
+        }
+
+        .quiz-question {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 20px;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            padding: 15px 20px;
+            border-radius: var(--radius-sm);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .quiz-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .option-label {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            color: var(--color-primary);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .quiz-option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        /* Results Panel */
+        .results-panel {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 40px;
+            margin-top: 40px;
+            display: none;
+            animation: fadeInUp 0.6s ease;
+            border: 2px solid var(--color-primary);
+        }
+
+        .results-panel.show {
+            display: block;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .results-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            text-align: center;
+            margin: 30px 0;
+            text-shadow: 0 0 20px rgba(95, 23, 235, 0.7);
+        }
+
+        .key-insights {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .insights-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .insights-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .insights-list li {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            font-size: 0.95rem;
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+
+        .insight-dot {
+            width: 8px;
+            height: 8px;
+            margin-top: 8px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.2);
+        }
+
+        .btn-icon {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <!-- Header -->
+        <header class="brand-row">
+            <div class="brand">
+                <img
+                    src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png"
+                    alt="VA Driving Clinic logo"
+                    class="brand-logo"
+                />
+                <div class="course-meta">
+                    <span class="course-name">VA Driving Clinic • Module 3</span>
+                    <div class="week-label">
+                        <span class="week-label-dot"></span>
+                        <span>Safe Passing Techniques</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <h1>Mastering Safe Passing Maneuvers</h1>
+        <p class="module-subtitle">
+            Passing other vehicles is a critical driving skill that requires proper judgment, timing, and technique. 
+            This interactive module teaches you when to pass, how to pass safely, and the legal aspects of passing 
+            on different types of roads. Improper passing contributes to 14% of highway fatalities annually.
+        </p>
+
+        <!-- Time Banner -->
+        <div class="time-banner">
+            <div class="time-icon">
+                ⏱️
+            </div>
+            <div class="time-content">
+                <h3>Module Time Estimate</h3>
+                <p>Complete this interactive passing simulation in approximately <strong>8-10 minutes</strong>. Practice passing decisions in various scenarios and test your knowledge.</p>
+            </div>
+        </div>
+
+        <!-- Module Stats -->
+        <div class="module-stats">
+            <div class="stat-card">
+                <span class="stat-number" id="safe-passes">0</span>
+                <span class="stat-label">Safe Passes Completed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="decision-accuracy">0%</span>
+                <span class="stat-label">Decision Accuracy</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="avg-clearance">0 ft</span>
+                <span class="stat-label">Average Clearance</span>
+            </div>
+        </div>
+
+        <!-- Content Sections -->
+        <div class="content-sections">
+            <!-- Section 1: Introduction -->
+            <section class="section-card">
+                <h2 class="section-title">
+                    <span class="section-title-icon">🚗</span>
+                    Introduction to Passing
+                </h2>
+                <div class="section-content">
+                    <div style="max-width: 800px; margin: 0 auto;">
+                        <p style="font-size: 1.1rem; margin-bottom: 20px; line-height: 1.7;">
+                            <strong>Passing other vehicles on the road is a common driving maneuver</strong> that, when done correctly, enhances traffic flow and road efficiency. However, improper passing can lead to dangerous situations and accidents. Understanding the rules, techniques, and safety considerations for passing is crucial for every driver.
+                        </p>
+                        
+                        <div style="background: rgba(95, 23, 235, 0.05); padding: 20px; border-radius: var(--radius-sm); border-left: 4px solid var(--color-primary); margin: 25px 0;">
+                            <h3 style="color: var(--color-primary); margin-bottom: 15px; font-size: 1.2rem;">⚠️ Key Statistics</h3>
+                            <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px;">
+                                <li style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="color: var(--color-primary); font-weight: bold;">•</span>
+                                    <span><strong>14% of highway fatalities</strong> involve improper passing maneuvers</span>
+                                </li>
+                                <li style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="color: var(--color-primary); font-weight: bold;">•</span>
+                                    <span><strong>25% of head-on collisions</strong> occur during passing attempts</span>
+                                </li>
+                                <li style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="color: var(--color-primary); font-weight: bold;">•</span>
+                                    <span><strong>350+ feet visibility</strong> required for safe passing at 55 mph</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Simulation -->
+            <section class="section-card">
+                <h2 class="section-title">
+                    <span class="section-title-icon">🎮</span>
+                    Passing Decision Simulator
+                </h2>
+                
+                <div class="simulation-container">
+                    <div class="simulation-title">Is It Safe to Pass?</div>
+                    
+                    <!-- Road Visualization -->
+                    <div class="road-simulation" id="road-simulation">
+                        <div class="lane-markings">
+                            <div class="center-line" id="center-line"></div>
+                            <div class="lane-line"></div>
+                        </div>
+                        
+                        <!-- No Passing Zone (if applicable) -->
+                        <div class="no-passing-zone" id="no-passing-zone" style="display: none;">
+                            <div class="zone-label">NO PASSING ZONE</div>
+                        </div>
+                        
+                        <!-- Vehicles -->
+                        <div class="vehicle your-vehicle" id="your-vehicle">YOU</div>
+                        <div class="vehicle vehicle-being-passed" id="vehicle-being-passed">SLOW CAR</div>
+                        <div class="vehicle oncoming-vehicle" id="oncoming-vehicle">ONCOMING</div>
+                    </div>
+                    
+                    <!-- Controls -->
+                    <div class="simulation-controls">
+                        <button class="control-btn" id="btn-start-pass" data-action="start">
+                            <span>🚗</span>
+                            Start Passing Maneuver
+                        </button>
+                        <button class="control-btn" id="btn-abort-pass" data-action="abort">
+                            <span>⚠️</span>
+                            Abort Pass
+                        </button>
+                        <button class="control-btn" id="btn-change-scenario" data-action="change">
+                            <span>🔄</span>
+                            Change Scenario
+                        </button>
+                    </div>
+                    
+                    <!-- Current Scenario Info -->
+                    <div style="background: rgba(95, 23, 235, 0.05); padding: 15px; border-radius: var(--radius-sm); margin: 20px 0; text-align: center;">
+                        <div style="font-weight: 600; color: var(--color-primary); margin-bottom: 8px;">Current Scenario</div>
+                        <div style="font-size: 1.1rem; font-weight: 700; color: var(--color-text);" id="current-scenario">Two-lane highway, clear visibility</div>
+                        <div style="font-size: 0.9rem; color: var(--color-muted); margin-top: 5px;" id="scenario-details">Oncoming traffic distance: 800 ft | Speed: 45 mph</div>
+                    </div>
+                    
+                    <!-- Feedback -->
+                    <div class="feedback-display" id="feedback-display">
+                        <div class="feedback-item" id="feedback-item-1">
+                            <span class="feedback-icon">ℹ️</span>
+                            <span>Click "Start Passing Maneuver" to begin simulation</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Passing Checklist -->
+                <h3 style="color: var(--color-primary); margin: 30px 0 20px; font-size: 1.3rem;">Passing Safety Checklist</h3>
+                <div class="checklist-container">
+                    <div class="checklist-item" data-checklist="1">
+                        <div class="checklist-checkbox">1</div>
+                        <div class="checklist-content">
+                            <h4>Check Oncoming Traffic</h4>
+                            <p>Ensure at least 800 feet of clear road ahead at 55 mph. More distance needed at higher speeds.</p>
+                        </div>
+                    </div>
+                    <div class="checklist-item" data-checklist="2">
+                        <div class="checklist-checkbox">2</div>
+                        <div class="checklist-content">
+                            <h4>Signal Your Intentions</h4>
+                            <p>Use left turn signal 3-4 seconds before changing lanes to pass.</p>
+                        </div>
+                    </div>
+                    <div class="checklist-item" data-checklist="3">
+                        <div class="checklist-checkbox">3</div>
+                        <div class="checklist-content">
+                            <h4>Check Mirrors & Blind Spot</h4>
+                            <p>Verify no vehicles are passing you and check blind spot before moving left.</p>
+                        </div>
+                    </div>
+                    <div class="checklist-item" data-checklist="4">
+                        <div class="checklist-checkbox">4</div>
+                        <div class="checklist-content">
+                            <h4>Accelerate Safely</h4>
+                            <p>Increase speed to pass quickly but stay within speed limit. Maintain control.</p>
+                        </div>
+                    </div>
+                    <div class="checklist-item" data-checklist="5">
+                        <div class="checklist-checkbox">5</div>
+                        <div class="checklist-content">
+                            <h4>Maintain Safe Distance</h4>
+                            <p>Keep at least 3-4 seconds following distance from vehicle being passed.</p>
+                        </div>
+                    </div>
+                    <div class="checklist-item" data-checklist="6">
+                        <div class="checklist-checkbox">6</div>
+                        <div class="checklist-content">
+                            <h4>Return to Lane Safely</h4>
+                            <p>Signal right, check mirrors, and return when you see both headlights of passed vehicle in rearview mirror.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Scenarios -->
+            <section class="section-card">
+                <h2 class="section-title">
+                    <span class="section-title-icon">🧭</span>
+                    Passing Scenarios & Legal Aspects
+                </h2>
+                
+                <div class="scenarios-grid">
+                    <div class="scenario-card active" data-scenario="highway">
+                        <div class="scenario-icon">🛣️</div>
+                        <div class="scenario-title">Highway Passing</div>
+                        <div class="scenario-description">
+                            Use left lane only for passing. Return to right lane after completing pass. Maintain safe speed differential.
+                        </div>
+                    </div>
+                    
+                    <div class="scenario-card" data-scenario="two-lane">
+                        <div class="scenario-icon">↔️</div>
+                        <div class="scenario-title">Two-Lane Roads</div>
+                        <div class="scenario-description">
+                            Requires careful judgment of oncoming traffic. Need 800+ feet visibility at 55 mph. No passing on hills or curves.
+                        </div>
+                    </div>
+                    
+                    <div class="scenario-card" data-scenario="no-pass">
+                        <div class="scenario-icon">⛔</div>
+                        <div class="scenario-title">No-Passing Zones</div>
+                        <div class="scenario-description">
+                            Marked by solid yellow lines. Includes intersections, bridges, railroad crossings, and areas with limited visibility.
+                        </div>
+                    </div>
+                    
+                    <div class="scenario-card" data-scenario="urban">
+                        <div class="scenario-icon">🏙️</div>
+                        <div class="scenario-title">Urban Areas</div>
+                        <div class="scenario-description">
+                            Extra caution needed for pedestrians, cyclists, and parked vehicles. Often prohibited in school zones and near intersections.
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Legal Information -->
+                <div style="background: rgba(95, 23, 235, 0.05); padding: 25px; border-radius: var(--radius-md); margin-top: 30px; border-left: 4px solid var(--color-primary);">
+                    <h3 style="color: var(--color-primary); margin-bottom: 15px; font-size: 1.3rem;">📜 Legal Passing Requirements in Virginia</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div>
+                            <h4 style="color: var(--color-text); margin-bottom: 10px; font-weight: 600;">✅ Permitted Passing</h4>
+                            <ul style="font-size: 0.9rem; color: var(--color-text); line-height: 1.6; padding-left: 20px;">
+                                <li>When center line is broken yellow</li>
+                                <li>Clear visibility of 800+ feet ahead</li>
+                                <li>No oncoming traffic in passing zone</li>
+                                <li>Not within 100 ft of intersection</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--color-error); margin-bottom: 10px; font-weight: 600;">❌ Prohibited Passing</h4>
+                            <ul style="font-size: 0.9rem; color: var(--color-text); line-height: 1.6; padding-left: 20px;">
+                                <li>Solid yellow line on your side</li>
+                                <li>On curves or hills (limited visibility)</li>
+                                <li>At railroad crossings</li>
+                                <li>School zones during active hours</li>
+                                <li>When view is obstructed</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="section-card quiz-section">
+                <h2 class="section-title">
+                    <span class="section-title-icon">📝</span>
+                    Passing Knowledge Assessment
+                </h2>
+                
+                <!-- Question 1 -->
+                <div class="quiz-question">
+                    <div class="question-text">1. When is it legal to pass another vehicle on a two-lane road?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="1" data-option="A">
+                            <span class="option-label">A</span>
+                            <span>When the center line is solid yellow on your side</span>
+                        </div>
+                        <div class="quiz-option" data-question="1" data-option="B">
+                            <span class="option-label">B</span>
+                            <span>When you have at least 800 feet of clear road ahead at 55 mph</span>
+                        </div>
+                        <div class="quiz-option" data-question="1" data-option="C">
+                            <span class="option-label">C</span>
+                            <span>When you're approaching the crest of a hill</span>
+                        </div>
+                        <div class="quiz-option" data-question="1" data-option="D">
+                            <span class="option-label">D</span>
+                            <span>When you're within 100 feet of an intersection</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="quiz-question">
+                    <div class="question-text">2. What should you do before returning to your lane after passing?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="2" data-option="A">
+                            <span class="option-label">A</span>
+                            <span>Return immediately after passing the vehicle</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="B">
+                            <span class="option-label">B</span>
+                            <span>Signal, check mirrors, and wait until you see both headlights of passed vehicle in rearview mirror</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="C">
+                            <span class="option-label">C</span>
+                            <span>Honk your horn to alert the passed vehicle</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="D">
+                            <span class="option-label">D</span>
+                            <span>Speed up to create more distance before returning</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="quiz-question">
+                    <div class="question-text">3. In which situation should you NOT attempt to pass another vehicle?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="3" data-option="A">
+                            <span class="option-label">A</span>
+                            <span>When approaching a curve or hill with limited visibility</span>
+                        </div>
+                        <div class="quiz-option" data-question="3" data-option="B">
+                            <span class="option-label">B</span>
+                            <span>In a no-passing zone marked with solid yellow lines</span>
+                        </div>
+                        <div class="quiz-option" data-question="3" data-option="C">
+                            <span class="option-label">C</span>
+                            <span>When an emergency vehicle is approaching with sirens</span>
+                        </div>
+                        <div class="quiz-option" data-question="3" data-option="D">
+                            <span class="option-label">D</span>
+                            <span>All of the above</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="quiz-question">
+                    <div class="question-text">4. What is the recommended following distance to maintain from the vehicle you're passing?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="4" data-option="A">
+                            <span class="option-label">A</span>
+                            <span>As close as possible to pass quickly</span>
+                        </div>
+                        <div class="quiz-option" data-question="4" data-option="B">
+                            <span class="option-label">B</span>
+                            <span>3-4 seconds of following distance</span>
+                        </div>
+                        <div class="quiz-option" data-question="4" data-option="C">
+                            <span class="option-label">C</span>
+                            <span>Exactly one car length</span>
+                        </div>
+                        <div class="quiz-option" data-question="4" data-option="D">
+                            <span class="option-label">D</span>
+                            <span>Distance doesn't matter when passing</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-secondary" id="reset-simulation-btn">
+                <span class="btn-icon">↻</span>
+                Reset Simulation
+            </button>
+            <button class="btn btn-primary" id="check-answers-btn">
+                <span class="btn-icon">✓</span>
+                Check Quiz Answers
+            </button>
+            <button class="btn btn-primary" id="view-results-btn">
+                <span class="btn-icon">📊</span>
+                View Results Summary
+            </button>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="results-panel" id="results-panel">
+            <div class="results-header">
+                <h2 class="results-title">Passing Proficiency Assessment</h2>
+                <div class="score-display" id="final-score">0%</div>
+                <p style="color: #9ca3af; max-width: 600px; margin: 0 auto;">Your passing safety knowledge and decision-making assessment</p>
+            </div>
+            
+            <div class="key-insights">
+                <h3 class="insights-title">
+                    <span>🎯</span> Key Passing Safety Insights
+                </h3>
+                <ul class="insights-list">
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Visibility is Critical:</strong> You need at least 800 feet of clear road ahead to safely pass at 55 mph. This distance increases with higher speeds – at 70 mph, you need approximately 1,200 feet.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Solid Lines Mean No Passing:</strong> A solid yellow line on your side of the center line means passing is prohibited. Double solid yellow lines mean no passing in either direction.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Patience Prevents Accidents:</strong> 25% of head-on collisions occur during passing attempts. If you're unsure, wait for a better opportunity rather than risking a dangerous maneuver.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Complete the Maneuver Properly:</strong> Always signal, check mirrors and blind spots, accelerate to pass quickly, and don't return to your lane until you can see both headlights of the passed vehicle in your rearview mirror.</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="key-insights" style="margin-top: 20px;">
+                <h3 class="insights-title">
+                    <span>📊</span> Virginia-Specific Passing Laws
+                </h3>
+                <ul class="insights-list">
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>No Passing Zones:</strong> In Virginia, passing is prohibited within 100 feet of an intersection, railroad crossing, bridge, viaduct, or tunnel. School zones also prohibit passing during active hours.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Speed Limit Compliance:</strong> While passing, you may exceed the speed limit by up to 10 mph in Virginia, but only if necessary to complete the pass safely. However, this doesn't apply in school or work zones.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Emergency Vehicles:</strong> When an emergency vehicle approaches with sirens and lights, you must pull over to the right and stop. Never attempt to pass or outrun an emergency vehicle.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Commercial Vehicles:</strong> Be extra cautious when passing large trucks. They have larger blind spots and require more time to pass. Ensure you have plenty of clearance before returning to your lane.</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-primary" id="restart-module-btn">
+                    <span class="btn-icon">🔄</span>
+                    Restart Module
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // State Management
+            const state = {
+                safePasses: 0,
+                decisionAccuracy: 0,
+                avgClearance: 0,
+                currentScenario: 'highway',
+                scenarios: {
+                    highway: {
+                        name: 'Highway Passing',
+                        details: 'Three-lane highway, clear conditions',
+                        oncomingDistance: 1200,
+                        speed: 65,
+                        noPassingZone: false,
+                        safeToPass: true,
+                        description: 'Left lane passing on multi-lane highway'
+                    },
+                    twoLane: {
+                        name: 'Two-Lane Rural Road',
+                        details: 'Oncoming traffic distance: 600 ft | Speed: 55 mph',
+                        oncomingDistance: 600,
+                        speed: 55,
+                        noPassingZone: false,
+                        safeToPass: false, // Not enough distance
+                        description: 'Passing decision with limited visibility'
+                    },
+                    noPass: {
+                        name: 'No-Passing Zone',
+                        details: 'Solid yellow line, approaching hill crest',
+                        oncomingDistance: 400,
+                        speed: 45,
+                        noPassingZone: true,
+                        safeToPass: false,
+                        description: 'Illegal passing scenario'
+                    },
+                    urban: {
+                        name: 'Urban Area',
+                        details: 'Pedestrian crossing ahead, intersection nearby',
+                        oncomingDistance: 300,
+                        speed: 35,
+                        noPassingZone: true,
+                        safeToPass: false,
+                        description: 'Urban passing restrictions apply'
+                    }
+                },
+                quizAnswers: {
+                    1: 'B',
+                    2: 'B',
+                    3: 'D',
+                    4: 'B'
+                },
+                userQuizAnswers: {},
+                simulationRunning: false
+            };
+
+            // DOM Elements
+            const roadSimulation = document.getElementById('road-simulation');
+            const yourVehicle = document.getElementById('your-vehicle');
+            const vehicleBeingPassed = document.getElementById('vehicle-being-passed');
+            const oncomingVehicle = document.getElementById('oncoming-vehicle');
+            const noPassingZone = document.getElementById('no-passing-zone');
+            const centerLine = document.getElementById('center-line');
+            const feedbackDisplay = document.getElementById('feedback-display');
+            const currentScenarioEl = document.getElementById('current-scenario');
+            const scenarioDetailsEl = document.getElementById('scenario-details');
+            
+            // Stats elements
+            const safePassesEl = document.getElementById('safe-passes');
+            const decisionAccuracyEl = document.getElementById('decision-accuracy');
+            const avgClearanceEl = document.getElementById('avg-clearance');
+            
+            // Buttons
+            const startPassBtn = document.getElementById('btn-start-pass');
+            const abortPassBtn = document.getElementById('btn-abort-pass');
+            const changeScenarioBtn = document.getElementById('btn-change-scenario');
+            const resetBtn = document.getElementById('reset-simulation-btn');
+            const checkAnswersBtn = document.getElementById('check-answers-btn');
+            const viewResultsBtn = document.getElementById('view-results-btn');
+            const restartModuleBtn = document.getElementById('restart-module-btn');
+            
+            // Quiz elements
+            const quizOptions = document.querySelectorAll('.quiz-option');
+            const resultsPanel = document.getElementById('results-panel');
+            const finalScore = document.getElementById('final-score');
+            
+            // Scenario cards
+            const scenarioCards = document.querySelectorAll('.scenario-card');
+            
+            // Checklist items
+            const checklistItems = document.querySelectorAll('.checklist-item');
+
+            // Initialize simulation
+            function initSimulation() {
+                // Set initial positions
+                yourVehicle.style.left = '100px';
+                yourVehicle.style.bottom = '40px';
+                
+                vehicleBeingPassed.style.left = '150px';
+                vehicleBeingPassed.style.bottom = '40px';
+                
+                oncomingVehicle.style.left = '800px';
+                oncomingVehicle.style.top = '40px';
+                
+                // Load current scenario
+                loadScenario(state.currentScenario);
+                
+                // Setup event listeners
+                setupEventListeners();
+                
+                // Initialize checklist
+                initChecklist();
+                
+                // Update stats
+                updateStats();
+            }
+
+            // Setup event listeners
+            function setupEventListeners() {
+                // Simulation control buttons
+                startPassBtn.addEventListener('click', startPassingManeuver);
+                abortPassBtn.addEventListener('click', abortPassingManeuver);
+                changeScenarioBtn.addEventListener('click', changeScenario);
+                resetBtn.addEventListener('click', resetSimulation);
+                
+                // Quiz buttons
+                checkAnswersBtn.addEventListener('click', checkQuizAnswers);
+                viewResultsBtn.addEventListener('click', viewResultsSummary);
+                restartModuleBtn.addEventListener('click', restartModule);
+                
+                // Quiz option click events
+                quizOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const question = this.dataset.question;
+                        const selectedOption = this.dataset.option;
+                        
+                        // Remove selected class from all options for this question
+                        const allOptions = document.querySelectorAll(`[data-question="${question}"]`);
+                        allOptions.forEach(opt => opt.classList.remove('selected'));
+                        
+                        // Add selected class to clicked option
+                        this.classList.add('selected');
+                        
+                        // Store the answer
+                        state.userQuizAnswers[question] = selectedOption;
+                    });
+                });
+                
+                // Scenario card click events
+                scenarioCards.forEach(card => {
+                    card.addEventListener('click', function() {
+                        const scenario = this.dataset.scenario;
+                        loadScenario(scenario);
+                        
+                        // Update active state
+                        scenarioCards.forEach(c => c.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+            }
+
+            // Load a scenario
+            function loadScenario(scenarioKey) {
+                const scenario = state.scenarios[scenarioKey];
+                state.currentScenario = scenarioKey;
+                
+                // Update UI
+                currentScenarioEl.textContent = scenario.name;
+                scenarioDetailsEl.textContent = scenario.details;
+                
+                // Update vehicle positions based on scenario
+                updateVehiclePositions(scenario);
+                
+                // Show/hide no-passing zone
+                if (scenario.noPassingZone) {
+                    noPassingZone.style.display = 'block';
+                    noPassingZone.style.left = '400px'; // Position the no-passing zone
+                    
+                    // Update center line to solid
+                    centerLine.style.background = '#ef4444';
+                    centerLine.style.backgroundImage = 'none';
+                } else {
+                    noPassingZone.style.display = 'none';
+                    
+                    // Update center line to broken
+                    centerLine.style.background = 'repeating-linear-gradient(to right, #fbbf24, #fbbf24 20px, transparent 20px, transparent 40px)';
+                }
+                
+                // Reset vehicle positions
+                yourVehicle.style.left = '100px';
+                vehicleBeingPassed.style.left = '150px';
+                oncomingVehicle.style.left = `${800 + scenario.oncomingDistance / 10}px`;
+                
+                // Update feedback
+                updateFeedback(`Scenario loaded: ${scenario.description}. ${scenario.safeToPass ? 'This appears to be a safe passing opportunity.' : 'Warning: This may not be a safe passing situation.'}`);
+            }
+
+            // Update vehicle positions based on scenario
+            function updateVehiclePositions(scenario) {
+                // Position oncoming vehicle based on distance
+                const oncomingX = 800 + (scenario.oncomingDistance / 10);
+                oncomingVehicle.style.left = `${oncomingX}px`;
+                
+                // Update vehicle labels with speed
+                yourVehicle.textContent = `YOU\n${scenario.speed} mph`;
+                vehicleBeingPassed.textContent = `SLOW\n${scenario.speed - 15} mph`;
+                oncomingVehicle.textContent = `ONCOMING\n${scenario.speed} mph`;
+            }
+
+            // Start passing maneuver
+            function startPassingManeuver() {
+                if (state.simulationRunning) return;
+                
+                state.simulationRunning = true;
+                const scenario = state.scenarios[state.currentScenario];
+                
+                // Check if passing is safe in this scenario
+                const isSafe = scenario.safeToPass;
+                
+                // Animate passing maneuver
+                if (isSafe) {
+                    // Safe pass animation
+                    yourVehicle.style.transition = 'left 3s ease-in-out';
+                    yourVehicle.style.left = '700px'; // Move to passing position
+                    
+                    // Update checklist
+                    updateChecklist();
+                    
+                    // Update stats
+                    state.safePasses++;
+                    state.decisionAccuracy = Math.min(100, state.decisionAccuracy + 25);
+                    state.avgClearance = Math.max(150, state.avgClearance + 50);
+                    
+                    // Update feedback
+                    updateFeedback('✅ Safe passing maneuver completed successfully! You maintained proper distance and timing.', 'success');
+                    
+                    // After animation, return to lane
+                    setTimeout(() => {
+                        yourVehicle.style.transition = 'left 2s ease-in-out';
+                        yourVehicle.style.left = '100px';
+                        
+                        // Final feedback after returning
+                        setTimeout(() => {
+                            updateFeedback('✅ Passing completed. Remember: Always signal before returning to your lane and check that you can see both headlights of the passed vehicle in your rearview mirror.', 'success');
+                            state.simulationRunning = false;
+                        }, 2000);
+                    }, 3000);
+                } else {
+                    // Dangerous pass - show consequences
+                    updateFeedback('⚠️ WARNING: This is not a safe passing situation! Oncoming traffic is too close.', 'warning');
+                    
+                    // Show what would happen
+                    yourVehicle.style.transition = 'left 2s ease-in-out';
+                    yourVehicle.style.left = '500px';
+                    oncomingVehicle.style.transition = 'left 2s ease-in-out';
+                    oncomingVehicle.style.left = '500px';
+                    
+                    // Show collision warning
+                    setTimeout(() => {
+                        updateFeedback('🚨 DANGER: Head-on collision would occur! Always ensure at least 800 feet of clear road ahead before passing at 55 mph.', 'error');
+                        
+                        // Reset positions
+                        setTimeout(() => {
+                            yourVehicle.style.transition = 'left 1s ease-in-out';
+                            yourVehicle.style.left = '100px';
+                            oncomingVehicle.style.transition = 'left 1s ease-in-out';
+                            oncomingVehicle.style.left = `${800 + scenario.oncomingDistance / 10}px`;
+                            state.simulationRunning = false;
+                        }, 2000);
+                    }, 2000);
+                    
+                    // Update stats (negative impact for dangerous attempt)
+                    state.decisionAccuracy = Math.max(0, state.decisionAccuracy - 15);
+                }
+                
+                // Update stats display
+                updateStats();
+            }
+
+            // Abort passing maneuver
+            function abortPassingManeuver() {
+                if (!state.simulationRunning) return;
+                
+                // Stop any ongoing animation
+                yourVehicle.style.transition = 'left 1s ease-in-out';
+                yourVehicle.style.left = '100px';
+                
+                // Update feedback
+                updateFeedback('🛑 Passing maneuver aborted. Good decision to wait for a safer opportunity.', 'warning');
+                
+                // Update stats (positive for making safe decision)
+                state.decisionAccuracy = Math.min(100, state.decisionAccuracy + 10);
+                updateStats();
+                
+                state.simulationRunning = false;
+            }
+
+            // Change scenario
+            function changeScenario() {
+                if (state.simulationRunning) return;
+                
+                const scenarios = Object.keys(state.scenarios);
+                const currentIndex = scenarios.indexOf(state.currentScenario);
+                const nextIndex = (currentIndex + 1) % scenarios.length;
+                const nextScenario = scenarios[nextIndex];
+                
+                // Update active scenario card
+                scenarioCards.forEach(card => card.classList.remove('active'));
+                document.querySelector(`[data-scenario="${nextScenario}"]`).classList.add('active');
+                
+                loadScenario(nextScenario);
+            }
+
+            // Update feedback display
+            function updateFeedback(message, type = 'info') {
+                const feedbackDisplay = document.getElementById('feedback-display');
+                
+                // Clear existing feedback
+                feedbackDisplay.innerHTML = '';
+                
+                // Create new feedback item
+                const feedbackItem = document.createElement('div');
+                feedbackItem.className = `feedback-item ${type === 'success' ? 'success' : type === 'warning' ? 'warning' : type === 'error' ? 'error' : ''}`;
+                
+                let icon = 'ℹ️';
+                if (type === 'success') icon = '✅';
+                if (type === 'warning') icon = '⚠️';
+                if (type === 'error') icon = '🚨';
+                
+                feedbackItem.innerHTML = `
+                    <span class="feedback-icon">${icon}</span>
+                    <span>${message}</span>
+                `;
+                
+                feedbackDisplay.appendChild(feedbackItem);
+                
+                // Auto-scroll to feedback
+                feedbackItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            // Initialize checklist
+            function initChecklist() {
+                checklistItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        this.classList.toggle('completed');
+                        const checkbox = this.querySelector('.checklist-checkbox');
+                        
+                        if (this.classList.contains('completed')) {
+                            checkbox.innerHTML = '✓';
+                            checkbox.style.background = 'var(--color-success)';
+                            checkbox.style.color = 'white';
+                            checkbox.style.borderColor = 'var(--color-success)';
+                        } else {
+                            const number = this.dataset.checklist;
+                            checkbox.innerHTML = number;
+                            checkbox.style.background = '';
+                            checkbox.style.color = '';
+                            checkbox.style.borderColor = 'rgba(95, 23, 235, 0.3)';
+                        }
+                    });
+                });
+            }
+
+            // Update checklist (simulate completion during safe pass)
+            function updateChecklist() {
+                checklistItems.forEach((item, index) => {
+                    setTimeout(() => {
+                        item.classList.add('completed');
+                        const checkbox = item.querySelector('.checklist-checkbox');
+                        checkbox.innerHTML = '✓';
+                        checkbox.style.background = 'var(--color-success)';
+                        checkbox.style.color = 'white';
+                        checkbox.style.borderColor = 'var(--color-success)';
+                    }, index * 500);
+                });
+            }
+
+            // Update statistics display
+            function updateStats() {
+                safePassesEl.textContent = state.safePasses;
+                decisionAccuracyEl.textContent = `${state.decisionAccuracy}%`;
+                avgClearanceEl.textContent = `${state.avgClearance} ft`;
+            }
+
+            // Reset simulation
+            function resetSimulation() {
+                // Reset state
+                state.safePasses = 0;
+                state.decisionAccuracy = 0;
+                state.avgClearance = 0;
+                state.simulationRunning = false;
+                
+                // Reset UI
+                yourVehicle.style.left = '100px';
+                yourVehicle.style.transition = 'left 0.5s ease';
+                
+                oncomingVehicle.style.left = '800px';
+                oncomingVehicle.style.transition = 'left 0.5s ease';
+                
+                // Reset checklist
+                checklistItems.forEach(item => {
+                    item.classList.remove('completed');
+                    const checkbox = item.querySelector('.checklist-checkbox');
+                    const number = item.dataset.checklist;
+                    checkbox.innerHTML = number;
+                    checkbox.style.background = '';
+                    checkbox.style.color = '';
+                    checkbox.style.borderColor = 'rgba(95, 23, 235, 0.3)';
+                });
+                
+                // Reset feedback
+                updateFeedback('Simulation reset. Click "Start Passing Maneuver" to begin.', 'info');
+                
+                // Update stats
+                updateStats();
+                
+                // Reload current scenario
+                loadScenario(state.currentScenario);
+            }
+
+            // Check quiz answers
+            function checkQuizAnswers() {
+                let correctCount = 0;
+                const totalQuestions = Object.keys(state.quizAnswers).length;
+                
+                // Check each answer
+                Object.keys(state.quizAnswers).forEach(question => {
+                    const userAnswer = state.userQuizAnswers[question];
+                    const correctAnswer = state.quizAnswers[question];
+                    
+                    if (userAnswer === correctAnswer) {
+                        correctCount++;
+                        
+                        // Mark correct option
+                        const correctOption = document.querySelector(`[data-question="${question}"][data-option="${correctAnswer}"]`);
+                        correctOption.classList.add('correct');
+                    } else if (userAnswer) {
+                        // Mark incorrect user selection
+                        const userOption = document.querySelector(`[data-question="${question}"][data-option="${userAnswer}"]`);
+                        if (userOption) userOption.classList.add('incorrect');
+                        
+                        // Mark correct answer
+                        const correctOption = document.querySelector(`[data-question="${question}"][data-option="${correctAnswer}"]`);
+                        correctOption.classList.add('correct');
+                    }
+                });
+                
+                // Update decision accuracy based on quiz performance
+                const quizAccuracy = Math.round((correctCount / totalQuestions) * 100);
+                state.decisionAccuracy = Math.min(100, Math.max(state.decisionAccuracy, quizAccuracy));
+                updateStats();
+                
+                // Show feedback
+                updateFeedback(`📊 Quiz Results: ${correctCount} out of ${totalQuestions} correct (${quizAccuracy}%). ${correctCount === totalQuestions ? 'Excellent! You understand safe passing principles.' : 'Review the incorrect answers to improve your knowledge.'}`, 'info');
+                
+                // Scroll to feedback
+                document.querySelector('.quiz-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            // View results summary
+            function viewResultsSummary() {
+                // Calculate final score (combination of simulation and quiz performance)
+                const simulationScore = state.decisionAccuracy;
+                const quizScore = Object.keys(state.userQuizAnswers).length > 0 
+                    ? (Object.keys(state.quizAnswers).reduce((score, question) => {
+                        return score + (state.userQuizAnswers[question] === state.quizAnswers[question] ? 25 : 0);
+                    }, 0))
+                    : 0;
+                
+                const finalScoreValue = Math.round((simulationScore + quizScore) / 2);
+                finalScore.textContent = `${finalScoreValue}%`;
+                
+                // Show results panel
+                resultsPanel.classList.add('show');
+                resultsPanel.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Restart module
+            function restartModule() {
+                // Reset all state
+                state.safePasses = 0;
+                state.decisionAccuracy = 0;
+                state.avgClearance = 0;
+                state.userQuizAnswers = {};
+                state.simulationRunning = false;
+                state.currentScenario = 'highway';
+                
+                // Reset UI
+                resultsPanel.classList.remove('show');
+                
+                // Reset quiz
+                quizOptions.forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                // Reset scenario cards
+                scenarioCards.forEach(card => card.classList.remove('active'));
+                document.querySelector('[data-scenario="highway"]').classList.add('active');
+                
+                // Reset simulation
+                resetSimulation();
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Initialize the simulation
+            initSimulation();
+        });
+    </script>
+</body>
+</html>
