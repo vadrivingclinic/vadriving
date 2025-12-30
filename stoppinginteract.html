@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Module 2: Stopping Fundamentals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb; /* Your exact brand purple */
+            --color-primary-soft: #8a5feb;
+            --color-secondary: #000000; /* Black */
+            --color-accent: #7c3aed;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-bg: #ffffff; /* White */
+            --color-text: #000000; /* Black */
+            --color-muted: #6b7280;
+            --color-dark: #000000; /* Black */
+            --color-light: #f9fafb;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+            --shadow-card: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            padding: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        @keyframes brakePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+        }
+
+        @keyframes distanceShrink {
+            from { width: 100%; }
+            to { width: var(--stop-distance); }
+        }
+
+        /* Main Container */
+        .page {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 0; }
+            .page {
+                border-radius: 0;
+                box-shadow: none;
+                padding: 16px 12px 20px;
+            }
+        }
+
+        /* Header */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            width: 100%;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            max-width: 100%;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 100%;
+        }
+
+        .course-name {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .week-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.1);
+            font-size: 0.8rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .week-label-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            line-height: 1.1;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .module-subtitle {
+            font-size: 1rem;
+            color: var(--color-muted);
+            max-width: 800px;
+            margin-bottom: 28px;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+            line-height: 1.7;
+        }
+
+        /* Time Banner */
+        .time-banner {
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .time-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .time-content h3 {
+            color: var(--color-primary);
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .time-content p {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Module Sections */
+        .module-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section-card {
+            background: var(--color-bg);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0.5;
+        }
+
+        .section-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--color-primary);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title-icon {
+            font-size: 1.6rem;
+        }
+
+        .section-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .section-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .text-content {
+            font-size: 0.95rem;
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .text-content p {
+            margin-bottom: 15px;
+        }
+
+        .text-content ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .text-content li {
+            margin-bottom: 8px;
+        }
+
+        /* Interactive Simulation */
+        .simulation-container {
+            background: rgba(95, 23, 235, 0.03);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .simulation-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* Stopping Distance Simulation */
+        .distance-simulator {
+            margin-bottom: 25px;
+        }
+
+        .road-visualization {
+            height: 200px;
+            background: #374151;
+            border-radius: var(--radius-sm);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid #4b5563;
+        }
+
+        .lane-markers {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .lane-marker {
+            width: 40px;
+            height: 4px;
+            background: #fbbf24;
+            margin: 0 20px;
+        }
+
+        .vehicle {
+            position: absolute;
+            bottom: 30px;
+            width: 60px;
+            height: 30px;
+            background: var(--color-primary);
+            border-radius: 5px;
+            transition: left 2s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .vehicle::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            top: 5px;
+            right: 5px;
+        }
+
+        .stop-line {
+            position: absolute;
+            right: 100px;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: repeating-linear-gradient(
+                to bottom,
+                #ffffff,
+                #ffffff 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            z-index: 1;
+        }
+
+        .stop-line-label {
+            position: absolute;
+            right: 110px;
+            top: 10px;
+            background: var(--color-error);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .distance-indicator {
+            height: 20px;
+            background: linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            transition: width 2s ease;
+        }
+
+        .distance-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--color-muted);
+            margin-bottom: 15px;
+        }
+
+        .speed-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .speed-btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--color-primary);
+            background: white;
+            color: var(--color-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .speed-btn:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .speed-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .brake-btn {
+            padding: 12px 30px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--color-error);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .brake-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            animation: brakePulse 1.5s infinite;
+        }
+
+        .brake-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Scenario Cards */
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .scenario-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .scenario-card.active {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .scenario-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .scenario-title {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .scenario-description {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            line-height: 1.5;
+        }
+
+        /* Quiz Section */
+        .quiz-section {
+            margin-top: 40px;
+        }
+
+        .quiz-question {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 20px;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            padding: 15px 20px;
+            border-radius: var(--radius-sm);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .quiz-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .option-label {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            color: var(--color-primary);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .quiz-option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        /* Feedback */
+        .feedback {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            margin-top: 20px;
+            display: none;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .feedback.show {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .feedback-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-content {
+            font-size: 0.95rem;
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.2);
+        }
+
+        .btn-icon {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* Stats Display */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-bar {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-item {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        /* Completion Panel */
+        .completion-panel {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 40px;
+            margin-top: 40px;
+            display: none;
+            animation: fadeInUp 0.6s ease;
+            border: 2px solid var(--color-primary);
+        }
+
+        .completion-panel.show {
+            display: block;
+        }
+
+        .completion-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .completion-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .completion-subtitle {
+            color: #9ca3af;
+            font-size: 1.1rem;
+        }
+
+        .key-takeaways {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .takeaways-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .takeaways-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .takeaways-list li {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            font-size: 0.95rem;
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+
+        .takeaway-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <!-- Header -->
+        <header class="brand-row">
+            <div class="brand">
+                <img
+                    src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png"
+                    alt="VA Driving Clinic logo"
+                    class="brand-logo"
+                />
+                <div class="course-meta">
+                    <span class="course-name">VA Driving Clinic • Module 2</span>
+                    <div class="week-label">
+                        <span class="week-label-dot"></span>
+                        <span>Stopping Fundamentals</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <h1>Mastering Safe Stopping Techniques</h1>
+        <p class="module-subtitle">
+            A comprehensive interactive module covering stopping principles, safe distances, and emergency braking. 
+            Learn through hands-on simulations that demonstrate proper stopping techniques for various road scenarios.
+            Understanding these fundamentals could prevent approximately 29% of all traffic collisions.
+        </p>
+
+        <!-- Time Banner -->
+        <div class="time-banner">
+            <div class="time-icon">
+                ⏱️
+            </div>
+            <div class="time-content">
+                <h3>Module Time Estimate</h3>
+                <p>Complete this interactive module in approximately <strong>8-10 minutes</strong>. Practice stopping simulations and test your knowledge with real-world scenarios.</p>
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-value" id="simulations-count">0</span>
+                <span class="stat-label">Simulations Completed</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="stopping-accuracy">0%</span>
+                <span class="stat-label">Stopping Accuracy</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="reaction-time">0.0s</span>
+                <span class="stat-label">Avg Reaction Time</span>
+            </div>
+        </div>
+
+        <!-- Module Sections -->
+        <div class="module-sections">
+            <!-- Section 1: Introduction -->
+            <section class="section-card">
+                <h2 class="section-title">
+                    <span class="section-title-icon">🛑</span>
+                    Introduction to Stopping
+                </h2>
+                <div class="section-content">
+                    <div class="text-content">
+                        <p><strong>Stopping is one of the fundamental skills in driving</strong>, essential for ensuring safety on the road. Whether coming to a complete halt at a stop sign, responding to traffic signals, or making an emergency stop, understanding the principles and techniques of stopping can prevent accidents and save lives.</p>
+                        
+                        <p>This chapter explores:</p>
+                        <ul>
+                            <li>The critical importance of proper stopping techniques</li>
+                            <li>Various scenarios that require stopping</li>
+                            <li>Best practices for executing safe and effective stops</li>
+                            <li>Interactive simulations to practice real-world stopping scenarios</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="simulation-container">
+                        <div class="simulation-title">Quick Reaction Test</div>
+                        <div class="distance-simulator">
+                            <div class="road-visualization" id="road-visualization">
+                                <div class="lane-markers">
+                                    <div class="lane-marker"></div>
+                                    <div class="lane-marker"></div>
+                                    <div class="lane-marker"></div>
+                                    <div class="lane-marker"></div>
+                                    <div class="lane-marker"></div>
+                                </div>
+                                <div class="stop-line"></div>
+                                <div class="stop-line-label">STOP LINE</div>
+                                <div class="vehicle" id="sim-vehicle">YOU</div>
+                            </div>
+                            
+                            <div class="distance-indicator" id="distance-indicator"></div>
+                            <div class="distance-label">
+                                <span>Safe Distance</span>
+                                <span>Danger Zone</span>
+                            </div>
+                            
+                            <div class="speed-controls">
+                                <button class="speed-btn active" data-speed="30">30 mph</button>
+                                <button class="speed-btn" data-speed="45">45 mph</button>
+                                <button class="speed-btn" data-speed="60">60 mph</button>
+                            </div>
+                            
+                            <button class="brake-btn" id="brake-btn">BRAKE NOW!</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Scenarios -->
+            <section class="section-card">
+                <h2 class="section-title">
+                    <span class="section-title-icon">⚠️</span>
+                    Scenarios Requiring Stopping
+                </h2>
+                <div class="section-content">
+                    <div class="text-content">
+                        <p><strong>Different situations require specific stopping procedures:</strong> Understanding these scenarios helps drivers anticipate and respond appropriately to ensure safety for all road users.</p>
+                        
+                        <h3 style="color: var(--color-primary); margin-top: 15px;">Key Stopping Scenarios:</h3>
+                        <ul>
+                            <li><strong>Stop Signs:</strong> Complete stop required at stop line or crosswalk</li>
+                            <li><strong>Traffic Lights:</strong> Red means stop, yellow means prepare to stop</li>
+                            <li><strong>Pedestrian Crossings:</strong> Stop for pedestrians in crosswalks</li>
+                            <li><strong>Emergency Vehicles:</strong> Pull over and stop when sirens approach</li>
+                            <li><strong>Railroad Crossings:</strong> Stop when signals indicate train approaching</li>
+                            <li><strong>School Buses:</strong> Stop when red lights are flashing</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="scenarios-grid">
+                        <div class="scenario-card active" data-scenario="stop-sign">
+                            <div class="scenario-icon">🛑</div>
+                            <div class="scenario-title">Stop Signs</div>
+                            <div class="scenario-description">
+                                Come to complete stop at stop line, crosswalk, or intersection. Look left-right-left before proceeding.
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-card" data-scenario="traffic-light">
+                            <div class="scenario-icon">🚦</div>
+                            <div class="scenario-title">Traffic Lights</div>
+                            <div class="scenario-description">
+                                Red: Stop at stop line. Yellow: Prepare to stop if safe. Green: Proceed with caution.
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-card" data-scenario="pedestrian">
+                            <div class="scenario-icon">🚶</div>
+                            <div class="scenario-title">Pedestrian Crossings</div>
+                            <div class="scenario-description">
+                                Stop for pedestrians in marked or unmarked crosswalks. Wait until they've completely crossed.
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-card" data-scenario="emergency">
+                            <div class="scenario-icon">🚨</div>
+                            <div class="scenario-title">Emergency Vehicles</div>
+                            <div class="scenario-description">
+                                Pull over to right and stop completely when emergency vehicles approach with sirens.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Best Practices -->
+            <section class="section-card">
+                <h2 class="section-title">
+                    <span class="section-title-icon">✅</span>
+                    Best Practices for Safe Stopping
+                </h2>
+                <div class="section-content">
+                    <div class="text-content">
+                        <p><strong>Proper technique makes all the difference:</strong> Following these best practices ensures safe, controlled stops in any situation.</p>
+                        
+                        <h3 style="color: var(--color-primary); margin-top: 15px;">Essential Stopping Techniques:</h3>
+                        
+                        <p><strong>1. Maintain Safe Following Distance</strong><br>
+                        • Use the 2-second rule in good conditions<br>
+                        • Increase to 4+ seconds in rain, fog, or heavy traffic<br>
+                        • Watch for the vehicle ahead's rear tires meeting pavement</p>
+                        
+                        <p><strong>2. Anticipate Stops</strong><br>
+                        • Look 12-15 seconds ahead on the road<br>
+                        • Watch for brake lights, intersections, and pedestrians<br>
+                        • Begin slowing down early for smoother stops</p>
+                        
+                        <p><strong>3. Use Proper Braking Technique</strong><br>
+                        • Apply brakes smoothly and progressively<br>
+                        • For emergency stops: press firmly without locking wheels<br>
+                        • Practice threshold braking to maintain control</p>
+                        
+                        <p><strong>4. Check Mirrors Before Stopping</strong><br>
+                        • Always check rearview mirror before braking<br>
+                        • Be aware of vehicles behind you<br>
+                        • Give following vehicles time to react</p>
+                    </div>
+                    
+                    <div class="simulation-container">
+                        <div class="simulation-title">Following Distance Calculator</div>
+                        <div style="padding: 20px; text-align: center;">
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--color-text);">
+                                    Current Speed (mph):
+                                    <span id="speed-display" style="color: var(--color-primary); font-weight: 800;">30</span>
+                                </label>
+                                <input type="range" id="speed-slider" min="20" max="70" value="30" style="width: 100%;">
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--color-text);">
+                                    Road Conditions:
+                                </label>
+                                <select id="conditions-select" style="width: 100%; padding: 10px; border-radius: var(--radius-sm); border: 2px solid rgba(95, 23, 235, 0.2);">
+                                    <option value="dry">Dry Conditions</option>
+                                    <option value="wet">Wet/Rainy</option>
+                                    <option value="snow">Snow/Ice</option>
+                                </select>
+                            </div>
+                            
+                            <div style="background: rgba(95, 23, 235, 0.1); padding: 20px; border-radius: var(--radius-sm); border-left: 4px solid var(--color-primary);">
+                                <div style="font-size: 0.9rem; color: var(--color-muted); margin-bottom: 5px;">Recommended Safe Distance</div>
+                                <div style="font-size: 2rem; font-weight: 900; color: var(--color-primary);" id="safe-distance">90 feet</div>
+                                <div style="font-size: 0.9rem; color: var(--color-text); margin-top: 10px;" id="distance-detail">At 30 mph on dry roads</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="section-card quiz-section">
+                <h2 class="section-title">
+                    <span class="section-title-icon">📝</span>
+                    Stopping Knowledge Check
+                </h2>
+                
+                <!-- Question 1 -->
+                <div class="quiz-question">
+                    <div class="question-text">1. What is the minimum safe following distance in good weather conditions?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="1" data-option="A">
+                            <span class="option-label">A</span>
+                            <span>1 second</span>
+                        </div>
+                        <div class="quiz-option" data-question="1" data-option="B">
+                            <span class="option-label">B</span>
+                            <span>2 seconds</span>
+                        </div>
+                        <div class="quiz-option" data-question="1" data-option="C">
+                            <span class="option-label">C</span>
+                            <span>3 seconds</span>
+                        </div>
+                        <div class="quiz-option" data-question="1" data-option="D">
+                            <span class="option-label">D</span>
+                            <span>4 seconds</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="quiz-question">
+                    <div class="question-text">2. When approaching a yellow traffic light, what should you do?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="2" data-option="A">
+                            <span class="option-label">A</span>
+                            <span>Speed up to clear the intersection</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="B">
+                            <span class="option-label">B</span>
+                            <span>Prepare to stop if it's safe to do so</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="C">
+                            <span class="option-label">C</span>
+                            <span>Continue at your current speed</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="D">
+                            <span class="option-label">D</span>
+                            <span>Honk your horn and proceed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="quiz-question">
+                    <div class="question-text">3. What should you do when an emergency vehicle approaches with sirens and flashing lights?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="3" data-option="A">
+                            <span class="option-label">A</span>
+                            <span>Continue driving normally</span>
+                        </div>
+                        <div class="quiz-option" data-question="3" data-option="B">
+                            <span class="option-label">B</span>
+                            <span>Speed up to get out of the way</span>
+                        </div>
+                        <div class="quiz-option" data-question="3" data-option="C">
+                            <span class="option-label">C</span>
+                            <span>Pull over to the right and stop completely</span>
+                        </div>
+                        <div class="quiz-option" data-question="3" data-option="D">
+                            <span class="option-label">D</span>
+                            <span>Flash your lights to acknowledge</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback -->
+                <div class="feedback" id="quiz-feedback">
+                    <div class="feedback-title">
+                        <span>📊</span>
+                        Quiz Results
+                    </div>
+                    <div class="feedback-content">
+                        <p><strong>Correct Answers:</strong></p>
+                        <p>1. <strong>B - 2 seconds</strong> (minimum safe following distance in good conditions)</p>
+                        <p>2. <strong>B - Prepare to stop if it's safe to do so</strong> (yellow means caution, not accelerate)</p>
+                        <p>3. <strong>C - Pull over to the right and stop completely</strong> (yield to emergency vehicles)</p>
+                        <p style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(95, 23, 235, 0.2);">
+                            <strong>Safety Tip:</strong> Proper stopping techniques could prevent approximately 29% of all traffic collisions. Always maintain safe distances and anticipate stops.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-secondary" id="reset-sim-btn">
+                <span class="btn-icon">↻</span>
+                Reset Simulations
+            </button>
+            <button class="btn btn-primary" id="check-quiz-btn">
+                <span class="btn-icon">✓</span>
+                Check Quiz Answers
+            </button>
+            <button class="btn btn-primary" id="view-summary-btn">
+                <span class="btn-icon">📊</span>
+                View Module Summary
+            </button>
+        </div>
+
+        <!-- Completion Panel -->
+        <div class="completion-panel" id="completion-panel">
+            <div class="completion-header">
+                <h2 class="completion-title">Stopping Fundamentals Mastered!</h2>
+                <p class="completion-subtitle">You've completed the interactive stopping simulation module</p>
+            </div>
+            
+            <div class="key-takeaways">
+                <h3 class="takeaways-title">
+                    <span>🎯</span> Key Takeaways
+                </h3>
+                <ul class="takeaways-list">
+                    <li>
+                        <span class="takeaway-icon">1</span>
+                        <span><strong>Complete Stops Are Critical:</strong> Always come to a complete stop at stop signs, red lights, and when required by law. Rolling stops account for 70% of stop-sign violations.</span>
+                    </li>
+                    <li>
+                        <span class="takeaway-icon">2</span>
+                        <span><strong>Anticipate and Prepare:</strong> Look 12-15 seconds ahead, watch for brake lights, and begin slowing down early. Anticipation reduces stopping distances by up to 25%.</span>
+                    </li>
+                    <li>
+                        <span class="takeaway-icon">3</span>
+                        <span><strong>Maintain Safe Following Distance:</strong> Use the 2-second rule in good conditions, increasing to 4+ seconds in adverse weather. This provides time to react and stop safely.</span>
+                    </li>
+                    <li>
+                        <span class="takeaway-icon">4</span>
+                        <span><strong>Practice Proper Technique:</strong> Apply brakes smoothly, check mirrors before stopping, and use threshold braking in emergencies. Proper technique maintains vehicle control.</span>
+                    </li>
+                    <li>
+                        <span class="takeaway-icon">5</span>
+                        <span><strong>Know When to Stop:</strong> Recognize all stopping scenarios including pedestrian crossings, school buses, emergency vehicles, and railroad crossings. Each has specific requirements.</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="key-takeaways" style="margin-top: 20px;">
+                <h3 class="takeaways-title">
+                    <span>📈</span> Safety Statistics
+                </h3>
+                <ul class="takeaways-list">
+                    <li>
+                        <span class="takeaway-icon">📊</span>
+                        <span><strong>Collision Prevention:</strong> Proper stopping techniques could prevent approximately 29% of all traffic collisions, including 43% of intersection crashes.</span>
+                    </li>
+                    <li>
+                        <span class="takeaway-icon">⏱️</span>
+                        <span><strong>Reaction Time:</strong> Average driver reaction time is 1.5 seconds. At 60 mph, this equals 132 feet traveled before brakes are even applied.</span>
+                    </li>
+                    <li>
+                        <span class="takeaway-icon">🚸</span>
+                        <span><strong>Pedestrian Safety:</strong> 20% of pedestrian fatalities occur at intersections where drivers failed to stop or yield properly.</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-primary" id="restart-module-btn">
+                    <span class="btn-icon">🔄</span>
+                    Restart Module
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // State Management
+            const state = {
+                simulations: 0,
+                correctAnswers: 0,
+                totalQuestions: 3,
+                reactionTimes: [],
+                currentSpeed: 30,
+                currentConditions: 'dry',
+                quizAnswers: {
+                    1: 'B',
+                    2: 'B',
+                    3: 'C'
+                },
+                userAnswers: {}
+            };
+
+            // DOM Elements
+            const simVehicle = document.getElementById('sim-vehicle');
+            const distanceIndicator = document.getElementById('distance-indicator');
+            const brakeBtn = document.getElementById('brake-btn');
+            const speedBtns = document.querySelectorAll('.speed-btn');
+            const speedSlider = document.getElementById('speed-slider');
+            const speedDisplay = document.getElementById('speed-display');
+            const conditionsSelect = document.getElementById('conditions-select');
+            const safeDistance = document.getElementById('safe-distance');
+            const distanceDetail = document.getElementById('distance-detail');
+            const scenarios = document.querySelectorAll('.scenario-card');
+            const quizOptions = document.querySelectorAll('.quiz-option');
+            const quizFeedback = document.getElementById('quiz-feedback');
+            const resetBtn = document.getElementById('reset-sim-btn');
+            const checkBtn = document.getElementById('check-quiz-btn');
+            const summaryBtn = document.getElementById('view-summary-btn');
+            const completionPanel = document.getElementById('completion-panel');
+            const restartBtn = document.getElementById('restart-module-btn');
+            const stats = {
+                simulations: document.getElementById('simulations-count'),
+                accuracy: document.getElementById('stopping-accuracy'),
+                reaction: document.getElementById('reaction-time')
+            };
+
+            // Stopping distances based on speed and conditions (in feet)
+            const stoppingDistances = {
+                dry: {
+                    20: 40, 25: 56, 30: 73, 35: 96, 40: 120, 45: 148, 50: 178, 55: 210, 60: 245, 65: 283, 70: 323
+                },
+                wet: {
+                    20: 60, 25: 84, 30: 110, 35: 144, 40: 180, 45: 222, 50: 267, 55: 315, 60: 368, 65: 425, 70: 485
+                },
+                snow: {
+                    20: 120, 25: 168, 30: 220, 35: 288, 40: 360, 45: 444, 50: 534, 55: 630, 60: 735, 65: 850, 70: 970
+                }
+            };
+
+            // Initialize simulations
+            function initSimulations() {
+                // Speed control buttons
+                speedBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        speedBtns.forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        state.currentSpeed = parseInt(this.dataset.speed);
+                        updateVehiclePosition();
+                        updateDistanceCalculator();
+                    });
+                });
+
+                // Brake button simulation
+                brakeBtn.addEventListener('click', function() {
+                    state.simulations++;
+                    stats.simulations.textContent = state.simulations;
+                    
+                    // Start vehicle movement
+                    simVehicle.style.left = '50px';
+                    simVehicle.style.transition = 'left 3s linear';
+                    
+                    // Set timeout for reaction test
+                    const brakeTime = Math.random() * 2000 + 1000; // 1-3 seconds
+                    const startTime = Date.now();
+                    
+                    setTimeout(() => {
+                        brakeBtn.textContent = 'BRAKE NOW!';
+                        brakeBtn.style.background = '#ef4444';
+                        brakeBtn.style.animation = 'brakePulse 0.5s infinite';
+                        
+                        // Measure reaction time
+                        const reactionStart = Date.now();
+                        
+                        // Create one-time event for reaction measurement
+                        const measureReaction = () => {
+                            const reactionTime = (Date.now() - reactionStart) / 1000;
+                            state.reactionTimes.push(reactionTime);
+                            
+                            // Calculate average reaction time
+                            const avgReaction = state.reactionTimes.reduce((a, b) => a + b, 0) / state.reactionTimes.length;
+                            stats.reaction.textContent = avgReaction.toFixed(1) + 's';
+                            
+                            // Stop vehicle based on reaction
+                            const stopDistance = calculateStopDistance();
+                            const stopPosition = Math.min(800, 50 + (state.currentSpeed * 10));
+                            
+                            simVehicle.style.transition = `left ${reactionTime * 2}s ease-out`;
+                            simVehicle.style.left = `${stopPosition}px`;
+                            
+                            // Update distance indicator
+                            const safeStop = stopPosition < 700;
+                            distanceIndicator.style.width = safeStop ? '70%' : '100%';
+                            distanceIndicator.style.background = safeStop 
+                                ? 'linear-gradient(90deg, #10b981 0%, #f59e0b 70%, #ef4444 100%)' 
+                                : 'linear-gradient(90deg, #10b981 0%, #ef4444 100%)';
+                            
+                            // Reset button
+                            setTimeout(() => {
+                                brakeBtn.textContent = 'BRAKE NOW!';
+                                brakeBtn.style.background = '#ef4444';
+                                brakeBtn.style.animation = '';
+                                brakeBtn.disabled = false;
+                                
+                                // Reset after 2 seconds
+                                setTimeout(() => {
+                                    simVehicle.style.transition = 'left 0.5s ease';
+                                    simVehicle.style.left = '50px';
+                                    distanceIndicator.style.width = '100%';
+                                    distanceIndicator.style.background = 'linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%)';
+                                }, 2000);
+                            }, 1000);
+                            
+                            // Remove event listener
+                            brakeBtn.removeEventListener('click', measureReaction);
+                        };
+                        
+                        // Add event listener for reaction measurement
+                        brakeBtn.addEventListener('click', measureReaction, { once: true });
+                        
+                    }, brakeTime);
+                });
+
+                // Update vehicle position based on speed
+                function updateVehiclePosition() {
+                    const basePosition = 50;
+                    simVehicle.style.left = `${basePosition}px`;
+                }
+
+                // Calculate stopping distance
+                function calculateStopDistance() {
+                    const speed = Math.min(70, Math.max(20, state.currentSpeed));
+                    const conditions = state.currentConditions;
+                    return stoppingDistances[conditions][Math.round(speed / 5) * 5] || 100;
+                }
+
+                // Initialize vehicle position
+                updateVehiclePosition();
+            }
+
+            // Distance calculator
+            function initDistanceCalculator() {
+                speedSlider.addEventListener('input', function() {
+                    state.currentSpeed = parseInt(this.value);
+                    speedDisplay.textContent = state.currentSpeed;
+                    updateDistanceCalculator();
+                });
+
+                conditionsSelect.addEventListener('change', function() {
+                    state.currentConditions = this.value;
+                    updateDistanceCalculator();
+                });
+
+                function updateDistanceCalculator() {
+                    const distance = calculateStopDistance();
+                    safeDistance.textContent = distance + ' feet';
+                    
+                    let conditionText = '';
+                    switch(state.currentConditions) {
+                        case 'dry': conditionText = 'dry roads'; break;
+                        case 'wet': conditionText = 'wet roads'; break;
+                        case 'snow': conditionText = 'snow/ice'; break;
+                    }
+                    
+                    distanceDetail.textContent = `At ${state.currentSpeed} mph on ${conditionText}`;
+                    
+                    // Update stats accuracy
+                    const accuracy = state.simulations > 0 
+                        ? Math.min(100, Math.round((state.simulations * 0.8 + state.correctAnswers * 6.67))) 
+                        : 0;
+                    stats.accuracy.textContent = accuracy + '%';
+                }
+
+                // Initial update
+                updateDistanceCalculator();
+            }
+
+            // Scenario cards
+            function initScenarios() {
+                scenarios.forEach(card => {
+                    card.addEventListener('click', function() {
+                        scenarios.forEach(c => c.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Update simulation based on scenario
+                        const scenario = this.dataset.scenario;
+                        // In a full implementation, this would change the simulation parameters
+                    });
+                });
+            }
+
+            // Quiz functionality
+            function initQuiz() {
+                quizOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const question = this.dataset.question;
+                        const selectedOption = this.dataset.option;
+                        
+                        // Remove selected class from all options for this question
+                        const allOptions = document.querySelectorAll(`[data-question="${question}"]`);
+                        allOptions.forEach(opt => opt.classList.remove('selected'));
+                        
+                        // Add selected class to clicked option
+                        this.classList.add('selected');
+                        
+                        // Store the answer
+                        state.userAnswers[question] = selectedOption;
+                    });
+                });
+
+                checkBtn.addEventListener('click', function() {
+                    let correctCount = 0;
+                    
+                    // Check each answer
+                    Object.keys(state.quizAnswers).forEach(question => {
+                        const userAnswer = state.userAnswers[question];
+                        const correctAnswer = state.quizAnswers[question];
+                        
+                        if (userAnswer === correctAnswer) {
+                            correctCount++;
+                            
+                            // Mark correct option
+                            const correctOption = document.querySelector(`[data-question="${question}"][data-option="${correctAnswer}"]`);
+                            correctOption.classList.add('correct');
+                        } else if (userAnswer) {
+                            // Mark incorrect user selection
+                            const userOption = document.querySelector(`[data-question="${question}"][data-option="${userAnswer}"]`);
+                            if (userOption) userOption.classList.add('incorrect');
+                            
+                            // Mark correct answer
+                            const correctOption = document.querySelector(`[data-question="${question}"][data-option="${correctAnswer}"]`);
+                            correctOption.classList.add('correct');
+                        }
+                    });
+                    
+                    state.correctAnswers = correctCount;
+                    
+                    // Show feedback
+                    quizFeedback.classList.add('show');
+                    quizFeedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Update accuracy stat
+                    const accuracy = Math.round((state.correctAnswers / state.totalQuestions) * 100);
+                    stats.accuracy.textContent = accuracy + '%';
+                });
+            }
+
+            // Reset functionality
+            function initReset() {
+                resetBtn.addEventListener('click', function() {
+                    // Reset simulations
+                    state.simulations = 0;
+                    state.reactionTimes = [];
+                    
+                    // Reset UI
+                    simVehicle.style.left = '50px';
+                    simVehicle.style.transition = 'left 0.5s ease';
+                    distanceIndicator.style.width = '100%';
+                    distanceIndicator.style.background = 'linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%)';
+                    
+                    // Reset stats
+                    stats.simulations.textContent = '0';
+                    stats.reaction.textContent = '0.0s';
+                    stats.accuracy.textContent = '0%';
+                    
+                    // Reset speed to default
+                    speedBtns.forEach(btn => btn.classList.remove('active'));
+                    document.querySelector('.speed-btn[data-speed="30"]').classList.add('active');
+                    state.currentSpeed = 30;
+                    speedSlider.value = 30;
+                    speedDisplay.textContent = '30';
+                    
+                    // Reset conditions
+                    conditionsSelect.value = 'dry';
+                    state.currentConditions = 'dry';
+                    
+                    updateDistanceCalculator();
+                });
+            }
+
+            // Summary and completion
+            function initSummary() {
+                summaryBtn.addEventListener('click', function() {
+                    completionPanel.classList.add('show');
+                    completionPanel.scrollIntoView({ behavior: 'smooth' });
+                });
+
+                restartBtn.addEventListener('click', function() {
+                    // Reset everything
+                    state.simulations = 0;
+                    state.correctAnswers = 0;
+                    state.reactionTimes = [];
+                    state.userAnswers = {};
+                    
+                    // Reset UI
+                    completionPanel.classList.remove('show');
+                    quizFeedback.classList.remove('show');
+                    
+                    // Reset quiz options
+                    quizOptions.forEach(option => {
+                        option.classList.remove('selected', 'correct', 'incorrect');
+                    });
+                    
+                    // Reset simulations
+                    simVehicle.style.left = '50px';
+                    distanceIndicator.style.width = '100%';
+                    distanceIndicator.style.background = 'linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%)';
+                    
+                    // Reset stats
+                    stats.simulations.textContent = '0';
+                    stats.reaction.textContent = '0.0s';
+                    stats.accuracy.textContent = '0%';
+                    
+                    // Scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+
+            // Initialize all components
+            initSimulations();
+            initDistanceCalculator();
+            initScenarios();
+            initQuiz();
+            initReset();
+            initSummary();
+
+            // Initial stats update
+            stats.simulations.textContent = '0';
+            stats.accuracy.textContent = '0%';
+            stats.reaction.textContent = '0.0s';
+        });
+    </script>
+</body>
+</html>
