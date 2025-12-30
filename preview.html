@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Understanding Your Course Timer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --color-info: #3b82f6;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes timerCount {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .module-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Demo Styles */
+        .timer-demo-container {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin: 30px 0;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            box-shadow: var(--shadow-soft);
+            text-align: center;
+        }
+
+        .timer-demo-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .demo-timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 25px 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            margin-bottom: 20px;
+            animation: pulse 3s infinite;
+        }
+
+        .demo-timer-icon {
+            font-size: 1.8rem;
+        }
+
+        .demo-timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            min-width: 120px;
+        }
+
+        .demo-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .demo-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .demo-btn.primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .demo-btn.secondary {
+            background: rgba(95, 23, 235, 0.1);
+            color: var(--color-primary);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.2);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .info-card {
+            background: var(--color-bg);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .info-card-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card-content {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-item {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .feature-content h4 {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 5px;
+        }
+
+        .feature-content p {
+            color: var(--color-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .requirements-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        }
+
+        .requirements-title {
+            font-weight: 800;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+
+        .requirements-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .requirements-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .requirements-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        }
+
+        .warning-title {
+            font-weight: 800;
+            color: var(--color-warning);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+
+        .warning-content {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .faq-section {
+            margin: 40px 0;
+        }
+
+        .faq-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .faq-item {
+            background: var(--color-bg);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .faq-question {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .faq-answer {
+            color: var(--color-muted);
+            line-height: 1.7;
+        }
+
+        .progress-visual {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .progress-visual-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+        }
+
+        .progress-stages {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .progress-stages:before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(95, 23, 235, 0.2);
+            z-index: 1;
+        }
+
+        .progress-stage {
+            background: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: var(--color-muted);
+            border: 3px solid rgba(95, 23, 235, 0.2);
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .progress-stage.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+            animation: pulse 2s infinite;
+        }
+
+        .progress-stage.completed {
+            background: var(--color-success);
+            color: white;
+            border-color: var(--color-success);
+        }
+
+        .stage-label {
+            position: absolute;
+            top: 50px;
+            width: 100px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .dashboard-preview {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin: 30px 0;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .dashboard-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dashboard-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-box {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .certificate-preview {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border: 2px dashed rgba(95, 23, 235, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .certificate-title {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+        }
+
+        .certificate-requirement {
+            font-size: 1.1rem;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .completion-badge {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            padding: 10px 30px;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: 700;
+            margin-top: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-key-points {
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin: 30px 0;
+            border-left: 4px solid var(--color-info);
+        }
+
+        .timer-key-title {
+            font-weight: 800;
+            color: var(--color-info);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "→";
+            position: absolute;
+            left: 5px;
+            color: var(--color-info);
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-demo-container {
+                padding: 20px;
+            }
+
+            .demo-timer {
+                padding: 20px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .progress-stages {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 30px;
+            }
+
+            .progress-stages:before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="module-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" 
+                     alt="VA Driving Clinic Logo" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Course Timer & Progress System</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">Student Guide Module</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Understanding Your Course Timer & Progress System</h1>
+
+        <!-- Timer Demonstration -->
+        <div class="timer-demo-container">
+            <h2 class="timer-demo-title">
+                <span>⏱️</span> Interactive Timer Demonstration
+            </h2>
+            
+            <div class="demo-timer" id="demo-timer">
+                <div class="demo-timer-icon">⏱️</div>
+                <div class="demo-timer-display" id="demo-timer-display">00:00:00</div>
+                <div>Lesson Timer Active</div>
+            </div>
+            
+            <div class="demo-controls">
+                <button class="demo-btn primary" onclick="startDemoTimer()">
+                    <span>▶️</span> Start Timer
+                </button>
+                <button class="demo-btn secondary" onclick="resetDemoTimer()">
+                    <span>🔄</span> Reset Timer
+                </button>
+                <button class="demo-btn primary" onclick="simulateLessonCompletion()">
+                    <span>✅</span> Complete 5-Min Lesson
+                </button>
+            </div>
+            
+            <div style="margin-top: 20px; color: var(--color-muted); font-size: 0.9rem;">
+                <p><strong>Note:</strong> In your actual course, timers start automatically when you begin a lesson and run continuously. You cannot pause or stop them.</p>
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="total-hours">0.5</span>
+                <span class="stat-label">Hours Completed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="lessons-completed">3</span>
+                <span class="stat-label">Lessons Completed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-remaining">7.5</span>
+                <span class="stat-label">Hours Remaining</span>
+            </div>
+        </div>
+
+        <!-- Course Overview -->
+        <div class="info-card">
+            <h2 class="info-card-title">
+                <span>📚</span> Course Structure Overview
+            </h2>
+            <div class="info-card-content">
+                <p>Your 8-Hour Online Defensive Driving Course is divided into multiple learning units. Each unit contains lessons with specific time requirements that must be completed to satisfy Virginia DMV and Court requirements.</p>
+                
+                <div class="feature-grid" style="margin-top: 20px;">
+                    <div class="feature-item">
+                        <div class="feature-icon">⏱️</div>
+                        <div class="feature-content">
+                            <h4>Continuous Timers</h4>
+                            <p>Timers run continuously from lesson start to completion - no pausing</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📊</div>
+                        <div class="feature-content">
+                            <h4>Real-time Tracking</h4>
+                            <p>Your dashboard shows live progress as you complete each lesson</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✅</div>
+                        <div class="feature-content">
+                            <h4>Sequential Progress</h4>
+                            <p>Complete lessons in order - each builds on previous knowledge</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Visual -->
+        <div class="progress-visual">
+            <h3 class="progress-visual-title">Your Course Completion Journey</h3>
+            <div class="progress-stages">
+                <div class="progress-stage completed" id="stage-1">
+                    1
+                    <div class="stage-label">Enroll</div>
+                </div>
+                <div class="progress-stage active" id="stage-2">
+                    2
+                    <div class="stage-label">In Progress</div>
+                </div>
+                <div class="progress-stage" id="stage-3">
+                    3
+                    <div class="stage-label">Accumulate Hours</div>
+                </div>
+                <div class="progress-stage" id="stage-4">
+                    4
+                    <div class="stage-label">Complete 8 Hours</div>
+                </div>
+                <div class="progress-stage" id="stage-5">
+                    5
+                    <div class="stage-label">Get Certificate</div>
+                </div>
+            </div>
+            <div style="color: var(--color-muted); margin-top: 20px;">
+                <p>You are currently at: <strong id="current-stage">Lesson in Progress</strong></p>
+            </div>
+        </div>
+
+        <!-- Virginia Requirements -->
+        <div class="requirements-box">
+            <div class="requirements-title">
+                <span>⚖️</span> Virginia DMV & Court Requirements
+            </div>
+            <ul class="requirements-list">
+                <li><strong>8 Total Hours:</strong> Must complete exactly 8 hours of instructional time</li>
+                <li><strong>Continuous Timing:</strong> Timers run continuously from lesson start</li>
+                <li><strong>Sequential Progress:</strong> Must complete lessons in designated order</li>
+                <li><strong>Certificate Release:</strong> Certificate only issued after 8 hours completed</li>
+                <li><strong>No Pausing:</strong> Timers cannot be paused or stopped once started</li>
+                <li><strong>Browser Display:</strong> Timer shows in browser while you're on the lesson page</li>
+            </ul>
+        </div>
+
+        <!-- Timer Functionality -->
+        <div class="content-grid">
+            <div class="info-card">
+                <h3 class="info-card-title">
+                    <span>🔄</span> How The Timer Works
+                </h3>
+                <div class="info-card-content">
+                    <p><strong>Continuous Operation:</strong> Once you start a lesson, the timer begins and runs continuously until you complete it.</p>
+                    <p><strong>Browser Visibility:</strong> The timer is visible in your browser window while you're on the lesson page.</p>
+                    <p><strong>Automatic Tracking:</strong> Time accumulates automatically and is saved to your progress.</p>
+                    <p><strong>No User Control:</strong> You cannot pause, stop, or reset timers - they run continuously.</p>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3 class="info-card-title">
+                    <span>📊</span> Your Progress Dashboard
+                </h3>
+                <div class="info-card-content">
+                    <p>Your student portal dashboard provides real-time tracking of:</p>
+                    <ul style="margin-top: 15px; padding-left: 20px; color: var(--color-muted);">
+                        <li>Total hours completed (accumulated across all lessons)</li>
+                        <li>Number of lessons finished</li>
+                        <li>Time remaining to complete the 8-hour requirement</li>
+                        <li>Overall progress percentage</li>
+                        <li>Current lesson status</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timer Key Points -->
+        <div class="timer-key-points">
+            <div class="timer-key-title">
+                <span>🔑</span> Key Timer System Facts
+            </div>
+            <ul class="key-points-list">
+                <li><strong>Timers start automatically</strong> when you begin a lesson</li>
+                <li><strong>Timers run continuously</strong> - no pausing or stopping</li>
+                <li><strong>Time accumulates</strong> across all your sessions</li>
+                <li><strong>Timer visibility</strong> is in your browser during lessons</li>
+                <li><strong>8-hour total</strong> is required for certificate release</li>
+                <li><strong>Dashboard updates</strong> in real-time as you progress</li>
+            </ul>
+        </div>
+
+        <!-- Dashboard Preview -->
+        <div class="dashboard-preview">
+            <h3 class="dashboard-title">
+                <span>📈</span> Your Progress Dashboard Preview
+            </h3>
+            <div class="dashboard-metrics">
+                <div class="metric-box">
+                    <span class="metric-value" id="preview-hours">0.5</span>
+                    <span class="metric-label">Hours Completed</span>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-value" id="preview-lessons">3/12</span>
+                    <span class="metric-label">Lessons Completed</span>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-value" id="preview-percentage">6%</span>
+                    <span class="metric-label">Overall Progress</span>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-value" id="preview-remaining">7.5h</span>
+                    <span class="metric-label">Hours Remaining</span>
+                </div>
+            </div>
+            <div style="text-align: center; color: var(--color-muted); margin-top: 20px;">
+                <p>This information updates automatically as you complete lessons. The timer runs continuously for each lesson.</p>
+            </div>
+        </div>
+
+        <!-- Important Warnings -->
+        <div class="warning-box">
+            <div class="warning-title">
+                <span>⚠️</span> Important System Notes
+            </div>
+            <div class="warning-content">
+                <p><strong>No Certificate Until 8 Hours Complete:</strong> Your certificate of completion will NOT be released until the system records exactly 8 hours of instructional time.</p>
+                <p style="margin-top: 10px;"><strong>Continuous Timing:</strong> Lesson timers run continuously once started. They cannot be paused or stopped.</p>
+                <p style="margin-top: 10px;"><strong>Browser Requirements:</strong> For accurate time tracking, please:</p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Keep the lesson page open and visible in your browser</li>
+                    <li>Use a modern browser (Chrome, Firefox, Safari, Edge)</li>
+                    <li>Avoid switching away from the lesson page during timing</li>
+                    <li>Complete lessons in focused sessions when possible</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Certificate Preview -->
+        <div class="certificate-preview">
+            <div class="certificate-title">Certificate of Completion</div>
+            <div class="certificate-requirement">
+                <strong>Available After:</strong> 8:00 hours of course completion
+            </div>
+            <div class="certificate-requirement">
+                <strong>Current Status:</strong> <span id="cert-status">7.5 hours remaining</span>
+            </div>
+            <div class="completion-badge" id="completion-badge" style="display: none;">
+                🎉 Certificate Ready!
+            </div>
+            <div style="margin-top: 20px; color: var(--color-muted);">
+                <p>Your certificate will be available for download immediately upon completing all 8 hours of course time.</p>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h3 class="faq-title">Frequently Asked Questions</h3>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>❓</span> Can I pause the timer during a lesson?
+                </div>
+                <div class="faq-answer">
+                    <strong>No.</strong> Lesson timers run continuously from start to completion. They cannot be paused, stopped, or reset.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>❓</span> What happens if I close my browser during a lesson?
+                </div>
+                <div class="faq-answer">
+                    The timer continues running as long as the lesson page is open. If you close the browser, you'll need to restart the lesson to continue timing.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>❓</span> Can I complete the course faster than 8 hours?
+                </div>
+                <div class="faq-answer">
+                    <strong>No.</strong> Virginia DMV requires exactly 8 hours of instructional time. Each lesson has minimum time requirements that must be met.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>❓</span> How do I know how much time I have left?
+                </div>
+                <div class="faq-answer">
+                    Your student dashboard shows real-time progress, including total hours completed and hours remaining to reach 8 hours.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>❓</span> Where is the timer displayed?
+                </div>
+                <div class="faq-answer">
+                    The timer is visible in your browser window while you're on a lesson page. It shows the elapsed time for that specific lesson.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>❓</span> Can I see my total accumulated time?
+                </div>
+                <div class="faq-answer">
+                    Yes. Your student dashboard shows your total accumulated time across all completed lessons.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Timer Demo Variables
+        let demoInterval;
+        let demoSeconds = 1800; // Start with 30 minutes (0.5 hours) completed
+        let demoRunning = false;
+        let totalCourseHours = 0.5;
+        let lessonsCompleted = 3;
+        
+        // Update demo timer display
+        function updateDemoTimer() {
+            const hours = Math.floor(demoSeconds / 3600);
+            const minutes = Math.floor((demoSeconds % 3600) / 60);
+            const secs = demoSeconds % 60;
+            
+            const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById('demo-timer-display').textContent = timeString;
+            
+            // Update progress indicators
+            updateProgressIndicators();
+        }
+        
+        // Start demo timer
+        function startDemoTimer() {
+            if (!demoRunning) {
+                demoRunning = true;
+                demoInterval = setInterval(function() {
+                    demoSeconds++;
+                    updateDemoTimer();
+                }, 100);
+                
+                document.getElementById('demo-timer').style.animation = 'pulse 1s infinite';
+                alert("Timer started! This simulates how lesson timers begin automatically and run continuously in your actual course.");
+            }
+        }
+        
+        // Reset demo timer
+        function resetDemoTimer() {
+            if (demoRunning) {
+                clearInterval(demoInterval);
+                demoRunning = false;
+            }
+            demoSeconds = 0;
+            updateDemoTimer();
+            document.getElementById('demo-timer').style.animation = 'pulse 3s infinite';
+        }
+        
+        // Simulate completing a 5-minute lesson
+        function simulateLessonCompletion() {
+            // Add 5 minutes (300 seconds) to simulate lesson completion
+            demoSeconds += 300;
+            lessonsCompleted++;
+            totalCourseHours = demoSeconds / 3600;
+            
+            updateDemoTimer();
+            
+            // Show completion message
+            alert(`✅ Lesson Completed!\n\n5 minutes added to your course progress.\nTotal time: ${(totalCourseHours).toFixed(2)} hours\nLessons completed: ${lessonsCompleted}\n\nNote: In the actual course, timers run continuously and you cannot pause or stop them.`);
+            
+            // Update progress stages
+            updateProgressStages();
+        }
+        
+        // Update all progress indicators
+        function updateProgressIndicators() {
+            const hours = demoSeconds / 3600;
+            const remaining = Math.max(0, 8 - hours);
+            const percentage = Math.min(100, (hours / 8) * 100);
+            
+            // Update main stats
+            document.getElementById('total-hours').textContent = hours.toFixed(1);
+            document.getElementById('lessons-completed').textContent = lessonsCompleted;
+            document.getElementById('time-remaining').textContent = remaining.toFixed(1);
+            
+            // Update dashboard preview
+            document.getElementById('preview-hours').textContent = hours.toFixed(1);
+            document.getElementById('preview-lessons').textContent = `${lessonsCompleted}/12`;
+            document.getElementById('preview-percentage').textContent = `${percentage.toFixed(0)}%`;
+            document.getElementById('preview-remaining').textContent = `${remaining.toFixed(1)}h`;
+            
+            // Update certificate status
+            const certStatus = document.getElementById('cert-status');
+            const completionBadge = document.getElementById('completion-badge');
+            
+            if (hours >= 8) {
+                certStatus.textContent = 'Available Now!';
+                certStatus.style.color = 'var(--color-success)';
+                certStatus.style.fontWeight = '800';
+                completionBadge.style.display = 'inline-block';
+            } else {
+                certStatus.textContent = `${(8 - hours).toFixed(1)} hours remaining`;
+                certStatus.style.color = 'var(--color-warning)';
+                completionBadge.style.display = 'none';
+            }
+        }
+        
+        // Update progress stages visualization
+        function updateProgressStages() {
+            const hours = demoSeconds / 3600;
+            
+            // Reset all stages
+            for (let i = 1; i <= 5; i++) {
+                const stage = document.getElementById(`stage-${i}`);
+                stage.classList.remove('active', 'completed');
+            }
+            
+            // Determine current stage
+            let currentStage = 1;
+            let stageLabel = 'Enrollment';
+            
+            if (hours > 0) {
+                currentStage = 2;
+                stageLabel = 'In Progress';
+            }
+            if (hours > 2) {
+                currentStage = 3;
+                stageLabel = 'Accumulating Hours';
+            }
+            if (hours > 6) {
+                currentStage = 4;
+                stageLabel = 'Nearly Complete';
+            }
+            if (hours >= 8) {
+                currentStage = 5;
+                stageLabel = 'Certificate Ready';
+            }
+            
+            // Update stages (all previous stages completed, current stage active)
+            for (let i = 1; i <= 5; i++) {
+                const stage = document.getElementById(`stage-${i}`);
+                if (i < currentStage) {
+                    stage.classList.add('completed');
+                } else if (i === currentStage) {
+                    stage.classList.add('active');
+                }
+            }
+            
+            // Update current stage label
+            document.getElementById('current-stage').textContent = stageLabel;
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDemoTimer();
+            updateProgressIndicators();
+            updateProgressStages();
+            
+            // Auto-start demo timer after a brief delay
+            setTimeout(function() {
+                startDemoTimer();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
