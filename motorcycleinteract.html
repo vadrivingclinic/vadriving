@@ -1,0 +1,2048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Motorcycle Safety Simulation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-soft: #8a5feb;
+            --color-secondary: #000000;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-info: #3b82f6;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-light: #f9fafb;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 15px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        @keyframes roadMove {
+            from { transform: translateX(0); }
+            to { transform: translateX(-100px); }
+        }
+
+        /* Main Container */
+        .page {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 20px;
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        /* Header */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .course-name {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .week-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.1);
+            font-size: 0.7rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .week-label-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        .badge-mode {
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.08);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-primary);
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            line-height: 1.1;
+            color: var(--color-text);
+            margin-bottom: 8px;
+        }
+
+        .module-subtitle {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Time Banner */
+        .time-banner {
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .time-icon {
+            font-size: 1rem;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .time-content h3 {
+            color: var(--color-primary);
+            font-size: 0.8rem;
+            margin-bottom: 3px;
+            font-weight: 700;
+        }
+
+        .time-content p {
+            color: var(--color-text);
+            font-size: 0.75rem;
+            margin: 0;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 0.9em;
+        }
+
+        /* Simulation Tabs */
+        .simulation-tabs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .sim-tab {
+            padding: 12px;
+            background: rgba(95, 23, 235, 0.05);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            color: var(--color-primary);
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sim-tab:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .sim-tab.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+            animation: pulse 2s infinite;
+        }
+
+        .tab-icon {
+            font-size: 1.2rem;
+        }
+
+        .tab-status {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Simulation Container */
+        .simulation-container {
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .simulation-container.active {
+            display: block;
+        }
+
+        /* Gear Selection Simulation */
+        .gear-sim {
+            background: var(--color-light);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .simulation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .simulation-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .title-icon {
+            font-size: 1.4rem;
+        }
+
+        .simulation-time {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-muted);
+            background: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        /* Gear Selection */
+        .gear-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .rider-visualization {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+            border-radius: var(--radius-sm);
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #9ca3af;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .rider-figure {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        .gear-item {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .gear-item:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+
+        .gear-item.selected {
+            animation: pulse 1s infinite;
+            border: 2px solid var(--color-success);
+        }
+
+        .gear-item.incorrect {
+            border: 2px solid var(--color-error);
+            animation: shake 0.5s ease;
+        }
+
+        .gear-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .gear-option {
+            padding: 12px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .gear-option:hover {
+            border-color: var(--color-primary);
+            transform: translateX(5px);
+        }
+
+        .gear-option.selected {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .gear-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .gear-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Visibility Simulation */
+        .visibility-sim {
+            background: var(--color-light);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .visibility-scene {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+            border-radius: var(--radius-sm);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 3px solid #444;
+        }
+
+        .road {
+            position: absolute;
+            width: 200%;
+            height: 80px;
+            background: #4b5563;
+            bottom: 0;
+            left: 0;
+            animation: roadMove 2s linear infinite;
+        }
+
+        .lane-markers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 49px,
+                #ffffff 49px,
+                #ffffff 50px
+            );
+            bottom: 40px;
+            animation: roadMove 1s linear infinite;
+        }
+
+        .motorcycle {
+            position: absolute;
+            width: 50px;
+            height: 30px;
+            background: var(--color-primary);
+            border-radius: 8px 8px 4px 4px;
+            left: 150px;
+            bottom: 50px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.7rem;
+        }
+
+        .car {
+            position: absolute;
+            width: 80px;
+            height: 40px;
+            background: #6b7280;
+            border-radius: 6px;
+            bottom: 50px;
+            z-index: 5;
+            transition: all 0.5s ease;
+        }
+
+        .visibility-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        /* Hazard Detection Simulation */
+        .hazard-sim {
+            background: var(--color-light);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .hazard-scene {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+            border-radius: var(--radius-sm);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 3px solid #9ca3af;
+        }
+
+        .hazard {
+            position: absolute;
+            background: var(--color-warning);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .hazard.detected {
+            background: var(--color-success);
+            transform: scale(1.1);
+        }
+
+        .hazard.missed {
+            background: var(--color-error);
+        }
+
+        .hazard-detected {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* Safety Decision */
+        .safety-decision {
+            background: rgba(95, 23, 235, 0.03);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px dashed rgba(95, 23, 235, 0.2);
+        }
+
+        .decision-title {
+            color: var(--color-primary);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .decision-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .decision-option {
+            padding: 12px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            color: var(--color-text);
+        }
+
+        .decision-option:hover {
+            border-color: var(--color-primary);
+            transform: translateX(5px);
+        }
+
+        .decision-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+        }
+
+        .decision-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--color-error);
+            animation: shake 0.5s ease;
+        }
+
+        /* Safety Stats */
+        .safety-stats {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .stats-title {
+            color: var(--color-primary);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 10px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Safety Tips */
+        .safety-tips {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid var(--color-success);
+            display: none;
+        }
+
+        .safety-tips.show {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .tips-title {
+            color: var(--color-success);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tips-list li {
+            font-size: 0.8rem;
+            color: var(--color-text);
+            line-height: 1.5;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .tip-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--color-success);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Results Display */
+        .results-display {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid var(--color-primary);
+        }
+
+        .results-display.show {
+            display: block;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .results-header h3 {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .results-score {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            text-shadow: 0 0 15px rgba(95, 23, 235, 0.7);
+            animation: pulse 2s infinite;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .result-stat {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            color: #e5e7eb;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .safety-certificate {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .cert-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cert-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .cert-list li {
+            font-size: 0.8rem;
+            color: #e5e7eb;
+            line-height: 1.5;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .cert-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background: #4c0fcf;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-icon {
+            font-size: 1em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <!-- Header -->
+        <header class="brand-row">
+            <div class="brand">
+                <img
+                    src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png"
+                    alt="VA Driving Clinic logo"
+                    class="brand-logo"
+                />
+                <div class="course-meta">
+                    <span class="course-name">VA Driving Clinic • Quick Simulation</span>
+                    <div class="week-label">
+                        <span class="week-label-dot"></span>
+                        <span>Motorcycle Safety</span>
+                    </div>
+                </div>
+            </div>
+            <span class="badge-mode">5-Min Challenge</span>
+        </header>
+
+        <h1>Motorcycle Safety Simulation Challenge</h1>
+        <p class="module-subtitle">
+            Experience 3 critical motorcycle safety scenarios in 5 minutes. Learn proper gear selection,
+            visibility enhancement, and hazard detection through interactive simulations.
+        </p>
+
+        <!-- Time Banner -->
+        <div class="time-banner">
+            <div class="time-icon">
+                ⏱️
+            </div>
+            <div class="time-content">
+                <h3>5-Minute Motorcycle Safety Challenge</h3>
+                <p>Complete all 3 scenarios in <span class="time-highlight">5 minutes</span> to master essential motorcycle safety skills.</p>
+            </div>
+        </div>
+
+        <!-- Simulation Tabs -->
+        <div class="simulation-tabs">
+            <button class="sim-tab active" data-sim="gear">
+                <span class="tab-icon">🛡️</span>
+                Gear Selection
+                <span class="tab-status" id="status-1">Not Started</span>
+            </button>
+            <button class="sim-tab" data-sim="visibility">
+                <span class="tab-icon">👁️</span>
+                Visibility Challenge
+                <span class="tab-status" id="status-2">Locked</span>
+            </button>
+            <button class="sim-tab" data-sim="hazard">
+                <span class="tab-icon">⚠️</span>
+                Hazard Detection
+                <span class="tab-status" id="status-3">Locked</span>
+            </button>
+        </div>
+
+        <!-- Simulation 1: Gear Selection -->
+        <div class="simulation-container active" id="gear-sim">
+            <div class="gear-sim">
+                <div class="simulation-header">
+                    <div class="simulation-title">
+                        <span class="title-icon">🛡️</span>
+                        Protective Gear Challenge
+                    </div>
+                    <div class="simulation-time">Time: <span id="gear-time">0:00</span></div>
+                </div>
+
+                <div class="gear-selection">
+                    <div class="rider-visualization" id="rider-visualization">
+                        <!-- Rider figure with gear items added by JavaScript -->
+                    </div>
+
+                    <div class="safety-stats">
+                        <div class="stats-title">🛡️ Gear Protection Level</div>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value" id="gear-protection">0%</div>
+                                <div class="stat-label">Protection</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="gear-selected">0/6</div>
+                                <div class="stat-label">Items Selected</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="gear-safety">Poor</div>
+                                <div class="stat-label">Safety Rating</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="gear-impact">-100%</div>
+                                <div class="stat-label">Crash Survival</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gear-options" id="gear-options">
+                        <!-- Gear options populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="safety-decision">
+                    <div class="decision-title">❓ Critical Decision Point</div>
+                    <div class="decision-options">
+                        <div class="decision-option" data-decision="A">
+                            A. Wear minimal gear for short rides
+                        </div>
+                        <div class="decision-option" data-decision="B">
+                            B. Always wear full protective gear regardless of ride length
+                        </div>
+                        <div class="decision-option" data-decision="C">
+                            C. Gear depends on weather conditions
+                        </div>
+                        <div class="decision-option" data-decision="D">
+                            D. Helmet is sufficient for most rides
+                        </div>
+                    </div>
+                </div>
+
+                <div class="safety-tips" id="gear-tips">
+                    <div class="tips-title">💡 Essential Motorcycle Gear Tips</div>
+                    <ul class="tips-list">
+                        <li>
+                            <span class="tip-icon">1</span>
+                            <span><strong>Helmet:</strong> Must be DOT-approved. Full-face provides best protection</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">2</span>
+                            <span><strong>Jacket & Pants:</strong> Leather or abrasion-resistant materials with armor inserts</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">3</span>
+                            <span><strong>Gloves:</strong> Reinforced palms and knuckles for impact protection</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">4</span>
+                            <span><strong>Boots:</strong> Over-the-ankle with non-slip soles and ankle support</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="start-gear">
+                        <span class="btn-icon">▶</span>
+                        Start Challenge
+                    </button>
+                    <button class="btn btn-secondary" id="next-gear">
+                        <span class="btn-icon">→</span>
+                        Next Scenario
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulation 2: Visibility -->
+        <div class="simulation-container" id="visibility-sim">
+            <div class="visibility-sim">
+                <div class="simulation-header">
+                    <div class="simulation-title">
+                        <span class="title-icon">👁️</span>
+                        Visibility Enhancement Challenge
+                    </div>
+                    <div class="simulation-time">Time: <span id="visibility-time">0:00</span></div>
+                </div>
+
+                <div class="visibility-scene" id="visibility-scene">
+                    <!-- Visibility scene elements added by JavaScript -->
+                </div>
+
+                <div class="safety-stats">
+                    <div class="stats-title">👁️ Visibility Statistics</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="visibility-level">30%</div>
+                            <div class="stat-label">Visibility</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="reaction-time">2.5s</div>
+                            <div class="stat-label">Reaction Time</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="car-distance">20 ft</div>
+                            <div class="stat-label">Car Distance</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="safety-margin">Low</div>
+                            <div class="stat-label">Safety Margin</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="visibility-controls">
+                    <button class="btn btn-secondary" data-action="headlight">🚗 Headlights On</button>
+                    <button class="btn btn-secondary" data-action="bright-gear">🎽 Bright Gear</button>
+                    <button class="btn btn-secondary" data-action="positioning">↔️ Lane Positioning</button>
+                    <button class="btn btn-secondary" data-action="horn">📢 Use Horn</button>
+                </div>
+
+                <div class="safety-decision">
+                    <div class="decision-title">❓ Critical Decision Point</div>
+                    <div class="decision-options">
+                        <div class="decision-option" data-decision="A">
+                            A. Ride in the center of the lane
+                        </div>
+                        <div class="decision-option" data-decision="B">
+                            B. Position yourself where you're most visible in mirrors
+                        </div>
+                        <div class="decision-option" data-decision="C">
+                            C. Ride close to the shoulder
+                        </div>
+                        <div class="decision-option" data-decision="D">
+                            D. Frequently change lane position
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="start-visibility">
+                        <span class="btn-icon">▶</span>
+                        Start Challenge
+                    </button>
+                    <button class="btn btn-secondary" id="next-visibility">
+                        <span class="btn-icon">→</span>
+                        Next Scenario
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulation 3: Hazard Detection -->
+        <div class="simulation-container" id="hazard-sim">
+            <div class="hazard-sim">
+                <div class="simulation-header">
+                    <div class="simulation-title">
+                        <span class="title-icon">⚠️</span>
+                        Hazard Detection Challenge
+                    </div>
+                    <div class="simulation-time">Time: <span id="hazard-time">0:00</span></div>
+                </div>
+
+                <div class="hazard-scene" id="hazard-scene">
+                    <!-- Hazard scene elements added by JavaScript -->
+                </div>
+
+                <div class="safety-stats">
+                    <div class="stats-title">⚠️ Hazard Detection Stats</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="hazards-found">0</div>
+                            <div class="stat-label">Hazards Found</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="scanning-rate">0/s</div>
+                            <div class="stat-label">Scanning Rate</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="reaction-speed">Slow</div>
+                            <div class="stat-label">Reaction Speed</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="safety-score">0%</div>
+                            <div class="stat-label">Safety Score</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="safety-decision">
+                    <div class="decision-title">❓ Critical Decision Point</div>
+                    <div class="decision-options">
+                        <div class="decision-option" data-decision="A">
+                            A. Swerve immediately to avoid hazard
+                        </div>
+                        <div class="decision-option" data-decision="B">
+                            B. Brake smoothly while maintaining control
+                        </div>
+                        <div class="decision-option" data-decision="C">
+                            C. Accelerate quickly to pass hazard
+                        </div>
+                        <div class="decision-option" data-decision="D">
+                            D. Stop suddenly using front brake only
+                        </div>
+                    </div>
+                </div>
+
+                <div class="safety-tips" id="hazard-tips">
+                    <div class="tips-title">💡 Hazard Detection Tips</div>
+                    <ul class="tips-list">
+                        <li>
+                            <span class="tip-icon">1</span>
+                            <span><strong>Scan Constantly:</strong> Look 12 seconds ahead, check mirrors every 5 seconds</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">2</span>
+                            <span><strong>Intersection Caution:</strong> 70% of motorcycle accidents occur at intersections</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">3</span>
+                            <span><strong>Road Surface:</strong> Watch for gravel, oil, potholes, and pavement changes</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">4</span>
+                            <span><strong>Escape Routes:</strong> Always identify potential escape paths</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="start-hazard">
+                        <span class="btn-icon">▶</span>
+                        Start Challenge
+                    </button>
+                    <button class="btn btn-secondary" id="show-results">
+                        <span class="btn-icon">📊</span>
+                        View Results
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Display -->
+        <div class="results-display" id="results-display">
+            <div class="results-header">
+                <h3>Motorcycle Safety Certification</h3>
+                <div class="results-score" id="final-score">0%</div>
+                <p style="color: #e5e7eb; font-size: 0.8rem;">Congratulations on completing the Motorcycle Safety Challenge!</p>
+            </div>
+            
+            <div class="results-stats">
+                <div class="result-stat">
+                    <div class="result-value" id="gear-score">0%</div>
+                    <div class="result-label">Gear Safety</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="visibility-score">0%</div>
+                    <div class="result-label">Visibility</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="hazard-score">0%</div>
+                    <div class="result-label">Hazard Detection</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="safety-level">Novice</div>
+                    <div class="result-label">Safety Level</div>
+                </div>
+            </div>
+
+            <div class="safety-certificate">
+                <div class="cert-title">🎯 Key Safety Principles Mastered</div>
+                <ul class="cert-list">
+                    <li>
+                        <span class="cert-dot"></span>
+                        <span><strong>ATGATT Principle:</strong> "All The Gear, All The Time" - Full protective gear reduces injury risk by 73%</span>
+                    </li>
+                    <li>
+                        <span class="cert-dot"></span>
+                        <span><strong>Visibility Enhancement:</strong> Proper positioning, lighting, and bright gear increase visibility by 300%</span>
+                    </li>
+                    <li>
+                        <span class="cert-dot"></span>
+                        <span><strong>Hazard Scanning:</strong> Systematic scanning patterns detect hazards 2.5x faster than casual observation</span>
+                    </li>
+                    <li>
+                        <span class="cert-dot"></span>
+                        <span><strong>Defensive Riding:</strong> Maintaining escape routes and safe following distances prevents 60% of accidents</span>
+                    </li>
+                    <li>
+                        <span class="cert-dot"></span>
+                        <span><strong>Emergency Maneuvers:</strong> Proper braking techniques reduce stopping distance by 40% compared to panic braking</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="action-buttons" style="margin-top: 20px;">
+                <button class="btn btn-primary" id="retake-challenge">
+                    <span class="btn-icon">🔄</span>
+                    Retake Challenge
+                </button>
+                <button class="btn btn-secondary" onclick="window.print()">
+                    <span class="btn-icon">🖨️</span>
+                    Print Certificate
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // State Management
+            const state = {
+                currentSim: 'gear',
+                scores: {
+                    gear: 0,
+                    visibility: 0,
+                    hazard: 0
+                },
+                completed: {
+                    gear: false,
+                    visibility: false,
+                    hazard: false
+                },
+                timers: {
+                    gear: null,
+                    visibility: null,
+                    hazard: null
+                },
+                times: {
+                    gear: 0,
+                    visibility: 0,
+                    hazard: 0
+                },
+                decisionsCorrect: {
+                    gear: 0,
+                    visibility: 0,
+                    hazard: 0
+                }
+            };
+
+            // DOM Elements
+            const simTabs = document.querySelectorAll('.sim-tab');
+            const simContainers = document.querySelectorAll('.simulation-container');
+            const resultsDisplay = document.getElementById('results-display');
+            
+            // Gear elements
+            const startGearBtn = document.getElementById('start-gear');
+            const nextGearBtn = document.getElementById('next-gear');
+            const gearTimeEl = document.getElementById('gear-time');
+            const riderVisualization = document.getElementById('rider-visualization');
+            const gearOptions = document.getElementById('gear-options');
+            
+            // Visibility elements
+            const startVisibilityBtn = document.getElementById('start-visibility');
+            const nextVisibilityBtn = document.getElementById('next-visibility');
+            const visibilityTimeEl = document.getElementById('visibility-time');
+            const visibilityScene = document.getElementById('visibility-scene');
+            
+            // Hazard elements
+            const startHazardBtn = document.getElementById('start-hazard');
+            const showResultsBtn = document.getElementById('show-results');
+            const hazardTimeEl = document.getElementById('hazard-time');
+            const hazardScene = document.getElementById('hazard-scene');
+            
+            // Results elements
+            const finalScoreEl = document.getElementById('final-score');
+            const gearScoreEl = document.getElementById('gear-score');
+            const visibilityScoreEl = document.getElementById('visibility-score');
+            const hazardScoreEl = document.getElementById('hazard-score');
+            const safetyLevelEl = document.getElementById('safety-level');
+            
+            // Status elements
+            const status1 = document.getElementById('status-1');
+            const status2 = document.getElementById('status-2');
+            const status3 = document.getElementById('status-3');
+
+            // Gear Data
+            const gearItems = [
+                {
+                    id: 'helmet',
+                    name: 'DOT-Approved Helmet',
+                    icon: '⛑️',
+                    position: { left: 80, top: 20, width: 40, height: 40 },
+                    protection: 35,
+                    description: 'Full-face helmet provides best protection',
+                    correct: true
+                },
+                {
+                    id: 'jacket',
+                    name: 'Leather Jacket',
+                    icon: '🧥',
+                    position: { left: 70, top: 60, width: 60, height: 80 },
+                    protection: 25,
+                    description: 'Abrasion-resistant with armor inserts',
+                    correct: true
+                },
+                {
+                    id: 'gloves',
+                    name: 'Riding Gloves',
+                    icon: '🧤',
+                    position: { left: 30, top: 100, width: 30, height: 30 },
+                    protection: 10,
+                    description: 'Reinforced palms and knuckles',
+                    correct: true
+                },
+                {
+                    id: 'pants',
+                    name: 'Riding Pants',
+                    icon: '👖',
+                    position: { left: 70, top: 140, width: 60, height: 80 },
+                    protection: 20,
+                    description: 'Armored pants for leg protection',
+                    correct: true
+                },
+                {
+                    id: 'boots',
+                    name: 'Over-the-Ankle Boots',
+                    icon: '👢',
+                    position: { left: 60, top: 220, width: 40, height: 30 },
+                    protection: 10,
+                    description: 'Sturdy boots with ankle support',
+                    correct: true
+                },
+                {
+                    id: 'sunglasses',
+                    name: 'Eye Protection',
+                    icon: '🕶️',
+                    position: { left: 85, top: 40, width: 30, height: 20 },
+                    protection: 5,
+                    description: 'Face shield or shatterproof glasses',
+                    correct: true
+                },
+                {
+                    id: 'tshirt',
+                    name: 'T-Shirt Only',
+                    icon: '👕',
+                    position: { left: 75, top: 65, width: 50, height: 70 },
+                    protection: 2,
+                    description: 'Minimal protection - high risk',
+                    correct: false
+                },
+                {
+                    id: 'sandals',
+                    name: 'Sandals',
+                    icon: '👡',
+                    position: { left: 65, top: 225, width: 30, height: 20 },
+                    protection: 1,
+                    description: 'No foot protection - dangerous',
+                    correct: false
+                },
+                {
+                    id: 'baseball',
+                    name: 'Baseball Cap',
+                    icon: '🧢',
+                    position: { left: 82, top: 22, width: 35, height: 20 },
+                    protection: 3,
+                    description: 'No impact protection - unsafe',
+                    correct: false
+                }
+            ];
+
+            // Simulation Navigation
+            simTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const sim = tab.dataset.sim;
+                    
+                    // Check if simulation is unlocked
+                    if (sim !== 'gear' && !state.completed.gear) return;
+                    if (sim === 'hazard' && !state.completed.visibility) return;
+                    
+                    // Update tabs
+                    simTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Update containers
+                    simContainers.forEach(container => {
+                        container.classList.remove('active');
+                        if (container.id === `${sim}-sim`) {
+                            container.classList.add('active');
+                        }
+                    });
+                    
+                    state.currentSim = sim;
+                });
+            });
+
+            // Update status indicators
+            function updateStatusIndicators() {
+                if (state.completed.gear) {
+                    status1.textContent = 'Completed';
+                    status2.textContent = 'Available';
+                }
+                if (state.completed.visibility) {
+                    status2.textContent = 'Completed';
+                    status3.textContent = 'Available';
+                }
+                if (state.completed.hazard) {
+                    status3.textContent = 'Completed';
+                }
+            }
+
+            // ------------------------------------------------------------------
+            // SIMULATION 1: GEAR SELECTION
+            // ------------------------------------------------------------------
+            function startGearSimulation() {
+                if (state.timers.gear) return;
+                
+                // Start timer
+                state.times.gear = 0;
+                state.timers.gear = setInterval(() => {
+                    state.times.gear++;
+                    const minutes = Math.floor(state.times.gear / 60);
+                    const seconds = state.times.gear % 60;
+                    gearTimeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+                
+                // Create gear visualization
+                createGearVisualization();
+                
+                // Enable start button
+                startGearBtn.disabled = true;
+                startGearBtn.innerHTML = '<span class="btn-icon">⏳</span> Challenge Running';
+                
+                // Show safety tips
+                document.getElementById('gear-tips').classList.add('show');
+            }
+
+            function createGearVisualization() {
+                riderVisualization.innerHTML = '';
+                gearOptions.innerHTML = '';
+                
+                // Create basic rider figure
+                const rider = document.createElement('div');
+                rider.style.position = 'absolute';
+                rider.style.width = '100px';
+                rider.style.height = '200px';
+                rider.style.backgroundColor = 'rgba(0,0,0,0.1)';
+                rider.style.borderRadius = '50px';
+                riderVisualization.appendChild(rider);
+                
+                // Create gear items on rider
+                gearItems.forEach(item => {
+                    const gearElement = document.createElement('div');
+                    gearElement.className = 'gear-item';
+                    gearElement.id = `gear-${item.id}`;
+                    gearElement.style.left = `${item.position.left}px`;
+                    gearElement.style.top = `${item.position.top}px`;
+                    gearElement.style.width = `${item.position.width}px`;
+                    gearElement.style.height = `${item.position.height}px`;
+                    gearElement.style.backgroundColor = item.correct ? 'rgba(59, 130, 246, 0.7)' : 'rgba(239, 68, 68, 0.7)';
+                    gearElement.textContent = item.icon;
+                    gearElement.dataset.gearId = item.id;
+                    gearElement.dataset.correct = item.correct;
+                    gearElement.dataset.protection = item.protection;
+                    
+                    gearElement.addEventListener('click', () => {
+                        if (!state.timers.gear) return;
+                        
+                        if (gearElement.classList.contains('selected')) {
+                            gearElement.classList.remove('selected');
+                            updateGearStats();
+                        } else {
+                            gearElement.classList.add('selected');
+                            updateGearStats();
+                        }
+                    });
+                    
+                    riderVisualization.appendChild(gearElement);
+                });
+                
+                // Create gear options list
+                gearItems.forEach(item => {
+                    const option = document.createElement('div');
+                    option.className = 'gear-option';
+                    option.dataset.gearId = item.id;
+                    option.dataset.correct = item.correct;
+                    
+                    option.innerHTML = `
+                        <span class="gear-icon">${item.icon}</span>
+                        <div>
+                            <strong>${item.name}</strong>
+                            <div style="font-size: 0.7rem; color: var(--color-muted);">${item.description}</div>
+                        </div>
+                    `;
+                    
+                    option.addEventListener('click', () => {
+                        if (!state.timers.gear) return;
+                        
+                        // Toggle selection
+                        if (option.classList.contains('selected')) {
+                            option.classList.remove('selected');
+                            const gearElement = document.getElementById(`gear-${item.id}`);
+                            gearElement.classList.remove('selected');
+                        } else {
+                            option.classList.add('selected');
+                            const gearElement = document.getElementById(`gear-${item.id}`);
+                            gearElement.classList.add('selected');
+                        }
+                        
+                        updateGearStats();
+                    });
+                    
+                    gearOptions.appendChild(option);
+                });
+                
+                // Initialize stats
+                updateGearStats();
+            }
+
+            function updateGearStats() {
+                const selectedItems = document.querySelectorAll('.gear-item.selected');
+                const correctItems = Array.from(selectedItems).filter(item => item.dataset.correct === 'true');
+                const incorrectItems = Array.from(selectedItems).filter(item => item.dataset.correct === 'false');
+                
+                let totalProtection = 0;
+                correctItems.forEach(item => {
+                    totalProtection += parseInt(item.dataset.protection);
+                });
+                
+                // Update stats
+                document.getElementById('gear-protection').textContent = `${totalProtection}%`;
+                document.getElementById('gear-selected').textContent = `${selectedItems.length}/6`;
+                
+                // Update safety rating
+                let safetyRating = 'Poor';
+                let crashSurvival = -100;
+                
+                if (totalProtection >= 95) {
+                    safetyRating = 'Excellent';
+                    crashSurvival = 73;
+                } else if (totalProtection >= 80) {
+                    safetyRating = 'Good';
+                    crashSurvival = 50;
+                } else if (totalProtection >= 60) {
+                    safetyRating = 'Fair';
+                    crashSurvival = 25;
+                } else if (totalProtection >= 40) {
+                    safetyRating = 'Poor';
+                    crashSurvival = 5;
+                }
+                
+                // Penalize for incorrect items
+                if (incorrectItems.length > 0) {
+                    safetyRating = 'Dangerous';
+                    crashSurvival = -50;
+                }
+                
+                document.getElementById('gear-safety').textContent = safetyRating;
+                document.getElementById('gear-impact').textContent = `${crashSurvival}%`;
+            }
+
+            // Decision options for gear
+            document.querySelectorAll('#gear-sim .decision-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    if (!state.timers.gear) return;
+                    
+                    const decision = this.dataset.decision;
+                    
+                    // Mark all options as inactive
+                    document.querySelectorAll('#gear-sim .decision-option').forEach(opt => {
+                        opt.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    // Check if correct (B is correct for gear scenario)
+                    if (decision === 'B') {
+                        this.classList.add('correct');
+                        state.decisionsCorrect.gear = 1;
+                    } else {
+                        this.classList.add('incorrect');
+                        state.decisionsCorrect.gear = 0;
+                    }
+                });
+            });
+
+            // Next gear button
+            nextGearBtn.addEventListener('click', () => {
+                if (!state.timers.gear) return;
+                
+                // Stop timer
+                clearInterval(state.timers.gear);
+                state.timers.gear = null;
+                
+                // Calculate score
+                const correctItems = document.querySelectorAll('.gear-item.selected[data-correct="true"]').length;
+                const incorrectItems = document.querySelectorAll('.gear-item.selected[data-correct="false"]').length;
+                
+                const gearSelectionScore = Math.min(100, (correctItems / 6) * 80);
+                const penalty = incorrectItems * 20;
+                const decisionScore = state.decisionsCorrect.gear * 15;
+                const timeScore = Math.max(0, 5 - (state.times.gear / 20));
+                
+                state.scores.gear = Math.round(Math.max(0, gearSelectionScore - penalty + decisionScore + timeScore));
+                
+                // Mark as completed
+                state.completed.gear = true;
+                updateStatusIndicators();
+                
+                // Switch to visibility simulation
+                document.querySelector('[data-sim="visibility"]').click();
+                
+                // Reset UI
+                startGearBtn.disabled = false;
+                startGearBtn.innerHTML = '<span class="btn-icon">▶</span> Restart Challenge';
+            });
+
+            // ------------------------------------------------------------------
+            // SIMULATION 2: VISIBILITY ENHANCEMENT
+            // ------------------------------------------------------------------
+            function startVisibilitySimulation() {
+                if (state.timers.visibility) return;
+                
+                // Start timer
+                state.times.visibility = 0;
+                state.timers.visibility = setInterval(() => {
+                    state.times.visibility++;
+                    const minutes = Math.floor(state.times.visibility / 60);
+                    const seconds = state.times.visibility % 60;
+                    visibilityTimeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+                
+                // Create visibility scene
+                createVisibilityScene();
+                
+                // Enable start button
+                startVisibilityBtn.disabled = true;
+                startVisibilityBtn.innerHTML = '<span class="btn-icon">⏳</span> Challenge Running';
+            }
+
+            function createVisibilityScene() {
+                visibilityScene.innerHTML = '';
+                
+                // Create road
+                const road = document.createElement('div');
+                road.className = 'road';
+                visibilityScene.appendChild(road);
+                
+                // Create lane markers
+                const markers = document.createElement('div');
+                markers.className = 'lane-markers';
+                visibilityScene.appendChild(markers);
+                
+                // Create motorcycle
+                const motorcycle = document.createElement('div');
+                motorcycle.className = 'motorcycle';
+                motorcycle.id = 'motorcycle';
+                motorcycle.textContent = '🏍️';
+                visibilityScene.appendChild(motorcycle);
+                
+                // Create cars
+                for (let i = 0; i < 3; i++) {
+                    const car = document.createElement('div');
+                    car.className = 'car';
+                    car.id = `car-${i}`;
+                    car.style.left = `${300 + i * 200}px`;
+                    car.style.backgroundColor = i === 0 ? '#ef4444' : '#6b7280';
+                    visibilityScene.appendChild(car);
+                }
+                
+                // Initialize stats
+                updateVisibilityStats(30, 2.5, 20, 'Low');
+                
+                // Start animation
+                animateVisibilityScene();
+            }
+
+            function animateVisibilityScene() {
+                const cars = document.querySelectorAll('.car');
+                const motorcycle = document.getElementById('motorcycle');
+                
+                // Move cars
+                cars.forEach(car => {
+                    let currentLeft = parseInt(car.style.left) || 300;
+                    currentLeft = (currentLeft - 2 + 800) % 800;
+                    car.style.left = `${currentLeft}px`;
+                    
+                    // Check distance to motorcycle
+                    if (currentLeft < 200 && currentLeft > 100) {
+                        car.style.backgroundColor = '#ef4444'; // Danger close
+                    } else {
+                        car.style.backgroundColor = '#6b7280';
+                    }
+                });
+                
+                // Continue animation
+                if (state.timers.visibility) {
+                    requestAnimationFrame(animateVisibilityScene);
+                }
+            }
+
+            function updateVisibilityStats(visibility, reaction, distance, margin) {
+                document.getElementById('visibility-level').textContent = `${visibility}%`;
+                document.getElementById('reaction-time').textContent = `${reaction}s`;
+                document.getElementById('car-distance').textContent = `${distance} ft`;
+                document.getElementById('safety-margin').textContent = margin;
+            }
+
+            // Visibility control buttons
+            document.querySelectorAll('#visibility-sim .btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!state.timers.visibility) return;
+                    
+                    const action = this.dataset.action;
+                    
+                    // Get current stats
+                    let visibility = parseInt(document.getElementById('visibility-level').textContent);
+                    let reaction = parseFloat(document.getElementById('reaction-time').textContent);
+                    let distance = parseInt(document.getElementById('car-distance').textContent);
+                    let margin = document.getElementById('safety-margin').textContent;
+                    
+                    // Apply effects based on action
+                    switch(action) {
+                        case 'headlight':
+                            visibility = Math.min(100, visibility + 40);
+                            reaction = Math.max(1.5, reaction - 0.3);
+                            distance = Math.min(50, distance + 10);
+                            margin = 'Medium';
+                            break;
+                        case 'bright-gear':
+                            visibility = Math.min(100, visibility + 30);
+                            reaction = Math.max(1.5, reaction - 0.2);
+                            distance = Math.min(50, distance + 5);
+                            margin = 'Medium';
+                            break;
+                        case 'positioning':
+                            visibility = Math.min(100, visibility + 20);
+                            reaction = Math.max(1.5, reaction - 0.1);
+                            distance = Math.min(50, distance + 15);
+                            margin = 'High';
+                            break;
+                        case 'horn':
+                            // Horn doesn't increase visibility but alerts others
+                            distance = Math.min(50, distance + 20);
+                            margin = 'High';
+                            break;
+                    }
+                    
+                    updateVisibilityStats(visibility, reaction, distance, margin);
+                });
+            });
+
+            // Decision options for visibility
+            document.querySelectorAll('#visibility-sim .decision-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    if (!state.timers.visibility) return;
+                    
+                    const decision = this.dataset.decision;
+                    
+                    // Mark all options as inactive
+                    document.querySelectorAll('#visibility-sim .decision-option').forEach(opt => {
+                        opt.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    // Check if correct (B is correct for visibility scenario)
+                    if (decision === 'B') {
+                        this.classList.add('correct');
+                        state.decisionsCorrect.visibility = 1;
+                    } else {
+                        this.classList.add('incorrect');
+                        state.decisionsCorrect.visibility = 0;
+                    }
+                });
+            });
+
+            // Next visibility button
+            nextVisibilityBtn.addEventListener('click', () => {
+                if (!state.timers.visibility) return;
+                
+                // Stop timer
+                clearInterval(state.timers.visibility);
+                state.timers.visibility = null;
+                
+                // Calculate score
+                const visibility = parseInt(document.getElementById('visibility-level').textContent);
+                const distance = parseInt(document.getElementById('car-distance').textContent);
+                const margin = document.getElementById('safety-margin').textContent;
+                
+                let visibilityScore = visibility * 0.6;
+                let distanceScore = (distance / 50) * 30;
+                let marginScore = margin === 'High' ? 10 : margin === 'Medium' ? 5 : 0;
+                const decisionScore = state.decisionsCorrect.visibility * 10;
+                
+                state.scores.visibility = Math.round(visibilityScore + distanceScore + marginScore + decisionScore);
+                
+                // Mark as completed
+                state.completed.visibility = true;
+                updateStatusIndicators();
+                
+                // Switch to hazard simulation
+                document.querySelector('[data-sim="hazard"]').click();
+                
+                // Reset UI
+                startVisibilityBtn.disabled = false;
+                startVisibilityBtn.innerHTML = '<span class="btn-icon">▶</span> Restart Challenge';
+            });
+
+            // ------------------------------------------------------------------
+            // SIMULATION 3: HAZARD DETECTION
+            // ------------------------------------------------------------------
+            function startHazardSimulation() {
+                if (state.timers.hazard) return;
+                
+                // Start timer
+                state.times.hazard = 0;
+                state.timers.hazard = setInterval(() => {
+                    state.times.hazard++;
+                    const minutes = Math.floor(state.times.hazard / 60);
+                    const seconds = state.times.hazard % 60;
+                    hazardTimeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+                
+                // Create hazard scene
+                createHazardScene();
+                
+                // Enable start button
+                startHazardBtn.disabled = true;
+                startHazardBtn.innerHTML = '<span class="btn-icon">⏳</span> Challenge Running';
+                
+                // Show safety tips
+                document.getElementById('hazard-tips').classList.add('show');
+            }
+
+            function createHazardScene() {
+                hazardScene.innerHTML = '';
+                
+                // Create hazards
+                const hazards = [
+                    { id: 'pothole', name: 'Pothole', left: 100, top: 150, icon: '🕳️', delay: 0 },
+                    { id: 'gravel', name: 'Gravel Patch', left: 300, top: 100, icon: '🪨', delay: 1 },
+                    { id: 'oil', name: 'Oil Slick', left: 500, top: 180, icon: '🛢️', delay: 2 },
+                    { id: 'car-door', name: 'Opening Car Door', left: 200, top: 50, icon: '🚗', delay: 3 },
+                    { id: 'pedestrian', name: 'Pedestrian', left: 400, top: 70, icon: '🚶', delay: 4 },
+                    { id: 'intersection', name: 'Intersection', left: 600, top: 120, icon: '🚦', delay: 5 }
+                ];
+                
+                let hazardsDetected = 0;
+                
+                hazards.forEach(hazard => {
+                    const hazardElement = document.createElement('div');
+                    hazardElement.className = 'hazard';
+                    hazardElement.id = `hazard-${hazard.id}`;
+                    hazardElement.style.left = `${hazard.left}px`;
+                    hazardElement.style.top = `${hazard.top}px`;
+                    hazardElement.textContent = `${hazard.icon} ${hazard.name}`;
+                    
+                    // Show hazard after delay
+                    setTimeout(() => {
+                        hazardElement.style.display = 'flex';
+                    }, hazard.delay * 1000);
+                    
+                    // Hide after 3 seconds if not detected
+                    setTimeout(() => {
+                        if (!hazardElement.classList.contains('detected')) {
+                            hazardElement.classList.add('missed');
+                            hazardElement.style.opacity = '0.5';
+                            updateHazardStats();
+                        }
+                    }, (hazard.delay + 3) * 1000);
+                    
+                    // Click to detect
+                    hazardElement.addEventListener('click', () => {
+                        if (!state.timers.hazard || hazardElement.classList.contains('missed')) return;
+                        
+                        hazardElement.classList.add('detected');
+                        hazardsDetected++;
+                        updateHazardStats();
+                    });
+                    
+                    hazardScene.appendChild(hazardElement);
+                });
+                
+                // Create detection counter
+                const counter = document.createElement('div');
+                counter.className = 'hazard-detected';
+                counter.id = 'hazard-counter';
+                counter.textContent = 'Hazards Found: 0/6';
+                hazardScene.appendChild(counter);
+                
+                // Initialize stats
+                updateHazardStats();
+            }
+
+            function updateHazardStats() {
+                const detected = document.querySelectorAll('.hazard.detected').length;
+                const missed = document.querySelectorAll('.hazard.missed').length;
+                const total = detected + missed;
+                
+                const scanningRate = total > 0 ? (detected / state.times.hazard).toFixed(1) : '0';
+                const reactionSpeed = detected >= 4 ? 'Fast' : detected >= 2 ? 'Medium' : 'Slow';
+                const safetyScore = Math.round((detected / 6) * 100);
+                
+                document.getElementById('hazards-found').textContent = detected;
+                document.getElementById('scanning-rate').textContent = `${scanningRate}/s`;
+                document.getElementById('reaction-speed').textContent = reactionSpeed;
+                document.getElementById('safety-score').textContent = `${safetyScore}%`;
+                
+                document.getElementById('hazard-counter').textContent = `Hazards Found: ${detected}/6`;
+            }
+
+            // Decision options for hazard
+            document.querySelectorAll('#hazard-sim .decision-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    if (!state.timers.hazard) return;
+                    
+                    const decision = this.dataset.decision;
+                    
+                    // Mark all options as inactive
+                    document.querySelectorAll('#hazard-sim .decision-option').forEach(opt => {
+                        opt.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    // Check if correct (B is correct for hazard scenario)
+                    if (decision === 'B') {
+                        this.classList.add('correct');
+                        state.decisionsCorrect.hazard = 1;
+                    } else {
+                        this.classList.add('incorrect');
+                        state.decisionsCorrect.hazard = 0;
+                    }
+                });
+            });
+
+            // Show results button
+            showResultsBtn.addEventListener('click', () => {
+                if (!state.timers.hazard) return;
+                
+                // Stop timer
+                clearInterval(state.timers.hazard);
+                state.timers.hazard = null;
+                
+                // Calculate score
+                const detected = document.querySelectorAll('.hazard.detected').length;
+                const detectionScore = (detected / 6) * 70;
+                const decisionScore = state.decisionsCorrect.hazard * 20;
+                const timeScore = Math.max(0, 10 - (state.times.hazard / 10));
+                
+                state.scores.hazard = Math.round(detectionScore + decisionScore + timeScore);
+                
+                // Mark as completed
+                state.completed.hazard = true;
+                updateStatusIndicators();
+                
+                // Show results
+                showFinalResults();
+            });
+
+            // ------------------------------------------------------------------
+            // FINAL RESULTS
+            // ------------------------------------------------------------------
+            function showFinalResults() {
+                // Calculate final score
+                const scores = Object.values(state.scores);
+                const averageScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+                
+                // Determine safety level
+                let safetyLevel;
+                if (averageScore >= 85) safetyLevel = "Expert";
+                else if (averageScore >= 70) safetyLevel = "Advanced";
+                else if (averageScore >= 50) safetyLevel = "Competent";
+                else safetyLevel = "Needs Practice";
+                
+                // Update results display
+                finalScoreEl.textContent = `${averageScore}%`;
+                gearScoreEl.textContent = `${state.scores.gear}%`;
+                visibilityScoreEl.textContent = `${state.scores.visibility}%`;
+                hazardScoreEl.textContent = `${state.scores.hazard}%`;
+                safetyLevelEl.textContent = safetyLevel;
+                
+                // Show results
+                resultsDisplay.classList.add('show');
+                resultsDisplay.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Retake challenge
+            document.getElementById('retake-challenge').addEventListener('click', () => {
+                // Reset state
+                state.scores = { gear: 0, visibility: 0, hazard: 0 };
+                state.completed = { gear: false, visibility: false, hazard: false };
+                state.times = { gear: 0, visibility: 0, hazard: 0 };
+                state.decisionsCorrect = { gear: 0, visibility: 0, hazard: 0 };
+                
+                // Reset timers
+                Object.values(state.timers).forEach(timer => {
+                    if (timer) clearInterval(timer);
+                });
+                state.timers = { gear: null, visibility: null, hazard: null };
+                
+                // Reset UI
+                startGearBtn.disabled = false;
+                startGearBtn.innerHTML = '<span class="btn-icon">▶</span> Start Challenge';
+                startVisibilityBtn.disabled = false;
+                startVisibilityBtn.innerHTML = '<span class="btn-icon">▶</span> Start Challenge';
+                startHazardBtn.disabled = false;
+                startHazardBtn.innerHTML = '<span class="btn-icon">▶</span> Start Challenge';
+                
+                gearTimeEl.textContent = '0:00';
+                visibilityTimeEl.textContent = '0:00';
+                hazardTimeEl.textContent = '0:00';
+                
+                status1.textContent = 'Not Started';
+                status2.textContent = 'Locked';
+                status3.textContent = 'Locked';
+                
+                // Hide results
+                resultsDisplay.classList.remove('show');
+                
+                // Reset to first simulation
+                document.querySelector('[data-sim="gear"]').click();
+            });
+
+            // Event Listeners
+            startGearBtn.addEventListener('click', startGearSimulation);
+            startVisibilityBtn.addEventListener('click', startVisibilitySimulation);
+            startHazardBtn.addEventListener('click', startHazardSimulation);
+            
+            // Initialize first simulation
+            createGearVisualization();
+        });
+    </script>
+</body>
+</html>
