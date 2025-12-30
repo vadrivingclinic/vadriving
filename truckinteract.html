@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Truck Safety Simulation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-soft: #8a5feb;
+            --color-secondary: #000000;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-info: #3b82f6;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-light: #f9fafb;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 15px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes highlight {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(95, 23, 235, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(95, 23, 235, 0); }
+        }
+
+        /* Main Container */
+        .page {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 20px;
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        /* Header */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .course-name {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .week-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.1);
+            font-size: 0.7rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .week-label-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        .badge-mode {
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.08);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-primary);
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            line-height: 1.1;
+            color: var(--color-text);
+            margin-bottom: 8px;
+        }
+
+        .module-subtitle {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Time Banner */
+        .time-banner {
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .time-icon {
+            font-size: 1rem;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .time-content h3 {
+            color: var(--color-primary);
+            font-size: 0.8rem;
+            margin-bottom: 3px;
+            font-weight: 700;
+        }
+
+        .time-content p {
+            color: var(--color-text);
+            font-size: 0.75rem;
+            margin: 0;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 0.9em;
+        }
+
+        /* Simulation Tabs */
+        .simulation-tabs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .sim-tab {
+            padding: 12px;
+            background: rgba(95, 23, 235, 0.05);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            color: var(--color-primary);
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sim-tab:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .sim-tab.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+            animation: pulse 2s infinite;
+        }
+
+        .tab-icon {
+            font-size: 1.2rem;
+        }
+
+        .tab-status {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Simulation Container */
+        .simulation-container {
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .simulation-container.active {
+            display: block;
+        }
+
+        /* Truck Inspection Simulation */
+        .inspection-sim {
+            background: var(--color-light);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .inspection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .simulation-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .title-icon {
+            font-size: 1.4rem;
+        }
+
+        .simulation-time {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-muted);
+            background: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        /* Truck Visualization */
+        .truck-visualization {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+            border-radius: var(--radius-sm);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 3px solid #9ca3af;
+        }
+
+        .truck-body {
+            position: absolute;
+            width: 300px;
+            height: 80px;
+            background: #3b82f6;
+            border-radius: 10px 4px 4px 10px;
+            left: 50px;
+            top: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .truck-trailer {
+            position: absolute;
+            width: 400px;
+            height: 100px;
+            background: #1d4ed8;
+            border-radius: 4px;
+            left: 350px;
+            top: 50px;
+        }
+
+        .truck-wheel {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: #1f2937;
+            border-radius: 50%;
+            border: 5px solid #374151;
+        }
+
+        .inspection-point {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: rgba(239, 68, 68, 0.8);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            z-index: 10;
+            animation: pulse 1s infinite;
+        }
+
+        .inspection-point.checked {
+            background: rgba(16, 185, 129, 0.8);
+            animation: none;
+        }
+
+        .inspection-point:hover {
+            transform: scale(1.2);
+        }
+
+        .point-label {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 20;
+            display: none;
+        }
+
+        .inspection-point:hover .point-label {
+            display: block;
+        }
+
+        /* Inspection Checklist */
+        .inspection-checklist {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .checklist-title {
+            color: var(--color-primary);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checklist-items {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .checklist-item {
+            padding: 10px;
+            background: white;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item.checked {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--color-success);
+        }
+
+        .checklist-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(95, 23, 235, 0.3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .checklist-item.checked .checklist-checkbox {
+            background: var(--color-success);
+            border-color: var(--color-success);
+            color: white;
+        }
+
+        .checklist-text {
+            font-size: 0.8rem;
+            color: var(--color-text);
+            flex: 1;
+        }
+
+        /* Blind Spot Simulation */
+        .blindspot-sim {
+            background: var(--color-light);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .blindspot-visualization {
+            width: 100%;
+            height: 250px;
+            background: #1a1a1a;
+            border-radius: var(--radius-sm);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 3px solid #333;
+        }
+
+        .mirror-view {
+            position: absolute;
+            width: 100px;
+            height: 60px;
+            background: #2d3748;
+            border: 2px solid #4a5568;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .left-mirror {
+            left: 20px;
+            top: 80px;
+        }
+
+        .right-mirror {
+            right: 20px;
+            top: 80px;
+        }
+
+        .blindspot-zone {
+            position: absolute;
+            background: rgba(239, 68, 68, 0.3);
+            border: 2px dashed #ef4444;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .car {
+            position: absolute;
+            width: 40px;
+            height: 25px;
+            background: var(--color-warning);
+            border-radius: 4px;
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+
+        .car.visible {
+            background: var(--color-success);
+        }
+
+        .car-label {
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.7rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Following Distance Simulation */
+        .distance-sim {
+            background: var(--color-light);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .distance-visualization {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+            border-radius: var(--radius-sm);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 3px solid #444;
+        }
+
+        .road-markers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 49px,
+                #ffffff 49px,
+                #ffffff 50px
+            );
+        }
+
+        .distance-truck {
+            position: absolute;
+            width: 120px;
+            height: 40px;
+            background: #3b82f6;
+            border-radius: 8px;
+            left: 100px;
+            top: 55px;
+            transition: all 0.5s ease;
+        }
+
+        .following-car {
+            position: absolute;
+            width: 50px;
+            height: 25px;
+            background: var(--color-warning);
+            border-radius: 4px;
+            left: 250px;
+            top: 62px;
+            transition: all 0.5s ease;
+        }
+
+        .distance-indicator {
+            position: absolute;
+            height: 2px;
+            background: var(--color-primary);
+            top: 80px;
+            opacity: 0.7;
+        }
+
+        .distance-text {
+            position: absolute;
+            top: 60px;
+            color: var(--color-primary);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .control-btn {
+            padding: 10px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.75rem;
+            text-align: center;
+            color: var(--color-primary);
+        }
+
+        .control-btn:hover {
+            background: rgba(95, 23, 235, 0.1);
+            border-color: var(--color-primary);
+        }
+
+        .control-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        /* Safety Decision */
+        .safety-decision {
+            background: rgba(95, 23, 235, 0.03);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px dashed rgba(95, 23, 235, 0.2);
+        }
+
+        .decision-title {
+            color: var(--color-primary);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .decision-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .decision-option {
+            padding: 12px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            color: var(--color-text);
+        }
+
+        .decision-option:hover {
+            border-color: var(--color-primary);
+            transform: translateX(5px);
+        }
+
+        .decision-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+        }
+
+        .decision-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--color-error);
+            animation: shake 0.5s ease;
+        }
+
+        /* Safety Tips */
+        .safety-tips {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid var(--color-success);
+            display: none;
+        }
+
+        .safety-tips.show {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .tips-title {
+            color: var(--color-success);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tips-list li {
+            font-size: 0.8rem;
+            color: var(--color-text);
+            line-height: 1.5;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .tip-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--color-success);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Results Display */
+        .results-display {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid var(--color-primary);
+        }
+
+        .results-display.show {
+            display: block;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .results-header h3 {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .results-score {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            text-shadow: 0 0 15px rgba(95, 23, 235, 0.7);
+            animation: pulse 2s infinite;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .result-stat {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            color: #e5e7eb;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .truck-safety-cert {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .cert-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cert-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .cert-list li {
+            font-size: 0.8rem;
+            color: #e5e7eb;
+            line-height: 1.5;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .cert-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background: #4c0fcf;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-icon {
+            font-size: 1em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <!-- Header -->
+        <header class="brand-row">
+            <div class="brand">
+                <img
+                    src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png"
+                    alt="VA Driving Clinic logo"
+                    class="brand-logo"
+                />
+                <div class="course-meta">
+                    <span class="course-name">VA Driving Clinic • Quick Simulation</span>
+                    <div class="week-label">
+                        <span class="week-label-dot"></span>
+                        <span>Truck Safety</span>
+                    </div>
+                </div>
+            </div>
+            <span class="badge-mode">5-Min Challenge</span>
+        </header>
+
+        <h1>Truck Safety Simulation Challenge</h1>
+        <p class="module-subtitle">
+            Experience 3 critical truck safety scenarios in 5 minutes. Learn pre-trip inspection,
+            blind spot management, and following distance through interactive simulations.
+        </p>
+
+        <!-- Time Banner -->
+        <div class="time-banner">
+            <div class="time-icon">
+                ⏱️
+            </div>
+            <div class="time-content">
+                <h3>5-Minute Truck Safety Challenge</h3>
+                <p>Complete all 3 scenarios in <span class="time-highlight">5 minutes</span> to master essential truck safety skills.</p>
+            </div>
+        </div>
+
+        <!-- Simulation Tabs -->
+        <div class="simulation-tabs">
+            <button class="sim-tab active" data-sim="inspection">
+                <span class="tab-icon">🔧</span>
+                Pre-Trip Inspection
+                <span class="tab-status" id="status-1">Not Started</span>
+            </button>
+            <button class="sim-tab" data-sim="blindspot">
+                <span class="tab-icon">👁️</span>
+                Blind Spot Detection
+                <span class="tab-status" id="status-2">Locked</span>
+            </button>
+            <button class="sim-tab" data-sim="distance">
+                <span class="tab-icon">📏</span>
+                Following Distance
+                <span class="tab-status" id="status-3">Locked</span>
+            </button>
+        </div>
+
+        <!-- Simulation 1: Pre-Trip Inspection -->
+        <div class="simulation-container active" id="inspection-sim">
+            <div class="inspection-sim">
+                <div class="inspection-header">
+                    <div class="simulation-title">
+                        <span class="title-icon">🔧</span>
+                        Pre-Trip Inspection Challenge
+                    </div>
+                    <div class="simulation-time">Time: <span id="inspection-time">0:00</span></div>
+                </div>
+
+                <div class="truck-visualization" id="truck-visualization">
+                    <!-- Truck and inspection points added by JavaScript -->
+                </div>
+
+                <div class="inspection-checklist">
+                    <div class="checklist-title">✅ Inspection Checklist</div>
+                    <ul class="checklist-items" id="checklist-items">
+                        <li class="checklist-item" data-check="tires">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Check tire pressure and tread depth</div>
+                        </li>
+                        <li class="checklist-item" data-check="brakes">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Test brake system and air pressure</div>
+                        </li>
+                        <li class="checklist-item" data-check="lights">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Verify all lights and signals work</div>
+                        </li>
+                        <li class="checklist-item" data-check="fluids">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Check engine oil and coolant levels</div>
+                        </li>
+                        <li class="checklist-item" data-check="cargo">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Ensure cargo is properly secured</div>
+                        </li>
+                        <li class="checklist-item" data-check="mirrors">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Clean and adjust all mirrors</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="safety-decision">
+                    <div class="decision-title">❓ Critical Decision Point</div>
+                    <div class="decision-options">
+                        <div class="decision-option" data-decision="A">
+                            A. Skip minor issues to stay on schedule
+                        </div>
+                        <div class="decision-option" data-decision="B">
+                            B. Fix all issues before departure
+                        </div>
+                        <div class="decision-option" data-decision="C">
+                            C. Note issues and drive carefully
+                        </div>
+                        <div class="decision-option" data-decision="D">
+                            D. Report issues to supervisor later
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="start-inspection">
+                        <span class="btn-icon">▶</span>
+                        Start Inspection
+                    </button>
+                    <button class="btn btn-secondary" id="next-inspection">
+                        <span class="btn-icon">→</span>
+                        Next Scenario
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulation 2: Blind Spot Detection -->
+        <div class="simulation-container" id="blindspot-sim">
+            <div class="blindspot-sim">
+                <div class="inspection-header">
+                    <div class="simulation-title">
+                        <span class="title-icon">👁️</span>
+                        Blind Spot Detection Challenge
+                    </div>
+                    <div class="simulation-time">Time: <span id="blindspot-time">0:00</span></div>
+                </div>
+
+                <div class="blindspot-visualization" id="blindspot-visualization">
+                    <!-- Blind spot visualization added by JavaScript -->
+                </div>
+
+                <div class="control-panel">
+                    <button class="control-btn" data-action="check-left">👈 Check Left</button>
+                    <button class="control-btn active" data-action="check-center">👀 Check Center</button>
+                    <button class="control-btn" data-action="check-right">👉 Check Right</button>
+                    <button class="control-btn" data-action="use-mirrors">🪞 Use Mirrors</button>
+                </div>
+
+                <div class="safety-decision">
+                    <div class="decision-title">❓ Critical Decision Point</div>
+                    <div class="decision-options">
+                        <div class="decision-option" data-decision="A">
+                            A. Signal and change lanes quickly
+                        </div>
+                        <div class="decision-option" data-decision="B">
+                            B. Check mirrors, signal, shoulder check, then change
+                        </div>
+                        <div class="decision-option" data-decision="C">
+                            C. Change lanes if no large vehicles nearby
+                        </div>
+                        <div class="decision-option" data-decision="D">
+                            D. Speed up and change lanes without signaling
+                        </div>
+                    </div>
+                </div>
+
+                <div class="safety-tips" id="blindspot-tips">
+                    <div class="tips-title">💡 Blind Spot Safety Tips</div>
+                    <ul class="tips-list">
+                        <li>
+                            <span class="tip-icon">1</span>
+                            <span>Trucks have 4 major blind spots: front, back, left, and right sides</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">2</span>
+                            <span>Always perform a shoulder check before changing lanes</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">3</span>
+                            <span>Use convex mirrors for wider viewing angles</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">4</span>
+                            <span>Install blind spot monitoring systems if available</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="start-blindspot">
+                        <span class="btn-icon">▶</span>
+                        Start Challenge
+                    </button>
+                    <button class="btn btn-secondary" id="next-blindspot">
+                        <span class="btn-icon">→</span>
+                        Next Scenario
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulation 3: Following Distance -->
+        <div class="simulation-container" id="distance-sim">
+            <div class="distance-sim">
+                <div class="inspection-header">
+                    <div class="simulation-title">
+                        <span class="title-icon">📏</span>
+                        Following Distance Challenge
+                    </div>
+                    <div class="simulation-time">Time: <span id="distance-time">0:00</span></div>
+                </div>
+
+                <div class="distance-visualization" id="distance-visualization">
+                    <!-- Following distance visualization added by JavaScript -->
+                </div>
+
+                <div class="control-panel">
+                    <button class="control-btn" data-action="increase-distance">↔️ Increase Distance</button>
+                    <button class="control-btn active" data-action="maintain-distance">⏱️ Maintain Distance</button>
+                    <button class="control-btn" data-action="decrease-distance">↕️ Decrease Distance</button>
+                    <button class="control-btn" data-action="emergency-stop">🛑 Emergency Stop</button>
+                </div>
+
+                <div class="safety-decision">
+                    <div class="decision-title">❓ Critical Decision Point</div>
+                    <div class="decision-options">
+                        <div class="decision-option" data-decision="A">
+                            A. 1-second following distance
+                        </div>
+                        <div class="decision-option" data-decision="B">
+                            B. 4-second following distance
+                        </div>
+                        <div class="decision-option" data-decision="C">
+                            C. 2-second following distance
+                        </div>
+                        <div class="decision-option" data-decision="D">
+                            D. 6-second following distance
+                        </div>
+                    </div>
+                </div>
+
+                <div class="safety-tips" id="distance-tips">
+                    <div class="tips-title">💡 Following Distance Tips</div>
+                    <ul class="tips-list">
+                        <li>
+                            <span class="tip-icon">1</span>
+                            <span>Empty trucks need 40% more stopping distance than loaded trucks</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">2</span>
+                            <span>Increase following distance in bad weather (rain, snow, fog)</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">3</span>
+                            <span>Use the "3-second rule" for cars, 6+ seconds for trucks</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">4</span>
+                            <span>Adjust distance based on road conditions and visibility</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="start-distance">
+                        <span class="btn-icon">▶</span>
+                        Start Challenge
+                    </button>
+                    <button class="btn btn-secondary" id="show-results">
+                        <span class="btn-icon">📊</span>
+                        View Results
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Display -->
+        <div class="results-display" id="results-display">
+            <div class="results-header">
+                <h3>Truck Safety Mastery Certificate</h3>
+                <div class="results-score" id="final-score">0%</div>
+                <p style="color: #e5e7eb; font-size: 0.8rem;">Congratulations on completing the Truck Safety Challenge!</p>
+            </div>
+            
+            <div class="results-stats">
+                <div class="result-stat">
+                    <div class="result-value" id="inspection-score">0%</div>
+                    <div class="result-label">Inspection Score</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="blindspot-score">0%</div>
+                    <div class="result-label">Blind Spot Score</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="distance-score">0%</div>
+                    <div class="result-label">Distance Score</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="safety-level">Novice</div>
+                    <div class="result-label">Safety Level</div>
+                </div>
+            </div>
+
+            <div class="truck-safety-cert">
+                <div class="cert-title">🎯 Key Safety Principles Mastered</div>
+                <ul class="cert-list">
+                    <li>
+                        <span class="cert-dot"></span>
+                        <span><strong>Pre-Trip Inspection:</strong> Verified 6 critical components including tires, brakes, lights, fluids, cargo, and mirrors</span>
+                    </li>
+                    <li>
+                        <span class="cert-dot"></span>
+                        <span><strong>Blind Spot Management:</strong> Identified and checked all 4 major blind spots before lane changes</span>
+                    </li>
+                    <li>
+                        <span class="cert-dot"></span>
+                        <span><strong>Following Distance:</strong> Maintained proper 4-6 second distance based on road conditions</span>
+                    </li>
+                    <li>
+                        <span class="cert-dot"></span>
+                        <span><strong>Safety Technology:</strong> Proper use of mirrors, signals, and following distance calculations</span>
+                    </li>
+                    <li>
+                        <span class="cert-dot"></span>
+                        <span><strong>Emergency Preparedness:</strong> Correct response to sudden stops and hazardous situations</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="action-buttons" style="margin-top: 20px;">
+                <button class="btn btn-primary" id="retake-challenge">
+                    <span class="btn-icon">🔄</span>
+                    Retake Challenge
+                </button>
+                <button class="btn btn-secondary" onclick="window.print()">
+                    <span class="btn-icon">🖨️</span>
+                    Print Certificate
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // State Management
+            const state = {
+                currentSim: 'inspection',
+                scores: {
+                    inspection: 0,
+                    blindspot: 0,
+                    distance: 0
+                },
+                completed: {
+                    inspection: false,
+                    blindspot: false,
+                    distance: false
+                },
+                timers: {
+                    inspection: null,
+                    blindspot: null,
+                    distance: null
+                },
+                times: {
+                    inspection: 0,
+                    blindspot: 0,
+                    distance: 0
+                },
+                decisionsCorrect: {
+                    inspection: 0,
+                    blindspot: 0,
+                    distance: 0
+                }
+            };
+
+            // DOM Elements
+            const simTabs = document.querySelectorAll('.sim-tab');
+            const simContainers = document.querySelectorAll('.simulation-container');
+            const resultsDisplay = document.getElementById('results-display');
+            
+            // Inspection elements
+            const startInspectionBtn = document.getElementById('start-inspection');
+            const nextInspectionBtn = document.getElementById('next-inspection');
+            const inspectionTimeEl = document.getElementById('inspection-time');
+            const truckVisualization = document.getElementById('truck-visualization');
+            const checklistItems = document.querySelectorAll('.checklist-item');
+            
+            // Blind spot elements
+            const startBlindspotBtn = document.getElementById('start-blindspot');
+            const nextBlindspotBtn = document.getElementById('next-blindspot');
+            const blindspotTimeEl = document.getElementById('blindspot-time');
+            const blindspotVisualization = document.getElementById('blindspot-visualization');
+            
+            // Distance elements
+            const startDistanceBtn = document.getElementById('start-distance');
+            const showResultsBtn = document.getElementById('show-results');
+            const distanceTimeEl = document.getElementById('distance-time');
+            const distanceVisualization = document.getElementById('distance-visualization');
+            
+            // Results elements
+            const finalScoreEl = document.getElementById('final-score');
+            const inspectionScoreEl = document.getElementById('inspection-score');
+            const blindspotScoreEl = document.getElementById('blindspot-score');
+            const distanceScoreEl = document.getElementById('distance-score');
+            const safetyLevelEl = document.getElementById('safety-level');
+            
+            // Status elements
+            const status1 = document.getElementById('status-1');
+            const status2 = document.getElementById('status-2');
+            const status3 = document.getElementById('status-3');
+
+            // Control buttons
+            const controlBtns = document.querySelectorAll('.control-btn');
+            const decisionOptions = document.querySelectorAll('.decision-option');
+
+            // Simulation Navigation
+            simTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const sim = tab.dataset.sim;
+                    
+                    // Check if simulation is unlocked
+                    if (sim !== 'inspection' && !state.completed.inspection) return;
+                    if (sim === 'distance' && !state.completed.blindspot) return;
+                    
+                    // Update tabs
+                    simTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Update containers
+                    simContainers.forEach(container => {
+                        container.classList.remove('active');
+                        if (container.id === `${sim}-sim`) {
+                            container.classList.add('active');
+                        }
+                    });
+                    
+                    state.currentSim = sim;
+                });
+            });
+
+            // Update status indicators
+            function updateStatusIndicators() {
+                if (state.completed.inspection) {
+                    status1.textContent = 'Completed';
+                    status2.textContent = 'Available';
+                }
+                if (state.completed.blindspot) {
+                    status2.textContent = 'Completed';
+                    status3.textContent = 'Available';
+                }
+                if (state.completed.distance) {
+                    status3.textContent = 'Completed';
+                }
+            }
+
+            // ------------------------------------------------------------------
+            // SIMULATION 1: PRE-TRIP INSPECTION
+            // ------------------------------------------------------------------
+            function startInspectionSimulation() {
+                if (state.timers.inspection) return;
+                
+                // Start timer
+                state.times.inspection = 0;
+                state.timers.inspection = setInterval(() => {
+                    state.times.inspection++;
+                    const minutes = Math.floor(state.times.inspection / 60);
+                    const seconds = state.times.inspection % 60;
+                    inspectionTimeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+                
+                // Create truck visualization with inspection points
+                createTruckInspection();
+                
+                // Enable start button
+                startInspectionBtn.disabled = true;
+                startInspectionBtn.innerHTML = '<span class="btn-icon">⏳</span> Inspection Running';
+            }
+
+            function createTruckInspection() {
+                truckVisualization.innerHTML = '';
+                
+                // Create truck body
+                const truckBody = document.createElement('div');
+                truckBody.className = 'truck-body';
+                truckBody.textContent = 'TRAILER';
+                truckVisualization.appendChild(truckBody);
+                
+                // Create trailer
+                const trailer = document.createElement('div');
+                trailer.className = 'truck-trailer';
+                truckVisualization.appendChild(trailer);
+                
+                // Create wheels
+                const wheelPositions = [
+                    { left: 60, top: 110 },  // Front left
+                    { left: 240, top: 110 }, // Rear left
+                    { left: 360, top: 100 }, // Trailer left front
+                    { left: 680, top: 100 }, // Trailer left rear
+                    { left: 60, top: 30 },   // Front right
+                    { left: 240, top: 30 },  // Rear right
+                    { left: 360, top: 20 },  // Trailer right front
+                    { left: 680, top: 20 }   // Trailer right rear
+                ];
+                
+                wheelPositions.forEach((pos, index) => {
+                    const wheel = document.createElement('div');
+                    wheel.className = 'truck-wheel';
+                    wheel.style.left = `${pos.left}px`;
+                    wheel.style.top = `${pos.top}px`;
+                    truckVisualization.appendChild(wheel);
+                });
+                
+                // Create inspection points
+                const inspectionPoints = [
+                    { id: 'tires', left: 150, top: 70, label: 'Tires & Wheels' },
+                    { id: 'brakes', left: 200, top: 85, label: 'Brake System' },
+                    { id: 'lights', left: 50, top: 50, label: 'Front Lights' },
+                    { id: 'fluids', left: 80, top: 90, label: 'Engine Fluids' },
+                    { id: 'cargo', left: 500, top: 70, label: 'Cargo Secure' },
+                    { id: 'mirrors', left: 40, top: 65, label: 'Mirrors' }
+                ];
+                
+                inspectionPoints.forEach(point => {
+                    const inspectionPoint = document.createElement('div');
+                    inspectionPoint.className = 'inspection-point';
+                    inspectionPoint.id = `point-${point.id}`;
+                    inspectionPoint.style.left = `${point.left}px`;
+                    inspectionPoint.style.top = `${point.top}px`;
+                    inspectionPoint.textContent = '?';
+                    inspectionPoint.dataset.check = point.id;
+                    
+                    // Create label
+                    const label = document.createElement('div');
+                    label.className = 'point-label';
+                    label.textContent = point.label;
+                    label.style.top = '-30px';
+                    label.style.left = '-10px';
+                    inspectionPoint.appendChild(label);
+                    
+                    // Add click event
+                    inspectionPoint.addEventListener('click', () => {
+                        if (!state.timers.inspection) return;
+                        
+                        inspectionPoint.classList.add('checked');
+                        inspectionPoint.textContent = '✓';
+                        
+                        // Update checklist
+                        const checklistItem = document.querySelector(`.checklist-item[data-check="${point.id}"]`);
+                        if (checklistItem && !checklistItem.classList.contains('checked')) {
+                            checklistItem.classList.add('checked');
+                            checklistItem.querySelector('.checklist-checkbox').textContent = '✓';
+                        }
+                    });
+                    
+                    truckVisualization.appendChild(inspectionPoint);
+                });
+                
+                // Reset checklist
+                checklistItems.forEach(item => {
+                    item.classList.remove('checked');
+                    item.querySelector('.checklist-checkbox').textContent = '';
+                });
+            }
+
+            // Decision options for inspection
+            document.querySelectorAll('#inspection-sim .decision-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    if (!state.timers.inspection) return;
+                    
+                    const decision = this.dataset.decision;
+                    
+                    // Mark all options as inactive
+                    document.querySelectorAll('#inspection-sim .decision-option').forEach(opt => {
+                        opt.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    // Check if correct (B is correct for inspection scenario)
+                    if (decision === 'B') {
+                        this.classList.add('correct');
+                        state.decisionsCorrect.inspection = 1;
+                    } else {
+                        this.classList.add('incorrect');
+                        state.decisionsCorrect.inspection = 0;
+                    }
+                });
+            });
+
+            // Next inspection button
+            nextInspectionBtn.addEventListener('click', () => {
+                if (!state.timers.inspection) return;
+                
+                // Stop timer
+                clearInterval(state.timers.inspection);
+                state.timers.inspection = null;
+                
+                // Calculate score
+                const checkedItems = document.querySelectorAll('#inspection-sim .checklist-item.checked').length;
+                const inspectionScore = Math.round((checkedItems / 6) * 60);
+                const decisionScore = state.decisionsCorrect.inspection * 30;
+                const timeScore = Math.max(0, 10 - (state.times.inspection / 10));
+                state.scores.inspection = Math.round(inspectionScore + decisionScore + timeScore);
+                
+                // Mark as completed
+                state.completed.inspection = true;
+                updateStatusIndicators();
+                
+                // Switch to blind spot simulation
+                document.querySelector('[data-sim="blindspot"]').click();
+                
+                // Reset UI
+                startInspectionBtn.disabled = false;
+                startInspectionBtn.innerHTML = '<span class="btn-icon">▶</span> Restart Inspection';
+            });
+
+            // ------------------------------------------------------------------
+            // SIMULATION 2: BLIND SPOT DETECTION
+            // ------------------------------------------------------------------
+            function startBlindspotSimulation() {
+                if (state.timers.blindspot) return;
+                
+                // Start timer
+                state.times.blindspot = 0;
+                state.timers.blindspot = setInterval(() => {
+                    state.times.blindspot++;
+                    const minutes = Math.floor(state.times.blindspot / 60);
+                    const seconds = state.times.blindspot % 60;
+                    blindspotTimeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+                
+                // Create blind spot visualization
+                createBlindspotVisualization();
+                
+                // Enable start button
+                startBlindspotBtn.disabled = true;
+                startBlindspotBtn.innerHTML = '<span class="btn-icon">⏳</span> Challenge Running';
+                
+                // Show safety tips
+                document.getElementById('blindspot-tips').classList.add('show');
+            }
+
+            function createBlindspotVisualization() {
+                blindspotVisualization.innerHTML = '';
+                
+                // Create blind spot zones
+                const blindspotZones = [
+                    { left: 0, top: 80, width: 100, height: 90, label: 'Front Blind Spot' },
+                    { left: 700, top: 80, width: 100, height: 90, label: 'Rear Blind Spot' },
+                    { left: 0, top: 0, width: 150, height: 80, label: 'Left Side Blind Spot' },
+                    { left: 650, top: 0, width: 150, height: 80, label: 'Right Side Blind Spot' }
+                ];
+                
+                blindspotZones.forEach(zone => {
+                    const blindspotZone = document.createElement('div');
+                    blindspotZone.className = 'blindspot-zone';
+                    blindspotZone.style.left = `${zone.left}px`;
+                    blindspotZone.style.top = `${zone.top}px`;
+                    blindspotZone.style.width = `${zone.width}px`;
+                    blindspotZone.style.height = `${zone.height}px`;
+                    blindspotVisualization.appendChild(blindspotZone);
+                });
+                
+                // Create mirrors
+                const leftMirror = document.createElement('div');
+                leftMirror.className = 'mirror-view left-mirror';
+                blindspotVisualization.appendChild(leftMirror);
+                
+                const rightMirror = document.createElement('div');
+                rightMirror.className = 'mirror-view right-mirror';
+                blindspotVisualization.appendChild(rightMirror);
+                
+                // Create cars in blind spots
+                const cars = [
+                    { id: 'car1', left: 50, top: 40, label: 'Hidden Left', visible: false },
+                    { id: 'car2', left: 720, top: 40, label: 'Hidden Right', visible: false },
+                    { id: 'car3', left: 350, top: 100, label: 'Visible Front', visible: true },
+                    { id: 'car4', left: 150, top: 100, label: 'Mirror Only', visible: false }
+                ];
+                
+                cars.forEach(car => {
+                    const carElement = document.createElement('div');
+                    carElement.className = `car ${car.visible ? 'visible' : ''}`;
+                    carElement.id = car.id;
+                    carElement.style.left = `${car.left}px`;
+                    carElement.style.top = `${car.top}px`;
+                    carElement.dataset.visible = car.visible;
+                    
+                    const label = document.createElement('div');
+                    label.className = 'car-label';
+                    label.textContent = car.label;
+                    carElement.appendChild(label);
+                    
+                    // Add click event to detect hidden cars
+                    carElement.addEventListener('click', () => {
+                        if (!state.timers.blindspot || car.visible) return;
+                        
+                        carElement.classList.add('visible');
+                        carElement.dataset.visible = 'true';
+                    });
+                    
+                    blindspotVisualization.appendChild(carElement);
+                });
+            }
+
+            // Control buttons for blind spot
+            controlBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!state.timers.blindspot) return;
+                    
+                    const action = this.dataset.action;
+                    
+                    // Update active button
+                    controlBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Handle actions
+                    switch(action) {
+                        case 'check-left':
+                            // Simulate checking left blind spot
+                            const leftCar = document.getElementById('car1');
+                            if (leftCar && leftCar.dataset.visible === 'false') {
+                                leftCar.classList.add('visible');
+                                leftCar.dataset.visible = 'true';
+                            }
+                            break;
+                        case 'check-right':
+                            // Simulate checking right blind spot
+                            const rightCar = document.getElementById('car2');
+                            if (rightCar && rightCar.dataset.visible === 'false') {
+                                rightCar.classList.add('visible');
+                                rightCar.dataset.visible = 'true';
+                            }
+                            break;
+                        case 'use-mirrors':
+                            // Simulate using mirrors
+                            const mirrorCar = document.getElementById('car4');
+                            if (mirrorCar && mirrorCar.dataset.visible === 'false') {
+                                mirrorCar.classList.add('visible');
+                                mirrorCar.dataset.visible = 'true';
+                            }
+                            break;
+                    }
+                });
+            });
+
+            // Decision options for blind spot
+            document.querySelectorAll('#blindspot-sim .decision-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    if (!state.timers.blindspot) return;
+                    
+                    const decision = this.dataset.decision;
+                    
+                    // Mark all options as inactive
+                    document.querySelectorAll('#blindspot-sim .decision-option').forEach(opt => {
+                        opt.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    // Check if correct (B is correct for blind spot scenario)
+                    if (decision === 'B') {
+                        this.classList.add('correct');
+                        state.decisionsCorrect.blindspot = 1;
+                    } else {
+                        this.classList.add('incorrect');
+                        state.decisionsCorrect.blindspot = 0;
+                    }
+                });
+            });
+
+            // Next blind spot button
+            nextBlindspotBtn.addEventListener('click', () => {
+                if (!state.timers.blindspot) return;
+                
+                // Stop timer
+                clearInterval(state.timers.blindspot);
+                state.timers.blindspot = null;
+                
+                // Calculate score
+                const visibleCars = document.querySelectorAll('#blindspot-visualization .car.visible').length;
+                const detectionScore = Math.round((visibleCars / 4) * 60);
+                const decisionScore = state.decisionsCorrect.blindspot * 30;
+                const timeScore = Math.max(0, 10 - (state.times.blindspot / 10));
+                state.scores.blindspot = Math.round(detectionScore + decisionScore + timeScore);
+                
+                // Mark as completed
+                state.completed.blindspot = true;
+                updateStatusIndicators();
+                
+                // Switch to distance simulation
+                document.querySelector('[data-sim="distance"]').click();
+                
+                // Reset UI
+                startBlindspotBtn.disabled = false;
+                startBlindspotBtn.innerHTML = '<span class="btn-icon">▶</span> Restart Challenge';
+            });
+
+            // ------------------------------------------------------------------
+            // SIMULATION 3: FOLLOWING DISTANCE
+            // ------------------------------------------------------------------
+            function startDistanceSimulation() {
+                if (state.timers.distance) return;
+                
+                // Start timer
+                state.times.distance = 0;
+                state.timers.distance = setInterval(() => {
+                    state.times.distance++;
+                    const minutes = Math.floor(state.times.distance / 60);
+                    const seconds = state.times.distance % 60;
+                    distanceTimeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+                
+                // Create distance visualization
+                createDistanceVisualization();
+                
+                // Enable start button
+                startDistanceBtn.disabled = true;
+                startDistanceBtn.innerHTML = '<span class="btn-icon">⏳</span> Challenge Running';
+                
+                // Show safety tips
+                document.getElementById('distance-tips').classList.add('show');
+            }
+
+            function createDistanceVisualization() {
+                distanceVisualization.innerHTML = '';
+                
+                // Create road markers
+                const roadMarkers = document.createElement('div');
+                roadMarkers.className = 'road-markers';
+                distanceVisualization.appendChild(roadMarkers);
+                
+                // Create truck
+                const truck = document.createElement('div');
+                truck.className = 'distance-truck';
+                truck.id = 'distance-truck';
+                distanceVisualization.appendChild(truck);
+                
+                // Create following car
+                const followingCar = document.createElement('div');
+                followingCar.className = 'following-car';
+                followingCar.id = 'following-car';
+                distanceVisualization.appendChild(followingCar);
+                
+                // Create distance indicator
+                const distanceIndicator = document.createElement('div');
+                distanceIndicator.className = 'distance-indicator';
+                distanceIndicator.id = 'distance-indicator';
+                distanceIndicator.style.left = '220px';
+                distanceIndicator.style.width = '30px';
+                distanceVisualization.appendChild(distanceIndicator);
+                
+                // Create distance text
+                const distanceText = document.createElement('div');
+                distanceText.className = 'distance-text';
+                distanceText.id = 'distance-text';
+                distanceText.textContent = '1.5 sec';
+                distanceText.style.left = '230px';
+                distanceVisualization.appendChild(distanceText);
+                
+                // Animate movement
+                animateDistanceScene();
+            }
+
+            function animateDistanceScene() {
+                const truck = document.getElementById('distance-truck');
+                const car = document.getElementById('following-car');
+                const indicator = document.getElementById('distance-indicator');
+                const distanceText = document.getElementById('distance-text');
+                
+                if (truck && car && indicator && distanceText) {
+                    let truckX = parseInt(truck.style.left) || 100;
+                    let carX = parseInt(car.style.left) || 250;
+                    
+                    // Move truck forward
+                    truckX = (truckX + 1) % 800;
+                    truck.style.left = `${truckX}px`;
+                    
+                    // Update car position based on current distance
+                    const currentDistance = carX - truckX - 120; // Truck length = 120px
+                    carX = truckX + 120 + currentDistance;
+                    car.style.left = `${carX}px`;
+                    
+                    // Update indicator position
+                    indicator.style.left = `${truckX + 120}px`;
+                    indicator.style.width = `${currentDistance}px`;
+                    
+                    // Update distance text
+                    const seconds = Math.round(currentDistance / 50 * 10) / 10;
+                    distanceText.textContent = `${seconds.toFixed(1)} sec`;
+                    distanceText.style.left = `${truckX + 120 + currentDistance/2 - 15}px`;
+                    
+                    // Color code based on safety
+                    if (seconds >= 4) {
+                        indicator.style.background = '#10b981';
+                    } else if (seconds >= 2) {
+                        indicator.style.background = '#f59e0b';
+                    } else {
+                        indicator.style.background = '#ef4444';
+                    }
+                }
+                
+                // Continue animation
+                if (state.timers.distance) {
+                    requestAnimationFrame(animateDistanceScene);
+                }
+            }
+
+            // Control buttons for distance
+            document.querySelectorAll('#distance-sim .control-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!state.timers.distance) return;
+                    
+                    const action = this.dataset.action;
+                    
+                    // Update active button
+                    document.querySelectorAll('#distance-sim .control-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Get current car
+                    const car = document.getElementById('following-car');
+                    if (!car) return;
+                    
+                    let currentX = parseInt(car.style.left) || 250;
+                    
+                    // Handle actions
+                    switch(action) {
+                        case 'increase-distance':
+                            car.style.left = `${currentX + 20}px`;
+                            break;
+                        case 'decrease-distance':
+                            car.style.left = `${Math.max(currentX - 20, 220)}px`; // Don't hit truck
+                            break;
+                        case 'emergency-stop':
+                            // Simulate emergency braking
+                            const truck = document.getElementById('distance-truck');
+                            if (truck) {
+                                const truckX = parseInt(truck.style.left);
+                                const carX = parseInt(car.style.left);
+                                const distance = carX - truckX - 120;
+                                
+                                // Check if safe stopping distance
+                                if (distance < 100) { // Less than 2 seconds
+                                    document.getElementById('distance-text').textContent = 'CRASH RISK!';
+                                    document.getElementById('distance-indicator').style.background = '#ef4444';
+                                }
+                            }
+                            break;
+                    }
+                });
+            });
+
+            // Decision options for distance
+            document.querySelectorAll('#distance-sim .decision-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    if (!state.timers.distance) return;
+                    
+                    const decision = this.dataset.decision;
+                    
+                    // Mark all options as inactive
+                    document.querySelectorAll('#distance-sim .decision-option').forEach(opt => {
+                        opt.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    // Check if correct (D is correct for truck following distance)
+                    if (decision === 'D') {
+                        this.classList.add('correct');
+                        state.decisionsCorrect.distance = 1;
+                    } else {
+                        this.classList.add('incorrect');
+                        state.decisionsCorrect.distance = 0;
+                    }
+                });
+            });
+
+            // Show results button
+            showResultsBtn.addEventListener('click', () => {
+                if (!state.timers.distance) return;
+                
+                // Stop timer
+                clearInterval(state.timers.distance);
+                state.timers.distance = null;
+                
+                // Calculate score
+                const truck = document.getElementById('distance-truck');
+                const car = document.getElementById('following-car');
+                let distanceScore = 50;
+                
+                if (truck && car) {
+                    const truckX = parseInt(truck.style.left);
+                    const carX = parseInt(car.style.left);
+                    const distance = carX - truckX - 120;
+                    const seconds = distance / 50;
+                    
+                    if (seconds >= 6) distanceScore = 60;
+                    else if (seconds >= 4) distanceScore = 50;
+                    else if (seconds >= 2) distanceScore = 30;
+                    else distanceScore = 10;
+                }
+                
+                const decisionScore = state.decisionsCorrect.distance * 30;
+                const timeScore = Math.max(0, 10 - (state.times.distance / 10));
+                state.scores.distance = Math.round(distanceScore + decisionScore + timeScore);
+                
+                // Mark as completed
+                state.completed.distance = true;
+                updateStatusIndicators();
+                
+                // Show results
+                showFinalResults();
+            });
+
+            // ------------------------------------------------------------------
+            // FINAL RESULTS
+            // ------------------------------------------------------------------
+            function showFinalResults() {
+                // Calculate final score
+                const scores = Object.values(state.scores);
+                const averageScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+                
+                // Determine safety level
+                let safetyLevel;
+                if (averageScore >= 85) safetyLevel = "Expert";
+                else if (averageScore >= 70) safetyLevel = "Advanced";
+                else if (averageScore >= 50) safetyLevel = "Competent";
+                else safetyLevel = "Needs Practice";
+                
+                // Update results display
+                finalScoreEl.textContent = `${averageScore}%`;
+                inspectionScoreEl.textContent = `${state.scores.inspection}%`;
+                blindspotScoreEl.textContent = `${state.scores.blindspot}%`;
+                distanceScoreEl.textContent = `${state.scores.distance}%`;
+                safetyLevelEl.textContent = safetyLevel;
+                
+                // Show results
+                resultsDisplay.classList.add('show');
+                resultsDisplay.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Retake challenge
+            document.getElementById('retake-challenge').addEventListener('click', () => {
+                // Reset state
+                state.scores = { inspection: 0, blindspot: 0, distance: 0 };
+                state.completed = { inspection: false, blindspot: false, distance: false };
+                state.times = { inspection: 0, blindspot: 0, distance: 0 };
+                state.decisionsCorrect = { inspection: 0, blindspot: 0, distance: 0 };
+                
+                // Reset timers
+                Object.values(state.timers).forEach(timer => {
+                    if (timer) clearInterval(timer);
+                });
+                state.timers = { inspection: null, blindspot: null, distance: null };
+                
+                // Reset UI
+                startInspectionBtn.disabled = false;
+                startInspectionBtn.innerHTML = '<span class="btn-icon">▶</span> Start Inspection';
+                startBlindspotBtn.disabled = false;
+                startBlindspotBtn.innerHTML = '<span class="btn-icon">▶</span> Start Challenge';
+                startDistanceBtn.disabled = false;
+                startDistanceBtn.innerHTML = '<span class="btn-icon">▶</span> Start Challenge';
+                
+                inspectionTimeEl.textContent = '0:00';
+                blindspotTimeEl.textContent = '0:00';
+                distanceTimeEl.textContent = '0:00';
+                
+                status1.textContent = 'Not Started';
+                status2.textContent = 'Locked';
+                status3.textContent = 'Locked';
+                
+                // Hide results
+                resultsDisplay.classList.remove('show');
+                
+                // Reset to first simulation
+                document.querySelector('[data-sim="inspection"]').click();
+            });
+
+            // Event Listeners
+            startInspectionBtn.addEventListener('click', startInspectionSimulation);
+            startBlindspotBtn.addEventListener('click', startBlindspotSimulation);
+            startDistanceBtn.addEventListener('click', startDistanceSimulation);
+            
+            // Initialize first simulation
+            createTruckInspection();
+        });
+    </script>
+</body>
+</html>
