@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Child Restraint Safety Simulation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .simulation-container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .simulation-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .time-estimate {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        /* Simulation Area */
+        .simulation-area {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            margin-bottom: 30px;
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .simulation-scenario {
+            margin-bottom: 30px;
+        }
+
+        .scenario-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scenario-content {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            background: rgba(95, 23, 235, 0.05);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--color-primary);
+        }
+
+        /* Vehicle Scene */
+        .vehicle-scene {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 40px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: var(--radius-md);
+            border: 2px dashed rgba(95, 23, 235, 0.2);
+            position: relative;
+        }
+
+        .vehicle {
+            width: 300px;
+            height: 180px;
+            background: #4b5563;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #374151;
+        }
+
+        .vehicle-front {
+            position: absolute;
+            width: 100px;
+            height: 180px;
+            background: #374151;
+            right: 0;
+            border-radius: 0 20px 20px 0;
+        }
+
+        .vehicle-windows {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 100px;
+            height: 100px;
+            background: #1e40af;
+            border-radius: 10px;
+            opacity: 0.6;
+        }
+
+        .seats {
+            position: absolute;
+            bottom: 10px;
+            left: 20px;
+            right: 100px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .seat {
+            width: 60px;
+            height: 40px;
+            background: #6b7280;
+            border-radius: 5px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .seat:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .seat.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            animation: pulse 1s infinite;
+        }
+
+        .seat-label {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--color-primary);
+        }
+
+        .seat.back-left { left: 0; }
+        .seat.back-right { right: 0; }
+        .seat.front-right { position: absolute; right: 120px; bottom: 10px; }
+
+        /* Restraint Options */
+        .restraint-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .restraint-option {
+            background: rgba(95, 23, 235, 0.05);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .restraint-option:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 20px rgba(95, 23, 235, 0.1);
+        }
+
+        .restraint-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            animation: glow 2s infinite;
+        }
+
+        .restraint-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .restraint-name {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+
+        .restraint-desc {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+        }
+
+        /* Child Character */
+        .child-character {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            transition: all 0.5s ease;
+            z-index: 10;
+            cursor: move;
+        }
+
+        .child-character.placed {
+            animation: bounce 2s infinite;
+        }
+
+        /* Installation Check */
+        .installation-check {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--color-success);
+        }
+
+        .check-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .check-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .check-list li {
+            margin-bottom: 10px;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .check-list li:before {
+            content: "□";
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+            color: var(--color-muted);
+        }
+
+        .check-list li.checked:before {
+            content: "✓";
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        /* Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .action-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .action-btn:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.3);
+        }
+
+        .action-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+        }
+
+        /* Feedback */
+        .feedback-panel {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feedback-panel.show {
+            display: block;
+        }
+
+        .feedback-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback-content {
+            color: var(--color-text);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .improvement-tips {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 15px 20px;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin-top: 20px;
+        }
+
+        .tips-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 10px;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Progress */
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        /* Stats */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .simulation-area {
+                padding: 20px;
+            }
+
+            .simulation-title {
+                font-size: 1.6rem;
+            }
+
+            .vehicle {
+                width: 250px;
+                height: 150px;
+            }
+
+            .restraint-options {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Time in Simulation</div>
+        </div>
+    </div>
+
+    <div class="simulation-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" 
+                     alt="VA Driving Clinic Logo" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Child Safety Simulation</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">5-Minute Interactive Activity</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="simulation-title">Child Restraint Safety Simulation</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">🎮</div>
+            <div class="time-estimate-text">
+                Complete this interactive simulation in <span class="time-highlight">5 minutes</span> to master child restraint safety
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="decisions-made">0</span>
+                <span class="stat-label">Decisions Made</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="safety-score">0%</span>
+                <span class="stat-label">Safety Score</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Time in Simulation</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Simulation Progress</span>
+                <span>Scenario: <span id="current-scenario">1/3</span></span>
+            </div>
+        </div>
+
+        <!-- Simulation Area -->
+        <div class="simulation-area" id="simulation-area">
+            <!-- Scenario 1: 18-Month-Old -->
+            <div class="simulation-scenario" id="scenario-1" style="display: block;">
+                <div class="scenario-title">
+                    <span>👶</span> Scenario 1: 18-Month-Old Child
+                </div>
+                <div class="scenario-content">
+                    You're preparing to drive your 18-month-old child (weight: 24 lbs, height: 32 inches) to daycare. 
+                    <strong>Virginia law requires rear-facing until at least age 2.</strong> 
+                    Choose the appropriate seat and location according to Virginia Child Restraint Law.
+                </div>
+
+                <!-- Vehicle Scene -->
+                <div class="vehicle-scene">
+                    <div class="vehicle">
+                        <div class="vehicle-front"></div>
+                        <div class="vehicle-windows"></div>
+                        <div class="seats">
+                            <div class="seat back-left" data-seat="back-left">
+                                <div class="seat-label">Back Left</div>
+                            </div>
+                            <div class="seat back-right" data-seat="back-right">
+                                <div class="seat-label">Back Right</div>
+                            </div>
+                            <div class="seat front-right" data-seat="front-right">
+                                <div class="seat-label">Front Right</div>
+                            </div>
+                        </div>
+                        <div class="child-character" id="child-1" style="display: none;">👶</div>
+                    </div>
+                </div>
+
+                <!-- Restraint Options -->
+                <div class="restraint-options">
+                    <div class="restraint-option" data-restraint="rear-facing" data-scenario="1">
+                        <div class="restraint-icon">👶🚗</div>
+                        <div class="restraint-name">Rear-Facing Car Seat</div>
+                        <div class="restraint-desc">For infants and toddlers up to manufacturer limits</div>
+                    </div>
+                    <div class="restraint-option" data-restraint="forward-facing" data-scenario="1">
+                        <div class="restraint-icon">🧒🚗</div>
+                        <div class="restraint-name">Forward-Facing Seat</div>
+                        <div class="restraint-desc">For children who have outgrown rear-facing</div>
+                    </div>
+                    <div class="restraint-option" data-restraint="booster" data-scenario="1">
+                        <div class="restraint-icon">📏🚗</div>
+                        <div class="restraint-name">Booster Seat</div>
+                        <div class="restraint-desc">For older children to position seat belt correctly</div>
+                    </div>
+                    <div class="restraint-option" data-restraint="seatbelt" data-scenario="1">
+                        <div class="restraint-icon">🪢</div>
+                        <div class="restraint-name">Seat Belt Only</div>
+                        <div class="restraint-desc">For children who fit properly in adult seat belt</div>
+                    </div>
+                </div>
+
+                <!-- Installation Check -->
+                <div class="installation-check">
+                    <div class="check-title">✅ Installation Safety Checklist</div>
+                    <ul class="check-list">
+                        <li id="check1-1">Seat is tightly installed (less than 1 inch of movement)</li>
+                        <li id="check1-2">Harness straps are at or below shoulder level (rear-facing)</li>
+                        <li id="check1-3">Harness clip is at armpit level</li>
+                        <li id="check1-4">Seat is at correct recline angle</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Scenario 2: 4-Year-Old -->
+            <div class="simulation-scenario" id="scenario-2" style="display: none;">
+                <div class="scenario-title">
+                    <span>🧒</span> Scenario 2: 4-Year-Old Child
+                </div>
+                <div class="scenario-content">
+                    You're driving your 4-year-old child (weight: 38 lbs, height: 40 inches) to preschool. 
+                    The child has outgrown the rear-facing seat. <strong>Choose the appropriate restraint and ensure proper installation.</strong>
+                </div>
+
+                <!-- Vehicle Scene -->
+                <div class="vehicle-scene">
+                    <div class="vehicle">
+                        <div class="vehicle-front"></div>
+                        <div class="vehicle-windows"></div>
+                        <div class="seats">
+                            <div class="seat back-left" data-seat="back-left">
+                                <div class="seat-label">Back Left</div>
+                            </div>
+                            <div class="seat back-right" data-seat="back-right">
+                                <div class="seat-label">Back Right</div>
+                            </div>
+                            <div class="seat front-right" data-seat="front-right">
+                                <div class="seat-label">Front Right</div>
+                            </div>
+                        </div>
+                        <div class="child-character" id="child-2" style="display: none;">🧒</div>
+                    </div>
+                </div>
+
+                <!-- Restraint Options -->
+                <div class="restraint-options">
+                    <div class="restraint-option" data-restraint="rear-facing" data-scenario="2">
+                        <div class="restraint-icon">👶🚗</div>
+                        <div class="restraint-name">Rear-Facing Car Seat</div>
+                        <div class="restraint-desc">For infants and toddlers up to manufacturer limits</div>
+                    </div>
+                    <div class="restraint-option" data-restraint="forward-facing" data-scenario="2">
+                        <div class="restraint-icon">🧒🚗</div>
+                        <div class="restraint-name">Forward-Facing Seat</div>
+                        <div class="restraint-desc">For children who have outgrown rear-facing</div>
+                    </div>
+                    <div class="restraint-option" data-restraint="booster" data-scenario="2">
+                        <div class="restraint-icon">📏🚗</div>
+                        <div class="restraint-name">Booster Seat</div>
+                        <div class="restraint-desc">For older children to position seat belt correctly</div>
+                    </div>
+                    <div class="restraint-option" data-restraint="seatbelt" data-scenario="2">
+                        <div class="restraint-icon">🪢</div>
+                        <div class="restraint-name">Seat Belt Only</div>
+                        <div class="restraint-desc">For children who fit properly in adult seat belt</div>
+                    </div>
+                </div>
+
+                <!-- Installation Check -->
+                <div class="installation-check">
+                    <div class="check-title">✅ Installation Safety Checklist</div>
+                    <ul class="check-list">
+                        <li id="check2-1">Seat is tightly installed (less than 1 inch of movement)</li>
+                        <li id="check2-2">Harness straps are at or above shoulder level (forward-facing)</li>
+                        <li id="check2-3">Top tether is properly attached (forward-facing)</li>
+                        <li id="check2-4">Harness clip is at armpit level</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Scenario 3: 7-Year-Old -->
+            <div class="simulation-scenario" id="scenario-3" style="display: none;">
+                <div class="scenario-title">
+                    <span>👧</span> Scenario 3: 7-Year-Old Child
+                </div>
+                <div class="scenario-content">
+                    You're taking your 7-year-old child (weight: 48 lbs, height: 48 inches) to a friend's house. 
+                    <strong>Virginia law requires proper restraint until at least age 8.</strong> 
+                    Choose the appropriate restraint and ensure proper seat belt fit.
+                </div>
+
+                <!-- Vehicle Scene -->
+                <div class="vehicle-scene">
+                    <div class="vehicle">
+                        <div class="vehicle-front"></div>
+                        <div class="vehicle-windows"></div>
+                        <div class="seats">
+                            <div class="seat back-left" data-seat="back-left">
+                                <div class="seat-label">Back Left</div>
+                            </div>
+                            <div class="seat back-right" data-seat="back-right">
+                                <div class="seat-label">Back Right</div>
+                            </div>
+                            <div class="seat front-right" data-seat="front-right">
+                                <div class="seat-label">Front Right</div>
+                            </div>
+                        </div>
+                        <div class="child-character" id="child-3" style="display: none;">👧</div>
+                    </div>
+                </div>
+
+                <!-- Restraint Options -->
+                <div class="restraint-options">
+                    <div class="restraint-option" data-restraint="rear-facing" data-scenario="3">
+                        <div class="restraint-icon">👶🚗</div>
+                        <div class="restraint-name">Rear-Facing Car Seat</div>
+                        <div class="restraint-desc">For infants and toddlers up to manufacturer limits</div>
+                    </div>
+                    <div class="restraint-option" data-restraint="forward-facing" data-scenario="3">
+                        <div class="restraint-icon">🧒🚗</div>
+                        <div class="restraint-name">Forward-Facing Seat</div>
+                        <div class="restraint-desc">For children who have outgrown rear-facing</div>
+                    </div>
+                    <div class="restraint-option" data-restraint="booster" data-scenario="3">
+                        <div class="restraint-icon">📏🚗</div>
+                        <div class="restraint-name">Booster Seat</div>
+                        <div class="restraint-desc">For older children to position seat belt correctly</div>
+                    </div>
+                    <div class="restraint-option" data-restraint="seatbelt" data-scenario="3">
+                        <div class="restraint-icon">🪢</div>
+                        <div class="restraint-name">Seat Belt Only</div>
+                        <div class="restraint-desc">For children who fit properly in adult seat belt</div>
+                    </div>
+                </div>
+
+                <!-- Installation Check -->
+                <div class="installation-check">
+                    <div class="check-title">✅ Seat Belt Fit Checklist</div>
+                    <ul class="check-list">
+                        <li id="check3-1">Lap belt lies across upper thighs (not stomach)</li>
+                        <li id="check3-2">Shoulder belt crosses shoulder and chest (not neck)</li>
+                        <li id="check3-3">Child can sit all the way back against seat</li>
+                        <li id="check3-4">Knees bend naturally at seat edge</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn secondary" id="prev-btn" onclick="previousScenario()" disabled>← Previous</button>
+                <button class="action-btn" id="next-btn" onclick="nextScenario()">Next Scenario →</button>
+                <button class="action-btn" id="check-btn" onclick="checkInstallation()" style="display: none;">Check Installation ✓</button>
+            </div>
+
+            <!-- Feedback Panel -->
+            <div class="feedback-panel" id="feedback-panel">
+                <div class="feedback-title">
+                    <span>📊</span> Scenario Result
+                </div>
+                <div class="score-display" id="scenario-score">0/100</div>
+                <div class="feedback-content" id="scenario-feedback">
+                    Your choices are being evaluated...
+                </div>
+                <div class="improvement-tips" id="improvement-tips" style="display: none;">
+                    <div class="tips-title">💡 Safety Improvement Tips</div>
+                    <div id="tips-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> Simulation Completed!
+            </div>
+            <p>You've successfully completed all 3 child safety scenarios.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <div class="score-display" id="final-score">0%</div>
+            <p>Your decisions and safety checks demonstrate understanding of Virginia Child Restraint Law.</p>
+            <div style="margin-top: 20px; font-size: 0.9rem; opacity: 0.9;">
+                Remember: Proper child restraint reduces injury risk by up to 71%!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulation Configuration
+        let timerInterval;
+        let totalSeconds = 0;
+        let currentScenario = 1;
+        let totalScenarios = 3;
+        let decisionsMade = 0;
+        let safetyScore = 0;
+        let simulationCompleted = false;
+        
+        // Correct answers for each scenario
+        const correctAnswers = {
+            1: {
+                seat: 'back-right', // Back seat is safest, either side
+                restraint: 'rear-facing',
+                checks: [true, true, true, true]
+            },
+            2: {
+                seat: 'back-right',
+                restraint: 'forward-facing',
+                checks: [true, true, true, true]
+            },
+            3: {
+                seat: 'back-right',
+                restraint: 'booster', // Might still need booster at 7 years
+                checks: [true, true, true, true]
+            }
+        };
+
+        // User selections
+        let userSelections = {
+            1: { seat: null, restraint: null, checks: [false, false, false, false] },
+            2: { seat: null, restraint: null, checks: [false, false, false, false] },
+            3: { seat: null, restraint: null, checks: [false, false, false, false] }
+        };
+
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const progressFill = document.getElementById('progress-fill');
+        const currentScenarioEl = document.getElementById('current-scenario');
+        const decisionsMadeEl = document.getElementById('decisions-made');
+        const safetyScoreEl = document.getElementById('safety-score');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const checkBtn = document.getElementById('check-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+        const finalScoreEl = document.getElementById('final-score');
+
+        // Format time as MM:SS
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Start the timer
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            
+            // Update timer appearance
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 300) { // 5 minutes
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 600) { // 10 minutes
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update progress
+        function updateProgress() {
+            const progressPercentage = ((currentScenario - 1) / totalScenarios) * 100;
+            progressFill.style.width = `${progressPercentage}%`;
+            currentScenarioEl.textContent = `${currentScenario}/${totalScenarios}`;
+            
+            // Update stats
+            decisionsMadeEl.textContent = decisionsMade;
+            safetyScoreEl.textContent = `${Math.round(safetyScore)}%`;
+        }
+
+        // Show scenario
+        function showScenario(scenarioNum) {
+            // Hide all scenarios
+            for (let i = 1; i <= totalScenarios; i++) {
+                document.getElementById(`scenario-${i}`).style.display = 'none';
+            }
+            
+            // Show current scenario
+            document.getElementById(`scenario-${scenarioNum}`).style.display = 'block';
+            
+            // Update buttons
+            prevBtn.disabled = scenarioNum === 1;
+            
+            // Reset selections for this scenario
+            resetSelections();
+            
+            // Show/hide check button based on selections
+            const hasSelections = userSelections[scenarioNum].seat && userSelections[scenarioNum].restraint;
+            checkBtn.style.display = hasSelections ? 'block' : 'none';
+            
+            updateProgress();
+        }
+
+        // Reset selections
+        function resetSelections() {
+            // Clear all selections
+            document.querySelectorAll('.seat.selected').forEach(seat => seat.classList.remove('selected'));
+            document.querySelectorAll('.restraint-option.selected').forEach(option => option.classList.remove('selected'));
+            
+            // Hide child character
+            document.querySelectorAll('.child-character').forEach(child => {
+                child.style.display = 'none';
+                child.classList.remove('placed');
+            });
+            
+            // Reset checklist
+            document.querySelectorAll('.check-list li').forEach(item => {
+                item.classList.remove('checked');
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                if (checkbox) checkbox.checked = false;
+            });
+            
+            // Hide feedback
+            document.getElementById('feedback-panel').classList.remove('show');
+        }
+
+        // Next scenario
+        function nextScenario() {
+            if (currentScenario < totalScenarios) {
+                currentScenario++;
+                showScenario(currentScenario);
+                
+                // Update next button text for last scenario
+                if (currentScenario === totalScenarios) {
+                    nextBtn.textContent = 'Complete Simulation →';
+                }
+            } else {
+                completeSimulation();
+            }
+        }
+
+        // Previous scenario
+        function previousScenario() {
+            if (currentScenario > 1) {
+                currentScenario--;
+                showScenario(currentScenario);
+                nextBtn.textContent = 'Next Scenario →';
+            }
+        }
+
+        // Complete simulation
+        function completeSimulation() {
+            simulationCompleted = true;
+            
+            // Calculate final score
+            let totalPossible = 0;
+            let totalEarned = 0;
+            
+            for (let i = 1; i <= totalScenarios; i++) {
+                const correct = correctAnswers[i];
+                const user = userSelections[i];
+                
+                // Seat selection (20 points)
+                totalPossible += 20;
+                if (user.seat && (user.seat === 'back-left' || user.seat === 'back-right')) {
+                    totalEarned += 20;
+                }
+                
+                // Restraint selection (30 points)
+                totalPossible += 30;
+                if (user.restraint === correct.restraint) {
+                    totalEarned += 30;
+                }
+                
+                // Installation checks (50 points - 12.5 each)
+                totalPossible += 50;
+                const checkPoints = 12.5;
+                user.checks.forEach((checked, index) => {
+                    if (checked === correct.checks[index]) {
+                        totalEarned += checkPoints;
+                    }
+                });
+            }
+            
+            const finalPercentage = Math.round((totalEarned / totalPossible) * 100);
+            
+            // Update final score
+            finalScoreEl.textContent = `${finalPercentage}%`;
+            
+            // Show completion message
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            // Stop timer
+            clearInterval(timerInterval);
+            
+            // Update timer to show completed state
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+            
+            // Scroll to completion message
+            completionMessage.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Check installation
+        function checkInstallation() {
+            const scenario = currentScenario;
+            const user = userSelections[scenario];
+            const correct = correctAnswers[scenario];
+            
+            let score = 0;
+            let maxScore = 100;
+            let feedback = '';
+            
+            // Evaluate seat selection (20 points)
+            if (user.seat && (user.seat === 'back-left' || user.seat === 'back-right')) {
+                score += 20;
+                feedback += '✓ Correct seat selection: Back seat is safest for children<br>';
+            } else if (user.seat === 'front-right') {
+                feedback += '⚠️ Front seat is not recommended for children under 12<br>';
+            } else {
+                feedback += '✗ Please select a seat location<br>';
+            }
+            
+            // Evaluate restraint selection (30 points)
+            if (user.restraint === correct.restraint) {
+                score += 30;
+                feedback += `✓ Correct restraint: ${getRestraintName(correct.restraint)}<br>`;
+            } else {
+                feedback += `✗ Incorrect restraint. For this age, use: ${getRestraintName(correct.restraint)}<br>`;
+            }
+            
+            // Evaluate installation checks (50 points)
+            const checkPoints = 12.5;
+            let checkFeedback = '';
+            user.checks.forEach((checked, index) => {
+                if (checked === correct.checks[index]) {
+                    score += checkPoints;
+                    checkFeedback += `✓ ${getCheckDescription(scenario, index)}<br>`;
+                } else {
+                    checkFeedback += `✗ ${getCheckDescription(scenario, index)}<br>`;
+                }
+            });
+            
+            // Update safety score
+            safetyScore = (safetyScore * (currentScenario - 1) + score) / currentScenario;
+            
+            // Show feedback
+            document.getElementById('scenario-score').textContent = `${Math.round(score)}/100`;
+            document.getElementById('scenario-feedback').innerHTML = feedback + checkFeedback;
+            
+            // Show improvement tips if score < 70
+            if (score < 70) {
+                document.getElementById('improvement-tips').style.display = 'block';
+                let tips = '';
+                
+                if (user.seat !== 'back-left' && user.seat !== 'back-right') {
+                    tips += '• Always place children in back seats when possible<br>';
+                }
+                if (user.restraint !== correct.restraint) {
+                    tips += `• Remember: ${getAgeRequirement(scenario)}<br>`;
+                }
+                if (user.checks.some((check, i) => check !== correct.checks[i])) {
+                    tips += '• Always complete all installation checks before driving<br>';
+                }
+                
+                document.getElementById('tips-content').innerHTML = tips;
+            } else {
+                document.getElementById('improvement-tips').style.display = 'none';
+            }
+            
+            document.getElementById('feedback-panel').classList.add('show');
+            
+            // Scroll to feedback
+            document.getElementById('feedback-panel').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Helper functions
+        function getRestraintName(type) {
+            const names = {
+                'rear-facing': 'Rear-Facing Car Seat',
+                'forward-facing': 'Forward-Facing Car Seat',
+                'booster': 'Booster Seat',
+                'seatbelt': 'Seat Belt Only'
+            };
+            return names[type] || type;
+        }
+
+        function getCheckDescription(scenario, index) {
+            const descriptions = {
+                1: ['Seat installation tightness', 'Harness strap position', 'Harness clip position', 'Recline angle'],
+                2: ['Seat installation tightness', 'Harness strap position', 'Top tether attachment', 'Harness clip position'],
+                3: ['Lap belt position', 'Shoulder belt position', 'Back seating position', 'Knee bend position']
+            };
+            return descriptions[scenario][index];
+        }
+
+        function getAgeRequirement(scenario) {
+            const requirements = {
+                1: 'Children must remain rear-facing until at least age 2',
+                2: 'Use forward-facing seats until child reaches height/weight limits',
+                3: 'Use booster seats until seat belt fits properly (usually age 8-12)'
+            };
+            return requirements[scenario];
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            startTimer();
+            updateProgress();
+            
+            // Seat selection
+            document.querySelectorAll('.seat').forEach(seat => {
+                seat.addEventListener('click', function() {
+                    const seatId = this.dataset.seat;
+                    
+                    // Remove selection from all seats
+                    document.querySelectorAll('.seat').forEach(s => s.classList.remove('selected'));
+                    
+                    // Select this seat
+                    this.classList.add('selected');
+                    
+                    // Update user selection
+                    userSelections[currentScenario].seat = seatId;
+                    decisionsMade++;
+                    
+                    // Show child character in selected seat
+                    const child = document.getElementById(`child-${currentScenario}`);
+                    child.style.display = 'block';
+                    child.classList.add('placed');
+                    
+                    // Position child in seat
+                    const seatRect = this.getBoundingClientRect();
+                    const vehicleRect = document.querySelector('.vehicle').getBoundingClientRect();
+                    
+                    child.style.left = `${seatRect.left - vehicleRect.left + 20}px`;
+                    child.style.top = `${seatRect.top - vehicleRect.top - 20}px`;
+                    
+                    // Show check button if restraint also selected
+                    if (userSelections[currentScenario].restraint) {
+                        checkBtn.style.display = 'block';
+                    }
+                    
+                    updateProgress();
+                });
+            });
+            
+            // Restraint selection
+            document.querySelectorAll('.restraint-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const restraint = this.dataset.restraint;
+                    const scenario = parseInt(this.dataset.scenario);
+                    
+                    if (scenario !== currentScenario) return;
+                    
+                    // Remove selection from all options in this scenario
+                    document.querySelectorAll(`.restraint-option[data-scenario="${scenario}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Select this option
+                    this.classList.add('selected');
+                    
+                    // Update user selection
+                    userSelections[currentScenario].restraint = restraint;
+                    decisionsMade++;
+                    
+                    // Show check button if seat also selected
+                    if (userSelections[currentScenario].seat) {
+                        checkBtn.style.display = 'block';
+                    }
+                    
+                    updateProgress();
+                });
+            });
+            
+            // Checklist interactions
+            document.querySelectorAll('.check-list li').forEach((item, index) => {
+                item.addEventListener('click', function() {
+                    this.classList.toggle('checked');
+                    const scenario = currentScenario;
+                    const checkIndex = index % 4; // 4 checks per scenario
+                    
+                    userSelections[scenario].checks[checkIndex] = this.classList.contains('checked');
+                    decisionsMade++;
+                    updateProgress();
+                });
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' && currentScenario < totalScenarios) {
+                nextScenario();
+            } else if (e.key === 'ArrowLeft' && currentScenario > 1) {
+                previousScenario();
+            } else if (e.key === 'Enter' && !simulationCompleted) {
+                if (document.getElementById('check-btn').style.display !== 'none') {
+                    checkInstallation();
+                } else {
+                    nextScenario();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
