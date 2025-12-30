@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Highway Hypnosis: 8-Minute Lesson</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-soft: #8a5feb;
+            --color-secondary: #000000;
+            --color-accent: #7c3aed;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-dark: #000000;
+            --color-light: #f9fafb;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+            --shadow-card: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes progressFill {
+            from { width: 0%; }
+            to { width: var(--progress-width, 100%); }
+        }
+
+        /* Main Container */
+        .page {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        @media (max-width: 900px) {
+            .page { padding: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 0; }
+            .page {
+                border-radius: 0;
+                box-shadow: none;
+                padding: 16px 12px 20px;
+            }
+        }
+
+        /* Header */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            max-width: 100%;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .brand-logo:hover { 
+            transform: scale(1.05); 
+        }
+
+        .course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 100%;
+        }
+
+        .course-name {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .week-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.1);
+            font-size: 0.8rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .week-label-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        .badge-mode {
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.08);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-primary);
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            line-height: 1.1;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .module-subtitle {
+            font-size: 1rem;
+            color: var(--color-muted);
+            max-width: 800px;
+            margin-bottom: 28px;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+            line-height: 1.7;
+        }
+
+        /* Lesson Timer */
+        .lesson-timer {
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .timer-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .timer-content h3 {
+            color: var(--color-primary);
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .timer-content p {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.1em;
+        }
+
+        /* Lesson Progress */
+        .lesson-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .lesson-progress::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50px;
+            right: 50px;
+            height: 3px;
+            background: rgba(95, 23, 235, 0.1);
+            z-index: 1;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+            transform: scale(1.1);
+            animation: pulse 2s infinite;
+        }
+
+        .progress-step.completed .step-circle {
+            background: var(--color-success);
+            border-color: var(--color-success);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            color: var(--color-muted);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        /* Lesson Content Container */
+        .lesson-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Lesson Section */
+        .lesson-section {
+            background: var(--color-bg);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-section.completed {
+            border-color: var(--color-success);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .section-time {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .section-status {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: rgba(95, 23, 235, 0.08);
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.15);
+        }
+
+        .lesson-section.completed .section-status {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .section-content {
+            font-size: 0.95rem;
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        /* Statistics Banner */
+        .stats-banner {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            color: white;
+            margin: 20px 0;
+            border: 2px solid var(--color-primary);
+        }
+
+        .stats-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        /* Symptom Cards */
+        .symptom-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .symptom-cards { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .symptom-cards { grid-template-columns: 1fr; }
+        }
+
+        .symptom-card {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            border: 2px solid;
+            transition: all 0.3s ease;
+        }
+
+        .symptom-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .symptom-card.green {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .symptom-card.yellow {
+            border-color: var(--color-warning);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .symptom-card.red {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .symptom-level {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .symptom-card.green .symptom-level {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+        }
+
+        .symptom-card.yellow .symptom-level {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--color-warning);
+        }
+
+        .symptom-card.red .symptom-level {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--color-error);
+        }
+
+        .symptom-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 8px;
+        }
+
+        .symptom-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .symptom-list li {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            margin-bottom: 4px;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .symptom-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--color-primary);
+        }
+
+        /* Prevention Strategy Cards */
+        .strategy-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 900px) {
+            .strategy-cards { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .strategy-cards { grid-template-columns: 1fr; }
+        }
+
+        .strategy-card {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .strategy-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.1);
+        }
+
+        .strategy-card.selected {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .strategy-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .strategy-number {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .strategy-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .strategy-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .strategy-list li {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            margin-bottom: 6px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .strategy-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        /* Emergency Protocol */
+        .emergency-protocol {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .protocol-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #dc2626;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .protocol-icon {
+            font-size: 1.5rem;
+            animation: blink 1s infinite;
+        }
+
+        .protocol-steps {
+            counter-reset: step-counter;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .protocol-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(239, 68, 68, 0.1);
+        }
+
+        .step-number {
+            counter-increment: step-counter;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #dc2626;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .step-number::before {
+            content: counter(step-counter);
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 5px;
+        }
+
+        .step-description {
+            font-size: 0.85rem;
+            color: var(--color-text);
+        }
+
+        /* Interactive Quiz */
+        .interactive-quiz {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 20px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .quiz-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .option-label {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            color: var(--color-primary);
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .quiz-option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .quiz-option.correct .option-label {
+            background: var(--color-success);
+            color: white;
+            border-color: var(--color-success);
+        }
+
+        /* Progress Actions */
+        .progress-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.2);
+        }
+
+        .btn-icon { 
+            font-size: 1.2em; 
+            font-weight: bold;
+        }
+
+        /* Completion Certificate */
+        .completion-certificate {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 40px;
+            margin-top: 40px;
+            display: none;
+            border: 2px solid var(--color-primary);
+            text-align: center;
+        }
+
+        .completion-certificate.show {
+            display: block;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .certificate-icon {
+            font-size: 3rem;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+        }
+
+        .certificate-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .certificate-message {
+            font-size: 1rem;
+            color: #e5e7eb;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .key-takeaways {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .takeaways-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .takeaways-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .takeaways-list li {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            font-size: 0.95rem;
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+
+        .takeaway-dot {
+            width: 8px;
+            height: 8px;
+            margin-top: 10px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        /* Timer Display */
+        .timer-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--color-primary);
+            color: white;
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 1.1rem;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(95, 23, 235, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .timer-display {
+                position: static;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="timer-display" id="timer-display">8:00</div>
+    
+    <main class="page" aria-labelledby="module-heading">
+        <!-- Header -->
+        <header class="brand-row">
+            <div class="brand">
+                <img
+                    src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png"
+                    alt="VA Driving Clinic logo"
+                    class="brand-logo"
+                />
+                <div class="course-meta">
+                    <span class="course-name">VA Driving Clinic • Highway Safety</span>
+                    <div class="week-label">
+                        <span class="week-label-dot"></span>
+                        <span>8-Minute Lesson: Highway Hypnosis</span>
+                    </div>
+                </div>
+            </div>
+            <span class="badge-mode">Timed Learning</span>
+        </header>
+
+        <h1 id="module-heading">Highway Hypnosis Prevention</h1>
+        <p class="module-subtitle">
+            Complete this interactive 8-minute lesson to master the recognition, prevention, and emergency response 
+            for highway hypnosis. Learn life-saving strategies through engaging content and practical exercises.
+        </p>
+
+        <!-- Lesson Timer -->
+        <div class="lesson-timer">
+            <div class="timer-icon">
+                ⏱️
+            </div>
+            <div class="timer-content">
+                <h3>8-Minute Learning Journey</h3>
+                <p>Complete all 4 sections in <span class="time-highlight">8 minutes</span>. Each section is timed to optimize learning and retention.</p>
+            </div>
+        </div>
+
+        <!-- Lesson Progress -->
+        <div class="lesson-progress">
+            <div class="progress-step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Awareness<br>(90s)</div>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Recognition<br>(120s)</div>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Prevention<br>(180s)</div>
+            </div>
+            <div class="progress-step" data-step="4">
+                <div class="step-circle">4</div>
+                <div class="step-label">Emergency<br>(90s)</div>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: Awareness -->
+            <section class="lesson-section" id="section-1" data-section="1">
+                <div class="section-header">
+                    <span class="section-time">90 seconds</span>
+                    <span class="section-status">In Progress</span>
+                </div>
+                <h2 class="section-title">📊 Awareness: The Silent Highway Danger</h2>
+                
+                <div class="stats-banner">
+                    <div class="stats-title">HIGHWAY HYPNOSIS BY THE NUMBERS</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-icon">🚗</div>
+                            <div class="stat-value">60%</div>
+                            <div class="stat-label">Drivers Affected</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">⚠️</div>
+                            <div class="stat-value">3x</div>
+                            <div class="stat-label">Accident Risk</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">⚡</div>
+                            <div class="stat-value">+50%</div>
+                            <div class="stat-label">Reaction Time</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">⏰</div>
+                            <div class="stat-value">2-4 PM</div>
+                            <div class="stat-label">Peak Danger Time</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-content">
+                    <p><strong>What is Highway Hypnosis?</strong> It's not just "daydreaming" - it's a dangerous state of altered consciousness where you drive on "autopilot" without conscious awareness or memory of the journey.</p>
+                    
+                    <p><strong>Science Behind It:</strong> Your brain filters out repetitive stimuli after 15-20 minutes (called "sensory adaptation"). On highways, this means you stop consciously seeing lane markers, making you vulnerable to hypnosis.</p>
+                    
+                    <div class="interactive-quiz" style="margin-top: 20px;">
+                        <div class="quiz-question">Quick Self-Assessment: Before driving, ask yourself...</div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-quiz="pre" data-option="sleep">
+                                <span class="option-label">A</span>
+                                <span>Have I slept less than 7 hours?</span>
+                            </div>
+                            <div class="quiz-option" data-quiz="pre" data-option="alone">
+                                <span class="option-label">B</span>
+                                <span>Am I driving alone?</span>
+                            </div>
+                            <div class="quiz-option" data-quiz="pre" data-option="route">
+                                <span class="option-label">C</span>
+                                <span>Is the route monotonous?</span>
+                            </div>
+                            <div class="quiz-option" data-quiz="pre" data-option="time">
+                                <span class="option-label">D</span>
+                                <span>All of the above</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Recognition -->
+            <section class="lesson-section" id="section-2" data-section="2" style="display: none;">
+                <div class="section-header">
+                    <span class="section-time">120 seconds</span>
+                    <span class="section-status">Not Started</span>
+                </div>
+                <h2 class="section-title">🎯 Recognition: Know the Warning Signs</h2>
+                
+                <div class="section-content">
+                    <p><strong>Learn to recognize symptoms at different stages:</strong> Early detection is key to prevention. Match symptoms to their risk level to understand when action is needed.</p>
+                    
+                    <div class="symptom-cards">
+                        <div class="symptom-card green">
+                            <div class="symptom-level">Mild Warning</div>
+                            <div class="symptom-title">Early Stage Signs</div>
+                            <ul class="symptom-list">
+                                <li>Mind wandering occasionally</li>
+                                <li>Mild boredom setting in</li>
+                                <li>Thinking about other things</li>
+                                <li>Light daydreaming</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="symptom-card yellow">
+                            <div class="symptom-level">Moderate Risk</div>
+                            <div class="symptom-title">Progressing Symptoms</div>
+                            <ul class="symptom-list">
+                                <li>Can't recall last 5 miles</li>
+                                <li>Heavy eyelids, frequent yawning</li>
+                                <li>Difficulty focusing on road</li>
+                                <li>Feeling unusually sleepy</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="symptom-card red">
+                            <div class="symptom-level">Severe Danger</div>
+                            <div class="symptom-title">Immediate Action Needed</div>
+                            <ul class="symptom-list">
+                                <li>Missing exits or turns</li>
+                                <li>Drifting between lanes</li>
+                                <li>Microsleeps (2-3 second naps)</li>
+                                <li>Driving on autopilot</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="interactive-quiz" style="margin-top: 20px;">
+                        <div class="quiz-question">Which symptom requires IMMEDIATE action?</div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-quiz="symptom" data-option="A">
+                                <span class="option-label">A</span>
+                                <span>Mild daydreaming</span>
+                            </div>
+                            <div class="quiz-option" data-quiz="symptom" data-option="B">
+                                <span class="option-label">B</span>
+                                <span>Heavy eyelids</span>
+                            </div>
+                            <div class="quiz-option" data-quiz="symptom" data-option="C">
+                                <span class="option-label">C</span>
+                                <span>Drifting between lanes</span>
+                            </div>
+                            <div class="quiz-option" data-quiz="symptom" data-option="D">
+                                <span class="option-label">D</span>
+                                <span>Thinking about weekend</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Prevention -->
+            <section class="lesson-section" id="section-3" data-section="3" style="display: none;">
+                <div class="section-header">
+                    <span class="section-time">180 seconds</span>
+                    <span class="section-status">Not Started</span>
+                </div>
+                <h2 class="section-title">🛡️ Prevention: The 5-Point Protection Plan</h2>
+                
+                <div class="section-content">
+                    <p><strong>Build your personal prevention strategy:</strong> Select the strategies that work best for your driving habits and trip requirements.</p>
+                    
+                    <div class="strategy-cards">
+                        <div class="strategy-card" data-strategy="preparation">
+                            <div class="strategy-number">1</div>
+                            <div class="strategy-icon">📋</div>
+                            <div class="strategy-title">Pre-Trip Preparation</div>
+                            <ul class="strategy-list">
+                                <li>Sleep 7-8 hours for 2 nights</li>
+                                <li>Hydrate with water</li>
+                                <li>Schedule breaks every 100 miles</li>
+                                <li>Pack healthy snacks</li>
+                                <li>Enable vehicle alert systems</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="strategy-card" data-strategy="breaks">
+                            <div class="strategy-number">2</div>
+                            <div class="strategy-icon">🛑</div>
+                            <div class="strategy-title">The 2-Hour Rule</div>
+                            <ul class="strategy-list">
+                                <li>Stop every 2 hours minimum</li>
+                                <li>Get out and walk 5 minutes</li>
+                                <li>Drink water at each stop</li>
+                                <li>Do 3 quick stretches</li>
+                                <li>Most effective strategy</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="strategy-card" data-strategy="mental">
+                            <div class="strategy-number">3</div>
+                            <div class="strategy-icon">🧠</div>
+                            <div class="strategy-title">Mental Engagement</div>
+                            <ul class="strategy-list">
+                                <li>Engage in conversation</li>
+                                <li>Listen to story podcasts</li>
+                                <li>Play mental games</li>
+                                <li>20-20-20 eye rule</li>
+                                <li>Read signs aloud</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="strategy-card" data-strategy="physical">
+                            <div class="strategy-number">4</div>
+                            <div class="strategy-icon">💺</div>
+                            <div class="strategy-title">Physical Adjustments</div>
+                            <ul class="strategy-list">
+                                <li>Keep cabin 65-68°F</li>
+                                <li>Change posture every 30min</li>
+                                <li>Adjust seat at breaks</li>
+                                <li>Take deep breaths</li>
+                                <li>Chew sugar-free gum</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="strategy-card" data-strategy="tech">
+                            <div class="strategy-number">5</div>
+                            <div class="strategy-icon">📱</div>
+                            <div class="strategy-title">Technology Tools</div>
+                            <ul class="strategy-list">
+                                <li>Enable lane departure warnings</li>
+                                <li>Use drowsiness detection apps</li>
+                                <li>Set GPS exit alerts</li>
+                                <li>Smartwatch vibration alerts</li>
+                                <li>Navigation with rest stops</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="interactive-quiz" style="margin-top: 20px;">
+                        <div class="quiz-question">What is the SINGLE MOST effective prevention strategy?</div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-quiz="prevention" data-option="A">
+                                <span class="option-label">A</span>
+                                <span>Loud music</span>
+                            </div>
+                            <div class="quiz-option" data-quiz="prevention" data-option="B">
+                                <span class="option-label">B</span>
+                                <span>Regular breaks every 2 hours</span>
+                            </div>
+                            <div class="quiz-option" data-quiz="prevention" data-option="C">
+                                <span class="option-label">C</span>
+                                <span>Drinking coffee</span>
+                            </div>
+                            <div class="quiz-option" data-quiz="prevention" data-option="D">
+                                <span class="option-label">D</span>
+                                <span>Opening windows</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Emergency Response -->
+            <section class="lesson-section" id="section-4" data-section="4" style="display: none;">
+                <div class="section-header">
+                    <span class="section-time">90 seconds</span>
+                    <span class="section-status">Not Started</span>
+                </div>
+                <h2 class="section-title">🚨 Emergency Response: Red Alert Protocol</h2>
+                
+                <div class="section-content">
+                    <p><strong>When prevention fails, know what to do IMMEDIATELY:</strong> These steps could save your life and others.</p>
+                    
+                    <div class="emergency-protocol">
+                        <div class="protocol-title">
+                            <span class="protocol-icon">⚠️</span>
+                            RED ALERT - IMMEDIATE ACTION REQUIRED
+                        </div>
+                        
+                        <div class="protocol-steps">
+                            <div class="protocol-step">
+                                <div class="step-number"></div>
+                                <div class="step-content">
+                                    <div class="step-title">RIGHT NOW</div>
+                                    <div class="step-description">Signal and safely move to right lane</div>
+                                </div>
+                            </div>
+                            
+                            <div class="protocol-step">
+                                <div class="step-number"></div>
+                                <div class="step-content">
+                                    <div class="step-title">NEXT EXIT</div>
+                                    <div class="step-description">Take the next exit immediately - don't wait</div>
+                                </div>
+                            </div>
+                            
+                            <div class="protocol-step">
+                                <div class="step-number"></div>
+                                <div class="step-content">
+                                    <div class="step-title">SAFE LOCATION</div>
+                                    <div class="step-description">Park at rest area, gas station, or safe lot</div>
+                                </div>
+                            </div>
+                            
+                            <div class="protocol-step">
+                                <div class="step-number"></div>
+                                <div class="step-content">
+                                    <div class="step-title">20-MINUTE NAP</div>
+                                    <div class="step-description">Set alarm, lock doors, recline seat</div>
+                                </div>
+                            </div>
+                            
+                            <div class="protocol-step">
+                                <div class="step-number"></div>
+                                <div class="step-content">
+                                    <div class="step-title">WALK & REASSESS</div>
+                                    <div class="step-description">5-minute brisk walk, then honestly assess if you can continue safely</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="interactive-quiz" style="margin-top: 20px;">
+                        <div class="quiz-question">What should you NEVER do when experiencing highway hypnosis?</div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-quiz="emergency" data-option="A">
+                                <span class="option-label">A</span>
+                                <span>"Push through" to your destination</span>
+                            </div>
+                            <div class="quiz-option" data-quiz="emergency" data-option="B">
+                                <span class="option-label">B</span>
+                                <span>Rely only on caffeine</span>
+                            </div>
+                            <div class="quiz-option" data-quiz="emergency" data-option="C">
+                                <span class="option-label">C</span>
+                                <span>Open windows as sole solution</span>
+                            </div>
+                            <div class="quiz-option" data-quiz="emergency" data-option="D">
+                                <span class="option-label">D</span>
+                                <span>All of the above</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Progress Actions -->
+        <div class="progress-actions">
+            <button class="btn btn-secondary" id="prev-section-btn" style="display: none;">
+                <span class="btn-icon">←</span>
+                Previous Section
+            </button>
+            <button class="btn btn-primary" id="next-section-btn">
+                <span class="btn-icon">→</span>
+                Continue to Next Section
+            </button>
+            <button class="btn btn-secondary" id="restart-lesson-btn">
+                <span class="btn-icon">↻</span>
+                Restart Lesson
+            </button>
+        </div>
+
+        <!-- Completion Certificate -->
+        <div class="completion-certificate" id="completion-certificate">
+            <div class="certificate-icon">🎓</div>
+            <h2 class="certificate-title">Lesson Complete!</h2>
+            <p class="certificate-message">
+                You've successfully completed the 8-minute Highway Hypnosis Prevention lesson. 
+                You now have the knowledge to recognize, prevent, and respond to this dangerous 
+                driving condition. Remember: Your safety and others' safety is always worth the extra time.
+            </p>
+            
+            <div class="key-takeaways">
+                <h3 class="takeaways-title">
+                    <span>💡</span> Key Takeaways for Your Next Drive
+                </h3>
+                <ul class="takeaways-list">
+                    <li>
+                        <span class="takeaway-dot"></span>
+                        <span><strong>Highway hypnosis is REAL and DANGEROUS</strong> - affects 60% of drivers, triples accident risk</span>
+                    </li>
+                    <li>
+                        <span class="takeaway-dot"></span>
+                        <span><strong>Prevention beats reaction</strong> - regular breaks are non-negotiable (every 2 hours)</span>
+                    </li>
+                    <li>
+                        <span class="takeaway-dot"></span>
+                        <span><strong>Know your warning signs</strong> - drifting lanes and memory gaps mean immediate action</span>
+                    </li>
+                    <li>
+                        <span class="takeaway-dot"></span>
+                        <span><strong>Have an emergency plan</strong> - know your next 3 rest areas before you drive</span>
+                    </li>
+                    <li>
+                        <span class="takeaway-dot"></span>
+                        <span><strong>Technology helps but doesn't replace</strong> - use alerts but don't rely on them exclusively</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="progress-actions" style="margin-top: 30px;">
+                <button class="btn btn-primary" id="print-certificate-btn">
+                    <span class="btn-icon">🖨️</span>
+                    Print Safety Plan
+                </button>
+                <button class="btn btn-secondary" id="review-lesson-btn">
+                    <span class="btn-icon">📚</span>
+                    Review Lesson
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // State Management
+            const state = {
+                currentSection: 1,
+                totalSections: 4,
+                timeRemaining: 8 * 60, // 8 minutes in seconds
+                timerRunning: true,
+                quizAnswers: {
+                    'pre': null,
+                    'symptom': null,
+                    'prevention': null,
+                    'emergency': null
+                },
+                selectedStrategies: [],
+                sectionTimes: [90, 120, 180, 90] // seconds for each section
+            };
+
+            // Correct answers
+            const correctAnswers = {
+                'pre': 'D',
+                'symptom': 'C',
+                'prevention': 'B',
+                'emergency': 'D'
+            };
+
+            // DOM Elements
+            const timerDisplay = document.getElementById('timer-display');
+            const progressSteps = document.querySelectorAll('.progress-step');
+            const lessonSections = document.querySelectorAll('.lesson-section');
+            const prevBtn = document.getElementById('prev-section-btn');
+            const nextBtn = document.getElementById('next-section-btn');
+            const restartBtn = document.getElementById('restart-lesson-btn');
+            const completionCertificate = document.getElementById('completion-certificate');
+            const printCertificateBtn = document.getElementById('print-certificate-btn');
+            const reviewLessonBtn = document.getElementById('review-lesson-btn');
+            const strategyCards = document.querySelectorAll('.strategy-card');
+            const quizOptions = document.querySelectorAll('.quiz-option');
+
+            // Timer Functionality
+            let timerInterval;
+            
+            function startTimer() {
+                clearInterval(timerInterval);
+                timerInterval = setInterval(function() {
+                    if (state.timeRemaining > 0 && state.timerRunning) {
+                        state.timeRemaining--;
+                        updateTimerDisplay();
+                        
+                        // Check if current section time is up
+                        const currentSectionTime = state.sectionTimes[state.currentSection - 1];
+                        const timeInSection = calculateTimeInCurrentSection();
+                        
+                        if (timeInSection >= currentSectionTime && state.currentSection < state.totalSections) {
+                            // Auto-advance to next section
+                            nextSection();
+                        }
+                    } else if (state.timeRemaining <= 0) {
+                        clearInterval(timerInterval);
+                        completeLesson();
+                    }
+                }, 1000);
+            }
+
+            function updateTimerDisplay() {
+                const minutes = Math.floor(state.timeRemaining / 60);
+                const seconds = state.timeRemaining % 60;
+                timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Color coding for urgency
+                if (state.timeRemaining <= 60) {
+                    timerDisplay.style.background = 'var(--color-error)';
+                    timerDisplay.style.animation = 'blink 1s infinite';
+                } else if (state.timeRemaining <= 180) {
+                    timerDisplay.style.background = 'var(--color-warning)';
+                }
+            }
+
+            function calculateTimeInCurrentSection() {
+                let totalTime = 0;
+                for (let i = 0; i < state.currentSection - 1; i++) {
+                    totalTime += state.sectionTimes[i];
+                }
+                const elapsed = (8 * 60) - state.timeRemaining;
+                return Math.max(0, elapsed - totalTime);
+            }
+
+            // Section Navigation
+            function showSection(sectionNumber) {
+                // Hide all sections
+                lessonSections.forEach(section => {
+                    section.style.display = 'none';
+                    section.classList.remove('completed');
+                });
+                
+                // Show current section
+                const currentSection = document.getElementById(`section-${sectionNumber}`);
+                if (currentSection) {
+                    currentSection.style.display = 'block';
+                    
+                    // Update status
+                    const statusElement = currentSection.querySelector('.section-status');
+                    if (statusElement) {
+                        statusElement.textContent = 'In Progress';
+                        statusElement.style.color = 'var(--color-primary)';
+                    }
+                }
+                
+                // Update progress steps
+                updateProgressSteps();
+                
+                // Update navigation buttons
+                updateNavigationButtons();
+            }
+
+            function updateProgressSteps() {
+                progressSteps.forEach((step, index) => {
+                    const stepNumber = index + 1;
+                    
+                    if (stepNumber < state.currentSection) {
+                        step.classList.add('completed');
+                        step.classList.remove('active');
+                    } else if (stepNumber === state.currentSection) {
+                        step.classList.add('active');
+                        step.classList.remove('completed');
+                    } else {
+                        step.classList.remove('active', 'completed');
+                    }
+                });
+            }
+
+            function updateNavigationButtons() {
+                // Previous button
+                if (state.currentSection > 1) {
+                    prevBtn.style.display = 'inline-flex';
+                } else {
+                    prevBtn.style.display = 'none';
+                }
+                
+                // Next button
+                if (state.currentSection < state.totalSections) {
+                    nextBtn.textContent = 'Continue to Next Section';
+                    nextBtn.querySelector('.btn-icon').textContent = '→';
+                } else {
+                    nextBtn.textContent = 'Complete Lesson';
+                    nextBtn.querySelector('.btn-icon').textContent = '✓';
+                }
+            }
+
+            function nextSection() {
+                if (state.currentSection < state.totalSections) {
+                    // Mark current section as completed
+                    const currentSection = document.getElementById(`section-${state.currentSection}`);
+                    if (currentSection) {
+                        currentSection.classList.add('completed');
+                        const statusElement = currentSection.querySelector('.section-status');
+                        if (statusElement) {
+                            statusElement.textContent = 'Completed';
+                            statusElement.style.color = 'var(--color-success)';
+                        }
+                    }
+                    
+                    // Move to next section
+                    state.currentSection++;
+                    showSection(state.currentSection);
+                } else {
+                    completeLesson();
+                }
+            }
+
+            function prevSection() {
+                if (state.currentSection > 1) {
+                    state.currentSection--;
+                    showSection(state.currentSection);
+                }
+            }
+
+            function completeLesson() {
+                clearInterval(timerInterval);
+                state.timerRunning = false;
+                
+                // Hide all sections
+                lessonSections.forEach(section => {
+                    section.style.display = 'none';
+                });
+                
+                // Hide progress actions
+                document.querySelector('.progress-actions').style.display = 'none';
+                
+                // Show completion certificate
+                completionCertificate.classList.add('show');
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Quiz Interactions
+            function setupQuizInteractions() {
+                quizOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const quizId = this.dataset.quiz;
+                        const selectedOption = this.dataset.option;
+                        
+                        if (!quizId) return;
+                        
+                        // Remove selection from all options in this quiz
+                        const allOptions = document.querySelectorAll(`[data-quiz="${quizId}"]`);
+                        allOptions.forEach(opt => {
+                            opt.classList.remove('selected', 'correct', 'incorrect');
+                        });
+                        
+                        // Mark selected option
+                        this.classList.add('selected');
+                        
+                        // Check if correct
+                        const isCorrect = selectedOption === correctAnswers[quizId];
+                        
+                        if (isCorrect) {
+                            this.classList.add('correct');
+                            state.quizAnswers[quizId] = selectedOption;
+                        } else {
+                            this.classList.add('incorrect');
+                            
+                            // Show correct answer
+                            const correctOption = document.querySelector(`[data-quiz="${quizId}"][data-option="${correctAnswers[quizId]}"]`);
+                            if (correctOption) {
+                                correctOption.classList.add('correct');
+                            }
+                        }
+                        
+                        // Auto-advance after quiz completion in last section
+                        if (quizId === 'emergency' && state.currentSection === 4) {
+                            setTimeout(() => {
+                                completeLesson();
+                            }, 2000);
+                        }
+                    });
+                });
+            }
+
+            // Strategy Card Interactions
+            function setupStrategyCards() {
+                strategyCards.forEach(card => {
+                    card.addEventListener('click', function() {
+                        const strategy = this.dataset.strategy;
+                        
+                        // Toggle selection
+                        if (this.classList.contains('selected')) {
+                            this.classList.remove('selected');
+                            state.selectedStrategies = state.selectedStrategies.filter(s => s !== strategy);
+                        } else {
+                            this.classList.add('selected');
+                            state.selectedStrategies.push(strategy);
+                        }
+                    });
+                });
+            }
+
+            // Button Event Listeners
+            prevBtn.addEventListener('click', prevSection);
+            nextBtn.addEventListener('click', nextSection);
+            
+            restartBtn.addEventListener('click', function() {
+                if (confirm('Restart the 8-minute lesson? Your progress will be lost.')) {
+                    location.reload();
+                }
+            });
+            
+            printCertificateBtn.addEventListener('click', function() {
+                const plan = `
+                    ╔══════════════════════════════════════╗
+                    ║     HIGHWAY HYPNOSIS SAFETY PLAN     ║
+                    ╚══════════════════════════════════════╝
+                    
+                    📅 DATE: ${new Date().toLocaleDateString()}
+                    
+                    ✅ MY PREVENTION STRATEGIES:
+                    ${state.selectedStrategies.map((strategy, index) => `${index + 1}. ${strategy.charAt(0).toUpperCase() + strategy.slice(1)}`).join('\n')}
+                    
+                    ⏰ 2-HOUR RULE:
+                    • Breaks every 2 hours minimum
+                    • 15-20 minutes per break
+                    • Walk, stretch, hydrate
+                    
+                    🚨 EMERGENCY PROTOCOL:
+                    1. Move to right lane immediately
+                    2. Take next exit
+                    3. Park at safe location
+                    4. 20-minute nap
+                    5. Walk 5 minutes
+                    6. Reassess safety
+                    
+                    📱 TECHNOLOGY SETUP:
+                    • Enable vehicle alerts
+                    • GPS rest stop alerts ON
+                    • Drowsiness app installed
+                    
+                    REMEMBER: No deadline is worth risking lives!
+                    Drive alert, arrive alive.
+                `;
+                
+                alert("Copy your safety plan:\n\n" + plan);
+            });
+            
+            reviewLessonBtn.addEventListener('click', function() {
+                completionCertificate.classList.remove('show');
+                document.querySelector('.progress-actions').style.display = 'flex';
+                state.currentSection = 1;
+                showSection(1);
+                state.timeRemaining = 8 * 60;
+                state.timerRunning = true;
+                startTimer();
+            });
+
+            // Initialize
+            function init() {
+                showSection(1);
+                startTimer();
+                setupQuizInteractions();
+                setupStrategyCards();
+                updateNavigationButtons();
+            }
+
+            // Start the lesson
+            init();
+        });
+    </script>
+</body>
+</html>
