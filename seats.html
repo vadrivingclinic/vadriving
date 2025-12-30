@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - Car Seats & Airbags Safety</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb; /* Brand purple */
+            --color-primary-soft: #8a5feb;
+            --color-secondary: #000000; /* Black */
+            --color-accent: #7c3aed;
+            --color-success: #10b981;
+            --color-danger: #ef4444;
+            --color-warning: #f59e0b;
+            --color-safe: #059669;
+            --color-bg: #ffffff; /* White */
+            --color-text: #000000; /* Black */
+            --color-muted: #6b7280;
+            --color-dark: #000000; /* Black */
+            --color-light: #f9fafb;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+            --shadow-card: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes deploy {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Main Container */
+        .page {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        @media (max-width: 900px) {
+            .page { padding: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 0; }
+            .page {
+                border-radius: 0;
+                box-shadow: none;
+                padding: 16px 12px 20px;
+            }
+        }
+
+        /* Header */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            max-width: 100%;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .brand-logo:hover { 
+            transform: scale(1.05); 
+            animation: glow 2s infinite;
+        }
+
+        .course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 100%;
+        }
+
+        .course-name {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .week-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.1);
+            font-size: 0.8rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .week-label-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        .badge-mode {
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.08);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-primary);
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .badge-mode:hover {
+            background: rgba(95, 23, 235, 0.15);
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            line-height: 1.1;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .module-subtitle {
+            font-size: 1rem;
+            color: var(--color-muted);
+            max-width: 800px;
+            margin-bottom: 28px;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+            line-height: 1.7;
+        }
+
+        /* Time Estimate Banner */
+        .time-estimate-banner {
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .time-estimate-content h3 {
+            color: var(--color-primary);
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .time-estimate-content p {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.1em;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        /* Simulation Container */
+        .simulation-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .simulation-container { grid-template-columns: 1fr; }
+        }
+
+        /* Vehicle Simulator */
+        .vehicle-simulator {
+            background: #2a2a2a;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+        }
+
+        .vehicle-interior {
+            width: 100%;
+            height: 350px;
+            position: relative;
+            background: #333;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            border: 3px solid #444;
+        }
+
+        .driver-seat {
+            position: absolute;
+            left: 30%;
+            top: 40%;
+            width: 120px;
+            height: 80px;
+            background: #666;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .passenger-seat {
+            position: absolute;
+            left: 60%;
+            top: 40%;
+            width: 120px;
+            height: 80px;
+            background: #666;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .back-seat {
+            position: absolute;
+            left: 20%;
+            top: 20%;
+            width: 60%;
+            height: 100px;
+            background: #555;
+            border-radius: 10px;
+        }
+
+        .steering-wheel {
+            position: absolute;
+            left: 35%;
+            top: 50%;
+            width: 50px;
+            height: 50px;
+            background: #777;
+            border-radius: 50%;
+            border: 3px solid #888;
+        }
+
+        .airbag {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #ff9900;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .airbag.front-driver {
+            left: 32%;
+            top: 42%;
+        }
+
+        .airbag.front-passenger {
+            left: 62%;
+            top: 42%;
+        }
+
+        .airbag.side-driver {
+            left: 28%;
+            top: 45%;
+            background: #ff6600;
+        }
+
+        .airbag.side-passenger {
+            left: 64%;
+            top: 45%;
+            background: #ff6600;
+        }
+
+        .car-seat {
+            position: absolute;
+            width: 100px;
+            height: 80px;
+            background: #4CAF50;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: grab;
+            transition: all 0.3s ease;
+            border: 2px solid #388E3C;
+        }
+
+        .car-seat.rear-facing {
+            background: #2196F3;
+            border-color: #1976D2;
+        }
+
+        .car-seat.forward-facing {
+            background: #4CAF50;
+            border-color: #388E3C;
+        }
+
+        .car-seat.booster {
+            background: #FF9800;
+            border-color: #F57C00;
+        }
+
+        .car-seat.dragging {
+            opacity: 0.7;
+            transform: scale(0.95);
+        }
+
+        .car-seat.in-correct-position {
+            border: 3px solid var(--color-success);
+            animation: pulse 2s infinite;
+        }
+
+        .car-seat.in-dangerous-position {
+            border: 3px solid var(--color-danger);
+            animation: shake 0.5s ease infinite;
+        }
+
+        .seat-label {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Seat Selection Panel */
+        .seat-panel {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .child-selection {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 600px) {
+            .child-selection { grid-template-columns: 1fr; }
+        }
+
+        .child-option {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .child-option:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+        }
+
+        .child-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .child-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .child-age {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 5px;
+        }
+
+        .child-requirements {
+            font-size: 0.8rem;
+            color: var(--color-muted);
+        }
+
+        /* Seat Type Selection */
+        .seat-type-selection {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .seat-type-selection { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .seat-type-selection { grid-template-columns: 1fr; }
+        }
+
+        .seat-type {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+            cursor: grab;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            user-select: none;
+        }
+
+        .seat-type:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+        }
+
+        .seat-type.rear-facing {
+            background: rgba(33, 150, 243, 0.1);
+            border-color: rgba(33, 150, 243, 0.3);
+        }
+
+        .seat-type.forward-facing {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: rgba(76, 175, 80, 0.3);
+        }
+
+        .seat-type.booster {
+            background: rgba(255, 152, 0, 0.1);
+            border-color: rgba(255, 152, 0, 0.3);
+        }
+
+        .seat-type.no-seat {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .seat-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .seat-name {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .seat-age-range {
+            font-size: 0.75rem;
+            color: var(--color-muted);
+        }
+
+        /* Simulation Controls */
+        .simulation-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--color-primary);
+            background: white;
+            color: var(--color-primary);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .control-btn.test-collision {
+            background: var(--color-danger);
+            color: white;
+            border-color: var(--color-danger);
+        }
+
+        .control-btn.test-collision:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        /* Feedback Panel */
+        .feedback-panel {
+            background: rgba(95, 23, 235, 0.03);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            margin-top: 30px;
+            display: none;
+        }
+
+        .feedback-panel.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .feedback-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feedback-icon.safe {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+            border: 2px solid var(--color-success);
+        }
+
+        .feedback-icon.danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--color-danger);
+            border: 2px solid var(--color-danger);
+            animation: shake 0.5s ease;
+        }
+
+        .feedback-icon.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--color-warning);
+            border: 2px solid var(--color-warning);
+        }
+
+        .feedback-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-text);
+        }
+
+        .feedback-subtitle {
+            font-size: 1rem;
+            color: var(--color-muted);
+        }
+
+        .feedback-content {
+            font-size: 0.95rem;
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .feedback-content strong {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .safety-tips {
+            background: rgba(95, 23, 235, 0.05);
+            padding: 20px;
+            border-radius: var(--radius-sm);
+            margin-top: 20px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .tip-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+
+        .tip-list {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        .tip-list li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .tip-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        /* Airbag Information */
+        .airbag-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .airbag-info { grid-template-columns: 1fr; }
+        }
+
+        .airbag-type {
+            background: rgba(95, 23, 235, 0.03);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .airbag-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .airbag-name {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .airbag-description {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            line-height: 1.5;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.4);
+            animation: glow 1.5s infinite;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.2);
+        }
+
+        .btn-icon { 
+            font-size: 1.2em; 
+            font-weight: bold;
+        }
+
+        /* Safety Facts */
+        .safety-facts {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px solid var(--color-primary);
+        }
+
+        .facts-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .facts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        @media (max-width: 600px) {
+            .facts-grid { grid-template-columns: 1fr; }
+        }
+
+        .fact-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .fact-stat {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(95, 23, 235, 0.5);
+        }
+
+        .fact-description {
+            font-size: 0.95rem;
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <main class="page" aria-labelledby="module-heading">
+        <!-- Header -->
+        <header class="brand-row">
+            <div class="brand">
+                <img
+                    src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png"
+                    alt="VA Driving Clinic logo"
+                    class="brand-logo"
+                />
+                <div class="course-meta">
+                    <span class="course-name">VA Driving Clinic • Child Safety Module</span>
+                    <div class="week-label">
+                        <span class="week-label-dot"></span>
+                        <span>Car Seats & Airbags Safety</span>
+                    </div>
+                </div>
+            </div>
+            <span class="badge-mode">Interactive Simulation</span>
+        </header>
+
+        <h1 id="module-heading">Car Seats & Airbags Safety Simulation</h1>
+        <p class="module-subtitle">
+            Experience the critical importance of proper car seat selection and placement through this interactive simulation. 
+            Learn how different seat types protect children at various ages, and understand the life-saving coordination between 
+            car seats and airbags.
+        </p>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate-banner">
+            <div class="time-estimate-icon">
+                ⏱️
+            </div>
+            <div class="time-estimate-content">
+                <h3>Simulation Time Estimate</h3>
+                <p>Complete this interactive safety simulation in approximately <span class="time-highlight">5 minutes</span>. Learn proper installation and placement through hands-on practice.</p>
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="correct-placements">0</span>
+                <span class="stat-label">Correct Placements</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="risk-reduction">71%</span>
+                <span class="stat-label">Crash Risk Reduction</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="lives-saved">325+</span>
+                <span class="stat-label">Lives Saved Annually</span>
+            </div>
+        </div>
+
+        <!-- Simulation Container -->
+        <div class="simulation-container">
+            <!-- Vehicle Simulator -->
+            <div class="vehicle-simulator">
+                <div class="vehicle-interior" id="vehicle-interior">
+                    <!-- Vehicle seats -->
+                    <div class="driver-seat"></div>
+                    <div class="passenger-seat"></div>
+                    <div class="back-seat"></div>
+                    <div class="steering-wheel"></div>
+                    
+                    <!-- Airbag positions (hidden initially) -->
+                    <div class="airbag front-driver">Front</div>
+                    <div class="airbag front-passenger">Front</div>
+                    <div class="airbag side-driver">Side</div>
+                    <div class="airbag side-passenger">Side</div>
+                    
+                    <!-- Car seat drop zones -->
+                    <div class="seat-drop-zone back-left" style="position: absolute; left: 25%; top: 25%; width: 100px; height: 80px; border: 2px dashed rgba(255,255,255,0.3); border-radius: 10px;"></div>
+                    <div class="seat-drop-zone back-middle" style="position: absolute; left: 45%; top: 25%; width: 100px; height: 80px; border: 2px dashed rgba(255,255,255,0.3); border-radius: 10px;"></div>
+                    <div class="seat-drop-zone back-right" style="position: absolute; left: 65%; top: 25%; width: 100px; height: 80px; border: 2px dashed rgba(255,255,255,0.3); border-radius: 10px;"></div>
+                    <div class="seat-drop-zone front-passenger-danger" style="position: absolute; left: 60%; top: 40%; width: 100px; height: 80px; border: 2px dashed rgba(255,0,0,0.5); border-radius: 10px; display: none;"></div>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="seat-panel">
+                <div class="panel-title">
+                    <span>👶</span>
+                    Child & Seat Selection
+                </div>
+
+                <!-- Child Age Selection -->
+                <h4 style="color: var(--color-primary); margin-bottom: 15px;">Select Child's Age:</h4>
+                <div class="child-selection">
+                    <div class="child-option" data-age="infant">
+                        <div class="child-icon">👶</div>
+                        <div class="child-age">0-2 years</div>
+                        <div class="child-requirements">Rear-facing only</div>
+                    </div>
+                    <div class="child-option" data-age="toddler">
+                        <div class="child-icon">🧒</div>
+                        <div class="child-age">2-4 years</div>
+                        <div class="child-requirements">Forward-facing with harness</div>
+                    </div>
+                    <div class="child-option" data-age="child">
+                        <div class="child-icon">👧</div>
+                        <div class="child-age">4-12 years</div>
+                        <div class="child-requirements">Booster seat</div>
+                    </div>
+                </div>
+
+                <!-- Seat Type Selection -->
+                <h4 style="color: var(--color-primary); margin-top: 25px; margin-bottom: 15px;">Select Appropriate Seat:</h4>
+                <div class="seat-type-selection">
+                    <div class="seat-type rear-facing" data-seat="rear-facing" draggable="true">
+                        <div class="seat-icon">🔄</div>
+                        <div class="seat-name">Rear-Facing</div>
+                        <div class="seat-age-range">Birth - 2+ years</div>
+                    </div>
+                    <div class="seat-type forward-facing" data-seat="forward-facing" draggable="true">
+                        <div class="seat-icon">▶️</div>
+                        <div class="seat-name">Forward-Facing</div>
+                        <div class="seat-age-range">2 - 5+ years</div>
+                    </div>
+                    <div class="seat-type booster" data-seat="booster" draggable="true">
+                        <div class="seat-icon">📈</div>
+                        <div class="seat-name">Booster Seat</div>
+                        <div class="seat-age-range">4 - 12 years</div>
+                    </div>
+                    <div class="seat-type no-seat" data-seat="no-seat" draggable="true">
+                        <div class="seat-icon">⚠️</div>
+                        <div class="seat-name">No Seat</div>
+                        <div class="seat-age-range">DANGEROUS</div>
+                    </div>
+                </div>
+
+                <!-- Simulation Controls -->
+                <div class="simulation-controls">
+                    <button class="control-btn" id="place-seat-btn">
+                        <span>🚗</span>
+                        Place in Vehicle
+                    </button>
+                    <button class="control-btn test-collision" id="test-collision-btn">
+                        <span>💥</span>
+                        Test Safety
+                    </button>
+                    <button class="control-btn" id="reset-simulation-btn">
+                        <span>↻</span>
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feedback Panel -->
+        <div class="feedback-panel" id="feedback-panel">
+            <div class="feedback-header">
+                <div class="feedback-icon safe" id="feedback-icon">✓</div>
+                <div>
+                    <div class="feedback-title" id="feedback-title">Correct Installation!</div>
+                    <div class="feedback-subtitle" id="feedback-subtitle">Your child is properly protected</div>
+                </div>
+            </div>
+            <div class="feedback-content" id="feedback-content">
+                <strong>Safety Analysis:</strong><br><br>
+                • <strong>Correct Seat Type:</strong> Rear-facing seat provides optimal protection for infants<br>
+                • <strong>Proper Placement:</strong> Back seat placement away from airbags<br>
+                • <strong>Secure Installation:</strong> Seat is properly anchored with LATCH system<br><br>
+                
+                <div class="safety-tips">
+                    <div class="tip-title">💡 Safety Tips:</div>
+                    <ul class="tip-list">
+                        <li>Keep children rear-facing until at least age 2</li>
+                        <li>Always place car seats in the back seat</li>
+                        <li>Ensure seat doesn't move more than 1 inch side-to-side</li>
+                        <li>Harness straps should be snug at armpit level</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Airbag Information -->
+        <div style="margin-top: 40px;">
+            <h2 style="color: var(--color-primary); margin-bottom: 20px; text-align: center;">Airbag Safety Features</h2>
+            <div class="airbag-info">
+                <div class="airbag-type">
+                    <span class="airbag-icon">🛡️</span>
+                    <div class="airbag-name">Front Airbags</div>
+                    <div class="airbag-description">
+                        Deploy in frontal crashes. Never place rear-facing seats in front of active front airbags - they can cause serious injury.
+                    </div>
+                </div>
+                <div class="airbag-type">
+                    <span class="airbag-icon">🔄</span>
+                    <div class="airbag-name">Side Airbags</div>
+                    <div class="airbag-description">
+                        Protect from side impacts. Ensure car seats don't block deployment zones. Most modern seats are compatible.
+                    </div>
+                </div>
+                <div class="airbag-type">
+                    <span class="airbag-icon">🏮</span>
+                    <div class="airbag-name">Curtain Airbags</div>
+                    <div class="airbag-description">
+                        Drop from ceiling to protect heads in side crashes and rollovers. Provide additional protection for all passengers.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-secondary" id="view-guidelines-btn">
+                <span class="btn-icon">📋</span>
+                View Full Guidelines
+            </button>
+            <button class="btn btn-primary" id="practice-installation-btn">
+                <span class="btn-icon">🔧</span>
+                Practice Installation
+            </button>
+            <button class="btn btn-secondary" id="share-safety-btn">
+                <span class="btn-icon">📢</span>
+                Share Safety Tips
+            </button>
+        </div>
+
+        <!-- Safety Facts -->
+        <div class="safety-facts">
+            <h2 class="facts-title">Child Passenger Safety Facts</h2>
+            <div class="facts-grid">
+                <div class="fact-item">
+                    <div class="fact-stat">71%</div>
+                    <div class="fact-description">Reduction in infant crash deaths with proper rear-facing car seat use</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-stat">45%</div>
+                    <div class="fact-description">Reduction in toddler crash deaths with forward-facing seats vs. seat belts alone</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-stat">325+</div>
+                    <div class="fact-description">Children under 5 saved annually by car seats in the United States</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-stat">10"</div>
+                    <div class="fact-description">Minimum distance drivers should maintain from steering wheel airbag</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // State Management
+            const state = {
+                selectedAge: null,
+                selectedSeat: null,
+                placedSeat: null,
+                correctPlacements: 0,
+                currentScenario: null,
+                airbagsDeployed: false
+            };
+
+            // Safety guidelines
+            const safetyGuidelines = {
+                'infant': {
+                    correctSeat: 'rear-facing',
+                    correctPosition: 'back',
+                    warning: 'NEVER place in front seat with airbag',
+                    riskReduction: '71%'
+                },
+                'toddler': {
+                    correctSeat: 'forward-facing',
+                    correctPosition: 'back',
+                    warning: 'Use harness until weight/height limits',
+                    riskReduction: '54%'
+                },
+                'child': {
+                    correctSeat: 'booster',
+                    correctPosition: 'back',
+                    warning: 'Use until seat belt fits properly (4\'9")',
+                    riskReduction: '45%'
+                }
+            };
+
+            // DOM Elements
+            const vehicleInterior = document.getElementById('vehicle-interior');
+            const childOptions = document.querySelectorAll('.child-option');
+            const seatTypes = document.querySelectorAll('.seat-type');
+            const placeSeatBtn = document.getElementById('place-seat-btn');
+            const testCollisionBtn = document.getElementById('test-collision-btn');
+            const resetBtn = document.getElementById('reset-simulation-btn');
+            const feedbackPanel = document.getElementById('feedback-panel');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackSubtitle = document.getElementById('feedback-subtitle');
+            const feedbackContent = document.getElementById('feedback-content');
+            const correctPlacementsEl = document.getElementById('correct-placements');
+            const riskReductionEl = document.getElementById('risk-reduction');
+
+            // Initialize simulation
+            function initSimulation() {
+                setupEventListeners();
+                setupDragAndDrop();
+                updateStats();
+            }
+
+            // Setup event listeners
+            function setupEventListeners() {
+                // Child age selection
+                childOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        childOptions.forEach(opt => opt.classList.remove('selected'));
+                        this.classList.add('selected');
+                        state.selectedAge = this.dataset.age;
+                        
+                        // Auto-select correct seat type
+                        const correctSeat = safetyGuidelines[state.selectedAge].correctSeat;
+                        seatTypes.forEach(seat => {
+                            seat.classList.remove('selected');
+                            if (seat.dataset.seat === correctSeat) {
+                                seat.classList.add('selected');
+                                state.selectedSeat = correctSeat;
+                            }
+                        });
+                        
+                        // Show/hide front seat danger zone
+                        const dangerZone = document.querySelector('.seat-drop-zone.front-passenger-danger');
+                        if (state.selectedAge === 'infant') {
+                            dangerZone.style.display = 'block';
+                        } else {
+                            dangerZone.style.display = 'none';
+                        }
+                    });
+                });
+
+                // Seat type selection
+                seatTypes.forEach(seat => {
+                    seat.addEventListener('click', function() {
+                        if (state.selectedAge) {
+                            seatTypes.forEach(s => s.classList.remove('selected'));
+                            this.classList.add('selected');
+                            state.selectedSeat = this.dataset.seat;
+                        } else {
+                            alert('Please select child age first!');
+                        }
+                    });
+                });
+
+                // Place seat button
+                placeSeatBtn.addEventListener('click', function() {
+                    if (!state.selectedAge || !state.selectedSeat) {
+                        showFeedback('warning', 'Incomplete Selection', 'Please select both child age and seat type');
+                        return;
+                    }
+                    
+                    placeCarSeatInVehicle();
+                });
+
+                // Test collision button
+                testCollisionBtn.addEventListener('click', function() {
+                    if (!state.placedSeat) {
+                        showFeedback('warning', 'No Seat Placed', 'Please place a car seat in the vehicle first');
+                        return;
+                    }
+                    
+                    testSafetyScenario();
+                });
+
+                // Reset button
+                resetBtn.addEventListener('click', function() {
+                    resetSimulation();
+                });
+
+                // Action buttons
+                document.getElementById('view-guidelines-btn').addEventListener('click', showGuidelinesModal);
+                document.getElementById('practice-installation-btn').addEventListener('click', showInstallationPractice);
+                document.getElementById('share-safety-btn').addEventListener('click', shareSafetyTips);
+            }
+
+            // Setup drag and drop
+            function setupDragAndDrop() {
+                seatTypes.forEach(seat => {
+                    seat.addEventListener('dragstart', function(e) {
+                        if (state.selectedAge) {
+                            e.dataTransfer.setData('text/plain', this.dataset.seat);
+                            this.classList.add('dragging');
+                        } else {
+                            e.preventDefault();
+                        }
+                    });
+
+                    seat.addEventListener('dragend', function() {
+                        this.classList.remove('dragging');
+                    });
+                });
+
+                // Drop zones in vehicle
+                const dropZones = document.querySelectorAll('.seat-drop-zone');
+                dropZones.forEach(zone => {
+                    zone.addEventListener('dragover', function(e) {
+                        e.preventDefault();
+                        if (state.selectedAge) {
+                            this.style.border = '2px dashed #4CAF50';
+                        }
+                    });
+
+                    zone.addEventListener('dragleave', function() {
+                        this.style.border = '2px dashed rgba(255,255,255,0.3)';
+                    });
+
+                    zone.addEventListener('drop', function(e) {
+                        e.preventDefault();
+                        this.style.border = '2px dashed rgba(255,255,255,0.3)';
+                        
+                        if (!state.selectedAge) {
+                            alert('Please select child age first!');
+                            return;
+                        }
+
+                        const seatType = e.dataTransfer.getData('text/plain');
+                        state.selectedSeat = seatType;
+                        
+                        // Update selected seat UI
+                        seatTypes.forEach(seat => {
+                            seat.classList.remove('selected');
+                            if (seat.dataset.seat === seatType) {
+                                seat.classList.add('selected');
+                            }
+                        });
+
+                        placeCarSeatInVehicle(this);
+                    });
+                });
+            }
+
+            // Place car seat in vehicle
+            function placeCarSeatInVehicle(dropZone = null) {
+                // Remove existing car seat
+                const existingSeat = vehicleInterior.querySelector('.car-seat');
+                if (existingSeat) {
+                    existingSeat.remove();
+                }
+
+                // Create new car seat
+                const carSeat = document.createElement('div');
+                carSeat.className = `car-seat ${state.selectedSeat}`;
+                carSeat.textContent = getSeatLabel(state.selectedSeat);
+                carSeat.draggable = true;
+
+                // Position based on drop zone or default
+                if (dropZone) {
+                    const rect = dropZone.getBoundingClientRect();
+                    const containerRect = vehicleInterior.getBoundingClientRect();
+                    
+                    carSeat.style.left = `${rect.left - containerRect.left}px`;
+                    carSeat.style.top = `${rect.top - containerRect.top}px`;
+                    
+                    // Check if this is a dangerous position
+                    if (dropZone.classList.contains('front-passenger-danger') && state.selectedSeat === 'rear-facing') {
+                        carSeat.classList.add('in-dangerous-position');
+                        state.placedSeat = { type: state.selectedSeat, position: 'front', safe: false };
+                    } else if (dropZone.classList.contains('front-passenger-danger')) {
+                        carSeat.classList.add('in-dangerous-position');
+                        state.placedSeat = { type: state.selectedSeat, position: 'front', safe: false };
+                    } else {
+                        carSeat.classList.add('in-correct-position');
+                        state.placedSeat = { type: state.selectedSeat, position: 'back', safe: true };
+                        state.correctPlacements++;
+                        updateStats();
+                    }
+                } else {
+                    // Default position (back seat middle - safest)
+                    carSeat.style.left = '45%';
+                    carSeat.style.top = '25%';
+                    carSeat.classList.add('in-correct-position');
+                    state.placedSeat = { type: state.selectedSeat, position: 'back', safe: true };
+                    state.correctPlacements++;
+                    updateStats();
+                }
+
+                // Add seat label
+                const seatLabel = document.createElement('div');
+                seatLabel.className = 'seat-label';
+                seatLabel.textContent = getChildLabel(state.selectedAge);
+                carSeat.appendChild(seatLabel);
+
+                // Make seat draggable
+                carSeat.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', state.selectedSeat);
+                    this.classList.add('dragging');
+                });
+
+                carSeat.addEventListener('dragend', function() {
+                    this.classList.remove('dragging');
+                });
+
+                vehicleInterior.appendChild(carSeat);
+
+                // Show feedback for placement
+                if (state.placedSeat.safe) {
+                    showFeedback('safe', 'Good Placement!', 'Car seat is in the safest location');
+                } else {
+                    showFeedback('danger', 'DANGEROUS Placement!', 'Front seat placement with airbag is extremely dangerous for children');
+                }
+            }
+
+            // Test safety scenario
+            function testSafetyScenario() {
+                // Hide feedback panel temporarily
+                feedbackPanel.classList.remove('show');
+                
+                // Reset airbags
+                document.querySelectorAll('.airbag').forEach(airbag => {
+                    airbag.style.display = 'none';
+                    airbag.style.animation = 'none';
+                });
+
+                // Show collision warning
+                vehicleInterior.style.backgroundColor = '#ff4444';
+                vehicleInterior.style.transition = 'background-color 0.5s ease';
+
+                // Deploy airbags after delay
+                setTimeout(() => {
+                    deployAirbags();
+                    
+                    // Show results based on placement
+                    setTimeout(() => {
+                        showTestResults();
+                    }, 1000);
+                }, 500);
+            }
+
+            // Deploy airbags
+            function deployAirbags() {
+                document.querySelectorAll('.airbag').forEach(airbag => {
+                    airbag.style.display = 'flex';
+                    airbag.style.animation = 'deploy 0.2s ease-out';
+                });
+
+                state.airbagsDeployed = true;
+                vehicleInterior.style.backgroundColor = '#333';
+            }
+
+            // Show test results
+            function showTestResults() {
+                if (!state.placedSeat) return;
+
+                const guidelines = safetyGuidelines[state.selectedAge];
+                const isCorrectSeat = state.selectedSeat === guidelines.correctSeat;
+                const isCorrectPosition = state.placedSeat.position === 'back';
+
+                if (isCorrectSeat && isCorrectPosition) {
+                    showFeedback('safe', 
+                        'SAFE! ✅', 
+                        'Child Properly Protected',
+                        `<strong>Safety Analysis:</strong><br><br>
+                        • <strong>Correct Seat Type:</strong> ${state.selectedSeat.replace('-', ' ')} seat is appropriate for ${state.selectedAge}<br>
+                        • <strong>Proper Placement:</strong> Back seat placement keeps child safe from airbag deployment<br>
+                        • <strong>Risk Reduction:</strong> Proper use reduces crash injury risk by ${guidelines.riskReduction}<br><br>
+                        
+                        <div class="safety-tips">
+                            <div class="tip-title">💡 Safety Tips:</div>
+                            <ul class="tip-list">
+                                <li>${guidelines.warning}</li>
+                                <li>Always use the seat's harness system properly</li>
+                                <li>Ensure seat is tightly installed (less than 1 inch movement)</li>
+                                <li>Register your car seat for recall notifications</li>
+                            </ul>
+                        </div>`
+                    );
+                } else if (state.placedSeat.position === 'front') {
+                    showFeedback('danger',
+                        'EXTREME DANGER! ⚠️',
+                        'Airbag Impact Simulation',
+                        `<strong>CRITICAL SAFETY FAILURE:</strong><br><br>
+                        • <strong>Front Airbag Deployed:</strong> At 200+ mph, directly into rear-facing car seat<br>
+                        • <strong>Projectile Force:</strong> Seat and child thrown backward with extreme force<br>
+                        • <strong>Injury Risk:</strong> High probability of severe head/neck trauma or fatality<br><br>
+                        
+                        <div class="safety-tips" style="background: rgba(239,68,68,0.1); border-left-color: var(--color-danger);">
+                            <div class="tip-title" style="color: var(--color-danger);">🚨 IMMEDIATE ACTION REQUIRED:</div>
+                            <ul class="tip-list">
+                                <li><strong>NEVER</strong> place rear-facing seats in front seats with airbags</li>
+                                <li>Children under 13 should always ride in back seat</li>
+                                <li>If no back seat, airbag MUST be deactivated by professional</li>
+                                <li>Consult vehicle manual for airbag deactivation procedures</li>
+                            </ul>
+                        </div>`
+                    );
+                } else {
+                    showFeedback('warning',
+                        'Needs Improvement',
+                        'Incorrect seat type for age',
+                        `<strong>Safety Analysis:</strong><br><br>
+                        • <strong>Incorrect Seat:</strong> ${state.selectedSeat} seat is not appropriate for ${state.selectedAge}<br>
+                        • <strong>Correct Choice:</strong> Should use ${guidelines.correctSeat} seat<br>
+                        • <strong>Risk Increase:</strong> Using wrong seat type increases injury risk by 40%<br><br>
+                        
+                        <div class="safety-tips">
+                            <div class="tip-title">📋 Age Guidelines:</div>
+                            <ul class="tip-list">
+                                <li><strong>0-2 years:</strong> Rear-facing only</li>
+                                <li><strong>2-4 years:</strong> Forward-facing with harness</li>
+                                <li><strong>4-12 years:</strong> Booster seat until 4'9" tall</li>
+                                <li><strong>12+ years:</strong> Seat belt (back seat until 13)</li>
+                            </ul>
+                        </div>`
+                    );
+                }
+            }
+
+            // Show feedback
+            function showFeedback(type, title, subtitle, content = null) {
+                feedbackPanel.classList.add('show');
+                
+                // Set icon and colors
+                feedbackIcon.className = 'feedback-icon ' + type;
+                feedbackIcon.textContent = type === 'safe' ? '✓' : type === 'danger' ? '⚠️' : 'ℹ️';
+                
+                // Set text
+                feedbackTitle.textContent = title;
+                feedbackSubtitle.textContent = subtitle;
+                
+                if (content) {
+                    feedbackContent.innerHTML = content;
+                }
+                
+                // Scroll to feedback
+                feedbackPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            // Update statistics
+            function updateStats() {
+                correctPlacementsEl.textContent = state.correctPlacements;
+                
+                if (state.selectedAge && safetyGuidelines[state.selectedAge]) {
+                    riskReductionEl.textContent = safetyGuidelines[state.selectedAge].riskReduction;
+                }
+            }
+
+            // Reset simulation
+            function resetSimulation() {
+                // Reset state
+                state.selectedAge = null;
+                state.selectedSeat = null;
+                state.placedSeat = null;
+                state.airbagsDeployed = false;
+                
+                // Reset UI
+                childOptions.forEach(opt => opt.classList.remove('selected'));
+                seatTypes.forEach(seat => seat.classList.remove('selected'));
+                
+                // Remove car seat
+                const carSeat = vehicleInterior.querySelector('.car-seat');
+                if (carSeat) carSeat.remove();
+                
+                // Hide airbags
+                document.querySelectorAll('.airbag').forEach(airbag => {
+                    airbag.style.display = 'none';
+                });
+                
+                // Reset vehicle color
+                vehicleInterior.style.backgroundColor = '#333';
+                
+                // Hide feedback
+                feedbackPanel.classList.remove('show');
+                
+                // Update stats
+                updateStats();
+            }
+
+            // Helper functions
+            function getSeatLabel(seatType) {
+                const labels = {
+                    'rear-facing': '🔄',
+                    'forward-facing': '▶️',
+                    'booster': '📈',
+                    'no-seat': '⚠️'
+                };
+                return labels[seatType] || '🚗';
+            }
+
+            function getChildLabel(age) {
+                const labels = {
+                    'infant': '👶 0-2 yrs',
+                    'toddler': '🧒 2-4 yrs',
+                    'child': '👧 4-12 yrs'
+                };
+                return labels[age] || 'Child';
+            }
+
+            // Modal for guidelines
+            function showGuidelinesModal() {
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                    animation: fadeIn 0.3s ease;
+                `;
+                
+                modal.innerHTML = `
+                    <div style="
+                        background: white;
+                        border-radius: ${getComputedStyle(document.documentElement).getPropertyValue('--radius-lg')};
+                        padding: 30px;
+                        max-width: 600px;
+                        width: 90%;
+                        max-height: 90vh;
+                        overflow-y: auto;
+                    ">
+                        <h2 style="color: var(--color-primary); margin-bottom: 20px;">Car Seat Guidelines</h2>
+                        
+                        <div style="margin-bottom: 25px;">
+                            <h3 style="color: var(--color-text); margin-bottom: 15px;">📋 Virginia Safety Requirements:</h3>
+                            <div style="background: rgba(95, 23, 235, 0.05); padding: 15px; border-radius: var(--radius-sm); margin-bottom: 15px;">
+                                <strong>Rear-Facing:</strong> Until at least age 2 or until height/weight limits
+                            </div>
+                            <div style="background: rgba(95, 23, 235, 0.05); padding: 15px; border-radius: var(--radius-sm); margin-bottom: 15px;">
+                                <strong>Forward-Facing:</strong> With harness until limits (usually 40-65 lbs)
+                            </div>
+                            <div style="background: rgba(95, 23, 235, 0.05); padding: 15px; border-radius: var(--radius-sm); margin-bottom: 15px;">
+                                <strong>Booster Seat:</strong> Until child is 4'9" tall (8-12 years old)
+                            </div>
+                            <div style="background: rgba(95, 23, 235, 0.05); padding: 15px; border-radius: var(--radius-sm);">
+                                <strong>Back Seat:</strong> All children under 13 should ride in back seat
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: var(--radius-sm); margin-bottom: 25px;">
+                            <strong>💡 Installation Tips:</strong><br>
+                            • Use LATCH system or seat belt (not both)<br>
+                            • Seat should not move more than 1 inch<br>
+                            • Harness straps at or below shoulders (rear-facing)<br>
+                            • Harness straps at or above shoulders (forward-facing)<br>
+                            • Chest clip at armpit level
+                        </div>
+                        
+                        <button id="close-modal" style="
+                            padding: 12px 24px;
+                            background: var(--color-primary);
+                            color: white;
+                            border: none;
+                            border-radius: var(--radius-sm);
+                            font-weight: 700;
+                            cursor: pointer;
+                            width: 100%;
+                        ">
+                            Close Guidelines
+                        </button>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                modal.querySelector('#close-modal').addEventListener('click', function() {
+                    document.body.removeChild(modal);
+                });
+                
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        document.body.removeChild(modal);
+                    }
+                });
+            }
+
+            // Installation practice
+            function showInstallationPractice() {
+                const steps = [
+                    "1. Read both car seat and vehicle manuals",
+                    "2. Choose back seat position (middle is safest)",
+                    "3. Install using LATCH system or seat belt",
+                    "4. Press down firmly while tightening",
+                    "5. Check for less than 1 inch movement",
+                    "6. Adjust harness straps properly",
+                    "7. Position chest clip at armpit level",
+                    "8. Register seat for recall notifications"
+                ];
+
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                    animation: fadeIn 0.3s ease;
+                `;
+                
+                modal.innerHTML = `
+                    <div style="
+                        background: white;
+                        border-radius: ${getComputedStyle(document.documentElement).getPropertyValue('--radius-lg')};
+                        padding: 30px;
+                        max-width: 500px;
+                        width: 90%;
+                        max-height: 90vh;
+                        overflow-y: auto;
+                    ">
+                        <h2 style="color: var(--color-primary); margin-bottom: 20px;">🔧 Installation Practice</h2>
+                        
+                        <div style="margin-bottom: 25px;">
+                            <h3 style="color: var(--color-text); margin-bottom: 15px;">Step-by-Step Installation:</h3>
+                            <div style="background: rgba(95, 23, 235, 0.05); padding: 20px; border-radius: var(--radius-sm);">
+                                ${steps.map(step => `<div style="margin-bottom: 10px; padding-left: 20px; position: relative;">
+                                    <span style="position: absolute; left: 0; color: var(--color-primary);">✓</span>
+                                    ${step}
+                                </div>`).join('')}
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(239, 68, 68, 0.1); padding: 15px; border-radius: var(--radius-sm); margin-bottom: 25px;">
+                            <strong>🚨 Common Mistakes:</strong><br>
+                            • Loose installation (more than 1 inch movement)<br>
+                            • Incorrect harness height<br>
+                            • Twisted harness straps<br>
+                            • Chest clip too low or too high<br>
+                            • Using both LATCH and seat belt together
+                        </div>
+                        
+                        <button id="close-modal" style="
+                            padding: 12px 24px;
+                            background: var(--color-primary);
+                            color: white;
+                            border: none;
+                            border-radius: var(--radius-sm);
+                            font-weight: 700;
+                            cursor: pointer;
+                            width: 100%;
+                        ">
+                            Close Practice Guide
+                        </button>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                modal.querySelector('#close-modal').addEventListener('click', function() {
+                    document.body.removeChild(modal);
+                });
+                
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        document.body.removeChild(modal);
+                    }
+                });
+            }
+
+            // Share safety tips
+            function shareSafetyTips() {
+                const shareText = `Car seat safety facts: Rear-facing until 2+ years reduces infant crash deaths by 71%. Always use back seat for children under 13. Learn more about proper car seat installation!`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Car Seat Safety Tips',
+                        text: shareText,
+                        url: window.location.href
+                    });
+                } else {
+                    navigator.clipboard.writeText(shareText + ' ' + window.location.href).then(() => {
+                        alert('Safety tips copied to clipboard! Share with other parents.');
+                    });
+                }
+            }
+
+            // Initialize the simulation
+            initSimulation();
+            
+            // Auto-select first child option
+            setTimeout(() => {
+                childOptions[0].click();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
