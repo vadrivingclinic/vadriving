@@ -1,0 +1,2416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workers' Compensation - Interactive Simulation</title>
+    <style>
+        :root {
+            --color-primary: #1a3d7c;
+            --color-primary-light: #2d5ba3;
+            --color-primary-dark: #0d2b5a;
+            --color-secondary: #af4bef;
+            --color-secondary-light: #d492ff;
+            --color-secondary-dark: #8a00cc;
+            --color-success: #00b894;
+            --color-success-light: #00e5b4;
+            --color-warning: #f59e0b;
+            --color-warning-light: #ffc048;
+            --color-error: #e17055;
+            --color-error-light: #ff8c69;
+            --color-info: #8380f0;
+            --color-info-light: #a8a5ff;
+            --color-bg: #f7f5fb;
+            --color-bg-light: #ffffff;
+            --color-bg-dark: #f1ecff;
+            --color-text: #1a202c;
+            --color-text-light: #4a5568;
+            --color-text-muted: #718096;
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-sm: 0 2px 8px rgba(26, 61, 124, 0.08);
+            --shadow-md: 0 4px 16px rgba(26, 61, 124, 0.12);
+            --shadow-lg: 0 8px 32px rgba(26, 61, 124, 0.16);
+            --shadow-xl: 0 12px 48px rgba(26, 61, 124, 0.2);
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f7f5fb 0%, #f1ecff 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 400px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+            z-index: -1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(3deg); }
+            66% { transform: translateY(5px) rotate(-3deg); }
+        }
+
+        @keyframes highlight {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(175, 75, 239, 0); }
+            50% { box-shadow: 0 0 0 10px rgba(175, 75, 239, 0.1); }
+        }
+
+        .simulation-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s var(--transition-base);
+        }
+
+        /* Enhanced Header */
+        .brand-header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius-xl);
+            padding: 35px 45px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+            animation: slideInRight 0.6s var(--transition-base);
+        }
+
+        .brand-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, 
+                var(--color-primary) 0%, 
+                var(--color-secondary) 33%, 
+                var(--color-success) 66%, 
+                var(--color-info) 100%);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+
+        .brand-content {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-logo-container {
+            position: relative;
+        }
+
+        .brand-logo {
+            height: 80px;
+            width: 80px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            filter: drop-shadow(0 6px 20px rgba(26, 61, 124, 0.3));
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .logo-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 32px;
+            height: 32px;
+            background: var(--color-warning);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 900;
+            border: 3px solid white;
+            animation: pulse 3s infinite;
+        }
+
+        .brand-text {
+            flex: 1;
+        }
+
+        .module-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-info));
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .brand-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .brand-subtitle {
+            font-size: 1.1rem;
+            color: var(--color-text-light);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .subtitle-icon {
+            color: var(--color-secondary);
+            animation: pulse 2s infinite;
+        }
+
+        /* Enhanced Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            margin-bottom: 45px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.96) 100%);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-base);
+            cursor: pointer;
+            border-left: 5px solid var(--color-primary);
+        }
+
+        .stat-card:nth-child(2) { border-left-color: var(--color-secondary); }
+        .stat-card:nth-child(3) { border-left-color: var(--color-success); }
+        .stat-card:nth-child(4) { border-left-color: var(--color-warning); }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            color: white;
+            font-size: 1.8rem;
+        }
+
+        .stat-content {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            line-height: 1;
+            font-family: 'Courier New', monospace;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: var(--color-text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-top: 12px;
+        }
+
+        .stat-trend {
+            font-size: 0.9rem;
+            color: var(--color-success);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Enhanced Progress Tracker */
+        .progress-tracker {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 35px;
+            margin-bottom: 45px;
+            box-shadow: var(--shadow-lg);
+            animation: slideInLeft 0.6s var(--transition-base);
+        }
+
+        .tracker-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .tracker-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .tracker-title::before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            background: var(--color-secondary);
+            border-radius: 4px;
+            display: block;
+            transform: rotate(45deg);
+        }
+
+        .tracker-percent {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-family: 'Courier New', monospace;
+        }
+
+        .tracker-visual {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .tracker-bar {
+            height: 20px;
+            background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg) 100%);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .tracker-fill {
+            height: 100%;
+            background: linear-gradient(90deg, 
+                var(--color-primary) 0%, 
+                var(--color-secondary) 25%, 
+                var(--color-info) 50%, 
+                var(--color-success) 75%, 
+                var(--color-warning) 100%);
+            background-size: 200% 100%;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: shimmer 3s infinite linear;
+        }
+
+        .tracker-milestones {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            padding: 0 15px;
+        }
+
+        .milestone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .milestone-dot {
+            width: 24px;
+            height: 24px;
+            background: var(--color-bg-light);
+            border: 4px solid var(--color-primary-light);
+            border-radius: 50%;
+            margin-bottom: 12px;
+            position: relative;
+            transition: all var(--transition-base);
+        }
+
+        .milestone.completed .milestone-dot {
+            background: var(--color-success);
+            border-color: var(--color-success);
+            box-shadow: 0 0 0 8px rgba(0, 184, 148, 0.2);
+            animation: highlight 2s infinite;
+        }
+
+        .milestone.active .milestone-dot {
+            background: var(--color-secondary);
+            border-color: var(--color-secondary);
+            animation: pulse 1.5s infinite;
+        }
+
+        .milestone-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-text-muted);
+            text-align: center;
+            max-width: 100px;
+        }
+
+        .milestone.completed .milestone-label {
+            color: var(--color-success);
+        }
+
+        .milestone.active .milestone-label {
+            color: var(--color-secondary);
+            font-weight: 800;
+        }
+
+        /* Simulation Area */
+        .simulation-area {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 35px;
+            margin-bottom: 60px;
+        }
+
+        @media (max-width: 1200px) {
+            .simulation-area {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Enhanced Case Profile */
+        .case-profile {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 35px;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 20px;
+            animation: slideInLeft 0.6s var(--transition-base);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 35px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid var(--color-bg-dark);
+            position: relative;
+        }
+
+        .profile-header::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 25%;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--color-secondary), transparent);
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            border-radius: 50%;
+            margin: 0 auto 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-weight: 900;
+            position: relative;
+            box-shadow: 0 12px 40px rgba(26, 61, 124, 0.4);
+        }
+
+        .profile-avatar::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            right: -6px;
+            bottom: -6px;
+            border: 3px solid var(--color-secondary-light);
+            border-radius: 50%;
+            animation: pulse 3s infinite;
+        }
+
+        .profile-name {
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+        }
+
+        .profile-occupation {
+            font-size: 1.1rem;
+            color: var(--color-secondary);
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .profile-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--color-info), var(--color-secondary-light));
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            box-shadow: var(--shadow-md);
+        }
+
+        .profile-details {
+            margin-top: 35px;
+        }
+
+        .detail-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--color-secondary);
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--color-bg-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--color-bg-dark);
+            position: relative;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--color-text-light);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-label::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--color-secondary);
+            border-radius: 50%;
+            display: block;
+        }
+
+        .detail-value {
+            font-weight: 700;
+            color: var(--color-primary);
+            text-align: right;
+            font-size: 1rem;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .status-active {
+            background: rgba(0, 184, 148, 0.1);
+            color: var(--color-success);
+            border: 2px solid rgba(0, 184, 148, 0.3);
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--color-warning);
+            border: 2px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-review {
+            background: rgba(131, 128, 240, 0.1);
+            color: var(--color-info);
+            border: 2px solid rgba(131, 128, 240, 0.3);
+        }
+
+        /* Enhanced Simulation Content */
+        .simulation-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 45px;
+            box-shadow: var(--shadow-lg);
+            animation: slideInRight 0.6s var(--transition-base);
+        }
+
+        .scenario-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 35px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid var(--color-bg-dark);
+            position: relative;
+        }
+
+        .scenario-header::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 150px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-secondary), transparent);
+        }
+
+        .scenario-number {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .scenario-title {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            line-height: 1.3;
+        }
+
+        .scenario-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--color-warning), #ffb74d);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            margin-left: 20px;
+            vertical-align: middle;
+        }
+
+        .scenario-description {
+            margin-bottom: 45px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg) 100%);
+            border-radius: var(--radius-lg);
+            border-left: 6px solid var(--color-secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scenario-description::before {
+            content: '⚖️';
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 3rem;
+            opacity: 0.1;
+        }
+
+        .learning-objective {
+            background: linear-gradient(135deg, rgba(175, 75, 239, 0.05) 0%, rgba(131, 128, 240, 0.05) 100%);
+            border-left: 4px solid var(--color-info);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        }
+
+        /* Enhanced Interactive Sections */
+        .interactive-section {
+            margin-bottom: 45px;
+        }
+
+        .section-header {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .section-header::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 8px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--color-secondary), var(--color-info));
+            border-radius: 4px;
+        }
+
+        /* Enhanced Eligibility Assessment */
+        .eligibility-assessment {
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.05) 0%, rgba(131, 128, 240, 0.05) 100%);
+            border: 2px solid rgba(0, 184, 148, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .assessment-question {
+            font-weight: 800;
+            margin-bottom: 25px;
+            color: var(--color-success);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .assessment-question::before {
+            content: '❓';
+            font-size: 1.5rem;
+        }
+
+        .assessment-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+        }
+
+        .assessment-option {
+            padding: 20px;
+            background: white;
+            border: 2px solid rgba(0, 184, 148, 0.2);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-weight: 600;
+            color: var(--color-text-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .assessment-option:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-success);
+            box-shadow: var(--shadow-md);
+        }
+
+        .assessment-option.selected {
+            background: linear-gradient(135deg, var(--color-success), #26a69a);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 184, 148, 0.3);
+        }
+
+        /* Enhanced Disability Classification */
+        .disability-classification {
+            margin: 40px 0;
+        }
+
+        .classification-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .classification-card {
+            background: white;
+            border: 2px solid rgba(175, 75, 239, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .classification-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--color-secondary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .classification-card.selected {
+            background: linear-gradient(135deg, rgba(175, 75, 239, 0.05), rgba(131, 128, 240, 0.05));
+            border-color: var(--color-secondary);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(175, 75, 239, 0.2);
+        }
+
+        .classification-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .classification-name {
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .classification-desc {
+            font-size: 0.95rem;
+            color: var(--color-text-muted);
+            line-height: 1.6;
+        }
+
+        /* Enhanced Benefit Calculation */
+        .benefit-calculation {
+            background: linear-gradient(135deg, rgba(241, 236, 255, 0.5) 0%, rgba(247, 245, 251, 0.8) 100%);
+            border: 2px solid rgba(175, 75, 239, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 35px;
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .calculation-steps {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0 45px;
+            position: relative;
+            padding: 0 25px;
+        }
+
+        .calculation-steps::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                var(--color-primary) 0%, 
+                var(--color-secondary) 33%, 
+                var(--color-info) 66%, 
+                var(--color-success) 100%);
+            background-size: 300% 100%;
+            animation: shimmer 3s infinite linear;
+            z-index: 1;
+        }
+
+        .calculation-step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-indicator {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border: 4px solid var(--color-bg-dark);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: var(--color-text-muted);
+            font-size: 1.3rem;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .calculation-step.active .step-indicator {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            border-color: transparent;
+            transform: scale(1.2);
+            box-shadow: 0 10px 25px rgba(26, 61, 124, 0.4);
+        }
+
+        .calculation-step.completed .step-indicator {
+            background: var(--color-success);
+            color: white;
+            border-color: transparent;
+        }
+
+        .step-description {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--color-text-muted);
+            transition: color var(--transition-base);
+        }
+
+        .calculation-step.active .step-description {
+            color: var(--color-primary);
+        }
+
+        .calculation-step.completed .step-description {
+            color: var(--color-success);
+        }
+
+        .calculation-form {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: 800;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-label::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: var(--color-secondary);
+            border-radius: 50%;
+            display: block;
+        }
+
+        .form-input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 18px 25px;
+            border: 2px solid var(--color-bg-dark);
+            border-radius: var(--radius-md);
+            font-size: 1.1rem;
+            transition: all var(--transition-fast);
+            background: var(--color-bg-light);
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 0 5px rgba(175, 75, 239, 0.1);
+        }
+
+        .form-slider {
+            width: 100%;
+            height: 8px;
+            background: var(--color-bg-dark);
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .form-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-info));
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Enhanced Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 25px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 18px 36px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            box-shadow: 0 10px 30px rgba(26, 61, 124, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 40px rgba(26, 61, 124, 0.5);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 3px solid var(--color-primary-light);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--color-secondary);
+            border: 3px solid var(--color-secondary);
+        }
+
+        .btn-outline:hover {
+            background: var(--color-secondary);
+            color: white;
+            transform: translateY(-6px);
+        }
+
+        /* Enhanced Feedback Panel */
+        .feedback-panel {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+            backdrop-filter: blur(15px);
+            border: 3px solid var(--color-success);
+            border-radius: var(--radius-lg);
+            padding: 35px;
+            margin-top: 45px;
+            display: none;
+            animation: slideInRight 0.5s var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feedback-panel.show {
+            display: block;
+        }
+
+        .feedback-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.05) 0%, transparent 100%);
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feedback-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--color-success), #26a69a);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .feedback-title {
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: var(--color-success);
+        }
+
+        .feedback-content {
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .key-learning {
+            background: linear-gradient(135deg, rgba(175, 75, 239, 0.05) 0%, rgba(131, 128, 240, 0.05) 100%);
+            border-left: 6px solid var(--color-info);
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+        }
+
+        /* Enhanced Objectives Panel */
+        .objectives-panel {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 35px;
+            margin-top: 45px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .objectives-list {
+            list-style: none;
+            padding-left: 0;
+            display: grid;
+            gap: 18px;
+        }
+
+        .objective-item {
+            padding: 25px;
+            background: var(--color-bg-light);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            transition: all var(--transition-base);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .objective-item:hover {
+            transform: translateX(12px);
+            border-color: var(--color-secondary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .objective-item.completed {
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.05) 0%, rgba(0, 184, 148, 0.1) 100%);
+            border-color: rgba(0, 184, 148, 0.2);
+        }
+
+        .objective-item.completed::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: var(--color-success);
+        }
+
+        .objective-checkbox {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--color-bg-dark);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all var(--transition-fast);
+            background: white;
+            font-weight: 900;
+        }
+
+        .objective-item:hover .objective-checkbox {
+            border-color: var(--color-secondary);
+        }
+
+        .objective-item.completed .objective-checkbox {
+            background: var(--color-success);
+            border-color: var(--color-success);
+            color: white;
+        }
+
+        .objective-text {
+            flex: 1;
+            font-weight: 600;
+            color: var(--color-text);
+            font-size: 1.05rem;
+        }
+
+        .objective-number {
+            color: var(--color-secondary);
+            font-weight: 900;
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .brand-header {
+                padding: 25px;
+            }
+
+            .brand-title {
+                font-size: 2rem;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .simulation-content {
+                padding: 30px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .calculation-steps {
+                flex-direction: column;
+                gap: 35px;
+                padding: 0;
+            }
+
+            .calculation-steps::before {
+                display: none;
+            }
+
+            .calculation-step {
+                display: flex;
+                align-items: center;
+                gap: 25px;
+                text-align: left;
+            }
+
+            .step-indicator {
+                margin: 0;
+                flex-shrink: 0;
+            }
+
+            .classification-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .assessment-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="simulation-container">
+        <!-- Enhanced Brand Header -->
+        <header class="brand-header">
+            <div class="brand-content">
+                <div class="brand-logo-container">
+                    <img src="https://cdn.prod.website-files.com/64d0ccc1558d601cbfb09021/64e9d2f719b1e5258e5d57f5_IMG_1512-p-500.png" 
+                         alt="Brand Logo" class="brand-logo">
+                    <div class="logo-badge">⚖️</div>
+                </div>
+                <div class="brand-text">
+                    <div class="module-tag">Workers' Compensation Module</div>
+                    <h1 class="brand-title">Workers' Compensation Simulation</h1>
+                    <div class="brand-subtitle">
+                        <span class="subtitle-icon">🎯</span>
+                        Interactive Case Management & Claims Processing Training
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Enhanced Dashboard -->
+        <div class="dashboard">
+            <div class="stat-card" onclick="focusOnProgress()">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                    <div>
+                        <div class="stat-number" id="progress-percent">0%</div>
+                        <div class="stat-label">Case Progress</div>
+                    </div>
+                    <div class="stat-trend">↑</div>
+                </div>
+            </div>
+            <div class="stat-card" onclick="showObjectives()">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-content">
+                    <div>
+                        <div class="stat-number" id="completed-objectives">0/21</div>
+                        <div class="stat-label">Objectives Met</div>
+                    </div>
+                    <div class="stat-trend">↑</div>
+                </div>
+            </div>
+            <div class="stat-card" onclick="showFeedback()">
+                <div class="stat-icon">✅</div>
+                <div class="stat-content">
+                    <div>
+                        <div class="stat-number" id="correct-decisions">0</div>
+                        <div class="stat-label">Correct Decisions</div>
+                    </div>
+                    <div class="stat-trend">↑</div>
+                </div>
+            </div>
+            <div class="stat-card" onclick="showTimeStats()">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-content">
+                    <div>
+                        <div class="stat-number" id="time-spent">00:00</div>
+                        <div class="stat-label">Time Learning</div>
+                    </div>
+                    <div class="stat-trend">⏳</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Progress Tracker -->
+        <div class="progress-tracker">
+            <div class="tracker-header">
+                <div class="tracker-title">Case Management Journey</div>
+                <div class="tracker-percent" id="tracker-text">0% Complete</div>
+            </div>
+            <div class="tracker-visual">
+                <div class="tracker-bar">
+                    <div class="tracker-fill" id="tracker-fill"></div>
+                </div>
+                <div class="tracker-milestones">
+                    <div class="milestone">
+                        <div class="milestone-dot"></div>
+                        <div class="milestone-label">Initial Assessment</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-dot"></div>
+                        <div class="milestone-label">Eligibility</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-dot"></div>
+                        <div class="milestone-label">Disability Classification</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-dot"></div>
+                        <div class="milestone-label">Benefits Calculation</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-dot active"></div>
+                        <div class="milestone-label">Case Resolution</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulation Area -->
+        <div class="simulation-area">
+            <!-- Enhanced Case Profile -->
+            <aside class="case-profile">
+                <div class="profile-header">
+                    <div class="profile-avatar">ML</div>
+                    <div class="profile-name">Michael Lawrence</div>
+                    <div class="profile-occupation">
+                        <i class="fas fa-hard-hat"></i>
+                        Construction Worker • Carpenter
+                    </div>
+                    <div class="profile-badge">Workers' Comp Claim • Active</div>
+                </div>
+                <div class="profile-details">
+                    <div class="detail-section">
+                        <div class="section-title">
+                            <i class="fas fa-user-circle"></i>
+                            Personal Information
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Age</span>
+                            <span class="detail-value">42</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Employment Status</span>
+                            <span class="detail-value">Full-time (8 years)</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Weekly Wage</span>
+                            <span class="detail-value">$1,200</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="section-title">
+                            <i class="fas fa-file-medical"></i>
+                            Injury Details
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Date of Injury</span>
+                            <span class="detail-value">11/15/2024</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Nature of Injury</span>
+                            <span class="detail-value">Lower Back Strain</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Injury Type</span>
+                            <span class="detail-value">Work-related accident</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <div class="section-title">
+                            <i class="fas fa-clipboard-check"></i>
+                            Claim Status
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Claim Number</span>
+                            <span class="detail-value">WC-2024-8421</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Insurance Carrier</span>
+                            <span class="detail-value">State Fund Insurance</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Current Status</span>
+                            <span class="detail-value">
+                                <span class="status-indicator status-active">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    Under Review
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-outline" style="width: 100%; margin-top: 30px;" onclick="changeCaseScenario()">
+                    <i class="fas fa-sync-alt"></i>
+                    Load Different Case
+                </button>
+            </aside>
+
+            <!-- Enhanced Simulation Content -->
+            <main class="simulation-content">
+                <div class="scenario-header">
+                    <div class="scenario-number">1</div>
+                    <div class="scenario-title">
+                        Initial Assessment & Eligibility Determination
+                        <span class="scenario-tag">Critical Analysis Required</span>
+                    </div>
+                </div>
+
+                <div class="scenario-description">
+                    <p><strong>Case Overview:</strong> Michael Lawrence, a 42-year-old carpenter, sustained a lower back strain while lifting heavy materials at a construction site on November 15, 2024. He has been employed full-time with the same company for 8 years, earning $1,200 weekly.</p>
+                    <p style="margin-top: 15px;"><strong>Your Role:</strong> As a workers' compensation claims adjuster, you must assess the case for eligibility, determine disability classification, calculate appropriate benefits, and identify any potential fraud indicators.</p>
+                    
+                    <div class="learning-objective">
+                        <strong>Primary Learning Objectives:</strong> Determine eligibility under state workers' compensation laws, classify disability type, calculate benefits, and identify fraud indicators.
+                    </div>
+                </div>
+
+                <!-- Enhanced Eligibility Assessment -->
+                <div class="interactive-section">
+                    <div class="section-header">
+                        <i class="fas fa-check-circle"></i>
+                        Step 1: Eligibility Assessment
+                    </div>
+                    <div class="eligibility-assessment">
+                        <div class="assessment-question">Is Michael eligible for workers' compensation benefits based on the circumstances?</div>
+                        <div class="assessment-options">
+                            <div class="assessment-option" onclick="selectEligibility(this, true)">
+                                <i class="fas fa-check"></i>
+                                Yes - Injury occurred during employment duties
+                            </div>
+                            <div class="assessment-option" onclick="selectEligibility(this, false)">
+                                <i class="fas fa-times"></i>
+                                No - Not work-related
+                            </div>
+                            <div class="assessment-option" onclick="selectEligibility(this, 'partial')">
+                                <i class="fas fa-adjust"></i>
+                                Partial - Pre-existing condition aggravated
+                            </div>
+                            <div class="assessment-option" onclick="selectEligibility(this, 'investigate')">
+                                <i class="fas fa-search"></i>
+                                Requires further investigation
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Disability Classification -->
+                <div class="interactive-section">
+                    <div class="section-header">
+                        <i class="fas fa-wheelchair"></i>
+                        Step 2: Disability Classification
+                    </div>
+                    <div class="disability-classification">
+                        <p style="margin-bottom: 25px; color: var(--color-text-light);">Based on medical reports indicating Michael cannot work for 4-6 weeks but is expected to fully recover, select the appropriate disability classification:</p>
+                        <div class="classification-grid">
+                            <div class="classification-card" onclick="selectDisability(this, 'temporary')">
+                                <div class="classification-icon">🔄</div>
+                                <div class="classification-name">Temporary Disability</div>
+                                <div class="classification-desc">Inability to work for a limited period with expected full recovery</div>
+                            </div>
+                            <div class="classification-card" onclick="selectDisability(this, 'permanent')">
+                                <div class="classification-icon">⚡</div>
+                                <div class="classification-name">Permanent Disability</div>
+                                <div class="classification-desc">Lasting impairment that affects earning capacity indefinitely</div>
+                            </div>
+                            <div class="classification-card" onclick="selectDisability(this, 'nondisability')">
+                                <div class="classification-icon">✅</div>
+                                <div class="classification-name">Non-disability</div>
+                                <div class="classification-desc">Minor injury requiring medical treatment but no work restriction</div>
+                            </div>
+                            <div class="classification-card" onclick="selectDisability(this, 'permanent_stationary')">
+                                <div class="classification-icon">📊</div>
+                                <div class="classification-name">Permanent & Stationary</div>
+                                <div class="classification-desc">Condition has stabilized with permanent residual impairment</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Benefit Calculation -->
+                <div class="interactive-section">
+                    <div class="section-header">
+                        <i class="fas fa-calculator"></i>
+                        Step 3: Benefit Calculation & Waiting Period
+                    </div>
+                    <div class="benefit-calculation">
+                        <p style="margin-bottom: 30px; color: var(--color-primary); font-weight: 700; font-size: 1.1rem;">Calculate appropriate workers' compensation benefits based on California state law (2/3 of average weekly wage, 3-day waiting period):</p>
+                        
+                        <div class="calculation-steps">
+                            <div class="calculation-step active" id="calc-step1">
+                                <div class="step-indicator">1</div>
+                                <div class="step-description">Determine Average Weekly Wage</div>
+                            </div>
+                            <div class="calculation-step" id="calc-step2">
+                                <div class="step-indicator">2</div>
+                                <div class="step-description">Apply State Formula</div>
+                            </div>
+                            <div class="calculation-step" id="calc-step3">
+                                <div class="step-indicator">3</div>
+                                <div class="step-description">Calculate Waiting Period</div>
+                            </div>
+                            <div class="calculation-step" id="calc-step4">
+                                <div class="step-indicator">4</div>
+                                <div class="step-description">Determine Total Benefits</div>
+                            </div>
+                        </div>
+
+                        <div class="calculation-form">
+                            <div class="form-group">
+                                <label class="form-label">Average Weekly Wage (Last 52 weeks)</label>
+                                <div class="form-input-group">
+                                    <input type="number" class="form-input" id="weekly-wage" value="1200" placeholder="Enter weekly wage" onchange="updateCalculation()">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="font-weight: 600; color: var(--color-text-light);">State Formula:</span>
+                                        <span style="background: var(--color-bg-dark); padding: 10px 20px; border-radius: var(--radius-sm); font-weight: 700; color: var(--color-primary);">2/3 of AWW</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Expected Disability Duration (Weeks)</label>
+                                <input type="range" class="form-slider" id="duration-slider" min="1" max="52" value="6" oninput="updateDuration(this.value)">
+                                <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                                    <span style="color: var(--color-text-muted);">1 week</span>
+                                    <span id="duration-display" style="font-weight: 800; color: var(--color-secondary);">6 weeks</span>
+                                    <span style="color: var(--color-text-muted);">52 weeks</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">State Waiting Period (Days before benefits start)</label>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                                    <label class="checkbox-container" style="display: block; padding: 15px; border: 2px solid var(--color-bg-dark); border-radius: var(--radius-md);">
+                                        <input type="radio" name="waiting-period" value="3" checked onchange="updateWaitingPeriod()">
+                                        <span class="checkbox-label" style="padding-right: 40px;">3 days (CA Standard)</span>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <label class="checkbox-container" style="display: block; padding: 15px; border: 2px solid var(--color-bg-dark); border-radius: var(--radius-md);">
+                                        <input type="radio" name="waiting-period" value="7" onchange="updateWaitingPeriod()">
+                                        <span class="checkbox-label" style="padding-right: 40px;">7 days (Some states)</span>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <label class="checkbox-container" style="display: block; padding: 15px; border: 2px solid var(--color-bg-dark); border-radius: var(--radius-md);">
+                                        <input type="radio" name="waiting-period" value="0" onchange="updateWaitingPeriod()">
+                                        <span class="checkbox-label" style="padding-right: 40px;">No waiting period</span>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="benefit-summary" style="background: linear-gradient(135deg, rgba(0, 184, 148, 0.05) 0%, rgba(0, 184, 148, 0.1) 100%); padding: 25px; border-radius: var(--radius-md); border-left: 4px solid var(--color-success);">
+                                <h3 style="color: var(--color-success); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                    Calculated Benefit Summary
+                                </h3>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                                    <div>
+                                        <div style="font-size: 0.9rem; color: var(--color-text-muted); margin-bottom: 5px;">Weekly Benefit Rate</div>
+                                        <div style="font-size: 1.8rem; font-weight: 900; color: var(--color-primary);" id="weekly-benefit">$800</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 0.9rem; color: var(--color-text-muted); margin-bottom: 5px;">Waiting Period Deduction</div>
+                                        <div style="font-size: 1.8rem; font-weight: 900; color: var(--color-warning);" id="waiting-deduction">$342.86</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 0.9rem; color: var(--color-text-muted); margin-bottom: 5px;">Total Disability Benefits</div>
+                                        <div style="font-size: 1.8rem; font-weight: 900; color: var(--color-success);" id="total-benefits">$4,457.14</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Fraud Detection -->
+                <div class="interactive-section">
+                    <div class="section-header">
+                        <i class="fas fa-search"></i>
+                        Step 4: Fraud Detection & Red Flags
+                    </div>
+                    <div class="eligibility-assessment" style="background: linear-gradient(135deg, rgba(225, 112, 85, 0.05) 0%, rgba(245, 158, 11, 0.05) 100%); border-color: rgba(225, 112, 85, 0.1);">
+                        <div class="assessment-question" style="color: var(--color-warning);">Select all potential fraud indicators present in this case:</div>
+                        <div class="assessment-options">
+                            <label class="checkbox-container" style="display: block; padding: 20px; border: 2px solid rgba(245, 158, 11, 0.2); border-radius: var(--radius-md); margin-bottom: 15px; background: white;">
+                                <input type="checkbox" class="fraud-indicator" value="monday">
+                                <span class="checkbox-label">Injury reported on a Monday morning</span>
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="checkbox-container" style="display: block; padding: 20px; border: 2px solid rgba(245, 158, 11, 0.2); border-radius: var(--radius-md); margin-bottom: 15px; background: white;">
+                                <input type="checkbox" class="fraud-indicator" value="no_witnesses">
+                                <span class="checkbox-label">No witnesses to the alleged accident</span>
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="checkbox-container" style="display: block; padding: 20px; border: 2px solid rgba(245, 158, 11, 0.2); border-radius: var(--radius-md); margin-bottom: 15px; background: white;">
+                                <input type="checkbox" class="fraud-indicator" value="delay_report">
+                                <span class="checkbox-label">Delayed reporting of injury</span>
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="checkbox-container" style="display: block; padding: 20px; border: 2px solid rgba(245, 158, 11, 0.2); border-radius: var(--radius-md); background: white;">
+                                <input type="checkbox" class="fraud-indicator" value="history_claims">
+                                <span class="checkbox-label">History of previous workers' comp claims</span>
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="processCase()">
+                        <i class="fas fa-check-double"></i>
+                        Process & Finalize Case
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetCase()">
+                        <i class="fas fa-redo"></i>
+                        Reset Simulation
+                    </button>
+                    <button class="btn btn-outline" onclick="showExpertGuidance()">
+                        <i class="fas fa-life-ring"></i>
+                        Get Expert Guidance
+                    </button>
+                </div>
+
+                <!-- Enhanced Feedback Panel -->
+                <div class="feedback-panel" id="feedback-panel">
+                    <div class="feedback-header">
+                        <div class="feedback-icon">📈</div>
+                        <div class="feedback-title">Case Analysis Report</div>
+                    </div>
+                    <div class="feedback-content" id="feedback-content">
+                        <!-- Feedback will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Enhanced Learning Objectives -->
+                <div class="objectives-panel">
+                    <div class="section-header">
+                        <i class="fas fa-bullseye"></i>
+                        Chapter Learning Objectives
+                    </div>
+                    <ul class="objectives-list" id="objectives-list">
+                        <!-- Objectives will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Simulation State
+        const simulationState = {
+            currentCase: 1,
+            completedObjectives: 0,
+            correctDecisions: 0,
+            totalObjectives: 21,
+            startTime: new Date(),
+            eligibilityCorrect: false,
+            disabilityCorrect: false,
+            fraudDetectionCorrect: false,
+            benefitCalculationCorrect: false,
+            currentScenario: 'construction'
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSimulation();
+            startTimer();
+            populateObjectives();
+            updateProgress();
+            setupInteractions();
+            updateCalculation(); // Initial calculation
+        });
+
+        function initializeSimulation() {
+            updateMilestone(1); // Start at first milestone
+            setupCalculationSteps();
+        }
+
+        function setupInteractions() {
+            // Add hover effects
+            document.querySelectorAll('.assessment-option, .classification-card, .btn').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    if (!el.classList.contains('selected')) {
+                        el.style.transform = 'translateY(-6px)';
+                    }
+                });
+                el.addEventListener('mouseleave', () => {
+                    if (!el.classList.contains('selected')) {
+                        el.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            // Setup fraud indicator checkboxes
+            document.querySelectorAll('.fraud-indicator').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const container = this.closest('.checkbox-container');
+                    if (this.checked) {
+                        container.style.borderColor = 'var(--color-warning)';
+                        container.style.background = 'rgba(245, 158, 11, 0.05)';
+                    } else {
+                        container.style.borderColor = 'rgba(245, 158, 11, 0.2)';
+                        container.style.background = 'white';
+                    }
+                });
+            });
+        }
+
+        function setupCalculationSteps() {
+            // Setup calculation step interactions
+            const wageInput = document.getElementById('weekly-wage');
+            wageInput.addEventListener('input', function() {
+                if (this.value) {
+                    document.getElementById('calc-step2').classList.add('active');
+                    updateCalculation();
+                }
+            });
+
+            document.querySelectorAll('.fraud-indicator').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const checked = document.querySelectorAll('.fraud-indicator:checked').length;
+                    if (checked > 0) {
+                        document.getElementById('calc-step3').classList.add('active');
+                    }
+                });
+            });
+        }
+
+        function updateMilestone(step) {
+            const milestones = document.querySelectorAll('.milestone');
+            milestones.forEach((milestone, index) => {
+                milestone.classList.remove('active', 'completed');
+                if (index < step - 1) {
+                    milestone.classList.add('completed');
+                } else if (index === step - 1) {
+                    milestone.classList.add('active');
+                }
+            });
+        }
+
+        function selectEligibility(element, isCorrect) {
+            document.querySelectorAll('.assessment-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            simulationState.eligibilityCorrect = isCorrect === true;
+            
+            // Animate selection
+            animateSelection(element);
+            
+            // Update milestone
+            updateMilestone(2);
+            updateProgress();
+        }
+
+        function selectDisability(element, type) {
+            document.querySelectorAll('.classification-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            
+            // Determine if correct (temporary disability based on case facts)
+            simulationState.disabilityCorrect = type === 'temporary';
+            
+            // Animate selection
+            animateSelection(element);
+            
+            // Update milestone
+            updateMilestone(3);
+            updateProgress();
+        }
+
+        function updateCalculation() {
+            const weeklyWage = parseFloat(document.getElementById('weekly-wage').value) || 1200;
+            const duration = parseInt(document.getElementById('duration-slider').value) || 6;
+            const waitingPeriod = document.querySelector('input[name="waiting-period"]:checked').value;
+            
+            // Calculate weekly benefit (2/3 of weekly wage)
+            const weeklyBenefit = (weeklyWage * 2/3).toFixed(2);
+            
+            // Calculate waiting period deduction (3 days = 3/7 of weekly benefit)
+            const dailyRate = weeklyBenefit / 7;
+            const waitingDeduction = (dailyRate * waitingPeriod).toFixed(2);
+            
+            // Calculate total benefits (weekly benefit * duration minus waiting deduction)
+            const totalBenefits = (weeklyBenefit * duration - waitingDeduction).toFixed(2);
+            
+            // Update display
+            document.getElementById('weekly-benefit').textContent = `$${weeklyBenefit}`;
+            document.getElementById('waiting-deduction').textContent = `$${waitingDeduction}`;
+            document.getElementById('total-benefits').textContent = `$${totalBenefits}`;
+            
+            // Check if calculation is correct (within 1% of expected)
+            const expectedBenefit = (1200 * 2/3).toFixed(2);
+            simulationState.benefitCalculationCorrect = Math.abs(weeklyBenefit - expectedBenefit) < 0.01;
+            
+            // Update milestone
+            updateMilestone(4);
+            updateProgress();
+        }
+
+        function updateDuration(value) {
+            document.getElementById('duration-display').textContent = `${value} weeks`;
+            updateCalculation();
+        }
+
+        function updateWaitingPeriod() {
+            updateCalculation();
+        }
+
+        function processCase() {
+            // Check fraud indicators
+            const fraudIndicators = document.querySelectorAll('.fraud-indicator:checked');
+            const selectedValues = Array.from(fraudIndicators).map(cb => cb.value);
+            
+            // For this case, Monday morning and delayed reporting are red flags
+            simulationState.fraudDetectionCorrect = 
+                selectedValues.includes('monday') && 
+                selectedValues.includes('delay_report') &&
+                selectedValues.length === 2;
+
+            // Calculate score
+            let score = 0;
+            let feedback = [];
+            
+            if (simulationState.eligibilityCorrect) {
+                score++;
+                feedback.push({
+                    icon: '✅',
+                    title: 'Eligibility Assessment',
+                    message: 'Correct! The injury occurred during employment duties, making Michael eligible for workers\' compensation.',
+                    type: 'success'
+                });
+            } else {
+                feedback.push({
+                    icon: '❌',
+                    title: 'Eligibility Assessment',
+                    message: 'Workers are generally eligible when injuries occur during employment duties.',
+                    type: 'error'
+                });
+            }
+            
+            if (simulationState.disabilityCorrect) {
+                score++;
+                feedback.push({
+                    icon: '✅',
+                    title: 'Disability Classification',
+                    message: 'Perfect! Temporary disability applies when full recovery is expected within a limited period.',
+                    type: 'success'
+                });
+            } else {
+                feedback.push({
+                    icon: '❌',
+                    title: 'Disability Classification',
+                    message: 'Based on the 4-6 week recovery timeline, this is a temporary disability case.',
+                    type: 'error'
+                });
+            }
+            
+            if (simulationState.benefitCalculationCorrect) {
+                score++;
+                feedback.push({
+                    icon: '✅',
+                    title: 'Benefit Calculation',
+                    message: 'Excellent calculation! 2/3 of average weekly wage is the standard formula in most states.',
+                    type: 'success'
+                });
+            } else {
+                feedback.push({
+                    icon: '❌',
+                    title: 'Benefit Calculation',
+                    message: 'Weekly benefits are typically 2/3 of the average weekly wage.',
+                    type: 'error'
+                });
+            }
+            
+            if (simulationState.fraudDetectionCorrect) {
+                score++;
+                feedback.push({
+                    icon: '✅',
+                    title: 'Fraud Detection',
+                    message: 'Good eye! Monday morning injuries and delayed reporting are common fraud indicators.',
+                    type: 'success'
+                });
+            } else {
+                feedback.push({
+                    icon: '❌',
+                    title: 'Fraud Detection',
+                    message: 'Monday morning injuries and delayed reporting often warrant further investigation.',
+                    type: 'error'
+                });
+            }
+
+            // Update stats
+            simulationState.correctDecisions += score;
+            const newObjectives = Math.min(score, 4);
+            simulationState.completedObjectives = Math.min(simulationState.totalObjectives, 
+                simulationState.completedObjectives + newObjectives);
+
+            // Show feedback
+            const feedbackPanel = document.getElementById('feedback-panel');
+            const feedbackContent = document.getElementById('feedback-content');
+            
+            const scoreColor = score >= 3 ? 'var(--color-success)' : 'var(--color-warning)';
+            const scoreEmoji = score >= 3 ? '🏆' : score >= 2 ? '👍' : '📚';
+            const scoreMessage = score >= 3 ? 
+                'Outstanding performance! You\'ve demonstrated excellent understanding of workers\' compensation principles.' :
+                score >= 2 ? 'Good work! Review the missed concepts for even better understanding.' :
+                'Review the key concepts and try again. Practice makes perfect!';
+            
+            feedbackContent.innerHTML = `
+                <div style="background: linear-gradient(135deg, ${score >= 3 ? 'rgba(0, 184, 148, 0.1)' : 'rgba(245, 158, 11, 0.1)'} 0%, transparent 100%); 
+                            padding: 30px; border-radius: 15px; margin-bottom: 30px; border: 3px solid ${scoreColor};">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                        <div>
+                            <h3 style="margin: 0 0 10px 0; color: ${scoreColor}; font-size: 1.5rem;">Case Score: ${score}/4</h3>
+                            <p style="margin: 0; color: var(--color-text-light); font-size: 1.1rem;">${scoreMessage}</p>
+                        </div>
+                        <div style="font-size: 4rem; color: ${scoreColor};">${scoreEmoji}</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px;">
+                        <div style="text-align: center; padding: 15px; background: white; border-radius: 10px;">
+                            <div style="font-size: 1.5rem; font-weight: 900; color: var(--color-primary);">${simulationState.correctDecisions}</div>
+                            <div style="font-size: 0.9rem; color: var(--color-text-muted);">Total Correct</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: white; border-radius: 10px;">
+                            <div style="font-size: 1.5rem; font-weight: 900; color: var(--color-secondary);">${simulationState.completedObjectives}</div>
+                            <div style="font-size: 0.9rem; color: var(--color-text-muted);">Objectives Met</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: white; border-radius: 10px;">
+                            <div style="font-size: 1.5rem; font-weight: 900; color: var(--color-info);">${Math.round((score/4)*100)}%</div>
+                            <div style="font-size: 0.9rem; color: var(--color-text-muted);">Accuracy Rate</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="key-learning">
+                    <strong style="display: block; margin-bottom: 15px; color: var(--color-info); font-size: 1.1rem;">📚 Key Learning Points from this Case:</strong>
+                    <ul style="margin: 0; padding-left: 25px; font-size: 1.05rem;">
+                        <li>Workers' compensation covers injuries arising out of and in the course of employment</li>
+                        <li>Temporary disability benefits apply when full recovery is expected within a limited period</li>
+                        <li>Most states use 2/3 of average weekly wage for benefit calculations</li>
+                        <li>3-7 day waiting periods are common before benefits begin</li>
+                        <li>Monday morning reports and delayed reporting require extra scrutiny</li>
+                        <li>Proper documentation is essential for all workers' compensation claims</li>
+                    </ul>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h4 style="color: var(--color-primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-clipboard-list"></i>
+                        Detailed Feedback
+                    </h4>
+                    ${feedback.map(f => `
+                        <div style="display: flex; gap: 20px; margin-bottom: 20px; padding: 20px; background: ${f.type === 'success' ? 'rgba(0, 184, 148, 0.05)' : 'rgba(225, 112, 85, 0.05)'}; border-radius: 12px; border-left: 5px solid ${f.type === 'success' ? 'var(--color-success)' : 'var(--color-error)'};">
+                            <div style="font-size: 1.8rem; flex-shrink: 0;">${f.icon}</div>
+                            <div>
+                                <div style="font-weight: 800; color: ${f.type === 'success' ? 'var(--color-success)' : 'var(--color-error)'}; margin-bottom: 8px; font-size: 1.1rem;">${f.title}</div>
+                                <div style="color: var(--color-text); line-height: 1.6;">${f.message}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            feedbackPanel.classList.add('show');
+            
+            // Update progress and objectives
+            updateProgress();
+            updateObjectives();
+            
+            // Mark all steps as completed
+            document.querySelectorAll('.calculation-step').forEach(step => {
+                step.classList.add('completed');
+            });
+            
+            // Update milestone to completed
+            updateMilestone(5);
+            
+            // Show notification
+            showNotification(`Case processed! Score: ${score}/4`, score >= 3 ? 'success' : score >= 2 ? 'warning' : 'error');
+            
+            // Scroll to feedback
+            setTimeout(() => {
+                feedbackPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+
+        function resetCase() {
+            // Reset all selections
+            document.querySelectorAll('.assessment-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            document.querySelectorAll('.classification-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            document.querySelectorAll('.fraud-indicator').forEach(cb => {
+                cb.checked = false;
+                const container = cb.closest('.checkbox-container');
+                container.style.borderColor = 'rgba(245, 158, 11, 0.2)';
+                container.style.background = 'white';
+            });
+            
+            // Reset form values
+            document.getElementById('weekly-wage').value = '1200';
+            document.getElementById('duration-slider').value = '6';
+            document.getElementById('duration-display').textContent = '6 weeks';
+            document.querySelector('input[name="waiting-period"][value="3"]').checked = true;
+            
+            // Reset calculation steps
+            document.querySelectorAll('.calculation-step').forEach(step => {
+                step.classList.remove('active', 'completed');
+            });
+            document.getElementById('calc-step1').classList.add('active');
+            
+            // Reset milestone
+            updateMilestone(1);
+            
+            // Hide feedback
+            document.getElementById('feedback-panel').classList.remove('show');
+            
+            // Reset state
+            simulationState.eligibilityCorrect = false;
+            simulationState.disabilityCorrect = false;
+            simulationState.fraudDetectionCorrect = false;
+            simulationState.benefitCalculationCorrect = false;
+            
+            // Update calculation
+            updateCalculation();
+            
+            updateProgress();
+            
+            // Show notification
+            showNotification('Case simulation reset', 'info');
+        }
+
+        function changeCaseScenario() {
+            const scenarios = ['construction', 'office', 'manufacturing'];
+            const currentIndex = scenarios.indexOf(simulationState.currentScenario);
+            const nextIndex = (currentIndex + 1) % scenarios.length;
+            simulationState.currentScenario = scenarios[nextIndex];
+            
+            // In a full implementation, this would load different case data
+            showNotification(`Loaded ${simulationState.currentScenario} industry case`, 'info');
+            resetCase();
+        }
+
+        function showExpertGuidance() {
+            const guidance = document.createElement('div');
+            guidance.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+                padding: 35px;
+                border-radius: var(--radius-lg);
+                box-shadow: var(--shadow-xl);
+                z-index: 1000;
+                max-width: 600px;
+                width: 90%;
+                border: 3px solid var(--color-secondary);
+                backdrop-filter: blur(20px);
+            `;
+            
+            guidance.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 25px;">
+                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--color-secondary), var(--color-info)); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white;">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; color: var(--color-primary); font-size: 1.5rem;">Expert Guidance</h3>
+                        <p style="margin: 5px 0 0 0; color: var(--color-text-light); font-size: 1rem;">Key principles from workers' compensation law</p>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(175, 75, 239, 0.05); padding: 25px; border-radius: var(--radius-md); margin-bottom: 25px; border-left: 4px solid var(--color-secondary);">
+                    <strong style="color: var(--color-secondary); display: block; margin-bottom: 15px; font-size: 1.1rem;">
+                        <i class="fas fa-lightbulb"></i>
+                        Remember These Core Principles:
+                    </strong>
+                    <ul style="margin: 0; padding-left: 25px; color: var(--color-text); font-size: 1.05rem; line-height: 1.8;">
+                        <li><strong>Eligibility:</strong> Must arise out of and occur in the course of employment</li>
+                        <li><strong>Exclusive Remedy:</strong> Workers' comp is usually the only remedy against employer</li>
+                        <li><strong>No-Fault System:</strong> Benefits provided regardless of who was at fault</li>
+                        <li><strong>Waiting Period:</strong> Typically 3-7 days before benefits start</li>
+                        <li><strong>Benefit Calculation:</strong> Usually 2/3 of average weekly wage</li>
+                        <li><strong>Fraud Indicators:</strong> Monday morning reports, no witnesses, delayed reporting</li>
+                    </ul>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px;">
+                    <div style="background: rgba(0, 184, 148, 0.05); padding: 15px; border-radius: var(--radius-md);">
+                        <div style="font-weight: 700; color: var(--color-success); margin-bottom: 5px;">Temporary Disability</div>
+                        <div style="font-size: 0.9rem; color: var(--color-text-light);">Expected full recovery within limited period</div>
+                    </div>
+                    <div style="background: rgba(131, 128, 240, 0.05); padding: 15px; border-radius: var(--radius-md);">
+                        <div style="font-weight: 700; color: var(--color-info); margin-bottom: 5px;">Permanent Disability</div>
+                        <div style="font-size: 0.9rem; color: var(--color-text-light);">Lasting impairment affecting earning capacity</div>
+                    </div>
+                </div>
+                
+                <button onclick="this.parentElement.remove(); document.querySelector('.overlay')?.remove();" style="background: var(--color-secondary); color: white; border: none; padding: 15px 30px; border-radius: var(--radius-md); font-weight: 700; cursor: pointer; width: 100%; font-size: 1.1rem;">
+                    <i class="fas fa-check"></i>
+                    Understood - Continue Learning
+                </button>
+            `;
+            
+            document.body.appendChild(guidance);
+            
+            // Add overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(10px);
+                z-index: 999;
+            `;
+            overlay.onclick = () => {
+                guidance.remove();
+                overlay.remove();
+            };
+            document.body.appendChild(overlay);
+        }
+
+        function animateSelection(element) {
+            element.style.animation = 'none';
+            setTimeout(() => {
+                element.style.animation = 'pulse 0.5s ease';
+            }, 10);
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const colors = {
+                success: 'var(--color-success)',
+                error: 'var(--color-error)',
+                warning: 'var(--color-warning)',
+                info: 'var(--color-info)'
+            };
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 25px;
+                right: 25px;
+                background: white;
+                padding: 18px 24px;
+                border-radius: var(--radius-md);
+                box-shadow: var(--shadow-lg);
+                z-index: 1000;
+                border-left: 5px solid ${colors[type]};
+                transform: translateX(120%);
+                transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                max-width: 350px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            `;
+            
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: '💡'
+            };
+            
+            notification.innerHTML = `
+                <div style="color: ${colors[type]}; font-size: 1.5rem;">${icons[type]}</div>
+                <div style="color: var(--color-text); font-weight: 600; font-size: 1.05rem;">${message}</div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 10);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(120%)';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        function startTimer() {
+            setInterval(() => {
+                const now = new Date();
+                const diff = Math.floor((now - simulationState.startTime) / 1000);
+                const minutes = Math.floor(diff / 60);
+                const seconds = diff % 60;
+                document.getElementById('time-spent').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function populateObjectives() {
+            const objectives = [
+                "Discuss the history of workers' compensation, including statutes and reform",
+                "State the purposes of workers' compensation laws",
+                "Discuss self-insurance and managed care in workers' comp insurance",
+                "Specify who is eligible under federal workers' compensation laws",
+                "Name persons entitled to be insured under state workers' compensation laws",
+                "Define and discuss second-injury fund",
+                "Determine the waiting period in each state before benefits begin",
+                "Describe the types of compensation benefits",
+                "Define nondisability, temporary disability, and permanent disability claims",
+                "List signs of fraud and abuse involving employees, employers, insurers, medical providers, and lawyers",
+                "State when to report fraud or abuse involving a workers' compensation claim",
+                "Explain OSHA's role in protecting employees",
+                "Explain two ways in which depositions are used",
+                "Explain the advantages of filing a lien",
+                "Define and discuss third-party subrogation",
+                "Describe workers' compensation health and financial record keeping in a medical practice",
+                "Explain the procedure of completing the doctor's first report of occupational injury or illness",
+                "Name the contents of a progress or supplemental medical report",
+                "Complete workers' compensation forms properly and discuss fee schedules",
+                "Discuss electronic claims submission and explain how to handle out-of-state claims",
+                "Describe actions to take in following up on delinquent workers' compensation claims"
+            ];
+            
+            const list = document.getElementById('objectives-list');
+            objectives.forEach((obj, index) => {
+                const li = document.createElement('li');
+                li.className = 'objective-item';
+                li.innerHTML = `
+                    <div class="objective-checkbox" onclick="toggleObjective(${index})">✓</div>
+                    <div class="objective-text">
+                        <span class="objective-number">${index + 1}.</span>
+                        ${obj}
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function toggleObjective(index) {
+            const items = document.querySelectorAll('.objective-item');
+            if (index < items.length) {
+                items[index].classList.toggle('completed');
+                updateObjectives();
+                showNotification('Objective updated!', 'success');
+            }
+        }
+
+        function updateObjectives() {
+            const completed = document.querySelectorAll('.objective-item.completed').length;
+            document.getElementById('completed-objectives').textContent = `${completed}/${simulationState.totalObjectives}`;
+            simulationState.completedObjectives = Math.max(simulationState.completedObjectives, completed);
+            updateProgress();
+        }
+
+        function updateProgress() {
+            // Calculate overall progress
+            const decisionProgress = (simulationState.correctDecisions / 20) * 30;
+            const objectiveProgress = (simulationState.completedObjectives / simulationState.totalObjectives) * 40;
+            const caseProgress = (simulationState.currentCase / 3) * 30;
+            
+            const totalProgress = Math.min(100, decisionProgress + objectiveProgress + caseProgress);
+            
+            // Update progress bar with animation
+            const progressFill = document.getElementById('tracker-fill');
+            progressFill.style.width = totalProgress + '%';
+            document.getElementById('progress-percent').textContent = Math.round(totalProgress) + '%';
+            document.getElementById('tracker-text').textContent = Math.round(totalProgress) + '% Complete';
+            
+            // Update stats
+            document.getElementById('correct-decisions').textContent = simulationState.correctDecisions;
+        }
+
+        // Dashboard click handlers
+        function focusOnProgress() {
+            document.querySelector('.progress-tracker').scrollIntoView({ behavior: 'smooth' });
+            showNotification('Focusing on progress tracker', 'info');
+        }
+
+        function showObjectives() {
+            document.querySelector('.objectives-panel').scrollIntoView({ behavior: 'smooth' });
+            showNotification('Showing learning objectives', 'info');
+        }
+
+        function showFeedback() {
+            const feedbackPanel = document.getElementById('feedback-panel');
+            if (feedbackPanel.classList.contains('show')) {
+                feedbackPanel.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                showNotification('Complete a case first to see feedback', 'warning');
+            }
+        }
+
+        function showTimeStats() {
+            const now = new Date();
+            const diff = Math.floor((now - simulationState.startTime) / 1000);
+            const minutes = Math.floor(diff / 60);
+            const seconds = diff % 60;
+            
+            showNotification(`Learning time: ${minutes} minutes, ${seconds} seconds`, 'info');
+        }
+    </script>
+</body>
+</html>
