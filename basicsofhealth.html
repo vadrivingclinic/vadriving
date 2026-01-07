@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basics of Health Insurance - Learning Module</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #af4bef;
+            --primary-light: #d492ff;
+            --primary-dark: #8a2bc9;
+            --accent: #8380f0;
+            --accent-light: #a5a3f5;
+            --accent-dark: #6a67d8;
+            --success: #00b894;
+            --success-light: #00e5c9;
+            --warning: #fdcb6e;
+            --error: #e17055;
+            --background: #f7f5fb;
+            --surface: #ffffff;
+            --text-primary: #2d3436;
+            --text-secondary: #636e72;
+            --text-light: #b2bec3;
+            --border: #e0e0e0;
+            --shadow-sm: 0 2px 8px rgba(175, 75, 239, 0.08);
+            --shadow-md: 0 4px 16px rgba(175, 75, 239, 0.12);
+            --shadow-lg: 0 8px 32px rgba(175, 75, 239, 0.16);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 30px;
+            --transition-fast: 0.2s ease;
+            --transition-base: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f9f7ff 50%, var(--background) 100%);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+            padding-bottom: 60px;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(175, 75, 239, 0.03) 0%, transparent 50%),
+                       radial-gradient(circle at 80% 20%, rgba(131, 128, 240, 0.03) 0%, transparent 50%);
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Header Styles */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(224, 224, 224, 0.5);
+            padding: 20px 0;
+            transition: var(--transition-base);
+        }
+        
+        .header-scrolled {
+            box-shadow: var(--shadow-sm);
+            padding: 15px 0;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, rgba(175, 75, 239, 0.1) 0%, rgba(131, 128, 240, 0.1) 100%);
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(175, 75, 239, 0.15);
+        }
+        
+        .logo {
+            height: 48px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(175, 75, 239, 0.2));
+        }
+        
+        .logo-text {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+        
+        .progress-container {
+            flex: 1;
+            max-width: 400px;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .progress-bar-bg {
+            height: 8px;
+            background-color: rgba(224, 224, 224, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 4px;
+            width: 10%;
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.4) 50%, 
+                transparent 100%);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Module Navigation */
+        .module-nav-container {
+            position: sticky;
+            top: 90px;
+            z-index: 999;
+            margin: 30px 0;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 16px;
+        }
+        
+        .module-nav {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 4px;
+            scrollbar-width: none;
+        }
+        
+        .module-nav::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .nav-btn {
+            flex-shrink: 0;
+            padding: 14px 24px;
+            background: rgba(175, 75, 239, 0.05);
+            border: 2px solid transparent;
+            border-radius: var(--radius-xl);
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            opacity: 0;
+            transition: var(--transition-base);
+            z-index: -1;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+            border-color: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .nav-btn:hover::before {
+            opacity: 0.05;
+        }
+        
+        .nav-btn.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+        
+        .nav-btn.active .nav-icon {
+            color: white;
+        }
+        
+        .nav-icon {
+            font-size: 18px;
+            color: var(--primary);
+            transition: var(--transition-base);
+        }
+        
+        /* Content Sections */
+        .content-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.6s ease forwards;
+        }
+        
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .section-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 40px;
+            border: 1px solid rgba(224, 224, 224, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+            border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+        }
+        
+        h1, h2, h3 {
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 36px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 24px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+        
+        h2 {
+            font-size: 28px;
+            color: var(--primary);
+            margin-top: 40px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(175, 75, 239, 0.1);
+        }
+        
+        h3 {
+            font-size: 22px;
+            color: var(--accent);
+            margin-top: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        h3 i {
+            color: var(--primary);
+            font-size: 20px;
+        }
+        
+        p {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            font-size: 17px;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(175, 75, 239, 0.05) 0%, rgba(131, 128, 240, 0.05) 100%);
+            border-left: 4px solid var(--primary);
+            padding: 28px;
+            margin: 32px 0;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .highlight-box i {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            color: var(--primary);
+            font-size: 24px;
+        }
+        
+        .highlight-content {
+            margin-left: 36px;
+        }
+        
+        .highlight-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        /* Key Terms Styling */
+        .key-term {
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: var(--transition-fast);
+            background: rgba(175, 75, 239, 0.1);
+            border-bottom: 2px dotted var(--primary-light);
+        }
+        
+        .key-term:hover {
+            background: rgba(175, 75, 239, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .term-definition {
+            display: none;
+            position: fixed;
+            background: var(--surface);
+            border: 2px solid var(--primary-light);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            max-width: 320px;
+            font-size: 15px;
+            line-height: 1.6;
+            animation: popIn 0.3s ease;
+        }
+        
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Flash Cards */
+        .flashcards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            margin: 40px 0;
+        }
+        
+        .flashcard {
+            background: linear-gradient(145deg, var(--surface), #f8f7ff);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            border: 1px solid rgba(224, 224, 224, 0.5);
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-base);
+        }
+        
+        .flashcard:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+        
+        .flashcard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+        
+        .flashcard.flipped {
+            background: linear-gradient(145deg, rgba(175, 75, 239, 0.05), rgba(131, 128, 240, 0.05));
+        }
+        
+        .flashcard-front, .flashcard-back {
+            text-align: center;
+            transition: opacity var(--transition-base);
+            width: 100%;
+        }
+        
+        .flashcard-front h3 {
+            color: var(--primary);
+            margin-bottom: 16px;
+            font-size: 24px;
+        }
+        
+        .flashcard-back p {
+            color: var(--text-primary);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .flashcard-category {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .flashcard-hint {
+            position: absolute;
+            bottom: 16px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        /* Quiz Section */
+        .quiz-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin: 40px 0;
+            box-shadow: var(--shadow-md);
+            border: 2px solid rgba(175, 75, 239, 0.1);
+        }
+        
+        .quiz-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid rgba(175, 75, 239, 0.1);
+        }
+        
+        .quiz-icon {
+            font-size: 28px;
+            color: var(--primary);
+            background: rgba(175, 75, 239, 0.1);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .quiz-question {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            flex: 1;
+        }
+        
+        .quiz-options {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .quiz-option {
+            background: rgba(224, 224, 224, 0.1);
+            padding: 20px 24px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .quiz-option:hover {
+            background: rgba(175, 75, 239, 0.05);
+            border-color: var(--primary-light);
+            transform: translateX(4px);
+        }
+        
+        .quiz-option.selected {
+            background: rgba(175, 75, 239, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .quiz-option.correct {
+            background: rgba(0, 184, 148, 0.1);
+            border-color: var(--success);
+        }
+        
+        .quiz-option.incorrect {
+            background: rgba(225, 112, 85, 0.1);
+            border-color: var(--error);
+        }
+        
+        .option-marker {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        .quiz-option:hover .option-marker {
+            border-color: var(--primary);
+        }
+        
+        .quiz-option.correct .option-marker {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+        
+        .quiz-option.incorrect .option-marker {
+            background: var(--error);
+            color: white;
+            border-color: var(--error);
+        }
+        
+        /* Objectives List */
+        .objectives-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin: 32px 0;
+        }
+        
+        .objective-item {
+            background: var(--surface);
+            padding: 24px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(224, 224, 224, 0.5);
+            transition: all var(--transition-base);
+            position: relative;
+            padding-left: 60px;
+        }
+        
+        .objective-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+            border-color: var(--primary-light);
+        }
+        
+        .objective-item.completed {
+            background: rgba(0, 184, 148, 0.05);
+            border-color: rgba(0, 184, 148, 0.2);
+        }
+        
+        .objective-checkbox {
+            position: absolute;
+            left: 24px;
+            top: 24px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-base);
+        }
+        
+        .objective-item.completed .objective-checkbox {
+            background: var(--success);
+            border-color: var(--success);
+        }
+        
+        .objective-item.completed .objective-checkbox::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+        }
+        
+        .objective-number {
+            font-size: 14px;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        /* Footer Navigation */
+        .module-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 32px;
+            border-top: 2px solid rgba(224, 224, 224, 0.3);
+        }
+        
+        .nav-btn-group {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .btn {
+            padding: 18px 32px;
+            border-radius: var(--radius-xl);
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: var(--transition-base);
+        }
+        
+        .btn:hover::before {
+            opacity: 1;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(175, 75, 239, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(175, 75, 239, 0.4);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary-light);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(175, 75, 239, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .flashcards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .objectives-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .progress-container {
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            .module-nav-container {
+                margin: 20px 0;
+                padding: 12px;
+            }
+            
+            .nav-btn {
+                padding: 12px 20px;
+            }
+            
+            .section-card {
+                padding: 28px 24px;
+            }
+            
+            h1 {
+                font-size: 30px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+            
+            .btn {
+                padding: 16px 24px;
+            }
+            
+            .module-footer {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-btn-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            .section-card {
+                padding: 24px 20px;
+            }
+            
+            .flashcards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-btn {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+            
+            .nav-btn-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        /* Animations */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Floating Elements */
+        .floating-element {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(175, 75, 239, 0.1), rgba(131, 128, 240, 0.1));
+            filter: blur(20px);
+            z-index: -1;
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, -20px) rotate(90deg); }
+            50% { transform: translate(0, -40px) rotate(180deg); }
+            75% { transform: translate(-20px, -20px) rotate(270deg); }
+        }
+        
+        /* Completion Celebration */
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(175, 75, 239, 0.9), rgba(131, 128, 240, 0.9));
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .celebration-content {
+            background: white;
+            padding: 60px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+            animation: scaleIn 0.6s ease;
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .celebration-icon {
+            font-size: 80px;
+            color: var(--success);
+            margin-bottom: 24px;
+            animation: bounce 1s infinite alternate;
+        }
+        
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Elements -->
+    <div class="floating-element" style="top: 10%; left: 5%;"></div>
+    <div class="floating-element" style="top: 20%; right: 10%; width: 150px; height: 150px;"></div>
+    <div class="floating-element" style="bottom: 30%; left: 15%; width: 80px; height: 80px;"></div>
+    
+    <!-- Celebration Modal -->
+    <div class="celebration" id="celebrationModal">
+        <div class="celebration-content">
+            <div class="celebration-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h1 style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 16px;">
+                Congratulations!
+            </h1>
+            <p style="color: var(--text-primary); font-size: 18px; margin-bottom: 32px;">
+                You've successfully completed the Health Insurance Basics module!
+            </p>
+            <button class="btn btn-primary" onclick="closeCelebration()" style="margin: 0 auto;">
+                <i class="fas fa-check-circle"></i> Continue Learning
+            </button>
+        </div>
+    </div>
+    
+    <header id="mainHeader">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-container">
+                        <img src="https://cdn.prod.website-files.com/64d0ccc1558d601cbfb09021/64e9d2f719b1e5258e5d57f5_IMG_1512-p-500.png" alt="Health Insurance Basics Logo" class="logo">
+                        <div class="logo-text">Health Insurance Basics</div>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-info">
+                        <span id="currentProgress">Section 1 of 10</span>
+                        <span id="progressPercent">10%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="module-nav-container">
+            <nav class="module-nav" id="moduleNav">
+                <button class="nav-btn active" data-section="intro">
+                    <i class="fas fa-home nav-icon"></i> Introduction
+                </button>
+                <button class="nav-btn" data-section="history">
+                    <i class="fas fa-history nav-icon"></i> History
+                </button>
+                <button class="nav-btn" data-section="costs">
+                    <i class="fas fa-chart-line nav-icon"></i> Costs
+                </button>
+                <button class="nav-btn" data-section="aca">
+                    <i class="fas fa-heartbeat nav-icon"></i> ACA
+                </button>
+                <button class="nav-btn" data-section="legal">
+                    <i class="fas fa-gavel nav-icon"></i> Legal
+                </button>
+                <button class="nav-btn" data-section="contracts">
+                    <i class="fas fa-file-contract nav-icon"></i> Contracts
+                </button>
+                <button class="nav-btn" data-section="policies">
+                    <i class="fas fa-file-alt nav-icon"></i> Policies
+                </button>
+                <button class="nav-btn" data-section="coverage">
+                    <i class="fas fa-shield-alt nav-icon"></i> Coverage
+                </button>
+                <button class="nav-btn" data-section="plans">
+                    <i class="fas fa-list-alt nav-icon"></i> Plans
+                </button>
+                <button class="nav-btn" data-section="flashcards">
+                    <i class="fas fa-layer-group nav-icon"></i> Flashcards
+                </button>
+            </nav>
+        </div>
+        
+        <!-- Introduction Section -->
+        <section class="content-section active" id="intro">
+            <div class="section-card">
+                <h1>Basics of Health Insurance</h1>
+                <p class="subtitle" style="font-size: 20px; color: var(--accent); margin-bottom: 32px;">
+                    A Comprehensive Learning Module for Healthcare Professionals
+                </p>
+                
+                <div class="highlight-box">
+                    <i class="fas fa-graduation-cap"></i>
+                    <div class="highlight-content">
+                        <div class="highlight-title">Welcome to Your Learning Journey</div>
+                        <p>This comprehensive guide is designed to provide you with foundational knowledge of the U.S. health insurance system, its history, key principles, operational processes, and administrative procedures.</p>
+                    </div>
+                </div>
+                
+                <h2><i class="fas fa-bullseye"></i> Learning Objectives</h2>
+                <p>After completing this module, you should be able to master these 17 core competencies:</p>
+                
+                <div class="objectives-container" id="objectivesList">
+                    <!-- Objectives will be populated by JavaScript -->
+                </div>
+                
+                <h2><i class="fas fa-compass"></i> How to Use This Module</h2>
+                <div class="highlight-box">
+                    <i class="fas fa-lightbulb"></i>
+                    <div class="highlight-content">
+                        <div class="highlight-title">Learning Tips</div>
+                        <p>Navigate sequentially or jump to specific topics using the navigation bar. Pay special attention to <span class="key-term">key terms<span class="term-definition">Important terminology highlighted throughout the module</span></span> highlighted in purple. Interactive elements like flashcards and quizzes will help reinforce your learning. Complete each section's quiz to track your progress!</p>
+                    </div>
+                </div>
+                
+                <div class="module-footer">
+                    <div class="nav-btn-group">
+                        <button class="btn btn-secondary" id="prevBtn" disabled>
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button class="btn btn-primary" id="nextBtn">
+                            Next: History of Insurance <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- History Section -->
+        <section class="content-section" id="history">
+            <div class="section-card">
+                <h1>History of Insurance in the United States</h1>
+                
+                <div class="highlight-box">
+                    <i class="fas fa-landmark"></i>
+                    <div class="highlight-content">
+                        <div class="highlight-title">Historical Timeline</div>
+                        <p>Health insurance in America evolved from earlier risk-sharing models. Understanding this history provides context for today's complex healthcare system.</p>
+                    </div>
+                </div>
+                
+                <h2><i class="fas fa-ship"></i> Early Origins (18th-19th Century)</h2>
+                <p>Health insurance in America evolved from earlier forms of insurance. Marine and fire insurance companies established in the 1700s created the foundation for risk-sharing models that would later be applied to health.</p>
+                
+                <h2><i class="fas fa-first-aid"></i> The First Health Insurance (1850)</h2>
+                <p>The first known accident and health insurance policy in the U.S. was issued by the Franklin Health Assurance Company of Massachusetts in 1850. These early policies were limited and primarily covered accidents rather than illness.</p>
+                
+                <h2><i class="fas fa-building"></i> 20th Century Developments</h2>
+                <p>In the early 1900s, the first group health insurance plans emerged. Baylor University Hospital's pre-paid plan in 1929, which later evolved into Blue Cross, marked a significant milestone. Blue Shield plans for physician services followed in the 1930s.</p>
+                
+                <h2><i class="fas fa-briefcase"></i> Employer-Based Insurance (Mid-20th Century)</h2>
+                <p>During World War II, wage freezes led employers to offer health insurance as a fringe benefit to attract workers. This established the employer-based health insurance system that dominates the U.S. today.</p>
+                
+                <h2><i class="fas fa-flag-usa"></i> Government Programs (1960s)</h2>
+                <p>The creation of <span class="key-term">Medicare<span class="term-definition">Federal health insurance program for people 65 or older, certain younger people with disabilities, and people with End-Stage Renal Disease</span></span> and <span class="key-term">Medicaid<span class="term-definition">Joint federal and state program that helps with medical costs for people with limited income and resources</span></span> in 1965 represented a major expansion of government involvement in health insurance, providing coverage for elderly and low-income populations.</p>
+                
+                <h2><i class="fas fa-chart-bar"></i> Modern Era (21st Century)</h2>
+                <p>The Affordable Care Act (2010) brought the most significant reforms since Medicare/Medicaid, expanding coverage, regulating insurance practices, and creating health insurance marketplaces.</p>
+                
+                <div class="quiz-card">
+                    <div class="quiz-header">
+                        <div class="quiz-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="quiz-question">When was the first known accident and health insurance policy issued in the U.S.?</div>
+                    </div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-correct="false">
+                            <div class="option-marker">A</div>
+                            <div>1905 by Metropolitan Life</div>
+                        </div>
+                        <div class="quiz-option" data-correct="true">
+                            <div class="option-marker">B</div>
+                            <div>1850 by Franklin Health Assurance Company</div>
+                        </div>
+                        <div class="quiz-option" data-correct="false">
+                            <div class="option-marker">C</div>
+                            <div>1929 by Baylor University Hospital</div>
+                        </div>
+                        <div class="quiz-option" data-correct="false">
+                            <div class="option-marker">D</div>
+                            <div>1935 as part of the Social Security Act</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module-footer">
+                    <div class="nav-btn-group">
+                        <button class="btn btn-secondary" id="prevBtn2">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button class="btn btn-primary" id="nextBtn2">
+                            Next: Rising Costs <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- More sections would continue here... -->
+        
+        <!-- Flashcards Section -->
+        <section class="content-section" id="flashcards">
+            <div class="section-card">
+                <h1>Interactive Flashcards</h1>
+                <p style="font-size: 18px; margin-bottom: 32px;">Master key health insurance terminology with these interactive study cards. Click any card to flip it and reveal the definition.</p>
+                
+                <div class="flashcards-grid" id="flashcardsContainer">
+                    <!-- Flashcards will be populated by JavaScript -->
+                </div>
+                
+                <div class="quiz-card">
+                    <div class="quiz-header">
+                        <div class="quiz-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="quiz-question">What is the difference between a deductible and coinsurance?</div>
+                    </div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-correct="true">
+                            <div class="option-marker">A</div>
+                            <div>Deductible is fixed amount paid before insurance starts paying; coinsurance is percentage paid after deductible is met</div>
+                        </div>
+                        <div class="quiz-option" data-correct="false">
+                            <div class="option-marker">B</div>
+                            <div>Deductible is percentage paid; coinsurance is fixed amount</div>
+                        </div>
+                        <div class="quiz-option" data-correct="false">
+                            <div class="option-marker">C</div>
+                            <div>They are two terms for the same concept</div>
+                        </div>
+                        <div class="quiz-option" data-correct="false">
+                            <div class="option-marker">D</div>
+                            <div>Deductible applies to hospital stays; coinsurance applies to prescriptions</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module-footer">
+                    <div class="nav-btn-group">
+                        <button class="btn btn-secondary" id="prevBtn10">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button class="btn btn-primary" id="nextBtn10">
+                            Complete Module <i class="fas fa-trophy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Module data
+        const moduleSections = [
+            'intro', 'history', 'costs', 'aca', 'legal', 'contracts', 
+            'policies', 'coverage', 'plans', 'flashcards'
+        ];
+        
+        const sectionTitles = {
+            'intro': 'Introduction',
+            'history': 'History of Insurance',
+            'costs': 'Rising Healthcare Costs',
+            'aca': 'Affordable Care Act',
+            'legal': 'Legal Principles',
+            'contracts': 'Physician-Patient Contracts',
+            'policies': 'Insurance Policies',
+            'coverage': 'Types of Coverage',
+            'plans': 'Insurance Plans',
+            'flashcards': 'Flashcards'
+        };
+        
+        const objectives = [
+            "Describe the history of insurance in the United States.",
+            "Explain the reasons for the rising cost of health care.",
+            "Discuss how the Affordable Care Act reforms health care.",
+            "Discuss the legal principles of insurance and state the four concepts of a valid insurance contract.",
+            "Explain the difference between an implied and an expressed physician–patient contract and discuss different types of patients.",
+            "Discuss the intricacies of the insurance policy and define common insurance terms.",
+            "List and describe the choices a person has when it comes to choosing and obtaining health insurance.",
+            "State the types of health insurance coverage.",
+            "Describe in general terms the important federal, state, and private health insurance plans.",
+            "Relate the entire billing process to simple and complex medical cases.",
+            "Explain the administrative life cycle of a physician-based insurance claim from completion to third-party payer processing and payment.",
+            "Determine the appropriate questions to ask a patient for a complete patient registration form.",
+            "List the types of computerized signatures for documents and insurance claims.",
+            "Demonstrate how to track submitted insurance claims.",
+            "List the functions of an aging accounts receivable report in a computerized practice management system or a 'tickler' file in a paper environment.",
+            "Explain how insurance billing and coding information can be kept up to date.",
+            "Describe the proper information to post to the patient's financial account after claims submission and payment received."
+        ];
+        
+        const keyTerms = [
+            { term: "accounts receivable management", definition: "Process of tracking and collecting payments owed to a medical practice" },
+            { term: "applicant", definition: "Person applying for insurance coverage" },
+            { term: "assignment", definition: "Transfer of insurance benefits directly to the healthcare provider" },
+            { term: "coinsurance", definition: "Percentage of costs the insured pays after meeting the deductible" },
+            { term: "copayment (copay)", definition: "Fixed amount paid by the insured for covered services" },
+            { term: "deductible", definition: "Amount the insured must pay out-of-pocket before insurance begins to pay" },
+            { term: "Exchanges", definition: "Marketplaces where individuals and small businesses can compare and purchase health insurance plans" },
+            { term: "health maintenance organization", definition: "Type of health insurance plan that usually limits coverage to care from doctors who work for or contract with the HMO" },
+            { term: "implied contract", definition: "Contract formed by the actions, conduct, or circumstances of the parties" },
+            { term: "Medicaid", definition: "Joint federal and state program that helps with medical costs for people with limited income and resources" },
+            { term: "Medicare", definition: "Federal health insurance program for people 65 or older, certain younger people with disabilities, and people with End-Stage Renal Disease" },
+            { term: "preexisting conditions", definition: "Health condition that exists before someone enrolls in a health insurance plan" },
+            { term: "preferred provider organization", definition: "Type of plan that contracts with medical providers to create a network; offers more flexibility than HMOs" },
+            { term: "premium", definition: "Amount paid for an insurance policy" },
+            { term: "TRICARE", definition: "Healthcare program for uniformed service members, retirees, and their families" }
+        ];
+        
+        // Initialize module
+        let currentSection = 0;
+        let completedObjectives = new Set();
+        let activeTermPopup = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize objectives list
+            initObjectives();
+            
+            // Initialize flashcards
+            initFlashcards();
+            
+            // Setup navigation
+            setupNavigation();
+            
+            // Setup quizzes
+            setupQuizzes();
+            
+            // Setup key term interactions
+            setupKeyTerms();
+            
+            // Setup scroll effects
+            setupScrollEffects();
+            
+            // Update progress
+            updateProgress();
+        });
+        
+        function initObjectives() {
+            const objectivesList = document.getElementById('objectivesList');
+            objectives.forEach((objective, index) => {
+                const item = document.createElement('div');
+                item.className = 'objective-item';
+                item.innerHTML = `
+                    <div class="objective-checkbox"></div>
+                    <span class="objective-number">Objective ${index + 1}</span>
+                    <div class="objective-text">${objective}</div>
+                `;
+                item.dataset.index = index;
+                objectivesList.appendChild(item);
+            });
+        }
+        
+        function initFlashcards() {
+            const flashcardsContainer = document.getElementById('flashcardsContainer');
+            
+            keyTerms.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'flashcard';
+                card.innerHTML = `
+                    <div class="flashcard-category">Key Term</div>
+                    <div class="flashcard-front">
+                        <h3>${item.term}</h3>
+                        <p><i class="fas fa-hand-point-up"></i> Click to flip</p>
+                    </div>
+                    <div class="flashcard-back">
+                        <p>${item.definition}</p>
+                        <p style="margin-top: 20px;"><i class="fas fa-redo"></i> Click to flip back</p>
+                    </div>
+                    <div class="flashcard-hint">Term ${index + 1} of ${keyTerms.length}</div>
+                `;
+                
+                card.addEventListener('click', function() {
+                    this.classList.toggle('flipped');
+                });
+                
+                flashcardsContainer.appendChild(card);
+            });
+        }
+        
+        function setupNavigation() {
+            // Set up section navigation buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const sectionId = this.dataset.section;
+                    goToSection(sectionId);
+                });
+            });
+            
+            // Set up next/previous buttons
+            for (let i = 1; i <= 10; i++) {
+                const prevBtn = document.getElementById(`prevBtn${i > 1 ? i : ''}`);
+                const nextBtn = document.getElementById(`nextBtn${i > 1 ? i : ''}`);
+                
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', goToPreviousSection);
+                }
+                
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', goToNextSection);
+                }
+            }
+            
+            // Last next button completes module
+            const lastNextBtn = document.getElementById('nextBtn10');
+            if (lastNextBtn) {
+                lastNextBtn.addEventListener('click', completeModule);
+            }
+        }
+        
+        function setupQuizzes() {
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove any previous selections in this quiz
+                    const quizContainer = this.closest('.quiz-options');
+                    quizContainer.querySelectorAll('.quiz-option').forEach(opt => {
+                        opt.classList.remove('selected', 'correct', 'incorrect');
+                    });
+                    
+                    // Mark this option as selected
+                    this.classList.add('selected');
+                    
+                    // Check if correct
+                    const isCorrect = this.dataset.correct === 'true';
+                    
+                    // Show result
+                    if (isCorrect) {
+                        this.classList.add('correct');
+                        
+                        // Mark corresponding objective as completed
+                        const sectionIndex = moduleSections.indexOf(getCurrentSectionId());
+                        if (sectionIndex >= 0 && sectionIndex < objectives.length) {
+                            const objectiveItem = document.querySelector(`.objective-item[data-index="${sectionIndex}"]`);
+                            if (objectiveItem) {
+                                objectiveItem.classList.add('completed');
+                                completedObjectives.add(sectionIndex);
+                                updateProgress();
+                            }
+                        }
+                    } else {
+                        this.classList.add('incorrect');
+                    }
+                });
+            });
+        }
+        
+        function setupKeyTerms() {
+            // Create key term popups dynamically
+            document.addEventListener('mouseover', function(e) {
+                if (e.target.classList.contains('key-term')) {
+                    if (activeTermPopup) {
+                        activeTermPopup.remove();
+                    }
+                    
+                    const term = e.target.textContent;
+                    const termData = keyTerms.find(t => t.term.toLowerCase() === term.toLowerCase());
+                    
+                    if (termData) {
+                        activeTermPopup = document.createElement('div');
+                        activeTermPopup.className = 'term-definition';
+                        activeTermPopup.innerHTML = `
+                            <strong>${termData.term}</strong>
+                            <p style="margin-top: 8px;">${termData.definition}</p>
+                        `;
+                        document.body.appendChild(activeTermPopup);
+                        
+                        const rect = e.target.getBoundingClientRect();
+                        activeTermPopup.style.left = `${rect.left + window.scrollX}px`;
+                        activeTermPopup.style.top = `${rect.bottom + window.scrollY + 10}px`;
+                        activeTermPopup.style.display = 'block';
+                    }
+                }
+            });
+            
+            document.addEventListener('mouseout', function(e) {
+                if (e.target.classList.contains('key-term')) {
+                    setTimeout(() => {
+                        if (activeTermPopup) {
+                            activeTermPopup.remove();
+                            activeTermPopup = null;
+                        }
+                    }, 300);
+                }
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (activeTermPopup && e.target.classList.contains('key-term')) {
+                    const rect = e.target.getBoundingClientRect();
+                    activeTermPopup.style.left = `${rect.left + window.scrollX}px`;
+                    activeTermPopup.style.top = `${rect.bottom + window.scrollY + 10}px`;
+                }
+            });
+        }
+        
+        function setupScrollEffects() {
+            const header = document.getElementById('mainHeader');
+            
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    header.classList.add('header-scrolled');
+                } else {
+                    header.classList.remove('header-scrolled');
+                }
+            });
+        }
+        
+        function goToSection(sectionId) {
+            // Update active nav button
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.section === sectionId) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update active content section
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+                if (section.id === sectionId) {
+                    section.classList.add('active');
+                }
+            });
+            
+            // Update current section index
+            currentSection = moduleSections.indexOf(sectionId);
+            
+            // Update progress
+            updateProgress();
+            
+            // Update button states
+            updateNavigationButtons();
+            
+            // Scroll to top of section
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function goToNextSection() {
+            if (currentSection < moduleSections.length - 1) {
+                goToSection(moduleSections[currentSection + 1]);
+            }
+        }
+        
+        function goToPreviousSection() {
+            if (currentSection > 0) {
+                goToSection(moduleSections[currentSection - 1]);
+            }
+        }
+        
+        function getCurrentSectionId() {
+            return moduleSections[currentSection];
+        }
+        
+        function updateProgress() {
+            // Calculate progress based on sections and completed objectives
+            const sectionProgress = ((currentSection + 1) / moduleSections.length) * 50;
+            const objectiveProgress = (completedObjectives.size / objectives.length) * 50;
+            const totalProgress = sectionProgress + objectiveProgress;
+            
+            // Update progress bar
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = `${totalProgress}%`;
+            
+            // Update progress info
+            document.getElementById('currentProgress').textContent = 
+                `${sectionTitles[getCurrentSectionId()]} (${currentSection + 1}/${moduleSections.length})`;
+            
+            document.getElementById('progressPercent').textContent = 
+                `${Math.round(totalProgress)}% Complete`;
+            
+            // Change progress bar color based on completion
+            if (totalProgress >= 100) {
+                progressBar.style.background = 'linear-gradient(90deg, var(--success) 0%, var(--success-light) 100%)';
+            }
+        }
+        
+        function updateNavigationButtons() {
+            // Previous button disabled on first section
+            document.querySelectorAll('.btn-secondary').forEach(btn => {
+                if (btn.id.startsWith('prevBtn')) {
+                    btn.disabled = currentSection === 0;
+                }
+            });
+            
+            // Update next button text on last section
+            if (currentSection === moduleSections.length - 1) {
+                document.getElementById('nextBtn10').innerHTML = 
+                    'Complete Module <i class="fas fa-trophy"></i>';
+            }
+        }
+        
+        function completeModule() {
+            const celebrationModal = document.getElementById('celebrationModal');
+            celebrationModal.style.display = 'flex';
+            
+            // Mark all objectives as completed
+            document.querySelectorAll('.objective-item').forEach(item => {
+                item.classList.add('completed');
+            });
+            
+            // Add all objectives to completed set
+            objectives.forEach((_, index) => {
+                completedObjectives.add(index);
+            });
+            
+            // Update progress to 100%
+            updateProgress();
+        }
+        
+        function closeCelebration() {
+            document.getElementById('celebrationModal').style.display = 'none';
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft' && currentSection > 0) {
+                goToPreviousSection();
+            } else if (e.key === 'ArrowRight' && currentSection < moduleSections.length - 1) {
+                goToNextSection();
+            } else if (e.key === 'Escape' && activeTermPopup) {
+                activeTermPopup.remove();
+                activeTermPopup = null;
+            }
+        });
+    </script>
+</body>
+</html>
