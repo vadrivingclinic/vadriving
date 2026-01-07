@@ -1,0 +1,2170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRICARE & Veterans' Healthcare - Interactive Simulation</title>
+    <style>
+        :root {
+            --color-primary: #1a3d7c;
+            --color-primary-light: #2d5ba3;
+            --color-primary-dark: #0d2b5a;
+            --color-secondary: #d32f2f;
+            --color-secondary-light: #ff6659;
+            --color-accent: #af4bef;
+            --color-accent-light: #d492ff;
+            --color-success: #00b894;
+            --color-warning: #f59e0b;
+            --color-error: #e17055;
+            --color-info: #8380f0;
+            --color-bg: #f7f5fb;
+            --color-bg-light: #ffffff;
+            --color-bg-dark: #f1ecff;
+            --color-text: #1a202c;
+            --color-text-light: #4a5568;
+            --color-text-muted: #718096;
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-sm: 0 2px 4px rgba(26, 61, 124, 0.05);
+            --shadow-md: 0 4px 12px rgba(26, 61, 124, 0.08);
+            --shadow-lg: 0 8px 24px rgba(26, 61, 124, 0.12);
+            --shadow-xl: 0 12px 36px rgba(26, 61, 124, 0.15);
+            --transition-fast: 0.2s ease;
+            --transition-base: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f7f5fb 0%, #f1ecff 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 300px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 70%);
+            z-index: -1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .simulation-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s var(--transition-base);
+        }
+
+        /* Enhanced Header */
+        .brand-header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-xl);
+            padding: 30px 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+            animation: slideInRight 0.6s var(--transition-base);
+        }
+
+        .brand-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent), var(--color-success));
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+
+        .brand-header::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(175, 75, 239, 0.1) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        .brand-content {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-logo-container {
+            position: relative;
+        }
+
+        .brand-logo {
+            height: 70px;
+            width: 70px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            border-radius: var(--radius-lg);
+            padding: 15px;
+            filter: drop-shadow(0 4px 12px rgba(26, 61, 124, 0.2));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .logo-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            background: var(--color-success);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+        }
+
+        .brand-text {
+            flex: 1;
+        }
+
+        .module-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--color-accent), var(--color-info));
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .brand-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .brand-subtitle {
+            font-size: 1rem;
+            color: var(--color-text-light);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subtitle-icon {
+            color: var(--color-accent);
+            animation: pulse 2s infinite;
+        }
+
+        /* Enhanced Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .stat-content {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 8px;
+        }
+
+        .stat-trend {
+            font-size: 0.85rem;
+            color: var(--color-success);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Enhanced Progress Bar */
+        .progress-container {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-lg);
+            animation: slideInLeft 0.6s var(--transition-base);
+        }
+
+        .progress-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .progress-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .progress-title::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            display: block;
+        }
+
+        .progress-percent {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .progress-bar {
+            height: 16px;
+            background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg) 100%);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, 
+                var(--color-primary) 0%, 
+                var(--color-accent) 50%, 
+                var(--color-success) 100%);
+            background-size: 200% 100%;
+            border-radius: 8px;
+            width: 0%;
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            animation: shimmer 3s infinite linear;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.4) 50%, 
+                transparent 100%);
+            animation: shimmer 2s infinite;
+        }
+
+        .progress-milestones {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 0 10px;
+        }
+
+        .milestone {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            font-weight: 600;
+            position: relative;
+            padding-top: 25px;
+        }
+
+        .milestone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: var(--color-bg);
+            border: 3px solid var(--color-primary-light);
+            border-radius: 50%;
+        }
+
+        .milestone.completed::before {
+            background: var(--color-success);
+            border-color: var(--color-success);
+            box-shadow: 0 0 0 4px rgba(0, 184, 148, 0.2);
+        }
+
+        /* Enhanced Simulation Area */
+        .simulation-area {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 1200px) {
+            .simulation-area {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Enhanced Patient Profile */
+        .patient-profile {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 20px;
+            animation: slideInLeft 0.6s var(--transition-base);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid var(--color-bg-dark);
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: 800;
+            position: relative;
+            box-shadow: 0 8px 24px rgba(26, 61, 124, 0.3);
+        }
+
+        .profile-avatar::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 2px solid var(--color-accent-light);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+
+        .profile-rank {
+            font-size: 1rem;
+            color: var(--color-accent);
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .rank-icon {
+            font-size: 1.2rem;
+        }
+
+        .profile-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--color-info), var(--color-accent-light));
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .profile-details {
+            margin-top: 30px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--color-bg-dark);
+            position: relative;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--color-text-light);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-label::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            display: block;
+        }
+
+        .detail-value {
+            font-weight: 700;
+            color: var(--color-primary);
+            text-align: right;
+            font-size: 0.95rem;
+        }
+
+        /* Enhanced Simulation Content */
+        .simulation-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+            animation: slideInRight 0.6s var(--transition-base);
+        }
+
+        .scenario-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid var(--color-bg-dark);
+        }
+
+        .scenario-number {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            color: white;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        .scenario-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            line-height: 1.3;
+        }
+
+        .scenario-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--color-warning), #ffb74d);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-left: 15px;
+            vertical-align: middle;
+        }
+
+        .scenario-description {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg) 100%);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--color-accent);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scenario-description::before {
+            content: '📋';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            opacity: 0.1;
+        }
+
+        /* Enhanced Interactive Elements */
+        .interactive-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--color-accent), var(--color-info));
+            border-radius: 3px;
+        }
+
+        /* Enhanced Eligibility Checker */
+        .eligibility-checker {
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.05) 0%, rgba(131, 128, 240, 0.05) 100%);
+            border: 2px solid rgba(0, 184, 148, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .checker-question {
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--color-success);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checker-question::before {
+            content: '❓';
+            font-size: 1.2rem;
+        }
+
+        .checker-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .checker-option {
+            padding: 18px 20px;
+            background: white;
+            border: 2px solid rgba(0, 184, 148, 0.2);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            text-align: center;
+            transition: all var(--transition-fast);
+            font-weight: 600;
+            color: var(--color-text-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .checker-option:hover {
+            transform: translateY(-3px);
+            border-color: var(--color-success);
+            box-shadow: var(--shadow-md);
+        }
+
+        .checker-option.selected {
+            background: linear-gradient(135deg, var(--color-success), #26a69a);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 184, 148, 0.3);
+        }
+
+        .checker-option.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.2);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Enhanced Program Selector */
+        .program-selector {
+            margin: 40px 0;
+        }
+
+        .program-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .program-card {
+            background: white;
+            border: 2px solid rgba(175, 75, 239, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .program-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+            transform: scaleX(0);
+            transition: transform var(--transition-base);
+        }
+
+        .program-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--color-accent);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .program-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .program-card.selected {
+            background: linear-gradient(135deg, rgba(175, 75, 239, 0.05), rgba(131, 128, 240, 0.05));
+            border-color: var(--color-accent);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 28px rgba(175, 75, 239, 0.15);
+        }
+
+        .program-card.selected::before {
+            transform: scaleX(1);
+        }
+
+        .program-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .program-name {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .program-desc {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            line-height: 1.5;
+        }
+
+        /* Enhanced Claim Simulation */
+        .claim-simulation {
+            background: linear-gradient(135deg, rgba(241, 236, 255, 0.5) 0%, rgba(247, 245, 251, 0.8) 100%);
+            border: 2px solid rgba(175, 75, 239, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .claim-simulation::before {
+            content: '⚡';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            opacity: 0.1;
+        }
+
+        .claim-steps {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0 40px;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .claim-steps::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                var(--color-primary) 0%, 
+                var(--color-accent) 33%, 
+                var(--color-info) 66%, 
+                var(--color-success) 100%);
+            background-size: 300% 100%;
+            animation: shimmer 3s infinite linear;
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border: 3px solid var(--color-bg-dark);
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: var(--color-text-muted);
+            font-size: 1.1rem;
+            transition: all var(--transition-base);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .step.active .step-circle {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            color: white;
+            border-color: transparent;
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(26, 61, 124, 0.3);
+        }
+
+        .step.completed .step-circle {
+            background: var(--color-success);
+            color: white;
+            border-color: transparent;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-text-muted);
+            transition: color var(--transition-base);
+        }
+
+        .step.active .step-label {
+            color: var(--color-primary);
+        }
+
+        .step.completed .step-label {
+            color: var(--color-success);
+        }
+
+        .claim-form {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 700;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            display: block;
+        }
+
+        .form-select, .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--color-bg-dark);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            transition: all var(--transition-fast);
+            background: var(--color-bg-light);
+            font-family: inherit;
+        }
+
+        .form-select:focus, .form-input:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 4px rgba(175, 75, 239, 0.1);
+        }
+
+        /* Enhanced Checkboxes */
+        .checkbox-container {
+            display: block;
+            margin-bottom: 12px;
+            cursor: pointer;
+            user-select: none;
+            padding: 15px;
+            border: 2px solid var(--color-bg-dark);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .checkbox-container:hover {
+            border-color: var(--color-accent);
+            background: rgba(175, 75, 239, 0.02);
+        }
+
+        .checkbox-container input:checked ~ .checkmark {
+            background: linear-gradient(135deg, var(--color-success), var(--color-accent));
+            border-color: transparent;
+        }
+
+        .checkbox-container input:checked ~ .checkmark::after {
+            content: '✓';
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        .checkbox-container input:checked ~ .checkbox-label {
+            color: var(--color-success);
+            font-weight: 700;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--color-bg-dark);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+
+        .checkbox-label {
+            padding-right: 40px;
+            color: var(--color-text);
+            font-weight: 500;
+        }
+
+        /* Enhanced Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            min-width: 180px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            color: white;
+            box-shadow: 0 8px 20px rgba(26, 61, 124, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(26, 61, 124, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary-light);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--color-accent);
+            border: 2px solid var(--color-accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--color-accent);
+            color: white;
+            transform: translateY(-4px);
+        }
+
+        /* Enhanced Feedback Panel */
+        .feedback-panel {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--color-success);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            display: none;
+            animation: slideInRight 0.5s var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feedback-panel.show {
+            display: block;
+        }
+
+        .feedback-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.05) 0%, transparent 100%);
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feedback-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--color-success), #26a69a);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .feedback-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-success);
+        }
+
+        .feedback-content {
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+
+        .key-point {
+            background: linear-gradient(135deg, rgba(175, 75, 239, 0.05) 0%, rgba(131, 128, 240, 0.05) 100%);
+            border-left: 4px solid var(--color-accent);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        }
+
+        /* Enhanced Objectives Panel */
+        .objectives-panel {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .objectives-list {
+            list-style: none;
+            padding-left: 0;
+            display: grid;
+            gap: 15px;
+        }
+
+        .objective-item {
+            padding: 20px;
+            background: var(--color-bg-light);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all var(--transition-base);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .objective-item:hover {
+            transform: translateX(10px);
+            border-color: var(--color-accent);
+            box-shadow: var(--shadow-md);
+        }
+
+        .objective-item.completed {
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.05) 0%, rgba(0, 184, 148, 0.1) 100%);
+            border-color: rgba(0, 184, 148, 0.2);
+        }
+
+        .objective-item.completed::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--color-success);
+        }
+
+        .objective-checkbox {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--color-bg-dark);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all var(--transition-fast);
+            background: white;
+        }
+
+        .objective-item:hover .objective-checkbox {
+            border-color: var(--color-accent);
+        }
+
+        .objective-item.completed .objective-checkbox {
+            background: var(--color-success);
+            border-color: var(--color-success);
+            color: white;
+        }
+
+        .objective-text {
+            flex: 1;
+            font-weight: 500;
+            color: var(--color-text);
+        }
+
+        .objective-number {
+            color: var(--color-accent);
+            font-weight: 800;
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .brand-header {
+                padding: 20px;
+            }
+
+            .brand-title {
+                font-size: 1.8rem;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .simulation-content {
+                padding: 25px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .claim-steps {
+                flex-direction: column;
+                gap: 30px;
+                padding: 0;
+            }
+
+            .claim-steps::before {
+                display: none;
+            }
+
+            .step {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                text-align: left;
+            }
+
+            .step-circle {
+                margin: 0;
+                flex-shrink: 0;
+            }
+
+            .program-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .checker-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="simulation-container">
+        <!-- Enhanced Brand Header -->
+        <header class="brand-header">
+            <div class="brand-content">
+                <div class="brand-logo-container">
+                    <img src="https://cdn.prod.website-files.com/64d0ccc1558d601cbfb09021/64e9d2f719b1e5258e5d57f5_IMG_1512-p-500.png" 
+                         alt="Brand Logo" class="brand-logo">
+                    <div class="logo-badge">⚕️</div>
+                </div>
+                <div class="brand-text">
+                    <div class="module-tag">Military Healthcare Module</div>
+                    <h1 class="brand-title">TRICARE & Veterans' Healthcare Simulation</h1>
+                    <div class="brand-subtitle">
+                        <span class="subtitle-icon">🎯</span>
+                        Interactive Training for Military Healthcare Administration
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Enhanced Dashboard -->
+        <div class="dashboard">
+            <div class="stat-card" onclick="focusOnProgress()">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                    <div>
+                        <div class="stat-number" id="progress-percent">0%</div>
+                        <div class="stat-label">Simulation Progress</div>
+                    </div>
+                    <div class="stat-trend">↑</div>
+                </div>
+            </div>
+            <div class="stat-card" onclick="showObjectives()">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-content">
+                    <div>
+                        <div class="stat-number" id="completed-objectives">0/19</div>
+                        <div class="stat-label">Objectives Met</div>
+                    </div>
+                    <div class="stat-trend">↑</div>
+                </div>
+            </div>
+            <div class="stat-card" onclick="showFeedback()">
+                <div class="stat-icon">✅</div>
+                <div class="stat-content">
+                    <div>
+                        <div class="stat-number" id="correct-decisions">0</div>
+                        <div class="stat-label">Correct Decisions</div>
+                    </div>
+                    <div class="stat-trend">↑</div>
+                </div>
+            </div>
+            <div class="stat-card" onclick="showTimeStats()">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-content">
+                    <div>
+                        <div class="stat-number" id="time-spent">00:00</div>
+                        <div class="stat-label">Time Learning</div>
+                    </div>
+                    <div class="stat-trend">⏳</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <div class="progress-title">TRICARE Learning Journey</div>
+                <div class="progress-percent" id="progress-text">0% Complete</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-milestones">
+                <div class="milestone">Eligibility</div>
+                <div class="milestone">Program Selection</div>
+                <div class="milestone">Authorization</div>
+                <div class="milestone">Claims</div>
+                <div class="milestone completed">Complete</div>
+            </div>
+        </div>
+
+        <!-- Enhanced Simulation Area -->
+        <div class="simulation-area">
+            <!-- Enhanced Patient Profile -->
+            <aside class="patient-profile">
+                <div class="profile-header">
+                    <div class="profile-avatar">JD</div>
+                    <div class="profile-name">John Davis</div>
+                    <div class="profile-rank">
+                        <span class="rank-icon">⚔️</span>
+                        U.S. Army • Sergeant First Class
+                    </div>
+                    <div class="profile-badge">Active Duty • 12 Years Service</div>
+                </div>
+                <div class="profile-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Age</span>
+                        <span class="detail-value">34</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Dependents</span>
+                        <span class="detail-value">Spouse + 2 Children</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Service Status</span>
+                        <span class="detail-value" id="service-status">Active Duty</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">DEERS Status</span>
+                        <span class="detail-value" id="deers-status">Verified ✅</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Current Location</span>
+                        <span class="detail-value" id="current-location">Fort Bragg, NC</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Medical Need</span>
+                        <span class="detail-value" id="medical-need">Orthopedic Surgery</span>
+                    </div>
+                </div>
+                <button class="btn btn-outline" style="width: 100%; margin-top: 25px;" onclick="changePatientScenario()">
+                    🔄 Change Patient Scenario
+                </button>
+            </aside>
+
+            <!-- Enhanced Simulation Content -->
+            <main class="simulation-content">
+                <div class="scenario-header">
+                    <div class="scenario-number">1</div>
+                    <div class="scenario-title">
+                        Eligibility & Program Selection
+                        <span class="scenario-tag">Critical Decision</span>
+                    </div>
+                </div>
+
+                <div class="scenario-description">
+                    <p><strong>Scenario Analysis:</strong> SFC John Davis requires orthopedic surgery following a training injury. As the healthcare administrator, you must navigate the complex TRICARE system to ensure proper coverage and authorization.</p>
+                    <p style="margin-top: 15px;"><strong>Primary Objective:</strong> Determine TRICARE eligibility, select the appropriate program based on service member status, and understand authorization requirements for specialized care.</p>
+                </div>
+
+                <!-- Enhanced Eligibility Checker -->
+                <div class="interactive-section">
+                    <div class="section-title">Step 1: Verify TRICARE Eligibility</div>
+                    <div class="eligibility-checker">
+                        <div class="checker-question">Is the patient eligible for TRICARE based on his service status?</div>
+                        <div class="checker-options">
+                            <div class="checker-option" onclick="selectEligibility(this, true)">Yes, Active Duty</div>
+                            <div class="checker-option" onclick="selectEligibility(this, false)">No, Not Eligible</div>
+                            <div class="checker-option" onclick="selectEligibility(this, 'reserve')">Reserve Component Only</div>
+                            <div class="checker-option" onclick="selectEligibility(this, 'retired')">Retired Status</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Program Selector -->
+                <div class="interactive-section">
+                    <div class="section-title">Step 2: Select Appropriate TRICARE Program</div>
+                    <div class="program-selector">
+                        <p style="margin-bottom: 20px; color: var(--color-text-light);">Based on the patient's Active Duty status with dependents, select the most appropriate TRICARE program:</p>
+                        <div class="program-grid">
+                            <div class="program-card" onclick="selectProgram(this, 'prime')">
+                                <div class="program-icon">⭐</div>
+                                <div class="program-name">TRICARE Prime</div>
+                                <div class="program-desc">Managed care option for active duty service members</div>
+                            </div>
+                            <div class="program-card" onclick="selectProgram(this, 'select')">
+                                <div class="program-icon">🔍</div>
+                                <div class="program-name">TRICARE Select</div>
+                                <div class="program-desc">Fee-for-service option with more provider choices</div>
+                            </div>
+                            <div class="program-card" onclick="selectProgram(this, 'extra')">
+                                <div class="program-icon">💼</div>
+                                <div class="program-name">TRICARE Extra</div>
+                                <div class="program-desc">Network provider discount program</div>
+                            </div>
+                            <div class="program-card" onclick="selectProgram(this, 'life')">
+                                <div class="program-icon">👴</div>
+                                <div class="program-name">TRICARE for Life</div>
+                                <div class="program-desc">Medicare wraparound coverage</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Authorization Simulation -->
+                <div class="interactive-section">
+                    <div class="section-title">Step 3: Authorization & NAS Requirements</div>
+                    <div class="claim-simulation">
+                        <p style="margin-bottom: 25px; color: var(--color-primary); font-weight: 600;">Determine if a Nonavailability Statement (NAS) is required for orthopedic surgery at Fort Bragg:</p>
+                        
+                        <div class="claim-steps">
+                            <div class="step active" id="step1">
+                                <div class="step-circle">1</div>
+                                <div class="step-label">Check MTF Capability</div>
+                            </div>
+                            <div class="step" id="step2">
+                                <div class="step-circle">2</div>
+                                <div class="step-label">NAS Required?</div>
+                            </div>
+                            <div class="step" id="step3">
+                                <div class="step-circle">3</div>
+                                <div class="step-label">Submit Authorization</div>
+                            </div>
+                            <div class="step" id="step4">
+                                <div class="step-circle">4</div>
+                                <div class="step-label">Process Claim</div>
+                            </div>
+                        </div>
+
+                        <div class="claim-form">
+                            <div class="form-group">
+                                <label class="form-label">Does the Military Treatment Facility (MTF) have orthopedic surgery capability?</label>
+                                <select class="form-select" id="mtf-capability">
+                                    <option value="">Select an option</option>
+                                    <option value="yes">Yes, full capability available</option>
+                                    <option value="limited">Limited capability (wait time > 30 days)</option>
+                                    <option value="no">No capability available at this MTF</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">When is NAS required? (Select all that apply)</label>
+                                <div style="margin-top: 15px;">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" class="nas-condition" value="inpatient">
+                                        <span class="checkbox-label">Inpatient care not available at MTF</span>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" class="nas-condition" value="specialty">
+                                        <span class="checkbox-label">Specialty care not available at MTF</span>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" class="nas-condition" value="wait">
+                                        <span class="checkbox-label">Wait time exceeds access standards</span>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" class="nas-condition" value="emergency">
+                                        <span class="checkbox-label">Emergency care situations</span>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="processScenario()">
+                        <span>✅</span> Process & Validate Scenario
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetScenario()">
+                        <span>🔄</span> Reset Simulation
+                    </button>
+                    <button class="btn btn-outline" onclick="showHint()">
+                        <span>💡</span> Get Expert Hint
+                    </button>
+                </div>
+
+                <!-- Enhanced Feedback Panel -->
+                <div class="feedback-panel" id="feedback-panel">
+                    <div class="feedback-header">
+                        <div class="feedback-icon">📊</div>
+                        <div class="feedback-title">Performance Analysis</div>
+                    </div>
+                    <div class="feedback-content" id="feedback-content">
+                        <!-- Feedback will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Enhanced Learning Objectives -->
+                <div class="objectives-panel">
+                    <div class="section-title">Learning Objectives Progress</div>
+                    <ul class="objectives-list" id="objectives-list">
+                        <!-- Objectives will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Simulation State
+        const simulationState = {
+            currentScenario: 1,
+            completedObjectives: 0,
+            correctDecisions: 0,
+            totalObjectives: 19,
+            startTime: new Date(),
+            selectedProgram: null,
+            eligibilityCorrect: false,
+            nasCorrect: false,
+            programCorrect: false,
+            currentPatient: 'active'
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSimulation();
+            startTimer();
+            populateObjectives();
+            updateProgress();
+            setupInteractions();
+        });
+
+        function initializeSimulation() {
+            updatePatientProfile('active');
+            setupStepTransitions();
+        }
+
+        function setupInteractions() {
+            // Add hover effects to all interactive elements
+            document.querySelectorAll('.checker-option, .program-card, .btn').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    el.style.transform = 'translateY(-4px)';
+                });
+                el.addEventListener('mouseleave', () => {
+                    if (!el.classList.contains('selected') && !el.classList.contains('active')) {
+                        el.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+        }
+
+        function setupStepTransitions() {
+            document.getElementById('mtf-capability').addEventListener('change', function() {
+                if (this.value) {
+                    document.getElementById('step2').classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('.nas-condition').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const checked = document.querySelectorAll('.nas-condition:checked').length;
+                    if (checked > 0) {
+                        document.getElementById('step3').classList.add('active');
+                    }
+                    if (checked >= 2) {
+                        document.getElementById('step4').classList.add('active');
+                    }
+                });
+            });
+        }
+
+        function updatePatientProfile(type) {
+            const patients = {
+                active: {
+                    name: 'John Davis',
+                    rank: 'U.S. Army • Sergeant First Class',
+                    age: '34',
+                    dependents: 'Spouse + 2 Children',
+                    status: 'Active Duty',
+                    deers: 'Verified ✅',
+                    location: 'Fort Bragg, NC',
+                    medical: 'Orthopedic Surgery',
+                    badge: 'Active Duty • 12 Years Service'
+                },
+                retired: {
+                    name: 'Robert Johnson',
+                    rank: 'U.S. Navy • Master Chief (Retired)',
+                    age: '62',
+                    dependents: 'Spouse',
+                    status: 'Retired',
+                    deers: 'Verified ✅',
+                    location: 'San Diego, CA',
+                    medical: 'Cardiac Care',
+                    badge: 'Retired • Medicare Eligible'
+                },
+                reserve: {
+                    name: 'Maria Garcia',
+                    rank: 'U.S. Air Force • Technical Sergeant',
+                    age: '28',
+                    dependents: 'None',
+                    status: 'Reserve',
+                    deers: 'Verified ✅',
+                    location: 'Austin, TX',
+                    medical: 'Routine Physical',
+                    badge: 'Reserve Component • TRS'
+                }
+            };
+
+            const patient = patients[type];
+            document.querySelector('.profile-name').textContent = patient.name;
+            document.querySelector('.profile-rank').innerHTML = `<span class="rank-icon">⚔️</span> ${patient.rank}`;
+            document.querySelectorAll('.detail-item')[0].querySelector('.detail-value').textContent = patient.age;
+            document.querySelectorAll('.detail-item')[1].querySelector('.detail-value').textContent = patient.dependents;
+            document.getElementById('service-status').textContent = patient.status;
+            document.getElementById('deers-status').textContent = patient.deers;
+            document.getElementById('current-location').textContent = patient.location;
+            document.getElementById('medical-need').textContent = patient.medical;
+            document.querySelector('.profile-badge').textContent = patient.badge;
+
+            simulationState.currentPatient = type;
+            
+            // Update avatar initials
+            const initials = patient.name.split(' ').map(n => n[0]).join('');
+            document.querySelector('.profile-avatar').textContent = initials;
+        }
+
+        function changePatientScenario() {
+            const types = ['active', 'retired', 'reserve'];
+            const currentIndex = types.indexOf(simulationState.currentPatient);
+            const nextIndex = (currentIndex + 1) % types.length;
+            updatePatientProfile(types[nextIndex]);
+            resetScenario();
+            
+            // Show notification
+            showNotification('Patient scenario changed', 'info');
+        }
+
+        function selectEligibility(element, isCorrect) {
+            document.querySelectorAll('.checker-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            simulationState.eligibilityCorrect = isCorrect === true;
+            
+            // Animate selection
+            element.style.animation = 'none';
+            setTimeout(() => {
+                element.style.animation = 'pulse 0.3s ease';
+            }, 10);
+            
+            updateProgress();
+        }
+
+        function selectProgram(element, program) {
+            document.querySelectorAll('.program-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            simulationState.selectedProgram = program;
+            
+            // Determine if correct based on patient type
+            let correct = false;
+            if (simulationState.currentPatient === 'active' && program === 'prime') {
+                correct = true;
+            } else if (simulationState.currentPatient === 'retired' && (program === 'select' || program === 'life')) {
+                correct = true;
+            } else if (simulationState.currentPatient === 'reserve' && program === 'select') {
+                correct = true;
+            }
+            
+            simulationState.programCorrect = correct;
+            
+            // Animate selection
+            element.style.animation = 'none';
+            setTimeout(() => {
+                element.style.animation = 'pulse 0.3s ease';
+            }, 10);
+            
+            updateProgress();
+        }
+
+        function processScenario() {
+            // Check NAS conditions
+            const nasConditions = document.querySelectorAll('.nas-condition:checked');
+            const selectedValues = Array.from(nasConditions).map(cb => cb.value);
+            simulationState.nasCorrect = selectedValues.includes('wait') && 
+                                        selectedValues.includes('inpatient') && 
+                                        selectedValues.length === 2;
+
+            // Calculate score
+            let score = 0;
+            let feedback = [];
+            
+            if (simulationState.eligibilityCorrect) {
+                score++;
+                feedback.push({
+                    icon: '✅',
+                    title: 'Eligibility Verified',
+                    message: 'Correct! Active duty service members are always eligible for TRICARE.',
+                    type: 'success'
+                });
+            } else {
+                feedback.push({
+                    icon: '❌',
+                    title: 'Eligibility Error',
+                    message: 'Active duty service members are always eligible for TRICARE.',
+                    type: 'error'
+                });
+            }
+            
+            if (simulationState.programCorrect) {
+                score++;
+                feedback.push({
+                    icon: '✅',
+                    title: 'Program Selection',
+                    message: 'Excellent! TRICARE Prime is the correct choice for active duty members.',
+                    type: 'success'
+                });
+            } else {
+                feedback.push({
+                    icon: '❌',
+                    title: 'Program Selection',
+                    message: 'For active duty, TRICARE Prime is typically the best option.',
+                    type: 'error'
+                });
+            }
+            
+            if (simulationState.nasCorrect) {
+                score++;
+                feedback.push({
+                    icon: '✅',
+                    title: 'NAS Requirements',
+                    message: 'Perfect! NAS is required when care isn\'t available or wait times exceed standards.',
+                    type: 'success'
+                });
+            } else {
+                feedback.push({
+                    icon: '❌',
+                    title: 'NAS Requirements',
+                    message: 'NAS is required when MTF capability is limited or wait times exceed access standards.',
+                    type: 'error'
+                });
+            }
+
+            // Update stats
+            simulationState.correctDecisions += score;
+            const newObjectives = Math.min(score, 3);
+            simulationState.completedObjectives = Math.min(simulationState.totalObjectives, 
+                simulationState.completedObjectives + newObjectives);
+
+            // Show feedback
+            const feedbackPanel = document.getElementById('feedback-panel');
+            const feedbackContent = document.getElementById('feedback-content');
+            
+            const scoreColor = score >= 2 ? 'var(--color-success)' : 'var(--color-error)';
+            const scoreMessage = score >= 2 ? 
+                'Excellent performance! You\'re demonstrating strong understanding of TRICARE.' :
+                'Good effort! Review the key concepts and try again.';
+            
+            feedbackContent.innerHTML = `
+                <div style="background: linear-gradient(135deg, ${score >= 2 ? 'rgba(0, 184, 148, 0.1)' : 'rgba(225, 112, 85, 0.1)'} 0%, transparent 100%); 
+                            padding: 25px; border-radius: 12px; margin-bottom: 25px; border: 2px solid ${scoreColor};">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                        <div>
+                            <h3 style="margin: 0 0 5px 0; color: ${scoreColor}; font-size: 1.3rem;">Scenario Score: ${score}/3</h3>
+                            <p style="margin: 0; color: var(--color-text-light);">${scoreMessage}</p>
+                        </div>
+                        <div style="font-size: 3rem; color: ${scoreColor};">${score >= 2 ? '🎯' : '📚'}</div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <div style="flex: 1; text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--color-primary);">${simulationState.correctDecisions}</div>
+                            <div style="font-size: 0.8rem; color: var(--color-text-muted);">Total Correct</div>
+                        </div>
+                        <div style="flex: 1; text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                            <div style="font-size: 1.2rem; font-weight: 800; color: var(--color-accent);">${simulationState.completedObjectives}</div>
+                            <div style="font-size: 0.8rem; color: var(--color-text-muted);">Objectives Met</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="key-point">
+                    <strong style="display: block; margin-bottom: 10px; color: var(--color-accent);">💡 Key Learning Points:</strong>
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li>Active duty service members are always eligible for TRICARE coverage</li>
+                        <li>TRICARE Prime is the primary managed care option for active duty</li>
+                        <li>NAS is required when MTF cannot provide timely or specialized care</li>
+                        <li>Always verify DEERS enrollment before processing any claims</li>
+                    </ul>
+                </div>
+                
+                <div style="margin-top: 25px;">
+                    ${feedback.map(f => `
+                        <div style="display: flex; gap: 15px; margin-bottom: 15px; padding: 15px; background: ${f.type === 'success' ? 'rgba(0, 184, 148, 0.05)' : 'rgba(225, 112, 85, 0.05)'}; border-radius: 8px; border-left: 4px solid ${f.type === 'success' ? 'var(--color-success)' : 'var(--color-error)'};">
+                            <div style="font-size: 1.5rem;">${f.icon}</div>
+                            <div>
+                                <div style="font-weight: 700; color: ${f.type === 'success' ? 'var(--color-success)' : 'var(--color-error)'}; margin-bottom: 5px;">${f.title}</div>
+                                <div style="color: var(--color-text);">${f.message}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            feedbackPanel.classList.add('show');
+            
+            // Update progress and objectives
+            updateProgress();
+            updateObjectives();
+            
+            // Mark steps as completed
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.add('completed');
+            });
+            
+            // Show notification
+            showNotification(`Scenario completed! Score: ${score}/3`, score >= 2 ? 'success' : 'warning');
+            
+            // Scroll to feedback
+            setTimeout(() => {
+                feedbackPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+
+        function resetScenario() {
+            // Reset all selections
+            document.querySelectorAll('.checker-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            document.querySelectorAll('.program-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            document.querySelectorAll('.nas-condition').forEach(cb => {
+                cb.checked = false;
+            });
+            
+            document.getElementById('mtf-capability').value = '';
+            
+            // Reset steps
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active', 'completed');
+            });
+            document.getElementById('step1').classList.add('active');
+            
+            // Hide feedback
+            document.getElementById('feedback-panel').classList.remove('show');
+            
+            // Reset state
+            simulationState.selectedProgram = null;
+            simulationState.eligibilityCorrect = false;
+            simulationState.nasCorrect = false;
+            simulationState.programCorrect = false;
+            
+            updateProgress();
+            
+            // Show notification
+            showNotification('Scenario reset', 'info');
+        }
+
+        function showHint() {
+            const hint = document.createElement('div');
+            hint.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+                padding: 30px;
+                border-radius: var(--radius-lg);
+                box-shadow: var(--shadow-xl);
+                z-index: 1000;
+                max-width: 500px;
+                width: 90%;
+                border: 2px solid var(--color-accent);
+                backdrop-filter: blur(10px);
+            `;
+            
+            hint.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                    <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--color-accent), var(--color-info)); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">💡</div>
+                    <div>
+                        <h3 style="margin: 0; color: var(--color-primary); font-size: 1.3rem;">Expert Hint</h3>
+                        <p style="margin: 5px 0 0 0; color: var(--color-text-light); font-size: 0.9rem;">Key insights to guide your decision</p>
+                    </div>
+                </div>
+                <div style="background: rgba(175, 75, 239, 0.05); padding: 20px; border-radius: var(--radius-md); margin-bottom: 20px;">
+                    <strong style="color: var(--color-accent); display: block; margin-bottom: 10px;">📝 Remember These Key Points:</strong>
+                    <ul style="margin: 0; padding-left: 20px; color: var(--color-text);">
+                        <li>Active duty service members are <strong>ALWAYS</strong> eligible for TRICARE</li>
+                        <li>TRICARE Prime is the primary program for active duty members</li>
+                        <li>NAS is required when MTF cannot provide care within access standards</li>
+                        <li>Always check DEERS enrollment before proceeding with any claims</li>
+                    </ul>
+                </div>
+                <button onclick="this.parentElement.remove()" style="background: var(--color-accent); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; width: 100%;">Got it!</button>
+            `;
+            
+            document.body.appendChild(hint);
+            
+            // Add overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(5px);
+                z-index: 999;
+            `;
+            overlay.onclick = () => {
+                hint.remove();
+                overlay.remove();
+            };
+            document.body.appendChild(overlay);
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const colors = {
+                success: 'var(--color-success)',
+                error: 'var(--color-error)',
+                warning: 'var(--color-warning)',
+                info: 'var(--color-info)'
+            };
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                padding: 15px 20px;
+                border-radius: var(--radius-md);
+                box-shadow: var(--shadow-lg);
+                z-index: 1000;
+                border-left: 4px solid ${colors[type]};
+                transform: translateX(120%);
+                transition: transform 0.3s ease;
+                max-width: 300px;
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="color: ${colors[type]}; font-size: 1.2rem;">${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : '💡'}</div>
+                    <div style="color: var(--color-text); font-weight: 500;">${message}</div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 10);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(120%)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function startTimer() {
+            setInterval(() => {
+                const now = new Date();
+                const diff = Math.floor((now - simulationState.startTime) / 1000);
+                const minutes = Math.floor(diff / 60);
+                const seconds = diff % 60;
+                document.getElementById('time-spent').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function populateObjectives() {
+            const objectives = [
+                "Discuss the history of TRICARE",
+                "State who is eligible for TRICARE",
+                "List the circumstances when a nonavailability statement is necessary",
+                "Explain the benefits of the TRICARE Standard government program",
+                "State the TRICARE fiscal year",
+                "Name authorized providers who may treat a TRICARE Standard patient",
+                "List the managed care features of TRICARE Extra",
+                "State the managed care features of TRICARE Prime",
+                "Discuss TRICARE Reserve Select and Retired Reserve programs",
+                "Explain TRICARE for Life benefits",
+                "Name individuals eligible for TRICARE Plus",
+                "Define individuals who may enroll in TRICARE Prime Remote",
+                "Discuss the Supplemental Health Care Program",
+                "Discuss the TRICARE Hospice Program",
+                "Identify individuals eligible for CHAMPVA",
+                "Describe how to process a TRICARE claim",
+                "State the components of a TRICARE Summary Payment Voucher",
+                "List the components of a CHAMPVA Explanation of Benefits",
+                "Discuss quality assurance programs and appeal process"
+            ];
+            
+            const list = document.getElementById('objectives-list');
+            objectives.forEach((obj, index) => {
+                const li = document.createElement('li');
+                li.className = 'objective-item';
+                li.innerHTML = `
+                    <div class="objective-checkbox" onclick="toggleObjective(${index})">✓</div>
+                    <div class="objective-text">
+                        <span class="objective-number">${index + 1}.</span>
+                        ${obj}
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function toggleObjective(index) {
+            const items = document.querySelectorAll('.objective-item');
+            if (index < items.length) {
+                items[index].classList.toggle('completed');
+                updateObjectives();
+                showNotification('Objective updated!', 'success');
+            }
+        }
+
+        function updateObjectives() {
+            const completed = document.querySelectorAll('.objective-item.completed').length;
+            document.getElementById('completed-objectives').textContent = `${completed}/${simulationState.totalObjectives}`;
+            simulationState.completedObjectives = Math.max(simulationState.completedObjectives, completed);
+            updateProgress();
+        }
+
+        function updateProgress() {
+            // Calculate overall progress
+            const decisionProgress = (simulationState.correctDecisions / 15) * 30;
+            const objectiveProgress = (simulationState.completedObjectives / simulationState.totalObjectives) * 40;
+            const scenarioProgress = (simulationState.currentScenario / 5) * 30;
+            
+            const totalProgress = Math.min(100, decisionProgress + objectiveProgress + scenarioProgress);
+            
+            // Update progress bar with animation
+            const progressFill = document.getElementById('progress-fill');
+            progressFill.style.width = totalProgress + '%';
+            document.getElementById('progress-percent').textContent = Math.round(totalProgress) + '%';
+            document.getElementById('progress-text').textContent = Math.round(totalProgress) + '% Complete';
+            
+            // Update stats
+            document.getElementById('correct-decisions').textContent = simulationState.correctDecisions;
+        }
+
+        // Dashboard click handlers
+        function focusOnProgress() {
+            document.querySelector('.progress-container').scrollIntoView({ behavior: 'smooth' });
+            showNotification('Focusing on progress tracker', 'info');
+        }
+
+        function showObjectives() {
+            document.querySelector('.objectives-panel').scrollIntoView({ behavior: 'smooth' });
+            showNotification('Showing learning objectives', 'info');
+        }
+
+        function showFeedback() {
+            const feedbackPanel = document.getElementById('feedback-panel');
+            if (feedbackPanel.classList.contains('show')) {
+                feedbackPanel.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                showNotification('Complete a scenario first to see feedback', 'warning');
+            }
+        }
+
+        function showTimeStats() {
+            const now = new Date();
+            const diff = Math.floor((now - simulationState.startTime) / 1000);
+            const minutes = Math.floor(diff / 60);
+            const seconds = diff % 60;
+            
+            showNotification(`Time spent learning: ${minutes}m ${seconds}s`, 'info');
+        }
+    </script>
+</body>
+</html>
