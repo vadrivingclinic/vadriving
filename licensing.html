@@ -1,14 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VA Driving Clinic - DMV Procedures Simulation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .simulation-container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .simulation-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
             color: var(--color-muted);
+            text-transform: uppercase;
             font-weight: 600;
         }
 
-        .drop-zone-label span {
-            color: var(--color-success);
-            font-weight: 800;
+        .progress-bar {
+            height: 8px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
         }
 
-        /* Service Counter */
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            width: 33%;
+            transition: width 0.5s ease;
+        }
+
+        .simulation-area {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            margin-bottom: 30px;
+            min-height: 400px;
+        }
+
+        .scenario-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+        }
+
+        .scenario-content {
+            font-size: 1.1rem;
+            background: rgba(95, 23, 235, 0.05);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--color-primary);
+            margin-bottom: 25px;
+        }
+
+        .dmv-scene {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: var(--radius-md);
+            border: 2px dashed rgba(95, 23, 235, 0.2);
+            position: relative;
+            padding-bottom: 80px;
+        }
+
+        .checklist-panel {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #f1f5f9;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+        }
+
+        .checklist-item.completed {
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .checklist-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e1;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .completed .checklist-checkbox {
+            background: var(--color-success);
+            border-color: var(--color-success);
+        }
+
+        .completed .checklist-checkbox::after {
+            content: "✓";
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .drop-zone {
+            background: white;
+            border: 3px dashed rgba(16, 185, 129, 0.3);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.active {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--color-success);
+        }
+
+        .document-shelf {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .document-item {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            cursor: grab;
+            text-align: center;
+            user-select: none;
+            touch-action: none;
+            transition: all 0.2s;
+        }
+
+        .document-item:hover { transform: translateY(-3px); border-color: var(--color-primary); }
+
+        .document-icon { font-size: 2rem; margin-bottom: 5px; }
+        .document-name { font-size: 0.8rem; font-weight: 700; color: var(--color-primary); }
+
         .service-counter {
             position: absolute;
             bottom: 0;
@@ -24,29 +288,11 @@
             color: white;
         }
 
-        .counter-number {
-            background: var(--color-primary);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1.2rem;
-        }
-
-        .counter-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        /* Buttons */
         .action-buttons {
             display: flex;
             gap: 15px;
             justify-content: center;
-            margin: 30px 0;
+            margin-top: 30px;
         }
 
         .action-btn {
@@ -56,38 +302,15 @@
             padding: 15px 30px;
             border-radius: var(--radius-md);
             font-weight: 700;
-            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 150px;
+            transition: all 0.3s;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            min-width: 180px;
         }
 
-        .action-btn:hover {
-            background: #4c0fcf;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.3);
-        }
+        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(95, 23, 235, 0.3); }
+        .action-btn:disabled { background: var(--color-muted); cursor: not-allowed; transform: none; box-shadow: none; }
 
-        .action-btn:disabled {
-            background: var(--color-muted);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .action-btn.secondary {
-            background: transparent;
-            color: var(--color-primary);
-            border: 2px solid var(--color-primary);
-        }
-
-        .action-btn.secondary:hover {
-            background: rgba(95, 23, 235, 0.1);
-        }
-
-        /* Feedback Panel */
         .feedback-panel {
             background: rgba(95, 23, 235, 0.05);
             border-radius: var(--radius-lg);
@@ -97,424 +320,329 @@
             animation: fadeIn 0.5s ease;
         }
 
-        .feedback-panel.show {
-            display: block;
-        }
+        .feedback-panel.show { display: block; }
 
-        .feedback-title {
-            font-weight: 800;
-            color: var(--color-primary);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .score-display {
-            text-align: center;
-            font-size: 3rem;
-            font-weight: 900;
-            color: var(--color-primary);
-            margin: 20px 0;
-            animation: pulse 2s infinite;
-        }
-
-        .feedback-content {
-            color: var(--color-text);
-            line-height: 1.7;
-            margin-bottom: 20px;
-        }
-
-        .improvement-tips {
-            background: rgba(245, 158, 11, 0.1);
-            border-left: 4px solid var(--color-warning);
-            padding: 15px 20px;
-            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-            margin-top: 20px;
-        }
-
-        .tips-title {
-            font-weight: 700;
-            color: var(--color-warning);
-            margin-bottom: 10px;
-        }
-
-        /* Completion Message */
-        .completion-message {
-            display: none;
-            background: linear-gradient(135deg, #10b981, #34d399);
+        .doc-tag {
+            background: var(--color-primary);
             color: white;
-            border-radius: var(--radius-lg);
-            padding: 25px;
-            margin-top: 30px;
-            text-align: center;
-            animation: fadeIn 0.5s ease;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            animation: fadeIn 0.3s;
         }
 
-        .completion-message.show {
-            display: block;
-            animation: glow 2s infinite;
-        }
-
-        .completion-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .completion-time {
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin: 15px 0;
-            font-family: 'Courier New', monospace;
-        }
-
-        /* Responsive Design */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .timer-container {
-                position: static;
-                margin-bottom: 20px;
-            }
-
-            .timer {
-                justify-content: center;
-            }
-
-            .simulation-area {
-                padding: 20px;
-            }
-
-            .simulation-title {
-                font-size: 1.6rem;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-
-            .document-shelf {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            }
+            .dmv-scene { grid-template-columns: 1fr; }
+            .timer-container { position: static; margin-bottom: 20px; }
         }
     </style>
 </head>
 <body>
-    <!-- Timer Display -->
+
     <div class="timer-container">
         <div class="timer" id="timer">
-            <div class="timer-icon">⏱️</div>
             <div class="timer-display" id="timer-display">00:00</div>
-            <div class="timer-label">Time in Simulation</div>
         </div>
     </div>
 
     <div class="simulation-container">
-        <!-- Header -->
         <div class="header">
-            <div class="brand">
-                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" 
-                     alt="VA Driving Clinic Logo" class="brand-logo">
-                <div class="module-info">
-                    <div class="module-title">DMV Procedures Simulation</div>
-                    <div style="color: var(--color-muted); font-size: 0.9rem;">5-Minute Interactive Activity</div>
-                </div>
+            <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logo" class="brand-logo">
+            <div style="text-align: right">
+                <div style="font-weight: 800; color: var(--color-primary)">VA COMPLIANCE SIMULATION</div>
+                <div style="font-size: 0.8rem; color: var(--color-muted)">Interactive Procedure Guide</div>
             </div>
         </div>
 
         <h1 class="simulation-title">Virginia DMV Procedures Simulation</h1>
 
-        <!-- Time Estimate Banner -->
-        <div class="time-estimate">
-            <div class="time-estimate-icon">🏢</div>
-            <div class="time-estimate-text">
-                Complete this DMV simulation in <span class="time-highlight">5 minutes</span> to master licensing procedures
-            </div>
-        </div>
-
-        <!-- Stats Display -->
         <div class="stats-display">
             <div class="stat-card">
-                <span class="stat-number" id="documents-correct">0</span>
-                <span class="stat-label">Documents Correct</span>
+                <span class="stat-number" id="stat-docs">0</span>
+                <span class="stat-label">Correct Documents</span>
             </div>
             <div class="stat-card">
-                <span class="stat-number" id="compliance-score">0%</span>
+                <span class="stat-number" id="stat-compliance">0%</span>
                 <span class="stat-label">Compliance Score</span>
             </div>
             <div class="stat-card">
-                <span class="stat-number" id="time-spent">0:00</span>
-                <span class="stat-label">Time in Simulation</span>
+                <span class="stat-number" id="stat-scenario">1/3</span>
+                <span class="stat-label">Current Stage</span>
             </div>
         </div>
 
-        <!-- Progress Indicator -->
-        <div class="progress-indicator">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill"></div>
-            </div>
-            <div class="progress-label">
-                <span>Simulation Progress</span>
-                <span>Scenario: <span id="current-scenario">1/3</span></span>
-            </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
         </div>
 
-        <!-- Simulation Area -->
-        <div class="simulation-area" id="simulation-area">
-            <!-- Scenario 1: Learner's Permit Application -->
-            <div class="simulation-scenario" id="scenario-1" style="display: block;">
-                <div class="scenario-title">
-                    <span>🎓</span> Scenario 1: Apply for Learner's Permit
-                </div>
+        <div class="simulation-area">
+            <!-- Stage 1 -->
+            <div id="scenario-1" class="scenario-block">
+                <div class="scenario-title">Stage 1: Apply for Learner's Permit</div>
                 <div class="scenario-content">
-                    You're 15 years 6 months old and want to apply for your learner's permit in Virginia. 
-                    <strong>Drag the correct documents</strong> from the shelf to the drop zone and complete the checklist below.
+                    You are 15 years and 6 months old. To apply for your permit in Virginia, you must provide proof of identity, legal presence, SSN, and <strong>two</strong> proofs of residency. Pull from the official lists provided.
                 </div>
-
-                <!-- DMV Office Scene -->
                 <div class="dmv-scene">
                     <div class="checklist-panel">
-                        <div class="checklist-title">📋 Application Checklist</div>
-                        <div class="checklist-item" id="check1-age">
-                            <div class="checklist-checkbox"></div>
-                            <div class="checklist-text">Meet age requirement (15 years 6 months)</div>
-                        </div>
-                        <div class="checklist-item" id="check1-docs">
-                            <div class="checklist-checkbox"></div>
-                            <div class="checklist-text">Gather required documents</div>
-                        </div>
-                        <div class="checklist-item" id="check1-test">
-                            <div class="checklist-checkbox"></div>
-                            <div class="checklist-text">Pass knowledge and vision tests</div>
-                        </div>
-                        <div class="checklist-item" id="check1-fee">
-                            <div class="checklist-checkbox"></div>
-                            <div class="checklist-text">Pay $4/year permit fee</div>
-                        </div>
+                        <div class="checklist-item" id="c1-age"><div class="checklist-checkbox"></div>Meet Age (15 yrs 6 mo)</div>
+                        <div class="checklist-item" id="c1-id-legal"><div class="checklist-checkbox"></div>Identity & Legal Presence</div>
+                        <div class="checklist-item" id="c1-ssn"><div class="checklist-checkbox"></div>Proof of SSN</div>
+                        <div class="checklist-item" id="c1-res"><div class="checklist-checkbox"></div>Two Residency Proofs</div>
                     </div>
-
                     <div class="document-area">
-                        <div class="drop-zone" id="drop-zone-1">
-                            <div class="drop-zone-label">
-                                Drag required documents here<br>
-                                <span>Required: Proof of Identity, Residency, SSN, Legal Presence</span>
-                            </div>
+                        <div class="drop-zone" id="dz-1">
+                            <span style="color: #94a3b8; font-size: 0.9rem">Drag documents here...</span>
                         </div>
-
                         <div class="document-shelf">
-                            <div class="document-item" data-doc="birth-certificate" data-scenario="1">
-                                <div class="document-icon">📄</div>
-                                <div class="document-name">Birth Certificate</div>
+                            <!-- Official Identity/Legal Presence -->
+                            <div class="document-item" draggable="true" data-id="birth-cert">
+                                <div class="document-icon">📄</div><div class="document-name">U.S. Birth Cert</div>
                             </div>
-                            <div class="document-item" data-doc="passport" data-scenario="1">
-                                <div class="document-icon">📒</div>
-                                <div class="document-name">U.S. Passport</div>
+                            <!-- SSN -->
+                            <div class="document-item" draggable="true" data-id="ssn">
+                                <div class="document-icon">🔢</div><div class="document-name">SSN Card</div>
                             </div>
-                            <div class="document-item" data-doc="utility-bill" data-scenario="1">
-                                <div class="document-icon">🏠</div>
-                                <div class="document-name">Utility Bill</div>
+                            <!-- Residency (from user lists) -->
+                            <div class="document-item" draggable="true" data-id="bank-stmt">
+                                <div class="document-icon">🏦</div><div class="document-name">Bank Statement</div>
                             </div>
-                            <div class="document-item" data-doc="social-security" data-scenario="1">
-                                <div class="document-icon">🔢</div>
-                                <div class="document-name">SSN Card</div>
+                            <div class="document-item" draggable="true" data-id="school-transcript">
+                                <div class="document-icon">🎓</div><div class="document-name">School Transcript</div>
                             </div>
-                            <div class="document-item" data-doc="student-id" data-scenario="1">
-                                <div class="document-icon">🎓</div>
-                                <div class="document-name">Student ID</div>
-                            </div>
-                            <div class="document-item" data-doc="insurance-card" data-scenario="1">
-                                <div class="document-icon">🛡️</div>
-                                <div class="document-name">Insurance Card</div>
-                            </div>
-                            <div class="document-item" data-doc="library-card" data-scenario="1">
-                                <div class="document-icon">📚</div>
-                                <div class="document-name">Library Card</div>
-                            </div>
-                            <div class="document-item" data-doc="parent-consent" data-scenario="1">
-                                <div class="document-icon">👨‍👩‍👧‍👦</div>
-                                <div class="document-name">Parental Consent Form</div>
+                            <div class="document-item" draggable="true" data-id="parent-cert">
+                                <div class="document-icon">👨‍👩‍👧‍👦</div><div class="document-name">Parent Residency Cert</div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="service-counter">
-                        <div class="counter-number">C12</div>
-                        <div class="counter-label">Now Serving: Learner's Permit Applications</div>
-                    </div>
+                    <div class="service-counter"><div>COUNTER C12</div><div>LICENSING</div></div>
                 </div>
             </div>
 
-            <!-- Scenario 2: Vehicle Registration -->
-            <div class="simulation-scenario" id="scenario-2" style="display: none;">
-                <div class="scenario-title">
-                    <span>🚗</span> Scenario 2: Register a Vehicle
-                </div>
+            <!-- Stage 2 -->
+            <div id="scenario-2" class="scenario-block" style="display: none">
+                <div class="scenario-title">Stage 2: New Vehicle Registration</div>
                 <div class="scenario-content">
-                    You just moved to Virginia and need to register your car within 30 days. 
-                    <strong>Select the correct documents</strong> and complete the registration checklist.
+                    You just moved to Virginia. To register your vehicle legally, you have <strong>30 days</strong> to present your title, insurance, and safety inspection sticker.
                 </div>
-
-                <!-- DMV Office Scene -->
                 <div class="dmv-scene">
                     <div class="checklist-panel">
-                        <div class="checklist-title">📋 Registration Checklist</div>
-                        <div class="checklist-item" id="check2-timeframe">
-                            <div class="checklist-checkbox"></div>
-                            <div class="checklist-text">Within 30 days of establishing residency</div>
-                        </div>
-                        <div class="checklist-item" id="check2-inspection">
-                            <div class="checklist-checkbox"></div>
-                            <div class="checklist-text">Pass Virginia safety inspection</div>
-                        </div>
-                        <div class="checklist-item" id="check2-docs">
-                            <div class="checklist-checkbox"></div>
-                            <div class="checklist-text">Gather required documents</div>
-                        </div>
-                        <div class="checklist-item" id="check2-insurance">
-                            <div class="checklist-checkbox"></div>
-                            <div class="checklist-text">Provide Virginia insurance proof</div>
-                        </div>
+                        <div class="checklist-item" id="c2-30"><div class="checklist-checkbox"></div>Within 30 Days</div>
+                        <div class="checklist-item" id="c2-insp"><div class="checklist-checkbox"></div>Safety Inspection</div>
+                        <div class="checklist-item" id="c2-ins"><div class="checklist-checkbox"></div>Proof of VA Insurance</div>
                     </div>
-
                     <div class="document-area">
-                        <div class="drop-zone" id="drop-zone-2">
-                            <div class="drop-zone-label">
-                                Drag required documents here<br>
-                                <span>Required: Title, Insurance, Inspection, Application</span>
-                            </div>
+                        <div class="drop-zone" id="dz-2">
+                            <span style="color: #94a3b8; font-size: 0.9rem">Drag registration docs...</span>
                         </div>
-
                         <div class="document-shelf">
-                            <div class="document-item" data-doc="vehicle-title" data-scenario="2">
-                                <div class="document-icon">📑</div>
-                                <div class="document-name">Vehicle Title</div>
+                            <div class="document-item" draggable="true" data-id="title">
+                                <div class="document-icon">📑</div><div class="document-name">Vehicle Title</div>
                             </div>
-                            <div class="document-item" data-doc="insurance-proof" data-scenario="2">
-                                <div class="document-icon">📋</div>
-                                <div class="document-name">Insurance Card</div>
+                            <div class="document-item" draggable="true" data-id="insurance">
+                                <div class="document-icon">🛡️</div><div class="document-name">Insurance</div>
                             </div>
-                            <div class="document-item" data-doc="inspection-sticker" data-scenario="2">
-                                <div class="document-icon">✅</div>
-                                <div class="document-name">Inspection Sticker</div>
-                            </div>
-                            <div class="document-item" data-doc="registration-form" data-scenario="2">
-                                <div class="document-icon">📝</div>
-                                <div class="document-name">Form VSA 14</div>
-                            </div>
-                            <div class="document-item" data-doc="bill-of-sale" data-scenario="2">
-                                <div class="document-icon">💵</div>
-                                <div class="document-name">Bill of Sale</div>
-                            </div>
-                            <div class="document-item" data-doc="driver-license" data-scenario="2">
-                                <div class="document-icon">🪪</div>
-                                <div class="document-name">Driver's License</div>
-                            </div>
-                            <div class="document-item" data-doc="maintenance-records" data-scenario="2">
-                                <div class="document-icon">🔧</div>
-                                <div class="document-name">Maintenance Records</div>
-                            </div>
-                            <div class="document-item" data-doc="personal-check" data-scenario="2">
-                                <div class="document-icon">💰</div>
-                                <div class="document-name">Payment ($40.75+)</div>
+                            <div class="document-item" draggable="true" data-id="sticker">
+                                <div class="document-icon">✅</div><div class="document-name">VA Sticker</div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="service-counter">
-                        <div class="counter-number">C15</div>
-                        <div class="counter-label">Now Serving: Vehicle Registration</div>
-                    </div>
+                    <div class="service-counter"><div>COUNTER R05</div><div>REGISTRATION</div></div>
                 </div>
             </div>
 
-            <!-- Scenario 3: License Renewal -->
-            <div class="simulation-scenario" id="scenario-3" style="display: none;">
-                <div class="scenario-title">
-                    <span>🔄</span> Scenario 3: License & Registration Renewal
-                </div>
+            <!-- Stage 3 -->
+            <div id="scenario-3" class="scenario-block" style="display: none">
+                <div class="scenario-title">Stage 3: Renewal Procedures</div>
                 <div class="scenario-content">
-                    Your driver's license and vehicle registration are about to expire. 
-                    <strong>Choose the correct renewal method</strong> and complete the checklist.
+                    Your license is expiring. Virginia DMV offers several alternative renewal methods to save you a trip to the office.
                 </div>
-
-                <!-- DMV Office Scene -->
                 <div class="dmv-scene">
                     <div class="checklist-panel">
-                        <div class="checklist-title">📋 Renewal Checklist</div>
-                        <div class="checklist-item" id="check3-timing">
-                            <div class="checklist-checkbox"></div>
-                            <div class="checklist-text">Renew before expiration date</div>
-                        </div>
-                        <div class="checklist-item" id="check3-method">
-                            <div class="checklist-checkbox"></div>
-                            <div class="checklist-text">Choose correct renewal method</div>
-                        </div>
-                        <div class="checklist-item" id="check3-vision">
-                            <div class="checklist-checkbox"></div>
-                            <div class="checklist-text">Pass vision screening if required</div>
-                        </div>
-                        <div class="checklist-item" id="check3-fee">
-                            <div class="checklist-checkbox"></div>
-                            <div class="checklist-text">Pay renewal fees</div>
-                        </div>
+                        <div class="checklist-item" id="c3-valid"><div class="checklist-checkbox"></div>Select Valid Methods</div>
+                        <div class="checklist-item" id="c3-timing"><div class="checklist-checkbox"></div>Renew Before Expiry</div>
                     </div>
-
                     <div class="document-area">
-                        <div class="drop-zone" id="drop-zone-3">
-                            <div class="drop-zone-label">
-                                Select your renewal method<br>
-                                <span>Choose based on your eligibility</span>
-                            </div>
+                        <div class="drop-zone" id="dz-3">
+                            <span style="color: #94a3b8; font-size: 0.9rem">Select renewal methods...</span>
                         </div>
-
                         <div class="document-shelf">
-                            <div class="document-item" data-doc="online-renewal" data-scenario="3">
-                                <div class="document-icon">💻</div>
-                                <div class="document-name">Online Renewal</div>
-                                <div class="document-desc" style="font-size: 0.75rem; color: var(--color-muted);">Available for most renewals</div>
+                            <div class="document-item" draggable="true" data-id="online">
+                                <div class="document-icon">💻</div><div class="document-name">Online</div>
                             </div>
-                            <div class="document-item" data-doc="mail-renewal" data-scenario="3">
-                                <div class="document-icon">📮</div>
-                                <div class="document-name">Mail-in Renewal</div>
-                                <div class="document-desc" style="font-size: 0.75rem; color: var(--color-muted);">Use DMV renewal notice</div>
+                            <div class="document-item" draggable="true" data-id="mail">
+                                <div class="document-icon">📮</div><div class="document-name">By Mail</div>
                             </div>
-                            <div class="document-item" data-doc="in-person" data-scenario="3">
-                                <div class="document-icon">🏢</div>
-                                <div class="document-name">In-Person Renewal</div>
-                                <div class="document-desc" style="font-size: 0.75rem; color: var(--color-muted);">Required for certain cases</div>
+                            <div class="document-item" draggable="true" data-id="kiosk">
+                                <div class="document-icon">🏧</div><div class="document-name">DMV Kiosk</div>
                             </div>
-                            <div class="document-item" data-doc="kiosk-renewal" data-scenario="3">
-                                <div class="document-icon">🏧</div>
-                                <div class="document-name">DMV Kiosk</div>
-                                <div class="document-desc" style="font-size: 0.75rem; color: var(--color-muted);">Select locations only</div>
+                            <div class="document-item" draggable="true" data-id="fax">
+                                <div class="document-icon">📠</div><div class="document-name">By Fax</div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="service-counter">
-                        <div class="counter-number">C08</div>
-                        <div class="counter-label">Now Serving: License Renewals</div>
-                    </div>
+                    <div class="service-counter"><div>OFFICE K01</div><div>PUBLIC SERVICE</div></div>
                 </div>
             </div>
 
-            <!-- Action Buttons -->
+            <div id="feedback" class="feedback-panel"></div>
+
             <div class="action-buttons">
-                <button class="action-btn secondary" id="prev-btn" onclick="previousScenario()" disabled>← Previous</button>
-                <button class="action-btn" id="next-btn" onclick="nextScenario()">Next Scenario →</button>
-                <button class="action-btn" id="verify-btn" onclick="verifyScenario()" style="display: none;">Verify Documents ✓</button>
+                <button class="action-btn" id="verify-btn" onclick="verifyCurrent()">Verify Selections ✓</button>
+                <button class="action-btn" id="next-btn" onclick="goToNext()" style="display: none">Next Scenario →</button>
             </div>
+        </div>
+    </div>
 
-            <!-- Feedback Panel -->
-            <div class="feedback-panel" id="feedback-panel">
-                <div class="feedback-title">
-                    <span>📊</span> Scenario Result
+    <script>
+        let state = {
+            stage: 1,
+            time: 0,
+            docsCorrect: 0,
+            dropped: { 1: [], 2: [], 3: [] },
+            categories: {
+                1: {
+                    identity: ['birth-cert'],
+                    legalPresence: ['birth-cert'],
+                    ssn: ['ssn'],
+                    residency: ['bank-stmt', 'school-transcript', 'parent-cert']
+                },
+                2: {
+                    required: ['title', 'insurance', 'sticker']
+                },
+                3: {
+                    required: ['online', 'mail', 'kiosk']
+                }
+            }
+        };
+
+        window.onload = () => {
+            setInterval(() => {
+                state.time++;
+                let m = Math.floor(state.time/60).toString().padStart(2, '0');
+                let s = (state.time%60).toString().padStart(2, '0');
+                document.getElementById('timer-display').innerText = `${m}:${s}`;
+            }, 1000);
+            initInteractions();
+        };
+
+        function initInteractions() {
+            const items = document.querySelectorAll('.document-item');
+            const zones = document.querySelectorAll('.drop-zone');
+
+            items.forEach(item => {
+                item.ondragstart = (e) => e.dataTransfer.setData('id', item.dataset.id);
+                item.onclick = () => handleItemDrop(item.dataset.id);
+            });
+
+            zones.forEach(zone => {
+                zone.ondragover = (e) => e.preventDefault();
+                zone.ondrop = (e) => handleItemDrop(e.dataTransfer.getData('id'));
+            });
+        }
+
+        function handleItemDrop(id) {
+            const currentDropped = state.dropped[state.stage];
+            if (currentDropped.includes(id)) return;
+
+            const item = document.querySelector(`[data-id="${id}"]`);
+            if (!item) return;
+
+            currentDropped.push(id);
+            const zone = document.getElementById(`dz-${state.stage}`);
+            if (currentDropped.length === 1) zone.innerHTML = '';
+
+            const tag = document.createElement('div');
+            tag.className = 'doc-tag';
+            tag.innerText = item.querySelector('.document-name').innerText;
+            zone.appendChild(tag);
+        }
+
+        function verifyCurrent() {
+            const dropped = state.dropped[state.stage];
+            const feedback = document.getElementById('feedback');
+            feedback.classList.add('show');
+            
+            let passed = false;
+            let score = 0;
+            let hint = "";
+
+            if (state.stage === 1) {
+                const cats = state.categories[1];
+                const hasIdentity = dropped.some(d => cats.identity.includes(d));
+                const hasLegalPresence = dropped.some(d => cats.legalPresence.includes(d));
+                const hasSSN = dropped.some(d => cats.ssn.includes(d));
+                const residencyDocs = dropped.filter(d => cats.residency.includes(d));
+                
+                // Logic: 1 Identity, 1 Legal Presence, 1 SSN, 2 Residency.
+                // U.S. Birth Cert counts for both Identity and Legal Presence.
+                if (hasIdentity && hasLegalPresence && hasSSN && residencyDocs.length >= 2) {
+                    passed = true;
+                    score = 100;
+                } else {
+                    score = Math.round(((hasIdentity?20:0) + (hasLegalPresence?20:0) + (hasSSN?20:0) + (Math.min(residencyDocs.length, 2)*20)));
+                    hint = "Remember: Stage 1 requires proof of Identity, Legal Presence, SSN card, and TWO proofs of residency from the official lists.";
+                }
+            } else {
+                const required = state.categories[state.stage].required;
+                const correct = dropped.filter(d => required.includes(d));
+                const wrong = dropped.filter(d => !required.includes(d));
+                score = Math.max(0, Math.round(((correct.length - (wrong.length * 0.5)) / required.length) * 100));
+                
+                if (score >= 75) passed = true;
+                else hint = state.stage === 2 ? "Check your Registration requirements: Title, Insurance, and Inspection Sticker." : "Select valid renewal methods (Online, Mail, Kiosk).";
+            }
+            
+            if (passed) {
+                feedback.innerHTML = `<strong style="color: var(--color-success)">COMPLIANCE MET!</strong> Standards satisfied (${score}%). You may proceed to the next stage.`;
+                document.getElementById('verify-btn').style.display = 'none';
+                document.getElementById('next-btn').style.display = 'block';
+                updateStageUI();
+            } else {
+                feedback.innerHTML = `<strong style="color: var(--color-error)">REQUIREMENTS INCOMPLETE.</strong> Score: ${score}%. ${hint}`;
+            }
+
+            document.getElementById('stat-compliance').innerText = score + '%';
+        }
+
+        function updateStageUI() {
+            if (state.stage === 1) {
+                ['c1-age', 'c1-id-legal', 'c1-ssn', 'c1-res'].forEach(i => document.getElementById(i).classList.add('completed'));
+            } else if (state.stage === 2) {
+                ['c2-30', 'c2-insp', 'c2-ins'].forEach(i => document.getElementById(i).classList.add('completed'));
+            } else if (state.stage === 3) {
+                ['c3-valid', 'c3-timing'].forEach(i => document.getElementById(i).classList.add('completed'));
+            }
+        }
+
+        function goToNext() {
+            if (state.stage < 3) {
+                document.getElementById(`scenario-${state.stage}`).style.display = 'none';
+                state.stage++;
+                document.getElementById(`scenario-${state.stage}`).style.display = 'block';
+                document.getElementById('feedback').classList.remove('show');
+                document.getElementById('verify-btn').style.display = 'block';
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('stat-scenario').innerText = `${state.stage}/3`;
+                document.getElementById('progress-fill').style.width = (state.stage * 33) + '%';
+            } else {
+                showFinal();
+            }
+        }
+
+        function showFinal() {
+            document.querySelector('.simulation-area').innerHTML = `
+                <div style="text-align: center; padding: 40px; animation: fadeIn 0.8s;">
+                    <div style="font-size: 4rem; margin-bottom: 20px;">🏆</div>
+                    <h2 style="font-size: 2rem; color: var(--color-primary); margin-bottom: 10px;">Simulation Complete</h2>
+                    <p>You have successfully verified all Virginia DMV procedures using official documentation lists.</p>
+                    <div style="font-size: 3rem; font-weight: 900; margin: 20px 0;">${document.getElementById('stat-compliance').innerText}</div>
+                    <p style="color: var(--color-muted); font-weight: 700;">FINAL COMPLIANCE RATING</p>
+                    <button class="action-btn" style="margin-top: 30px;" onclick="location.reload()">RESTART SIMULATION</button>
                 </div>
-                <div class="score-display
+            `;
+            document.querySelector('.action-buttons').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
