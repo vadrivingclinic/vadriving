@@ -1292,434 +1292,439 @@
             </p>
 
             <!-- Part 1: Law Discovery -->
-            <div class="law-categories" id="discovery-part">
-                <div class="law-category selected" data-category="driving">
-                    <div class="category-icon">🚗</div>
-                    <div class="category-title">Unusual Driving Laws</div>
-                    <div class="category-count">4 obscure laws</div>
-                </div>
-                
-                <div class="law-category" data-category="pedestrian">
-                    <div class="category-icon">🚶</div>
-                    <div class="category-title">Pedestrian Rules</div>
-                    <div class="category-count">3 hidden rules</div>
-                </div>
-                
-                <div class="law-category" data-category="vehicle">
-                    <div class="category-icon">🚙</div>
-                    <div class="category-title">Vehicle Regulations</div>
-                    <div class="category-count">4 obscure rules</div>
-                </div>
-                
-                <div class="law-category" data-category="bicycle">
-                    <div class="category-icon">🚲</div>
-                    <div class="category-title">Bike & Motorcycle</div>
-                    <div class="category-count">3 special laws</div>
-                </div>
-            </div>
-
-            <div class="law-cards" id="law-cards-container">
-                <!-- Driving Laws -->
-                <div class="law-card" data-category="driving" data-law="barefoot">
-                    <div class="law-status">✓</div>
-                    <div class="law-icon">👣</div>
-                    <div class="law-title">Driving Barefoot</div>
-                    <div class="law-description">It's legal to drive barefoot in Virginia, but strongly discouraged for safety reasons.</div>
-                    <div class="law-penalty">No direct penalty, but can be cited for reckless driving if it causes an accident</div>
-                </div>
-                
-                <div class="law-card" data-category="driving" data-law="horses">
-                    <div class="law-status">✓</div>
-                    <div class="law-icon">🐎</div>
-                    <div class="law-title">Honking at Horses</div>
-                    <div class="law-description">Virginia law prohibits honking at horse-drawn vehicles or horses on the road.</div>
-                    <div class="law-penalty">Fine: $100-250</div>
-                </div>
-                
-                <div class="law-card" data-category="driving" data-law="dooring">
-                    <div class="law-status">✓</div>
-                    <div class="law-icon">🚪</div>
-                    <div class="law-title">Opening Car Doors</div>
-                    <div class="law-description">Must check for traffic (including bicycles) before opening door on traffic side.</div>
-                    <div class="law-penalty">Fine: $100 + liability for injuries</div>
-                </div>
-                
-                <div class="law-card" data-category="driving" data-law="uturn">
-                    <div class="law-status">✓</div>
-                    <div class="law-icon">↪️</div>
-                    <div class="law-title">U-Turn Restrictions</div>
-                    <div class="law-description">Illegal where visibility is obstructed for 500 feet in either direction.</div>
-                    <div class="law-penalty">Fine: $150 + 3 demerit points</div>
-                </div>
-                
-                <!-- Pedestrian Laws -->
-                <div class="law-card" data-category="pedestrian" data-law="jaywalking">
-                    <div class="law-status">✓</div>
-                    <div class="law-icon">🚷</div>
-                    <div class="law-title">Jaywalking Definition</div>
-                    <div class="law-description">Crossing between intersections where traffic signals exist, without using crosswalk.</div>
-                    <div class="law-penalty">Fine: $50-100</div>
-                </div>
-                
-                <div class="law-card" data-category="pedestrian" data-law="ped-yield">
-                    <div class="law-status">✓</div>
-                    <div class="law-icon">🤚</div>
-                    <div class="law-title">Pedestrian Yield</div>
-                    <div class="law-description">Drivers must yield to pedestrians in ANY crosswalk (marked or unmarked).</div>
-                    <div class="law-penalty">Fine: $100 + 4 demerit points</div>
-                </div>
-                
-                <div class="law-card" data-category="pedestrian" data-law="crosswalk-distance">
-                    <div class="law-status">✓</div>
-                    <div class="law-icon">📏</div>
-                    <div class="law-title">Crosswalk Distance</div>
-                    <div class="law-description">When no crosswalk exists, pedestrians must cross at intersection (not within 100 feet).</div>
-                    <div class="law-penalty">Fine: $50</div>
-                </div>
-                
-                <!-- Vehicle Regulations -->
-                <div class="law-card" data-category="vehicle" data-law="obstruction">
-                    <div class="law-status">✓</div>
-                    <div class="law-icon">🙈</div>
-                    <div class="law-title">View Obstruction</div>
-                    <div class="law-description">No objects can obstruct driver's view (including hanging items from mirror).</div>
-                    <div class="law-penalty">Fine: $75-150</div>
-                </div>
-                
-                <div class="law-card" data-category="vehicle" data-law="parking-direction">
-                    <div class="law-status">✓</div>
-                    <div class="law-icon">🅿️</div>
-                    <div class="law-title">Parking Direction</div>
-                    <div class="law-description">Must park in direction of traffic flow (no parking against traffic).</div>
-                    <div class="law-penalty">Fine: $50-100</div>
-                </div>
-                
-                <div class="law-card" data-category="vehicle" data-law="mudflaps">
-                    <div class="law-status">✓</div>
-                    <div class="law-icon">💨</div>
-                    <div class="law-title">Mudflap Requirement</div>
-                    <div class="law-description">Commercial vehicles over certain weight must have mudflaps to prevent debris.</div>
-                    <div class="law-penalty">Fine: $100-250</div>
-                </div>
-                
-                <div class="law-card" data-category="vehicle" data-law="snow-removal">
-                    <div class="law-status">✓</div>
-                    <div class="law-icon">❄️</div>
-                    <div class="law-title">Snow Removal</div>
-                    <div class="law-description">Must clear ALL snow/ice from vehicle before driving (not just windshield).</div>
-                    <div class="law-penalty">Fine: $100 + liability for damage</div>
-                </div>
-                
-                <!-- Bike & Motorcycle -->
-                <div class="law-card" data-category="bicycle" data-law="bike-rights">
-                    <div class="law-status">✓</div>
-                    <div class="law-icon">🚴</div>
-                    <div class="law-title">Bicyclist Rights</div>
-                    <div class="law-description">Bicyclists have same rights/duties as motor vehicles on roadways.</div>
-                    <div class="law-penalty">Same as vehicles for violations</div>
-                </div>
-                
-                <div class="law-card" data-category="bicycle" data-law="motorcycle-passenger">
-                    <div class="law-status">✓</div>
-                    <div class="law-icon">🏍️</div>
-                    <div class="law-title">Motorcycle Passenger</div>
-                    <div class="law-description">Passengers must have designated seat and footrests (no handlebar riding).</div>
-                    <div class="law-penalty">Fine: $100-250</div>
-                </div>
-                
-                <div class="law-card" data-category="bicycle" data-law="bike-reflectors">
-                    <div class="law-status">✓</div>
-                    <div class="law-icon">🔦</div>
-                    <div class="law-title">Bike Night Requirements</div>
-                    <div class="law-description">Bicycles must have front light, rear reflector, and side reflectors at night.</div>
-                    <div class="law-penalty">Fine: $25-50</div>
-                </div>
-            </div>
-
-            <div class="feedback-container" id="discovery-feedback" style="display: none;">
-                <div class="feedback-title">
-                    <span class="feedback-icon correct">🕵️</span>
-                    Obscure Laws Discovered
-                </div>
-                <div class="feedback-content">
-                    <strong>Virginia Code References:</strong><br><br>
+            <div id="discovery-part">
+                <div class="law-categories">
+                    <div class="law-category selected" data-category="driving">
+                        <div class="category-icon">🚗</div>
+                        <div class="category-title">Unusual Driving Laws</div>
+                        <div class="category-count">4 obscure laws</div>
+                    </div>
                     
-                    • <strong>§ 46.2-816:</strong> Opening vehicle doors - Must not open "unless and until it is reasonably safe to do so"<br>
-                    • <strong>§ 46.2-817:</strong> Horse-drawn vehicles - No horn honking when passing<br>
-                    • <strong>§ 46.2-921.1:</strong> U-turns - Prohibited where visibility obstructed for 500 feet<br>
-                    • <strong>§ 46.2-1049:</strong> Obstructed view - No objects that "obstruct or reduce the driver's clear view"<br><br>
+                    <div class="law-category" data-category="pedestrian">
+                        <div class="category-icon">🚶</div>
+                        <div class="category-title">Pedestrian Rules</div>
+                        <div class="category-count">3 hidden rules</div>
+                    </div>
                     
-                    <strong>Why These Laws Matter:</strong> While obscure, these laws address specific safety concerns. The "dooring" law prevents bicycle accidents, horse laws prevent animal panic, and obstruction laws maintain visibility.
+                    <div class="law-category" data-category="vehicle">
+                        <div class="category-icon">🚙</div>
+                        <div class="category-title">Vehicle Regulations</div>
+                        <div class="category-count">4 obscure rules</div>
+                    </div>
+                    
+                    <div class="law-category" data-category="bicycle">
+                        <div class="category-icon">🚲</div>
+                        <div class="category-title">Bike & Motorcycle</div>
+                        <div class="category-count">3 special laws</div>
+                    </div>
                 </div>
-            </div>
+
+                <div class="law-cards" id="law-cards-container">
+                    <!-- Driving Laws -->
+                    <div class="law-card" data-category="driving" data-law="barefoot">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">👣</div>
+                        <div class="law-title">Driving Barefoot</div>
+                        <div class="law-description">It's legal to drive barefoot in Virginia, but strongly discouraged for safety reasons.</div>
+                        <div class="law-penalty">No direct penalty, but can be cited for reckless driving if it causes an accident</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="driving" data-law="horses">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🐎</div>
+                        <div class="law-title">Honking at Horses</div>
+                        <div class="law-description">Virginia law prohibits honking at horse-drawn vehicles or horses on the road.</div>
+                        <div class="law-penalty">Fine: $100-250</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="driving" data-law="dooring">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🚪</div>
+                        <div class="law-title">Opening Car Doors</div>
+                        <div class="law-description">Must check for traffic (including bicycles) before opening door on traffic side.</div>
+                        <div class="law-penalty">Fine: $100 + liability for injuries</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="driving" data-law="uturn">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">↪️</div>
+                        <div class="law-title">U-Turn Restrictions</div>
+                        <div class="law-description">Illegal where visibility is obstructed for 500 feet in either direction.</div>
+                        <div class="law-penalty">Fine: $150 + 3 demerit points</div>
+                    </div>
+                    
+                    <!-- Pedestrian Laws -->
+                    <div class="law-card" data-category="pedestrian" data-law="jaywalking">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🚷</div>
+                        <div class="law-title">Jaywalking Definition</div>
+                        <div class="law-description">Crossing between intersections where traffic signals exist, without using crosswalk.</div>
+                        <div class="law-penalty">Fine: $50-100</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="pedestrian" data-law="ped-yield">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🤚</div>
+                        <div class="law-title">Pedestrian Yield</div>
+                        <div class="law-description">Drivers must yield to pedestrians in ANY crosswalk (marked or unmarked).</div>
+                        <div class="law-penalty">Fine: $100 + 4 demerit points</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="pedestrian" data-law="crosswalk-distance">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">📏</div>
+                        <div class="law-title">Crosswalk Distance</div>
+                        <div class="law-description">When no crosswalk exists, pedestrians must cross at intersection (not within 100 feet).</div>
+                        <div class="law-penalty">Fine: $50</div>
+                    </div>
+                    
+                    <!-- Vehicle Regulations -->
+                    <div class="law-card" data-category="vehicle" data-law="obstruction">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🙈</div>
+                        <div class="law-title">View Obstruction</div>
+                        <div class="law-description">No objects can obstruct driver's view (including hanging items from mirror).</div>
+                        <div class="law-penalty">Fine: $75-150</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="vehicle" data-law="parking-direction">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🅿️</div>
+                        <div class="law-title">Parking Direction</div>
+                        <div class="law-description">Must park in direction of traffic flow (no parking against traffic).</div>
+                        <div class="law-penalty">Fine: $50-100</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="vehicle" data-law="mudflaps">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">💨</div>
+                        <div class="law-title">Mudflap Requirement</div>
+                        <div class="law-description">Commercial vehicles over certain weight must have mudflaps to prevent debris.</div>
+                        <div class="law-penalty">Fine: $100-250</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="vehicle" data-law="snow-removal">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">❄️</div>
+                        <div class="law-title">Snow Removal</div>
+                        <div class="law-description">Must clear ALL snow/ice from vehicle before driving (not just windshield).</div>
+                        <div class="law-penalty">Fine: $100 + liability for damage</div>
+                    </div>
+                    
+                    <!-- Bike & Motorcycle -->
+                    <div class="law-card" data-category="bicycle" data-law="bike-rights">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🚴</div>
+                        <div class="law-title">Bicyclist Rights</div>
+                        <div class="law-description">Bicyclists have same rights/duties as motor vehicles on roadways.</div>
+                        <div class="law-penalty">Same as vehicles for violations</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="bicycle" data-law="motorcycle-passenger">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🏍️</div>
+                        <div class="law-title">Motorcycle Passenger</div>
+                        <div class="law-description">Passengers must have designated seat and footrests (no handlebar riding).</div>
+                        <div class="law-penalty">Fine: $100-250</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="bicycle" data-law="bike-reflectors">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🔦</div>
+                        <div class="law-title">Bike Night Requirements</div>
+                        <div class="law-description">Bicycles must have front light, rear reflector, and side reflectors at night.</div>
+                        <div class="law-penalty">Fine: $25-50</div>
+                    </div>
+                </div>
+
+                <div class="feedback-container" id="discovery-feedback">
+                    <div class="feedback-title">
+                        <span class="feedback-icon correct">🕵️</span>
+                        Obscure Laws Discovered
+                    </div>
+                    <div class="feedback-content">
+                        <strong>Virginia Code References:</strong><br><br>
+                        
+                        • <strong>§ 46.2-816:</strong> Opening vehicle doors - Must not open "unless and until it is reasonably safe to do so"<br>
+                        • <strong>§ 46.2-817:</strong> Horse-drawn vehicles - No horn honking when passing<br>
+                        • <strong>§ 46.2-921.1:</strong> U-turns - Prohibited where visibility obstructed for 500 feet<br>
+                        • <strong>§ 46.2-1049:</strong> Obstructed view - No objects that "obstruct or reduce the driver's clear view"<br><br>
+                        
+                        <strong>Why These Laws Matter:</strong> While obscure, these laws address specific safety concerns. The "dooring" law prevents bicycle accidents, horse laws prevent animal panic, and obstruction laws maintain visibility.
+                    </div>
+                </div>
             </div>
 
             <!-- Part 2: Scenario Testing -->
-            <div class="scenario-simulation" id="scenario-part" style="display: none;">
-                <h4 class="scenario-title">Scenario 1: The Horse Dilemma</h4>
-                
-                <div class="scenario-content">
-                    You're driving through rural Virginia near Lexington. You approach a horse-drawn Amish buggy traveling slowly on the narrow road. There's oncoming traffic, so you need to wait to pass. The horse seems skittish. What should you do?
-                </div>
-                
-                <div class="scenario-options">
-                    <div class="scenario-option" data-scenario="1" data-option="A">
-                        <div class="option-number">A</div>
-                        <div>
-                            <strong>Honk lightly to alert the buggy driver</strong>
-                            <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">Let them know you're waiting to pass</div>
-                        </div>
+            <div id="scenario-part" style="display: none;">
+                <div class="scenario-simulation">
+                    <h4 class="scenario-title">Scenario 1: The Horse Dilemma</h4>
+                    
+                    <div class="scenario-content">
+                        You're driving through rural Virginia near Lexington. You approach a horse-drawn Amish buggy traveling slowly on the narrow road. There's oncoming traffic, so you need to wait to pass. The horse seems skittish. What should you do?
                     </div>
                     
-                    <div class="scenario-option" data-scenario="1" data-option="B">
-                        <div class="option-number">B</div>
-                        <div>
-                            <strong>Turn on hazard lights and wait patiently</strong>
-                            <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">Signal to others while staying quiet</div>
+                    <div class="scenario-options">
+                        <div class="scenario-option" data-scenario="1" data-option="A">
+                            <div class="option-number">A</div>
+                            <div>
+                                <strong>Honk lightly to alert the buggy driver</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">Let them know you're waiting to pass</div>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="scenario-option" data-scenario="1" data-option="C">
-                        <div class="option-number">C</div>
-                        <div>
-                            <strong>Rev engine slightly to encourage movement</strong>
-                            <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">The horse might move faster with encouragement</div>
-                        </div>
-                    </div>
-                    
-                    <div class="scenario-option" data-scenario="1" data-option="D">
-                        <div class="option-number">D</div>
-                        <div>
-                            <strong>Pass quickly when safe, staying as far left as possible</strong>
-                            <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">Minimize time near the horse</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <h4 class="scenario-title" style="margin-top: 40px;">Scenario 2: The Snowy Morning</h4>
-                
-                <div class="scenario-content">
-                    It snowed overnight in Charlottesville. You clear just enough snow from your windshield to see. You're running late for work. Virginia law requires you to:
-                </div>
-                
-                <div class="scenario-options">
-                    <div class="scenario-option" data-scenario="2" data-option="A">
-                        <div class="option-number">A</div>
-                        <div>
-                            <strong>Clear only the windshield and front side windows</strong>
-                            <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">These are the minimum for safe driving</div>
-                        </div>
-                    </div>
-                    
-                    <div class="scenario-option" data-scenario="2" data-option="B">
-                        <div class="option-number">B</div>
-                        <div>
-                            <strong>Clear ALL snow/ice from the entire vehicle</strong>
-                            <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">Roof, hood, trunk, windows, lights</div>
-                        </div>
-                    </div>
-                    
-                    <div class="scenario-option" data-scenario="2" data-option="C">
-                        <div class="option-number">C</div>
-                        <div>
-                            <strong>Just drive - snow will blow off at highway speeds</strong>
-                            <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">This is what most people do</div>
-                        </div>
-                    </div>
-                    
-                    <div class="scenario-option" data-scenario="2" data-option="D">
-                        <div class="option-number">D</div>
-                        <div>
-                            <strong>Clear only what blocks your view and lights</strong>
-                            <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">The practical approach</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="feedback-container" id="scenario-feedback" style="display: none;">
-                    <div class="feedback-title">
-                        <span class="feedback-icon correct">✓</span>
-                        Scenario Analysis
-                    </div>
-                    <div class="feedback-content">
-                        <strong>Correct Answers:</strong><br><br>
                         
-                        <strong>Scenario 1: B - Turn on hazard lights and wait patiently</strong><br>
-                        • Virginia law specifically prohibits honking at horse-drawn vehicles<br>
-                        • Horses can be startled, causing accidents injuring riders and drivers<br>
-                        • Must pass slowly with at least 3 feet clearance when safe<br>
-                        • Fines up to $250 for violations<br><br>
+                        <div class="scenario-option" data-scenario="1" data-option="B">
+                            <div class="option-number">B</div>
+                            <div>
+                                <strong>Turn on hazard lights and wait patiently</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">Signal to others while staying quiet</div>
+                            </div>
+                        </div>
                         
-                        <strong>Scenario 2: B - Clear ALL snow/ice from the entire vehicle</strong><br>
-                        • Virginia law (§ 46.2-1145) requires complete snow/ice removal<br>
-                        • Roof snow can slide onto windshield or hit following vehicles<br>
-                        • Fines up to $100 + liability for damage/injuries caused<br>
-                        • Includes hood, roof, trunk, all windows, lights, and license plate
+                        <div class="scenario-option" data-scenario="1" data-option="C">
+                            <div class="option-number">C</div>
+                            <div>
+                                <strong>Rev engine slightly to encourage movement</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">The horse might move faster with encouragement</div>
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-option" data-scenario="1" data-option="D">
+                            <div class="option-number">D</div>
+                            <div>
+                                <strong>Pass quickly when safe, staying as far left as possible</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">Minimize time near the horse</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="scenario-title" style="margin-top: 40px;">Scenario 2: The Snowy Morning</h4>
+                    
+                    <div class="scenario-content">
+                        It snowed overnight in Charlottesville. You clear just enough snow from your windshield to see. You're running late for work. Virginia law requires you to:
+                    </div>
+                    
+                    <div class="scenario-options">
+                        <div class="scenario-option" data-scenario="2" data-option="A">
+                            <div class="option-number">A</div>
+                            <div>
+                                <strong>Clear only the windshield and front side windows</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">These are the minimum for safe driving</div>
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-option" data-scenario="2" data-option="B">
+                            <div class="option-number">B</div>
+                            <div>
+                                <strong>Clear ALL snow/ice from the entire vehicle</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">Roof, hood, trunk, windows, lights</div>
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-option" data-scenario="2" data-option="C">
+                            <div class="option-number">C</div>
+                            <div>
+                                <strong>Just drive - snow will blow off at highway speeds</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">This is what most people do</div>
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-option" data-scenario="2" data-option="D">
+                            <div class="option-number">D</div>
+                            <div>
+                                <strong>Clear only what blocks your view and lights</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">The practical approach</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="feedback-container" id="scenario-feedback">
+                        <div class="feedback-title">
+                            <span class="feedback-icon correct">✓</span>
+                            Scenario Analysis
+                        </div>
+                        <div class="feedback-content">
+                            <strong>Correct Answers:</strong><br><br>
+                            
+                            <strong>Scenario 1: B - Turn on hazard lights and wait patiently</strong><br>
+                            • Virginia law specifically prohibits honking at horse-drawn vehicles<br>
+                            • Horses can be startled, causing accidents injuring riders and drivers<br>
+                            • Must pass slowly with at least 3 feet clearance when safe<br>
+                            • Fines up to $250 for violations<br><br>
+                            
+                            <strong>Scenario 2: B - Clear ALL snow/ice from the entire vehicle</strong><br>
+                            • Virginia law (§ 46.2-1145) requires complete snow/ice removal<br>
+                            • Roof snow can slide onto windshield or hit following vehicles<br>
+                            • Fines up to $100 + liability for damage/injuries caused<br>
+                            • Includes hood, roof, trunk, all windows, lights, and license plate
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Part 3: Myth vs Reality & Penalties -->
-            <div class="quiz-section" id="quiz-part" style="display: none;">
-                <h4 class="quiz-title">Myth vs Reality Quiz</h4>
-                
-                <div class="myth-reality">
-                    <h5 class="myth-reality-title">Common Misconceptions</h5>
+            <div id="quiz-part" style="display: none;">
+                <div class="quiz-section">
+                    <h4 class="quiz-title">Myth vs Reality Quiz</h4>
                     
-                    <div class="myth-reality-grid">
-                        <div class="myth-card">
-                            <div class="card-header">
-                                <div class="myth-icon">❌</div>
-                                <div class="card-title myth-title">Myth</div>
-                            </div>
-                            <div class="law-description">
-                                It's illegal to drive barefoot in Virginia. You'll get a ticket if pulled over without shoes.
-                            </div>
-                        </div>
+                    <div class="myth-reality">
+                        <h5 class="myth-reality-title">Common Misconceptions</h5>
                         
-                        <div class="reality-card">
-                            <div class="card-header">
-                                <div class="reality-icon">✅</div>
-                                <div class="card-title reality-title">Reality</div>
+                        <div class="myth-reality-grid">
+                            <div class="myth-card">
+                                <div class="card-header">
+                                    <div class="myth-icon">❌</div>
+                                    <div class="card-title myth-title">Myth</div>
+                                </div>
+                                <div class="law-description">
+                                    It's illegal to drive barefoot in Virginia. You'll get a ticket if pulled over without shoes.
+                                </div>
                             </div>
-                            <div class="law-description">
-                                Driving barefoot is legal in Virginia. However, if an accident occurs and barefoot driving contributed, you could be cited for reckless driving.
+                            
+                            <div class="reality-card">
+                                <div class="card-header">
+                                    <div class="reality-icon">✅</div>
+                                    <div class="card-title reality-title">Reality</div>
+                                </div>
+                                <div class="law-description">
+                                    Driving barefoot is legal in Virginia. However, if an accident occurs and barefoot driving contributed, you could be cited for reckless driving.
+                                </div>
+                            </div>
+                            
+                            <div class="myth-card">
+                                <div class="card-header">
+                                    <div class="myth-icon">❌</div>
+                                    <div class="card-title myth-title">Myth</div>
+                                </div>
+                                <div class="law-description">
+                                    You only need to yield to pedestrians in marked crosswalks. Unmarked intersections don't count.
+                                </div>
+                            </div>
+                            
+                            <div class="reality-card">
+                                <div class="card-header">
+                                    <div class="reality-icon">✅</div>
+                                    <div class="card-title reality-title">Reality</div>
+                                </div>
+                                <div class="law-description">
+                                    Virginia law requires yielding to pedestrians in ANY crosswalk, marked or unmarked, at intersections.
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="myth-card">
-                            <div class="card-header">
-                                <div class="myth-icon">❌</div>
-                                <div class="card-title myth-title">Myth</div>
-                            </div>
-                            <div class="law-description">
-                                You only need to yield to pedestrians in marked crosswalks. Unmarked intersections don't count.
-                            </div>
-                        </div>
-                        
-                        <div class="reality-card">
-                            <div class="card-header">
-                                <div class="reality-icon">✅</div>
-                                <div class="card-title reality-title">Reality</div>
-                            </div>
-                            <div class="law-description">
-                                Virginia law requires yielding to pedestrians in ANY crosswalk, marked or unmarked, at intersections.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="penalty-display" style="margin-top: 30px;">
-                    <h5 class="penalty-title">Virginia Penalties for Obscure Violations</h5>
-                    
-                    <div class="penalty-items">
-                        <div class="penalty-item">
-                            <div class="penalty-law">Honking at Horse-Drawn Vehicles</div>
-                            <div class="penalty-amount">$100 - $250</div>
-                            <div class="penalty-details">Plus potential civil liability if accident occurs</div>
-                        </div>
-                        
-                        <div class="penalty-item">
-                            <div class="penalty-law">"Dooring" a Cyclist (Opening door into traffic)</div>
-                            <div class="penalty-amount">$100 Fine + Civil Liability</div>
-                            <div class="penalty-details">Medical bills + bike damage + pain/suffering</div>
-                        </div>
-                        
-                        <div class="penalty-item">
-                            <div class="penalty-law">Obstructed Driver View (Hanging items)</div>
-                            <div class="penalty-amount">$75 - $150</div>
-                            <div class="penalty-details">Air fresheners, decorations, GPS mounts can all violate</div>
-                        </div>
-                        
-                        <div class="penalty-item">
-                            <div class="penalty-law">Parking Against Traffic Flow</div>
-                            <div class="penalty-amount">$50 - $100</div>
-                            <div class="penalty-details">Common violation in residential areas</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="law-visualization" style="margin-top: 30px;">
-                    <h5 class="visual-title">U-Turn Visibility Requirement</h5>
-                    <div class="scenario-content" style="margin-bottom: 20px;">
-                        Virginia law prohibits U-turns where visibility is obstructed for 500 feet in either direction. That's longer than 1.5 football fields!
                     </div>
                     
-                    <div class="visual-scene">
-                        <div class="visual-element correct">
-                            <div class="visual-icon">👁️</div>
-                            <div class="visual-label">Clear 500+ Feet</div>
-                            <div style="font-size: 0.8rem; color: var(--color-muted); margin-top: 5px;">✅ Legal U-Turn</div>
+                    <div class="penalty-display" style="margin-top: 30px;">
+                        <h5 class="penalty-title">Virginia Penalties for Obscure Violations</h5>
+                        
+                        <div class="penalty-items">
+                            <div class="penalty-item">
+                                <div class="penalty-law">Honking at Horse-Drawn Vehicles</div>
+                                <div class="penalty-amount">$100 - $250</div>
+                                <div class="penalty-details">Plus potential civil liability if accident occurs</div>
+                            </div>
+                            
+                            <div class="penalty-item">
+                                <div class="penalty-law">"Dooring" a Cyclist (Opening door into traffic)</div>
+                                <div class="penalty-amount">$100 Fine + Civil Liability</div>
+                                <div class="penalty-details">Medical bills + bike damage + pain/suffering</div>
+                            </div>
+                            
+                            <div class="penalty-item">
+                                <div class="penalty-law">Obstructed Driver View (Hanging items)</div>
+                                <div class="penalty-amount">$75 - $150</div>
+                                <div class="penalty-details">Air fresheners, decorations, GPS mounts can all violate</div>
+                            </div>
+                            
+                            <div class="penalty-item">
+                                <div class="penalty-law">Parking Against Traffic Flow</div>
+                                <div class="penalty-amount">$50 - $100</div>
+                                <div class="penalty-details">Common violation in residential areas</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="law-visualization" style="margin-top: 30px;">
+                        <h5 class="visual-title">U-Turn Visibility Requirement</h5>
+                        <div class="scenario-content" style="margin-bottom: 20px;">
+                            Virginia law prohibits U-turns where visibility is obstructed for 500 feet in either direction. That's longer than 1.5 football fields!
                         </div>
                         
-                        <div class="visual-element wrong">
-                            <div class="visual-icon">🙈</div>
-                            <div class="visual-label">Obstructed View</div>
-                            <div style="font-size: 0.8rem; color: var(--color-muted); margin-top: 5px;">❌ Illegal U-Turn</div>
+                        <div class="visual-scene">
+                            <div class="visual-element correct">
+                                <div class="visual-icon">👁️</div>
+                                <div class="visual-label">Clear 500+ Feet</div>
+                                <div style="font-size: 0.8rem; color: var(--color-muted); margin-top: 5px;">✅ Legal U-Turn</div>
+                            </div>
+                            
+                            <div class="visual-element wrong">
+                                <div class="visual-icon">🙈</div>
+                                <div class="visual-label">Obstructed View</div>
+                                <div style="font-size: 0.8rem; color: var(--color-muted); margin-top: 5px;">❌ Illegal U-Turn</div>
+                            </div>
+                            
+                            <div class="visual-element">
+                                <div class="visual-icon">🏈</div>
+                                <div class="visual-label">1.5 Football Fields</div>
+                                <div style="font-size: 0.8rem; color: var(--color-muted); margin-top: 5px;">500 feet visual requirement</div>
+                            </div>
                         </div>
-                        
-                        <div class="visual-element">
-                            <div class="visual-icon">🏈</div>
-                            <div class="visual-label">1.5 Football Fields</div>
-                            <div style="font-size: 0.8rem; color: var(--color-muted); margin-top: 5px;">500 feet visual requirement</div>
+                    </div>
+                    
+                    <div class="quiz-question" style="margin-top: 30px;">
+                        True or False: In Virginia, you can be ticketed for having too many air fresheners hanging from your rearview mirror.
+                    </div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="1" data-option="A">
+                            <span class="option-letter">A</span>
+                            <span>True - Any obstruction of view can be ticketed</span>
+                        </div>
+                        <div class="quiz-option" data-question="1" data-option="B">
+                            <span class="option-letter">B</span>
+                            <span>False - Air fresheners are exempt from obstruction laws</span>
                         </div>
                     </div>
-                </div>
-                
-                <div class="quiz-question" style="margin-top: 30px;">
-                    True or False: In Virginia, you can be ticketed for having too many air fresheners hanging from your rearview mirror.
-                </div>
-                <div class="quiz-options">
-                    <div class="quiz-option" data-question="1" data-option="A">
-                        <span class="option-letter">A</span>
-                        <span>True - Any obstruction of view can be ticketed</span>
+                    
+                    <div class="quiz-question" style="margin-top: 30px;">
+                        What is the minimum clearance you must give when passing a bicyclist in Virginia?
                     </div>
-                    <div class="quiz-option" data-question="1" data-option="B">
-                        <span class="option-letter">B</span>
-                        <span>False - Air fresheners are exempt from obstruction laws</span>
-                    </div>
-                </div>
-                
-                <div class="quiz-question" style="margin-top: 30px;">
-                    What is the minimum clearance you must give when passing a bicyclist in Virginia?
-                </div>
-                <div class="quiz-options">
-                    <div class="quiz-option" data-question="2" data-option="A">
-                        <span class="option-letter">A</span>
-                        <span>1 foot - Just enough to avoid hitting them</span>
-                    </div>
-                    <div class="quiz-option" data-question="2" data-option="B">
-                        <span class="option-letter">B</span>
-                        <span>3 feet - Required by Virginia's "Three Feet to Pass" law</span>
-                    </div>
-                    <div class="quiz-option" data-question="2" data-option="C">
-                        <span class="option-letter">C</span>
-                        <span>6 feet - Half a lane width for safety</span>
-                    </div>
-                    <div class="quiz-option" data-question="2" data-option="D">
-                        <span class="option-letter">D</span>
-                        <span>No specific requirement - just pass safely</span>
-                    </div>
-                </div>
-                
-                <div class="feedback-container" id="quiz-feedback" style="display: none;">
-                    <div class="feedback-title">
-                        <span class="feedback-icon correct">✓</span>
-                        Quiz Results & Key Takeaways
-                    </div>
-                    <div class="feedback-content">
-                        <strong>Correct Answers:</strong><br><br>
-                        
-                        1. <strong>A - True</strong> - Virginia law prohibits ANY object that obstructs driver's view, including air fresheners, GPS mounts, or decorations.<br><br>
-                        
-                        2. <strong>B - 3 feet</strong> - Virginia's "Three Feet to Pass" law (§ 46.2-839) requires at least 3 feet clearance when passing bicycles.<br><br>
-                        
-                        <div class="law-code" style="margin: 10px 0; padding: 10px;">
-                            <strong>Virginia Code § 46.2-1054:</strong><br>
-                            "No person shall drive any motor vehicle with any objects or signs placed or suspended in or upon the vehicle which materially obstruct, obscure, or impair the driver's clear view of the highway..."
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="2" data-option="A">
+                            <span class="option-letter">A</span>
+                            <span>1 foot - Just enough to avoid hitting them</span>
                         </div>
-                        
-                        <strong>Safety Implications:</strong> These obscure laws aren't just technicalities - they address real safety concerns. The "dooring" law prevents serious bicycle accidents, horse laws prevent animal panic injuries, and obstruction laws maintain critical visibility.
+                        <div class="quiz-option" data-question="2" data-option="B">
+                            <span class="option-letter">B</span>
+                            <span>3 feet - Required by Virginia's "Three Feet to Pass" law</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="C">
+                            <span class="option-letter">C</span>
+                            <span>6 feet - Half a lane width for safety</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="D">
+                            <span class="option-letter">D</span>
+                            <span>No specific requirement - just pass safely</span>
+                        </div>
+                    </div>
+                    
+                    <div class="feedback-container" id="quiz-feedback">
+                        <div class="feedback-title">
+                            <span class="feedback-icon correct">✓</span>
+                            Quiz Results & Key Takeaways
+                        </div>
+                        <div class="feedback-content">
+                            <strong>Correct Answers:</strong><br><br>
+                            
+                            1. <strong>A - True</strong> - Virginia law prohibits ANY object that obstructs driver's view, including air fresheners, GPS mounts, or decorations.<br><br>
+                            
+                            2. <strong>B - 3 feet</strong> - Virginia's "Three Feet to Pass" law (§ 46.2-839) requires at least 3 feet clearance when passing bicycles.<br><br>
+                            
+                            <div class="law-code" style="margin: 10px 0; padding: 10px;">
+                                <strong>Virginia Code § 46.2-1054:</strong><br>
+                                "No person shall drive any motor vehicle with any objects or signs placed or suspended in or upon the vehicle which materially obstruct, obscure, or impair the driver's clear view of the highway..."
+                            </div>
+                            
+                            <strong>Safety Implications:</strong> These obscure laws aren't just technicalities - they address real safety concerns. The "dooring" law prevents serious bicycle accidents, horse laws prevent animal panic injuries, and obstruction laws maintain critical visibility.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1865,18 +1870,29 @@
                     if (state.currentPart === 1 && index === 0) {
                         step.classList.add('active');
                         step.classList.remove('completed');
+                        progressSteps[1].classList.remove('active', 'completed');
+                        progressSteps[2].classList.remove('active', 'completed');
                     } else if (state.currentPart === 2 && index === 1) {
                         step.classList.add('active');
                         progressSteps[0].classList.add('completed');
                         progressSteps[0].classList.remove('active');
+                        progressSteps[2].classList.remove('active', 'completed');
                     } else if (state.currentPart === 3 && index === 2) {
                         step.classList.add('active');
                         progressSteps[0].classList.add('completed');
                         progressSteps[1].classList.add('completed');
                         progressSteps[1].classList.remove('active');
-                    } else if (state.currentPart > 3 && index === 2) {
-                        step.classList.add('completed');
-                        step.classList.remove('active');
+                    }
+                });
+            }
+
+            // Show/hide activity parts
+            function showActivityPart(partNumber) {
+                activityParts.forEach((part, index) => {
+                    if (index === partNumber - 1) {
+                        part.style.display = 'block';
+                    } else {
+                        part.style.display = 'none';
                     }
                 });
             }
@@ -1944,7 +1960,7 @@
                         
                         // Remove selection from other options for same scenario
                         const allOptions = document.querySelectorAll(`[data-scenario="${scenario}"]`);
-                        allOptions.forEach(opt => opt.classList.remove('selected'));
+                        allOptions.forEach(opt => opt.classList.remove('selected', 'correct', 'incorrect'));
                         
                         // Select this option
                         this.classList.add('selected');
@@ -1963,7 +1979,7 @@
                         }
                         
                         // Check if both scenarios answered
-                        if (Object.keys(state.scenarioAnswers).length === 2 && !state.partsCompleted >= 2) {
+                        if (Object.keys(state.scenarioAnswers).length === 2 && state.partsCompleted < 2) {
                             state.partsCompleted = 2;
                             state.mythsBusted = 2;
                             mythsBustedEl.textContent = state.mythsBusted;
@@ -1986,7 +2002,7 @@
                         
                         // Remove selection from other options for same question
                         const allOptions = document.querySelectorAll(`[data-question="${question}"]`);
-                        allOptions.forEach(opt => opt.classList.remove('selected'));
+                        allOptions.forEach(opt => opt.classList.remove('selected', 'correct', 'incorrect'));
                         
                         // Select this option
                         this.classList.add('selected');
@@ -2005,7 +2021,7 @@
                         }
                         
                         // Check if all questions answered
-                        if (Object.keys(state.quizAnswers).length === 2 && !state.partsCompleted >= 3) {
+                        if (Object.keys(state.quizAnswers).length === 2 && state.partsCompleted < 3) {
                             state.partsCompleted = 3;
                             state.mythsBusted += 2;
                             mythsBustedEl.textContent = state.mythsBusted;
@@ -2022,13 +2038,9 @@
             // Next part button
             nextBtn.addEventListener('click', function() {
                 if (state.currentPart < 3) {
-                    // Hide current part
-                    activityParts.forEach((part, index) => {
-                        part.style.display = index === state.currentPart ? 'block' : 'none';
-                    });
-                    
                     // Show next part
                     state.currentPart++;
+                    showActivityPart(state.currentPart);
                     
                     // Update progress
                     updateProgress();
@@ -2040,7 +2052,7 @@
                         initQuiz();
                     }
                     
-                    // Reset button text for last part
+                    // Update button text for last part
                     if (state.currentPart === 3) {
                         this.textContent = 'Complete Discovery';
                     }
@@ -2070,6 +2082,13 @@
                 document.querySelector('.activity-status').textContent = 'Completed';
                 document.querySelector('.activity-status').style.color = '#10b981';
                 document.getElementById('main-activity').classList.add('completed');
+                
+                // Update progress steps to completed
+                const progressSteps = document.querySelectorAll('.progress-step');
+                progressSteps.forEach(step => {
+                    step.classList.add('completed');
+                    step.classList.remove('active');
+                });
             });
 
             // Reset lesson
@@ -2084,11 +2103,10 @@
                 state.quizAnswers = {};
                 state.startedAt = new Date();
                 
-                // Reset UI
-                activityParts.forEach((part, index) => {
-                    part.style.display = index === 0 ? 'block' : 'none';
-                });
+                // Show first part
+                showActivityPart(1);
                 
+                // Reset UI
                 lawCategories.forEach((category, index) => {
                     category.classList.toggle('selected', index === 0);
                 });
@@ -2138,6 +2156,7 @@
             initDiscovery();
             updateTimer();
             updateProgress();
+            showActivityPart(1);
         });
     </script>
 </body>
