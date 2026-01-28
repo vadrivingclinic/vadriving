@@ -6,17 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         :root {
-            --color-primary: #5f17eb; /* Your exact brand purple */
+            --color-primary: #5f17eb;
             --color-primary-soft: #8a5feb;
-            --color-secondary: #000000; /* Black */
+            --color-secondary: #000000;
             --color-accent: #7c3aed;
             --color-success: #10b981;
             --color-error: #ef4444;
             --color-warning: #f59e0b;
-            --color-bg: #ffffff; /* White */
-            --color-text: #000000; /* Black */
+            --color-bg: #ffffff;
+            --color-text: #000000;
             --color-muted: #6b7280;
-            --color-dark: #000000; /* Black */
+            --color-dark: #000000;
             --color-light: #f9fafb;
             --radius-lg: 20px;
             --radius-md: 12px;
@@ -71,16 +71,6 @@
             50% { opacity: 0.3; }
         }
 
-        @keyframes moveLeft {
-            from { transform: translateX(100px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(-100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
         @keyframes glow {
             0%, 100% { box-shadow: 0 0 5px rgba(95, 23, 235, 0.5); }
             50% { box-shadow: 0 0 20px rgba(95, 23, 235, 0.8); }
@@ -89,6 +79,12 @@
         @keyframes warningPulse {
             0%, 100% { background-color: rgba(239, 68, 68, 0.1); }
             50% { background-color: rgba(239, 68, 68, 0.3); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
 
         /* Main Container */
@@ -223,51 +219,6 @@
             margin-bottom: 28px;
             animation: fadeInUp 0.6s ease-out 0.4s both;
             line-height: 1.7;
-        }
-
-        /* Time Estimate Banner */
-        .time-estimate-banner {
-            background: linear-gradient(135deg, rgba(95, 23, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
-            border: 2px solid rgba(95, 23, 235, 0.2);
-            border-radius: var(--radius-md);
-            padding: 15px 20px;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .time-estimate-icon {
-            font-size: 1.5rem;
-            color: var(--color-primary);
-            background: rgba(95, 23, 235, 0.1);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .time-estimate-content h3 {
-            color: var(--color-primary);
-            font-size: 1rem;
-            margin-bottom: 5px;
-            font-weight: 700;
-        }
-
-        .time-estimate-content p {
-            color: var(--color-text);
-            font-size: 0.9rem;
-            margin: 0;
-        }
-
-        .time-highlight {
-            color: var(--color-primary);
-            font-weight: 800;
-            font-size: 1.1em;
         }
 
         /* Stats Display */
@@ -486,7 +437,7 @@
             border: 2px solid rgba(95, 23, 235, 0.3);
             position: relative;
             overflow: hidden;
-            min-height: 400px;
+            min-height: 500px;
         }
 
         .simulation-title {
@@ -684,10 +635,15 @@
             border-color: var(--color-primary);
         }
 
-        .scenario-card.selected {
+        .scenario-card.active {
             border-color: var(--color-primary);
             background: rgba(95, 23, 235, 0.1);
             animation: glow 2s infinite;
+        }
+
+        .scenario-card.completed {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
         }
 
         .scenario-icon {
@@ -704,125 +660,15 @@
             text-align: center;
         }
 
+        .scenario-card.completed .scenario-title {
+            color: var(--color-success);
+        }
+
         .scenario-description {
             font-size: 0.85rem;
             color: var(--color-muted);
             text-align: center;
             line-height: 1.5;
-        }
-
-        /* Penalty Display */
-        .penalty-display {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%);
-            border-radius: var(--radius-md);
-            padding: 25px;
-            margin: 25px 0;
-            border: 2px solid rgba(239, 68, 68, 0.2);
-            animation: warningPulse 2s infinite;
-        }
-
-        .penalty-title {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: var(--color-error);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .penalty-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .penalty-grid { grid-template-columns: 1fr; }
-        }
-
-        .penalty-item {
-            background: white;
-            border-radius: var(--radius-sm);
-            padding: 20px;
-            border-left: 4px solid var(--color-error);
-        }
-
-        .penalty-level {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--color-error);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .penalty-details {
-            font-size: 0.9rem;
-            color: var(--color-text);
-            line-height: 1.5;
-        }
-
-        .penalty-amount {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--color-error);
-            margin-top: 10px;
-        }
-
-        /* Vehicle Types */
-        .vehicle-types {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin: 25px 0;
-        }
-
-        @media (max-width: 900px) {
-            .vehicle-types { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (max-width: 480px) {
-            .vehicle-types { grid-template-columns: 1fr; }
-        }
-
-        .vehicle-type {
-            background: white;
-            border-radius: var(--radius-sm);
-            padding: 20px;
-            border: 2px solid rgba(95, 23, 235, 0.1);
-            transition: all 0.3s ease;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .vehicle-type:hover {
-            transform: translateY(-5px);
-            border-color: var(--color-primary);
-            box-shadow: 0 5px 15px rgba(95, 23, 235, 0.1);
-        }
-
-        .vehicle-type.selected {
-            border-color: var(--color-primary);
-            background: rgba(95, 23, 235, 0.05);
-            animation: glow 2s infinite;
-        }
-
-        .vehicle-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .vehicle-label {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--color-text);
-        }
-
-        .vehicle-law {
-            font-size: 0.75rem;
-            color: var(--color-muted);
-            margin-top: 5px;
         }
 
         /* Quiz Questions */
@@ -996,11 +842,16 @@
             border: 2px solid var(--color-primary);
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             background: #4c0fcf;
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(95, 23, 235, 0.4);
             animation: glow 1.5s infinite;
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .btn-secondary {
@@ -1106,74 +957,104 @@
             animation: pulse 2s infinite;
         }
 
-        /* Law Details */
-        .law-details {
-            background: rgba(95, 23, 235, 0.05);
+        /* Completion Message */
+        .completion-message {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            border: 2px solid var(--color-success);
             border-radius: var(--radius-md);
-            padding: 25px;
+            padding: 30px;
             margin: 25px 0;
-            border: 2px solid rgba(95, 23, 235, 0.1);
+            display: none;
+            animation: fadeIn 0.6s ease;
         }
 
-        .law-header {
+        .completion-message.show {
+            display: block;
+        }
+
+        .completion-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-success);
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+        }
+
+        .completion-description {
+            font-size: 1rem;
+            color: var(--color-text);
+            line-height: 1.6;
             margin-bottom: 20px;
         }
 
-        .law-icon {
-            font-size: 2rem;
-            color: var(--color-primary);
-        }
-
-        .law-title {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: var(--color-primary);
-        }
-
-        .law-code {
-            font-size: 0.9rem;
-            color: var(--color-muted);
-            font-family: monospace;
-            background: rgba(95, 23, 235, 0.1);
-            padding: 5px 10px;
+        /* Scenario Progress */
+        .scenario-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: var(--radius-sm);
-            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+        
+        .scenario-status {
+            font-size: 0.85rem;
+            color: #e5e7eb;
+        }
+        
+        .scenario-status span {
+            color: var(--color-primary);
+            font-weight: 700;
         }
 
-        .law-requirements {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .law-requirements { grid-template-columns: 1fr; }
-        }
-
-        .requirement {
-            background: white;
+        /* Action Validation */
+        .action-validation {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: var(--radius-sm);
-            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .validation-message {
+            color: #e5e7eb;
+            font-size: 0.85rem;
+            display: none;
+        }
+        
+        .validation-message.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .validation-message.correct {
+            color: var(--color-success);
+        }
+        
+        .validation-message.incorrect {
+            color: var(--color-error);
+        }
+
+        .scenario-instructions {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            margin-bottom: 15px;
             border-left: 4px solid var(--color-primary);
         }
-
-        .requirement-title {
-            font-size: 1rem;
-            font-weight: 800;
-            color: var(--color-primary);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .requirement-description {
+        
+        .scenario-instructions p {
+            color: #e5e7eb;
             font-size: 0.9rem;
-            color: var(--color-text);
-            line-height: 1.6;
+            margin: 0;
+            line-height: 1.5;
+        }
+        
+        .scenario-instructions strong {
+            color: var(--color-primary);
         }
     </style>
 </head>
@@ -1203,17 +1084,6 @@
             Learn Virginia's Move Over Law requirements through interactive highway simulations. This life-saving law protects police, firefighters, EMS, tow operators, and highway workers from roadside dangers. Failure to comply can result in severe penalties.
         </p>
 
-        <!-- Time Estimate Banner -->
-        <div class="time-estimate-banner">
-            <div class="time-estimate-icon">
-                ⏱️
-            </div>
-            <div class="time-estimate-content">
-                <h3>Module Time Estimate</h3>
-                <p>Complete this interactive lesson in approximately <span class="time-highlight">7 minutes</span>. Engage with highway simulations and real-world scenarios that demonstrate the life-saving importance of Virginia's Move Over Law.</p>
-            </div>
-        </div>
-
         <!-- Stats Display -->
         <div class="stats-display">
             <div class="stat-card">
@@ -1221,8 +1091,8 @@
                 <span class="stat-label">Knowledge Score</span>
             </div>
             <div class="stat-card">
-                <span class="stat-number" id="scenarios-completed">0/3</span>
-                <span class="stat-label">Scenarios Completed</span>
+                <span class="stat-number" id="scenarios-completed">0/4</span>
+                <span class="stat-label">Tasks Completed</span>
             </div>
             <div class="stat-card">
                 <span class="stat-number" id="time-spent">0:00</span>
@@ -1242,7 +1112,7 @@
             </div>
             <div class="progress-step" data-step="3">
                 <div class="step-circle">3</div>
-                <div class="step-label">Penalties</div>
+                <div class="step-label">Quiz</div>
             </div>
         </div>
 
@@ -1250,94 +1120,101 @@
         <div class="activity-card" id="main-activity">
             <div class="activity-header">
                 <span class="activity-number">Move Over Law Lesson</span>
-                <span class="activity-status">In Progress</span>
+                <span class="activity-status" id="activity-status">In Progress</span>
             </div>
             <h3 class="activity-title">Virginia's Life-Saving Move Over Law: § 46.2-921.1</h3>
             <p class="activity-description">
-                This interactive lesson covers Virginia's Move Over Law requirements through highway simulations, vehicle identification, and real-world scenarios. Learn to protect emergency responders and roadside workers by moving over or slowing down.
+                This interactive lesson covers Virginia's Move Over Law requirements through highway simulations, vehicle identification, and real-world scenarios. Complete all three sections to master this life-saving law.
             </p>
 
+            <!-- Completion Message -->
+            <div class="completion-message" id="completion-message">
+                <div class="completion-title">
+                    <span>🎉</span>
+                    Lesson Completed Successfully!
+                </div>
+                <div class="completion-description">
+                    You've successfully completed all sections of the Move Over Law lesson. Your knowledge score is <strong id="final-score-preview">0%</strong>. Review the comprehensive safety insights below to understand how this law saves lives on Virginia's roads.
+                </div>
+            </div>
+
             <!-- Part 1: Law Basics -->
-            <div class="law-details" id="law-basics">
-                <div class="law-header">
-                    <div class="law-icon">⚖️</div>
-                    <div>
-                        <h4 class="law-title">Virginia Code § 46.2-921.1</h4>
-                        <div class="law-code">"Approaching stationary vehicles with flashing lights"</div>
+            <div class="quiz-section" id="law-basics">
+                <h4 style="color: var(--color-primary); margin-bottom: 25px;">Part 1: Understanding the Law</h4>
+                
+                <div class="quiz-question">
+                    1. Which vehicles are covered by Virginia's Move Over Law? (Select all that apply)
+                </div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-question="1" data-option="A">
+                        <span class="option-letter">A</span>
+                        <span>Police vehicles with flashing lights</span>
+                    </div>
+                    <div class="quiz-option" data-question="1" data-option="B">
+                        <span class="option-letter">B</span>
+                        <span>Fire trucks and ambulances</span>
+                    </div>
+                    <div class="quiz-option" data-question="1" data-option="C">
+                        <span class="option-letter">C</span>
+                        <span>Tow trucks with amber lights</span>
+                    </div>
+                    <div class="quiz-option" data-question="1" data-option="D">
+                        <span class="option-letter">D</span>
+                        <span>VDOT maintenance vehicles</span>
                     </div>
                 </div>
                 
-                <div class="law-requirements">
-                    <div class="requirement">
-                        <div class="requirement-title">
-                            <span>🚨</span>
-                            <span>Vehicles Covered</span>
-                        </div>
-                        <div class="requirement-description">
-                            Law enforcement, fire, EMS, tow trucks, VDOT vehicles, utility vehicles, and all vehicles displaying flashing blue, red, or amber lights.
-                        </div>
+                <div class="quiz-question" style="margin-top: 30px;">
+                    2. When does the Move Over Law require you to take action?
+                </div>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-question="2" data-option="A">
+                        <span class="option-letter">A</span>
+                        <span>Only on your side of the highway</span>
                     </div>
-                    
-                    <div class="requirement">
-                        <div class="requirement-title">
-                            <span>🛣️</span>
-                            <span>When It Applies</span>
-                        </div>
-                        <div class="requirement-description">
-                            On all Virginia highways and roadways when approaching stationary vehicles with flashing lights. Applies to both directions on divided highways.
-                        </div>
+                    <div class="quiz-option" data-question="2" data-option="B">
+                        <span class="option-letter">B</span>
+                        <span>Both directions on divided highways</span>
+                    </div>
+                    <div class="quiz-option" data-question="2" data-option="C">
+                        <span class="option-letter">C</span>
+                        <span>Only during nighttime</span>
+                    </div>
+                    <div class="quiz-option" data-question="2" data-option="D">
+                        <span class="option-letter">D</span>
+                        <span>Only for law enforcement vehicles</span>
                     </div>
                 </div>
                 
-                <div class="vehicle-types" style="margin-top: 25px;">
-                    <div class="vehicle-type selected" data-vehicle="police">
-                        <div class="vehicle-icon">🚓</div>
-                        <div class="vehicle-label">Police Vehicles</div>
-                        <div class="vehicle-law">Blue & Red Lights</div>
-                    </div>
-                    <div class="vehicle-type" data-vehicle="fire">
-                        <div class="vehicle-icon">🚒</div>
-                        <div class="vehicle-label">Fire Trucks</div>
-                        <div class="vehicle-law">Red Lights</div>
-                    </div>
-                    <div class="vehicle-type" data-vehicle="ems">
-                        <div class="vehicle-icon">🚑</div>
-                        <div class="vehicle-label">Ambulance</div>
-                        <div class="vehicle-law">Red & White Lights</div>
-                    </div>
-                    <div class="vehicle-type" data-vehicle="tow">
-                        <div class="vehicle-icon">🛻</div>
-                        <div class="vehicle-label">Tow Trucks</div>
-                        <div class="vehicle-law">Amber Lights</div>
-                    </div>
-                </div>
-                
-                <div class="feedback-container" id="law-feedback" style="display: none; margin-top: 20px;">
+                <div class="feedback-container" id="part1-feedback" style="display: none; margin-top: 20px;">
                     <div class="feedback-title">
                         <span class="feedback-icon correct">✓</span>
-                        Move Over Law Requirements
+                        Law Basics Complete
                     </div>
                     <div class="feedback-content">
-                        <strong>Two Simple Rules:</strong><br><br>
-                        1. <strong>MOVE OVER:</strong> If safe and possible, change lanes away from the stationary emergency vehicle.<br>
-                        2. <strong>SLOW DOWN:</strong> If you cannot move over, reduce speed to a safe level and be prepared to stop.<br><br>
+                        <strong>Correct Answers:</strong><br><br>
+                        1. <strong>A, B, C, D</strong> - All these vehicles are covered when displaying flashing lights.<br><br>
+                        2. <strong>B - Both directions on divided highways</strong> - The law applies whenever you can see emergency lights, regardless of which side of the road they're on.<br><br>
                         
                         <div class="statistics-box">
-                            <strong>Why It Matters:</strong><br>
-                            • A tow truck driver is killed every 6 days in the U.S.<br>
-                            • 23 emergency responders killed annually while assisting motorists<br>
-                            • In Virginia, failure to move over contributes to 15% of roadside worker fatalities
+                            <strong>Virginia Code § 46.2-921.1:</strong><br>
+                            • Applies to stationary vehicles with flashing lights<br>
+                            • Requires moving over OR slowing down<br>
+                            • Protects emergency responders and roadside workers<br>
+                            • Violations carry fines up to $250 for first offense
                         </div>
-                        
-                        <strong>Remember:</strong> This law applies even on the opposite side of divided highways. Those flashing lights mean someone's life is at risk.
                     </div>
                 </div>
             </div>
 
             <!-- Part 2: Highway Simulation -->
             <div class="highway-simulation" id="highway-sim" style="display: none;">
-                <h4 class="simulation-title">Highway Decision Simulation</h4>
-                <p style="color: #e5e7eb; margin-bottom: 20px;">You're driving in the right lane. An emergency vehicle is stopped ahead with flashing lights. What do you do?</p>
+                <h4 class="simulation-title">Part 2: Highway Decision Simulation</h4>
+                <p style="color: #e5e7eb; margin-bottom: 20px;">Test your knowledge by selecting the correct action for each scenario. Complete all three scenarios to proceed.</p>
+                
+                <div class="scenario-instructions">
+                    <p><strong>How it works:</strong> Select a scenario below, then choose the correct action. The scenario will change color when completed correctly.</p>
+                </div>
                 
                 <div class="highway-container">
                     <!-- Road -->
@@ -1353,11 +1230,15 @@
                         <div style="font-size: 0.7rem; text-align: center;">POLICE<br>🚨</div>
                         <div class="emergency-lights"></div>
                     </div>
-                    <div class="vehicle other-car" id="other-car">OTHER</div>
                 </div>
                 
                 <div class="control-panel">
-                    <div class="control-title">Select Your Action:</div>
+                    <div class="control-title">Select the correct action for the <span id="active-scenario-name">selected scenario</span>:</div>
+                    
+                    <div class="action-validation">
+                        <div class="validation-message" id="action-feedback"></div>
+                    </div>
+                    
                     <div class="control-buttons">
                         <div class="control-btn" data-action="move-over">
                             <span>🔄</span>
@@ -1378,165 +1259,150 @@
                     </div>
                 </div>
                 
-                <div class="scenario-cards" style="margin-top: 25px;">
-                    <div class="scenario-card" data-scenario="clear">
+                <div class="scenario-progress">
+                    <div class="scenario-status">
+                        Completed: <span id="completed-scenarios">0</span>/3 scenarios
+                    </div>
+                    <div class="scenario-status">
+                        Current: <span id="current-scenario-display">Select a scenario</span>
+                    </div>
+                </div>
+                
+                <div class="scenario-cards" style="margin-top: 15px;">
+                    <div class="scenario-card" data-scenario="clear" data-correct="move-over">
                         <div class="scenario-icon">☀️</div>
                         <div class="scenario-title">Clear Road</div>
                         <div class="scenario-description">Left lane is completely clear - no traffic</div>
+                        <div class="scenario-status-indicator" style="font-size: 0.7rem; margin-top: 5px; color: #999; display: none;">
+                            ✓ Completed
+                        </div>
                     </div>
-                    <div class="scenario-card" data-scenario="busy">
+                    <div class="scenario-card" data-scenario="busy" data-correct="slow-down">
                         <div class="scenario-icon">🚗</div>
                         <div class="scenario-title">Busy Traffic</div>
                         <div class="scenario-description">Left lane has heavy traffic flow</div>
+                        <div class="scenario-status-indicator" style="font-size: 0.7rem; margin-top: 5px; color: #999; display: none;">
+                            ✓ Completed
+                        </div>
                     </div>
-                    <div class="scenario-card" data-scenario="construction">
+                    <div class="scenario-card" data-scenario="construction" data-correct="slow-down">
                         <div class="scenario-icon">🚧</div>
                         <div class="scenario-title">Construction Zone</div>
                         <div class="scenario-description">Left lane closed ahead</div>
+                        <div class="scenario-status-indicator" style="font-size: 0.7rem; margin-top: 5px; color: #999; display: none;">
+                            ✓ Completed
+                        </div>
                     </div>
                 </div>
                 
                 <div class="feedback-container" id="simulation-feedback" style="display: none; margin-top: 20px;">
                     <div class="feedback-title">
                         <span class="feedback-icon correct">✓</span>
-                        Simulation Analysis
+                        Simulation Complete
                     </div>
                     <div class="feedback-content">
-                        <strong>Correct Response Analysis:</strong><br><br>
+                        <strong>All Scenarios Completed!</strong><br><br>
                         
-                        • <strong>Clear Road Scenario:</strong> <span style="color: var(--color-success);">MOVE OVER REQUIRED</span> - When safe, you must change lanes<br>
-                        • <strong>Busy Traffic Scenario:</strong> <span style="color: var(--color-warning);">SLOW DOWN REQUIRED</span> - Reduce speed significantly<br>
-                        • <strong>Construction Zone:</strong> <span style="color: var(--color-warning);">SLOW DOWN REQUIRED</span> - Cannot move over safely<br><br>
+                        • <strong>Clear Road:</strong> <span style="color: var(--color-success);">MOVE OVER REQUIRED</span> - When safe, you must change lanes<br>
+                        • <strong>Busy Traffic:</strong> <span style="color: var(--color-success);">SLOW DOWN REQUIRED</span> - Reduce speed significantly when can't move over<br>
+                        • <strong>Construction Zone:</strong> <span style="color: var(--color-success);">SLOW DOWN REQUIRED</span> - Cannot move over safely<br><br>
                         
                         <div class="statistics-box">
-                            <strong>Virginia Specifics:</strong><br>
-                            • "Reasonable speed" means slowing to at least 20 mph below posted limit<br>
-                            • Must maintain safe distance from emergency personnel<br>
-                            • If moving over, signal intention at least 100 feet before lane change<br>
-                            • Law applies even during daylight with lights clearly visible
+                            <strong>Key Takeaways:</strong><br>
+                            • Always move over if it's safe to do so<br>
+                            • If you can't move over, slow down to at least 20 mph below posted limit<br>
+                            • Be prepared to stop if necessary<br>
+                            • Signal your intention before changing lanes
                         </div>
-                        
-                        <strong>Emergency Worker Perspective:</strong> They're often 3 feet from 65+ mph traffic. Your actions determine their safety.
                     </div>
                 </div>
             </div>
 
-            <!-- Part 3: Penalties & Scenarios -->
-            <div class="quiz-section" id="penalties-part" style="display: none;">
-                <h4 style="color: var(--color-primary); margin-bottom: 25px;">Penalties & Real-World Scenarios</h4>
+            <!-- Part 3: Quiz Assessment -->
+            <div class="quiz-section" id="quiz-part" style="display: none;">
+                <h4 style="color: var(--color-primary); margin-bottom: 25px;">Part 3: Final Assessment</h4>
                 
-                <div class="penalty-display">
-                    <h5 class="penalty-title">Virginia Move Over Law Penalties</h5>
-                    <div class="penalty-grid">
-                        <div class="penalty-item">
-                            <div class="penalty-level">First Offense</div>
-                            <div class="penalty-details">Traffic infraction with mandatory court appearance</div>
-                            <div class="penalty-amount">Up to $250</div>
-                        </div>
-                        <div class="penalty-item">
-                            <div class="penalty-level">Subsequent Offense</div>
-                            <div class="penalty-details">Enhanced penalties within 12 months</div>
-                            <div class="penalty-amount">$500+</div>
-                        </div>
-                        <div class="penalty-item">
-                            <div class="penalty-level">Causing Injury</div>
-                            <div class="penalty-details">Reckless driving charges</div>
-                            <div class="penalty-amount">Up to $2,500</div>
-                        </div>
-                        <div class="penalty-item">
-                            <div class="penalty-level">Causing Death</div>
-                            <div class="penalty-details">Felony charges possible</div>
-                            <div class="penalty-amount">License Suspension +</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="quiz-question" style="margin-top: 30px;">
+                <div class="quiz-question">
                     1. You're on a 4-lane highway (2 lanes each direction). A police car is stopped on the opposite shoulder with lights flashing. What should you do?
                 </div>
                 <div class="quiz-options">
-                    <div class="quiz-option" data-question="1" data-option="A">
+                    <div class="quiz-option" data-question="3" data-option="A">
                         <span class="option-letter">A</span>
                         <span>Nothing - law only applies to your side of highway</span>
                     </div>
-                    <div class="quiz-option" data-question="1" data-option="B">
+                    <div class="quiz-option" data-question="3" data-option="B">
                         <span class="option-letter">B</span>
-                        <span>Move over if safe, otherwise slow down - law applies to both directions</span>
+                        <span>Move over if safe, otherwise slow down</span>
                     </div>
-                    <div class="quiz-option" data-question="1" data-option="C">
+                    <div class="quiz-option" data-question="3" data-option="C">
                         <span class="option-letter">C</span>
                         <span>Flash your lights to warn others</span>
                     </div>
-                    <div class="quiz-option" data-question="1" data-option="D">
+                    <div class="quiz-option" data-question="3" data-option="D">
                         <span class="option-letter">D</span>
                         <span>Speed up to clear the area quickly</span>
                     </div>
                 </div>
                 
                 <div class="quiz-question" style="margin-top: 30px;">
-                    2. You see a disabled vehicle with hazard lights on the shoulder (no emergency personnel present). The Move Over Law:
+                    2. A VDOT truck is mowing grass on the shoulder with flashing amber lights. You're in heavy traffic and cannot change lanes. You should:
                 </div>
                 <div class="quiz-options">
-                    <div class="quiz-option" data-question="2" data-option="A">
+                    <div class="quiz-option" data-question="4" data-option="A">
                         <span class="option-letter">A</span>
-                        <span>Does not apply - only for emergency vehicles</span>
+                        <span>Continue at posted speed since it's just maintenance</span>
                     </div>
-                    <div class="quiz-option" data-question="2" data-option="B">
+                    <div class="quiz-option" data-question="4" data-option="B">
                         <span class="option-letter">B</span>
-                        <span>Still applies - move over for any stopped vehicle</span>
+                        <span>Slow down significantly and be prepared to stop</span>
                     </div>
-                    <div class="quiz-option" data-question="2" data-option="C">
+                    <div class="quiz-option" data-question="4" data-option="C">
                         <span class="option-letter">C</span>
-                        <span>Only applies if you see people outside the vehicle</span>
+                        <span>Honk to alert the worker</span>
                     </div>
-                    <div class="quiz-option" data-question="2" data-option="D">
+                    <div class="quiz-option" data-question="4" data-option="D">
                         <span class="option-letter">D</span>
-                        <span>Requires you to stop and offer help</span>
+                        <span>Drive on the shoulder to pass quickly</span>
                     </div>
                 </div>
                 
                 <div class="quiz-question" style="margin-top: 30px;">
-                    3. A VDOT truck is mowing grass on the shoulder with flashing amber lights. You're in heavy traffic and cannot change lanes. You should:
+                    3. What is the penalty for a first-time Move Over Law violation in Virginia?
                 </div>
                 <div class="quiz-options">
-                    <div class="quiz-option" data-question="3" data-option="A">
+                    <div class="quiz-option" data-question="5" data-option="A">
                         <span class="option-letter">A</span>
-                        <span>Continue at posted speed since it's just maintenance</span>
+                        <span>Warning only</span>
                     </div>
-                    <div class="quiz-option" data-question="3" data-option="B">
+                    <div class="quiz-option" data-question="5" data-option="B">
                         <span class="option-letter">B</span>
-                        <span>Slow down significantly and be prepared to stop</span>
+                        <span>Up to $250 fine</span>
                     </div>
-                    <div class="quiz-option" data-question="3" data-option="C">
+                    <div class="quiz-option" data-question="5" data-option="C">
                         <span class="option-letter">C</span>
-                        <span>Honk to alert the worker</span>
+                        <span>30-day license suspension</span>
                     </div>
-                    <div class="quiz-option" data-question="3" data-option="D">
+                    <div class="quiz-option" data-question="5" data-option="D">
                         <span class="option-letter">D</span>
-                        <span>Drive on the shoulder to pass quickly</span>
+                        <span>Community service</span>
                     </div>
                 </div>
                 
                 <div class="feedback-container" id="quiz-feedback" style="display: none; margin-top: 20px;">
                     <div class="feedback-title">
                         <span class="feedback-icon correct">✓</span>
-                        Scenario Analysis Complete
+                        Assessment Complete
                     </div>
                     <div class="feedback-content">
                         <strong>Correct Answers:</strong><br><br>
                         1. <strong>B - Move over if safe, otherwise slow down</strong> - Virginia law applies to both directions on divided highways when emergency lights are visible.<br><br>
-                        2. <strong>A - Does not apply</strong> - The Move Over Law specifically covers emergency, service, and utility vehicles with flashing lights. Regular hazard lights don't trigger the law.<br><br>
-                        3. <strong>B - Slow down significantly</strong> - VDOT vehicles with flashing amber lights are covered. When you cannot move over, reduce speed to safe level.<br><br>
+                        2. <strong>B - Slow down significantly</strong> - VDOT vehicles with flashing amber lights are covered. When you cannot move over, reduce speed to safe level.<br><br>
+                        3. <strong>B - Up to $250 fine</strong> - First offense carries a fine up to $250 and mandatory court appearance.<br><br>
                         
                         <div class="statistics-box">
-                            <strong>Enforcement Facts:</strong><br>
-                            • Virginia State Police conduct "Move Over" enforcement campaigns monthly<br>
-                            • Many violations are caught on dash cameras and body cameras<br>
-                            • Fines doubled in work zones - up to $500 for first offense<br>
-                            • Points assessed on driving record for violations
+                            <strong>Complete the Lesson:</strong><br>
+                            You've successfully answered all questions. Click "Complete Assessment" to see your final score and comprehensive safety insights.
                         </div>
-                        
-                        <strong>Best Practice:</strong> When in doubt, move over or slow down. It's better to err on the side of caution when lives are at stake.
                     </div>
                 </div>
             </div>
@@ -1548,13 +1414,17 @@
                 <span class="btn-icon">↻</span>
                 Reset Lesson
             </button>
+            <button class="btn btn-secondary" id="check-part-btn">
+                <span class="btn-icon">✓</span>
+                Check Current Section
+            </button>
             <button class="btn btn-secondary" id="next-part-btn">
                 <span class="btn-icon">→</span>
                 Next Section
             </button>
             <button class="btn btn-primary" id="complete-btn" disabled>
                 <span class="btn-icon">📊</span>
-                Complete Lesson
+                Complete Assessment
             </button>
         </div>
 
@@ -1605,24 +1475,11 @@
                 </ul>
             </div>
             
-            <div class="safety-insights" style="margin-top: 20px;">
-                <h3 class="insights-title">
-                    <span>📊</span> Virginia Enforcement & Education
-                </h3>
-                <ul class="insights-list">
-                    <li>
-                        <span class="insight-dot"></span>
-                        <span><strong>Enhanced Enforcement:</strong> Virginia uses unmarked "spotter vehicles" to identify violators, who are then pulled over by marked units ahead. Fines support emergency responder training.</span>
-                    </li>
-                    <li>
-                        <span class="insight-dot"></span>
-                        <span><strong>Public Awareness Campaigns:</strong> VDOT's "Move Over or Slow Down" campaign includes highway message boards, radio ads, and social media. Report violations at #77 on cell phones.</span>
-                    </li>
-                    <li>
-                        <span class="insight-dot"></span>
-                        <span><strong>Industry Partnerships:</strong> Virginia partners with tow associations, utility companies, and construction firms for "Operation Move Over" safety blitzes each quarter.</span>
-                    </li>
-                </ul>
+            <div class="action-buttons" style="margin-top: 30px; justify-content: center;">
+                <button class="btn btn-primary" id="restart-lesson-btn">
+                    <span class="btn-icon">🔄</span>
+                    Restart Lesson
+                </button>
             </div>
         </div>
     </main>
@@ -1632,46 +1489,59 @@
             // State Management
             const state = {
                 currentPart: 1,
+                totalParts: 3,
                 partsCompleted: 0,
+                sectionsCompleted: 0,
+                totalSections: 4, // 3 parts + final assessment
                 correctAnswers: 0,
                 totalQuestions: 0,
                 startedAt: new Date(),
-                selectedVehicle: 'police',
-                selectedAction: null,
-                selectedScenario: null,
-                quizAnswers: {}
+                quizAnswers: {
+                    1: [], // Multi-select for part 1
+                    2: '', // Single answer for part 1
+                    3: '', // Part 3 Q1
+                    4: '', // Part 3 Q2
+                    5: ''  // Part 3 Q3
+                },
+                simulationAnswers: {
+                    clear: null,
+                    busy: null,
+                    construction: null
+                }
             };
 
             // Correct answers
             const correctData = {
                 quiz: {
-                    1: 'B', // Both directions apply
-                    2: 'A', // Does not apply to regular hazard lights
-                    3: 'B'  // Slow down significantly
+                    1: ['A', 'B', 'C', 'D'], // All options are correct
+                    2: 'B', // Both directions
+                    3: 'B', // Move over if safe
+                    4: 'B', // Slow down significantly
+                    5: 'B'  // Up to $250 fine
                 },
-                actions: {
-                    'clear': 'move-over',
-                    'busy': 'slow-down',
-                    'construction': 'slow-down'
+                simulation: {
+                    clear: 'move-over',
+                    busy: 'slow-down',
+                    construction: 'slow-down'
                 }
             };
 
             // DOM Elements
-            const activityParts = document.querySelectorAll('#law-basics, #highway-sim, #penalties-part');
-            const vehicleTypes = document.querySelectorAll('.vehicle-type');
-            const controlBtns = document.querySelectorAll('.control-btn');
-            const scenarioCards = document.querySelectorAll('.scenario-card');
-            const quizOptions = document.querySelectorAll('.quiz-option');
+            const activityParts = document.querySelectorAll('#law-basics, #highway-sim, #quiz-part');
             const nextBtn = document.getElementById('next-part-btn');
             const resetBtn = document.getElementById('reset-btn');
+            const checkBtn = document.getElementById('check-part-btn');
             const completeBtn = document.getElementById('complete-btn');
             const resultsPanel = document.getElementById('results-panel');
-            const finalScore = document.getElementById('final-score');
+            const completionMessage = document.getElementById('completion-message');
+            const finalScoreEl = document.getElementById('final-score');
+            const finalScorePreview = document.getElementById('final-score-preview');
             const knowledgeScoreEl = document.getElementById('knowledge-score');
             const scenariosCompletedEl = document.getElementById('scenarios-completed');
             const timeSpentEl = document.getElementById('time-spent');
-            const yourCar = document.getElementById('your-car');
-            const emergencyVehicle = document.getElementById('emergency-vehicle');
+            const activityStatus = document.getElementById('activity-status');
+            const progressSteps = document.querySelectorAll('.progress-step');
+            const restartLessonBtn = document.getElementById('restart-lesson-btn');
 
             // Timer for time spent
             function updateTimer() {
@@ -1681,238 +1551,443 @@
                 const seconds = diff % 60;
                 timeSpentEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
                 
-                // Update stats
-                const score = state.totalQuestions > 0 
-                    ? Math.round((state.correctAnswers / state.totalQuestions) * 100) 
-                    : 0;
-                knowledgeScoreEl.textContent = `${score}%`;
-                scenariosCompletedEl.textContent = `${state.partsCompleted}/3`;
+                // Update progress stats
+                scenariosCompletedEl.textContent = `${state.sectionsCompleted}/${state.totalSections}`;
             }
 
             setInterval(updateTimer, 1000);
 
             // Update progress steps
             function updateProgress() {
-                const progressSteps = document.querySelectorAll('.progress-step');
                 progressSteps.forEach((step, index) => {
-                    if (state.currentPart === 1 && index === 0) {
+                    const stepNum = index + 1;
+                    
+                    if (stepNum === state.currentPart) {
                         step.classList.add('active');
                         step.classList.remove('completed');
-                    } else if (state.currentPart === 2 && index === 1) {
-                        step.classList.add('active');
-                        progressSteps[0].classList.add('completed');
-                        progressSteps[0].classList.remove('active');
-                    } else if (state.currentPart === 3 && index === 2) {
-                        step.classList.add('active');
-                        progressSteps[0].classList.add('completed');
-                        progressSteps[1].classList.add('completed');
-                        progressSteps[1].classList.remove('active');
-                    } else if (state.currentPart > 3 && index === 2) {
+                    } else if (stepNum < state.currentPart) {
                         step.classList.add('completed');
                         step.classList.remove('active');
+                    } else {
+                        step.classList.remove('active', 'completed');
                     }
                 });
             }
 
-            // Part 1: Vehicle Types
-            function initPart1() {
-                vehicleTypes.forEach(type => {
-                    type.addEventListener('click', function() {
-                        const vehicle = this.dataset.vehicle;
+            // Calculate score
+            function calculateScore() {
+                if (state.totalQuestions === 0) return 0;
+                return Math.round((state.correctAnswers / state.totalQuestions) * 100);
+            }
+
+            // Update stats display
+            function updateStats() {
+                const score = calculateScore();
+                knowledgeScoreEl.textContent = `${score}%`;
+                scenariosCompletedEl.textContent = `${state.sectionsCompleted}/${state.totalSections}`;
+                
+                // Update completion message preview
+                finalScorePreview.textContent = `${score}%`;
+            }
+
+            // Show feedback for current part
+            function showPartFeedback(partNumber, isCorrect) {
+                const feedbackId = partNumber === 1 ? 'part1-feedback' : 
+                                 partNumber === 2 ? 'simulation-feedback' : 'quiz-feedback';
+                const feedback = document.getElementById(feedbackId);
+                
+                if (feedback) {
+                    const icon = feedback.querySelector('.feedback-icon');
+                    const title = feedback.querySelector('.feedback-title');
+                    
+                    if (isCorrect) {
+                        icon.textContent = '✓';
+                        icon.className = 'feedback-icon correct';
+                    } else {
+                        icon.textContent = '✗';
+                        icon.className = 'feedback-icon incorrect';
+                        title.style.color = 'var(--color-error)';
+                    }
+                    
+                    feedback.classList.add('show');
+                    
+                    // Mark part as completed
+                    state.sectionsCompleted++;
+                    updateStats();
+                    
+                    // Enable next button if this part is complete
+                    if (partNumber < state.totalParts) {
+                        nextBtn.disabled = false;
+                    } else {
+                        // If last part, enable complete button
+                        completeBtn.disabled = false;
+                        completionMessage.classList.add('show');
+                        activityStatus.textContent = 'Ready to Complete';
+                        activityStatus.style.color = 'var(--color-warning)';
+                    }
+                }
+            }
+
+            // Check part 1 answers
+            function checkPart1() {
+                let correctCount = 0;
+                let totalQuestions = 0;
+                
+                // Check question 1 (multiple select)
+                const q1Options = document.querySelectorAll('[data-question="1"]');
+                const selectedQ1 = Array.from(q1Options).filter(opt => opt.classList.contains('selected'));
+                
+                // Question 1: All options should be selected
+                const allSelected = selectedQ1.length === 4;
+                if (allSelected) {
+                    correctCount++;
+                    q1Options.forEach(opt => opt.classList.add('correct'));
+                } else {
+                    // Mark correct ones
+                    q1Options.forEach(opt => {
+                        if (correctData.quiz[1].includes(opt.dataset.option)) {
+                            opt.classList.add('correct');
+                        }
+                        if (opt.classList.contains('selected') && !correctData.quiz[1].includes(opt.dataset.option)) {
+                            opt.classList.add('incorrect');
+                        }
+                    });
+                }
+                totalQuestions++;
+                
+                // Check question 2 (single select)
+                const q2Selected = document.querySelector('[data-question="2"].selected');
+                const isQ2Correct = q2Selected && q2Selected.dataset.option === correctData.quiz[2];
+                
+                if (isQ2Correct) {
+                    correctCount++;
+                    q2Selected.classList.add('correct');
+                } else {
+                    // Mark correct answer
+                    const correctQ2 = document.querySelector(`[data-question="2"][data-option="${correctData.quiz[2]}"]`);
+                    if (correctQ2) correctQ2.classList.add('correct');
+                    if (q2Selected) q2Selected.classList.add('incorrect');
+                }
+                totalQuestions++;
+                
+                // Update state
+                state.correctAnswers += correctCount;
+                state.totalQuestions += totalQuestions;
+                
+                // Show feedback
+                showPartFeedback(1, correctCount === totalQuestions);
+                
+                return correctCount === totalQuestions;
+            }
+
+            // Initialize part 2
+            function initPart2() {
+                const scenarioCards = document.querySelectorAll('.scenario-card');
+                const controlBtns = document.querySelectorAll('.control-btn');
+                const activeScenarioName = document.getElementById('active-scenario-name');
+                const actionFeedback = document.getElementById('action-feedback');
+                const completedScenariosEl = document.getElementById('completed-scenarios');
+                const currentScenarioDisplay = document.getElementById('current-scenario-display');
+                
+                let activeScenario = null;
+                let completedScenarios = 0;
+                const scenarioAnswers = {
+                    clear: null,
+                    busy: null,
+                    construction: null
+                };
+                
+                // Scenario selection
+                scenarioCards.forEach(card => {
+                    card.addEventListener('click', function() {
+                        // Don't allow selection of completed scenarios
+                        if (this.classList.contains('completed')) {
+                            return;
+                        }
                         
-                        // Update selection
-                        vehicleTypes.forEach(v => v.classList.remove('selected'));
+                        // Remove active class from all cards
+                        scenarioCards.forEach(c => c.classList.remove('active'));
+                        
+                        // Add active class to selected card
+                        this.classList.add('active');
+                        activeScenario = this.dataset.scenario;
+                        
+                        // Update display
+                        const scenarioTitle = this.querySelector('.scenario-title').textContent;
+                        activeScenarioName.textContent = scenarioTitle.toLowerCase();
+                        currentScenarioDisplay.textContent = scenarioTitle;
+                        
+                        // Reset action buttons
+                        controlBtns.forEach(btn => {
+                            btn.classList.remove('selected', 'correct', 'incorrect');
+                        });
+                        
+                        // Clear feedback
+                        actionFeedback.classList.remove('show', 'correct', 'incorrect');
+                        actionFeedback.textContent = '';
+                        
+                        // Show instructions
+                        const description = this.querySelector('.scenario-description').textContent;
+                        actionFeedback.textContent = `Scenario: ${description}`;
+                        actionFeedback.classList.add('show');
+                        
+                        // Animate car to starting position
+                        resetCarPosition();
+                    });
+                });
+                
+                // Action selection
+                controlBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        if (!activeScenario) {
+                            actionFeedback.textContent = 'Please select a scenario first';
+                            actionFeedback.classList.add('show', 'incorrect');
+                            return;
+                        }
+                        
+                        const action = this.dataset.action;
+                        const currentCard = document.querySelector(`.scenario-card[data-scenario="${activeScenario}"]`);
+                        const correctAction = currentCard.dataset.correct;
+                        
+                        // Remove selection from all buttons
+                        controlBtns.forEach(b => b.classList.remove('selected'));
+                        
+                        // Select this button
                         this.classList.add('selected');
-                        state.selectedVehicle = vehicle;
                         
-                        // Update emergency vehicle display
-                        updateEmergencyVehicle(vehicle);
+                        // Check if correct
+                        const isCorrect = action === correctAction;
                         
-                        // Show feedback after first selection
-                        if (!state.partsCompleted) {
+                        // Update visual feedback
+                        if (isCorrect) {
+                            this.classList.add('correct');
+                            actionFeedback.textContent = `✓ Correct! ${getActionExplanation(activeScenario, action)}`;
+                            actionFeedback.classList.add('show', 'correct');
+                            
+                            // Mark scenario as completed
+                            currentCard.classList.add('completed');
+                            currentCard.style.borderColor = 'var(--color-success)';
+                            currentCard.style.background = 'rgba(16, 185, 129, 0.1)';
+                            
+                            // Show completion indicator
+                            const statusIndicator = currentCard.querySelector('.scenario-status-indicator');
+                            statusIndicator.style.display = 'block';
+                            statusIndicator.style.color = 'var(--color-success)';
+                            
+                            // Update completed count
+                            completedScenarios++;
+                            completedScenariosEl.textContent = completedScenarios;
+                            
+                            // Store answer
+                            scenarioAnswers[activeScenario] = action;
+                            
+                            // Animate car based on action
+                            animateCarAction(action);
+                            
+                            // Check if all scenarios completed
+                            if (completedScenarios === 3) {
+                                setTimeout(() => {
+                                    completePart2();
+                                }, 1000);
+                            } else {
+                                // Auto-select next incomplete scenario
+                                const nextScenario = getNextIncompleteScenario();
+                                if (nextScenario) {
+                                    const nextCard = document.querySelector(`.scenario-card[data-scenario="${nextScenario}"]`);
+                                    nextCard.click();
+                                }
+                            }
+                        } else {
+                            this.classList.add('incorrect');
+                            actionFeedback.textContent = `✗ Incorrect. The correct action is: ${getCorrectActionDescription(activeScenario)}`;
+                            actionFeedback.classList.add('show', 'incorrect');
+                            
+                            // Shake animation for wrong answer
+                            this.style.animation = 'shake 0.5s ease';
                             setTimeout(() => {
-                                document.getElementById('law-feedback').classList.add('show');
-                                state.partsCompleted = 1;
-                                state.correctAnswers += 4; // All 4 vehicles are correct
-                                state.totalQuestions += 4;
-                                nextBtn.disabled = false;
+                                this.style.animation = '';
                             }, 500);
                         }
                     });
                 });
-            }
-
-            function updateEmergencyVehicle(vehicle) {
-                const icons = {
-                    'police': '🚓',
-                    'fire': '🚒',
-                    'ems': '🚑',
-                    'tow': '🛻'
-                };
                 
-                const labels = {
-                    'police': 'POLICE',
-                    'fire': 'FIRE',
-                    'ems': 'EMS',
-                    'tow': 'TOW'
-                };
-                
-                emergencyVehicle.innerHTML = `
-                    <div style="font-size: 0.7rem; text-align: center;">${labels[vehicle]}<br>${icons[vehicle]}</div>
-                    <div class="emergency-lights"></div>
-                `;
-            }
-
-            // Part 2: Highway Simulation
-            function initPart2() {
-                // Control buttons
-                controlBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const action = this.dataset.action;
-                        
-                        // Update selection
-                        controlBtns.forEach(b => b.classList.remove('selected'));
-                        this.classList.add('selected');
-                        state.selectedAction = action;
-                        
-                        // Animate car based on action
-                        animateCarAction(action);
-                    });
-                });
-                
-                // Scenario cards
-                scenarioCards.forEach(card => {
-                    card.addEventListener('click', function() {
-                        const scenario = this.dataset.scenario;
-                        
-                        // Update selection
-                        scenarioCards.forEach(c => c.classList.remove('selected'));
-                        this.classList.add('selected');
-                        state.selectedScenario = scenario;
-                        
-                        // Check if both action and scenario selected
-                        if (state.selectedAction && state.selectedScenario) {
-                            checkSimulation();
+                function getNextIncompleteScenario() {
+                    for (const scenario in scenarioAnswers) {
+                        if (scenarioAnswers[scenario] === null) {
+                            return scenario;
                         }
-                    });
-                });
-            }
-
-            function animateCarAction(action) {
-                // Reset position
-                yourCar.style.left = '100px';
-                yourCar.style.top = '50%';
-                yourCar.style.transform = 'translateY(-50%)';
+                    }
+                    return null;
+                }
                 
+                function getActionExplanation(scenario, action) {
+                    const explanations = {
+                        'clear': {
+                            'move-over': 'When the left lane is clear, you MUST move over to give emergency vehicles space.',
+                            'slow-down': 'Slowing down is required when you cannot move over safely.',
+                            'continue': 'Continuing at the same speed violates the Move Over Law.',
+                            'stop': 'Stopping completely is not required unless traffic conditions demand it.'
+                        },
+                        'busy': {
+                            'move-over': 'Moving over is ideal but not possible with heavy traffic.',
+                            'slow-down': 'Correct! When you cannot move over, you MUST slow down significantly.',
+                            'continue': 'Continuing at the same speed violates the Move Over Law.',
+                            'stop': 'Stopping completely could cause a traffic hazard.'
+                        },
+                        'construction': {
+                            'move-over': 'Cannot move over when the left lane is closed.',
+                            'slow-down': 'Correct! When lanes are closed, slow down and proceed with caution.',
+                            'continue': 'Continuing at speed through a construction zone is dangerous.',
+                            'stop': 'Only stop if directed by workers or signs.'
+                        }
+                    };
+                    return explanations[scenario][action] || '';
+                }
+                
+                function getCorrectActionDescription(scenario) {
+                    const descriptions = {
+                        'clear': 'MOVE OVER (when left lane is clear)',
+                        'busy': 'SLOW DOWN (when traffic prevents lane change)',
+                        'construction': 'SLOW DOWN (when lanes are closed)'
+                    };
+                    return descriptions[scenario] || '';
+                }
+                
+                function resetCarPosition() {
+                    const yourCar = document.getElementById('your-car');
+                    yourCar.style.left = '100px';
+                    yourCar.style.top = '50%';
+                    yourCar.style.transform = 'translateY(-50%)';
+                    yourCar.style.transition = 'all 0.5s ease';
+                }
+                
+                function animateCarAction(action) {
+                    const yourCar = document.getElementById('your-car');
+                    
+                    setTimeout(() => {
+                        switch(action) {
+                            case 'move-over':
+                                yourCar.style.left = '50px';
+                                yourCar.style.top = '30%';
+                                yourCar.style.transform = 'translateY(-50%)';
+                                break;
+                            case 'slow-down':
+                                // Simulate slowing by moving slower
+                                yourCar.style.transition = 'left 2s ease';
+                                yourCar.style.left = '300px';
+                                break;
+                            case 'continue':
+                                yourCar.style.transition = 'left 0.5s ease';
+                                yourCar.style.left = '300px';
+                                break;
+                            case 'stop':
+                                yourCar.style.left = '150px';
+                                break;
+                        }
+                    }, 100);
+                }
+                
+                function completePart2() {
+                    // Update state
+                    state.correctAnswers += 3; // All 3 scenarios correct if completed
+                    state.totalQuestions += 3;
+                    state.sectionsCompleted++;
+                    
+                    // Show feedback
+                    const feedback = document.getElementById('simulation-feedback');
+                    feedback.classList.add('show');
+                    
+                    // Enable next button
+                    nextBtn.disabled = false;
+                    checkBtn.disabled = true;
+                    
+                    // Update stats
+                    updateStats();
+                }
+                
+                // Initialize first scenario
                 setTimeout(() => {
-                    switch(action) {
-                        case 'move-over':
-                            yourCar.style.left = '50px';
-                            yourCar.style.top = '30%';
-                            yourCar.style.transform = 'translateY(-50%)';
-                            break;
-                        case 'slow-down':
-                            // Simulate slowing by moving slower in animation
-                            yourCar.style.transition = 'left 2s ease';
-                            yourCar.style.left = '300px';
-                            break;
-                        case 'continue':
-                            yourCar.style.transition = 'left 0.5s ease';
-                            yourCar.style.left = '300px';
-                            break;
-                        case 'stop':
-                            yourCar.style.left = '150px';
-                            break;
-                    }
-                }, 100);
+                    scenarioCards[0].click();
+                }, 500);
             }
 
-            function checkSimulation() {
-                // Check if correct action for scenario
-                const correctAction = correctData.actions[state.selectedScenario];
-                const isCorrect = state.selectedAction === correctAction;
+            // Check part 3 (quiz)
+            function checkPart3() {
+                let correctCount = 0;
+                const questions = [3, 4, 5];
                 
-                // Update UI
-                controlBtns.forEach(btn => {
-                    if (btn.dataset.action === correctAction) {
-                        btn.classList.add('correct');
-                    } else if (btn.dataset.action === state.selectedAction && !isCorrect) {
-                        btn.classList.add('incorrect');
+                questions.forEach(questionNum => {
+                    const selected = document.querySelector(`[data-question="${questionNum}"].selected`);
+                    
+                    if (selected) {
+                        const isCorrect = selected.dataset.option === correctData.quiz[questionNum];
+                        
+                        if (isCorrect) {
+                            correctCount++;
+                            selected.classList.add('correct');
+                        } else {
+                            selected.classList.add('incorrect');
+                            const correctOption = document.querySelector(`[data-question="${questionNum}"][data-option="${correctData.quiz[questionNum]}"]`);
+                            if (correctOption) correctOption.classList.add('correct');
+                        }
                     }
                 });
                 
-                // Update state
-                state.correctAnswers += isCorrect ? 1 : 0;
-                state.totalQuestions += 1;
-                state.partsCompleted = 2;
-                
-                // Show feedback
-                document.getElementById('simulation-feedback').classList.add('show');
-                nextBtn.disabled = false;
+                // Check if all questions answered
+                if (questions.every(q => document.querySelector(`[data-question="${q}"].selected`))) {
+                    state.totalQuestions += 3;
+                    state.correctAnswers += correctCount;
+                    
+                    // Show feedback
+                    showPartFeedback(3, correctCount === 3);
+                    
+                    return correctCount === 3;
+                } else {
+                    alert('Please answer all questions before checking.');
+                    return false;
+                }
             }
 
-            // Part 3: Penalties & Quiz
-            function initPart3() {
+            // Initialize part 1
+            function initPart1() {
+                const quizOptions = document.querySelectorAll('#law-basics .quiz-option');
+                
                 quizOptions.forEach(option => {
                     option.addEventListener('click', function() {
                         const question = this.dataset.question;
-                        const answer = this.dataset.option;
                         
-                        // Remove selection from other options for same question
-                        const allOptions = document.querySelectorAll(`[data-question="${question}"]`);
-                        allOptions.forEach(opt => opt.classList.remove('selected'));
-                        
-                        // Select this option
-                        this.classList.add('selected');
-                        state.quizAnswers[question] = answer;
-                        
-                        // Check if all questions answered
-                        if (Object.keys(state.quizAnswers).length === 3) {
-                            checkQuizAnswers();
+                        // Question 1 is multi-select
+                        if (question === '1') {
+                            this.classList.toggle('selected');
+                        } else {
+                            // Single select for other questions
+                            const allOptions = document.querySelectorAll(`[data-question="${question}"]`);
+                            allOptions.forEach(opt => opt.classList.remove('selected'));
+                            this.classList.add('selected');
                         }
                     });
                 });
             }
 
-            function checkQuizAnswers() {
-                let correct = 0;
-                let total = Object.keys(correctData.quiz).length;
+            // Initialize part 3
+            function initPart3() {
+                const quizOptions = document.querySelectorAll('#quiz-part .quiz-option');
                 
-                // Check each answer
-                Object.keys(correctData.quiz).forEach(question => {
-                    const userAnswer = state.quizAnswers[question];
-                    const correctAnswer = correctData.quiz[question];
-                    
-                    if (userAnswer === correctAnswer) {
-                        correct++;
+                quizOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const question = this.dataset.question;
                         
-                        // Mark correct option
-                        const correctOption = document.querySelector(`[data-question="${question}"][data-option="${correctAnswer}"]`);
-                        correctOption.classList.add('correct');
-                    } else {
-                        // Mark incorrect user selection
-                        const userOption = document.querySelector(`[data-question="${question}"][data-option="${userAnswer}"]`);
-                        if (userOption) userOption.classList.add('incorrect');
-                        
-                        // Mark correct answer
-                        const correctOption = document.querySelector(`[data-question="${question}"][data-option="${correctAnswer}"]`);
-                        correctOption.classList.add('correct');
-                    }
+                        // Single select for all part 3 questions
+                        const allOptions = document.querySelectorAll(`[data-question="${question}"]`);
+                        allOptions.forEach(opt => opt.classList.remove('selected'));
+                        this.classList.add('selected');
+                    });
                 });
-                
-                // Update state
-                state.correctAnswers += correct;
-                state.totalQuestions += total;
-                state.partsCompleted = 3;
-                
-                // Show feedback and enable complete button
-                document.getElementById('quiz-feedback').classList.add('show');
-                completeBtn.disabled = false;
             }
 
-            // Next part button
+            // Navigate to next part
             nextBtn.addEventListener('click', function() {
-                if (state.currentPart < 3) {
+                if (state.currentPart < state.totalParts) {
                     // Hide current part
                     activityParts.forEach((part, index) => {
                         part.style.display = index === state.currentPart ? 'block' : 'none';
@@ -1931,102 +2006,88 @@
                         initPart3();
                     }
                     
-                    // Reset button text for last part
-                    if (state.currentPart === 3) {
-                        this.textContent = 'Complete Assessment';
-                    }
-                    
-                    // Disable until interaction
+                    // Update button text
+                    this.textContent = state.currentPart === state.totalParts ? 
+                        'Check Final Section' : 'Next Section';
                     this.disabled = true;
+                    checkBtn.disabled = false;
                 }
             });
 
-            // Complete lesson
+            // Check current part
+            checkBtn.addEventListener('click', function() {
+                let isComplete = false;
+                
+                switch(state.currentPart) {
+                    case 1:
+                        isComplete = checkPart1();
+                        break;
+                    case 2:
+                        // Part 2 is completed automatically when all scenarios are done
+                        isComplete = state.simulationAnswers.clear !== null && 
+                                    state.simulationAnswers.busy !== null && 
+                                    state.simulationAnswers.construction !== null;
+                        if (!isComplete) {
+                            alert('Please complete all 3 scenarios first.');
+                        }
+                        break;
+                    case 3:
+                        isComplete = checkPart3();
+                        break;
+                }
+                
+                if (isComplete && state.currentPart !== 2) {
+                    this.disabled = true;
+                    this.style.opacity = '0.5';
+                    this.style.cursor = 'not-allowed';
+                }
+            });
+
+            // Complete assessment
             completeBtn.addEventListener('click', function() {
                 // Calculate final score
-                const score = state.totalQuestions > 0 
-                    ? Math.round((state.correctAnswers / state.totalQuestions) * 100) 
-                    : 0;
-                finalScore.textContent = `${score}%`;
+                const finalScore = calculateScore();
+                finalScoreEl.textContent = `${finalScore}%`;
                 
-                // Show results
+                // Show results panel
                 resultsPanel.classList.add('show');
                 resultsPanel.scrollIntoView({ behavior: 'smooth' });
                 
                 // Update activity status
-                document.querySelector('.activity-status').textContent = 'Completed';
-                document.querySelector('.activity-status').style.color = '#10b981';
+                activityStatus.textContent = 'Completed';
+                activityStatus.style.color = 'var(--color-success)';
                 document.getElementById('main-activity').classList.add('completed');
+                
+                // Disable all buttons except restart
+                nextBtn.disabled = true;
+                checkBtn.disabled = true;
+                completeBtn.disabled = true;
+                this.style.opacity = '0.5';
+                this.style.cursor = 'not-allowed';
+            });
+
+            // Restart lesson
+            restartLessonBtn.addEventListener('click', function() {
+                location.reload();
             });
 
             // Reset lesson
             resetBtn.addEventListener('click', function() {
-                // Reset state
-                state.currentPart = 1;
-                state.partsCompleted = 0;
-                state.correctAnswers = 0;
-                state.totalQuestions = 0;
-                state.selectedVehicle = 'police';
-                state.selectedAction = null;
-                state.selectedScenario = null;
-                state.quizAnswers = {};
-                state.startedAt = new Date();
-                
-                // Reset UI
-                activityParts.forEach((part, index) => {
-                    part.style.display = index === 0 ? 'block' : 'none';
-                });
-                
-                vehicleTypes.forEach((type, index) => {
-                    type.classList.toggle('selected', index === 0);
-                });
-                
-                controlBtns.forEach(btn => {
-                    btn.classList.remove('selected', 'correct', 'incorrect');
-                });
-                
-                scenarioCards.forEach(card => {
-                    card.classList.remove('selected');
-                });
-                
-                quizOptions.forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                });
-                
-                // Reset car position
-                yourCar.style.left = '100px';
-                yourCar.style.top = '50%';
-                yourCar.style.transform = 'translateY(-50%)';
-                yourCar.style.transition = 'all 0.5s ease';
-                
-                // Hide feedback
-                document.querySelectorAll('.feedback-container').forEach(feedback => {
-                    feedback.classList.remove('show');
-                });
-                
-                // Reset buttons
-                nextBtn.disabled = true;
-                completeBtn.disabled = true;
-                nextBtn.textContent = 'Next Section';
-                resultsPanel.classList.remove('show');
-                
-                // Reset activity status
-                document.querySelector('.activity-status').textContent = 'In Progress';
-                document.querySelector('.activity-status').style.color = '';
-                document.getElementById('main-activity').classList.remove('completed');
-                
-                // Update progress
-                updateProgress();
-                updateTimer();
-                
-                // Reset to police vehicle
-                updateEmergencyVehicle('police');
+                if (confirm('Are you sure you want to reset the lesson? All progress will be lost.')) {
+                    location.reload();
+                }
             });
 
             // Initialize
             initPart1();
             updateTimer();
             updateProgress();
+            updateStats();
+            
+            // Initially disable next button until part 1 is checked
+            nextBtn.disabled = true;
+            checkBtn.disabled = false;
+            completeBtn.disabled = true;
         });
     </script>
 </body>
