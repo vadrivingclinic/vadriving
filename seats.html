@@ -804,6 +804,7 @@
             gap: 12px;
             margin-top: 30px;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .btn {
@@ -1116,10 +1117,6 @@
                 <span class="btn-icon">🔧</span>
                 Practice Installation
             </button>
-            <button class="btn btn-secondary" id="share-safety-btn">
-                <span class="btn-icon">📢</span>
-                Share Safety Tips
-            </button>
         </div>
 
         <!-- Safety Facts -->
@@ -1272,7 +1269,6 @@
                 // Action buttons
                 document.getElementById('view-guidelines-btn').addEventListener('click', showGuidelinesModal);
                 document.getElementById('practice-installation-btn').addEventListener('click', showInstallationPractice);
-                document.getElementById('share-safety-btn').addEventListener('click', shareSafetyTips);
             }
 
             // Setup drag and drop
@@ -1754,23 +1750,6 @@
                         document.body.removeChild(modal);
                     }
                 });
-            }
-
-            // Share safety tips
-            function shareSafetyTips() {
-                const shareText = `Car seat safety facts: Rear-facing until 2+ years reduces infant crash deaths by 71%. Always use back seat for children under 13. Learn more about proper car seat installation!`;
-                
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'Car Seat Safety Tips',
-                        text: shareText,
-                        url: window.location.href
-                    });
-                } else {
-                    navigator.clipboard.writeText(shareText + ' ' + window.location.href).then(() => {
-                        alert('Safety tips copied to clipboard! Share with other parents.');
-                    });
-                }
             }
 
             // Initialize the simulation
