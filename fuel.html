@@ -1714,10 +1714,6 @@
                 <span class="btn-icon">↻</span>
                 Reset Simulation
             </button>
-            <button class="btn btn-secondary" id="print-plan-btn">
-                <span class="btn-icon">🖨️</span>
-                Print Savings Plan
-            </button>
             <button class="btn btn-primary" id="view-results-btn">
                 <span class="btn-icon">📊</span>
                 View Complete Results
@@ -1800,7 +1796,6 @@
             const progressSteps = document.querySelectorAll('.progress-step');
             const activityCards = document.querySelectorAll('.activity-card');
             const resetBtn = document.getElementById('reset-all-btn');
-            const printBtn = document.getElementById('print-plan-btn');
             const resultsBtn = document.getElementById('view-results-btn');
             const resultsPanel = document.getElementById('results-panel');
             const finalScore = document.getElementById('final-score');
@@ -2159,41 +2154,6 @@
                 updateProgress();
             }
 
-            // Print Savings Plan
-            function printSavingsPlan() {
-                const planContent = `
-                    VA Driving Clinic - Fuel Efficiency Savings Plan
-                    =================================================
-                    
-                    Your Personalized Fuel Savings Strategy:
-                    
-                    1. Immediate Actions (This Week):
-                       - Check and adjust tire pressure to manufacturer's specification
-                       - Remove unnecessary weight from vehicle
-                       - Practice smooth acceleration from stops
-                       - Use cruise control on highway drives
-                    
-                    2. Short-Term Actions (Next 30 Days):
-                       - Schedule maintenance: air filter, oil change
-                       - Plan trips efficiently to combine errands
-                       - Avoid idling for more than 30 seconds
-                       - Use air conditioning wisely (windows down below 45 MPH)
-                    
-                    3. Long-Term Habits:
-                       - Regular maintenance according to schedule
-                       - Monitor fuel economy monthly
-                       - Consider fuel efficiency for next vehicle purchase
-                       - Continue practicing smooth driving techniques
-                    
-                    Estimated Annual Savings: $${document.getElementById('annual-savings').textContent}
-                    Monthly Savings: $${document.getElementById('monthly-savings').textContent}
-                    
-                    Remember: Small changes add up to significant savings!
-                `;
-                
-                alert("Your savings plan has been generated. To print:\n1. Copy the text below\n2. Paste into a document\n3. Print from there\n\n" + planContent);
-            }
-
             // View Results
             function viewResults() {
                 let totalScore = 0;
@@ -2220,7 +2180,6 @@
 
             // Event listeners
             resetBtn.addEventListener('click', resetSimulation);
-            printBtn.addEventListener('click', printSavingsPlan);
             resultsBtn.addEventListener('click', viewResults);
 
             // Initial update
