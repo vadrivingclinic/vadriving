@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Week 14 -- CMAA Comprehensive Final Exam</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        :root {
+            --color-primary: #af4bef;
+            --color-primary-soft: #d9b8ff;
+            --color-accent: #8380f0;
+            --color-bg: #f7f5fb;
+            --color-text: #1e2030;
+            --color-muted: #727089;
+            --radius-lg: 24px;
+            --shadow-soft: 0 18px 45px rgba(23, 10, 61, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            padding: 18px 14px 24px;
+            background: radial-gradient(circle at top left, #ffffff 0, #f3edff 40%, var(--color-bg) 100%);
+            color: var(--color-text);
+        }
+
+        .page {
+            width: 100%;
+            max-width: 1120px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 22px 20px 26px;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 22px;
+            position: relative;
+        }
+
+        @media (min-width: 900px) {
+            .page {
+                grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+            }
+        }
+
+        .column {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            min-width: 0;
+        }
+
+        /* Header / branding */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: nowrap;
+            min-width: 0;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+            max-width: 100%;
+            filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .course-name {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--color-muted);
+            white-space: normal;
+        }
+
+        .week-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(175, 75, 239, 0.08);
+            font-size: 0.76rem;
+            color: var(--color-primary);
+            white-space: normal;
+        }
+
+        .week-label-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: #e74c3c;
+            flex-shrink: 0;
+        }
+
+        .badge-mode {
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(12, 10, 24, 0.06);
+            border: 1px solid rgba(12, 10, 24, 0.08);
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--color-muted);
+            white-space: nowrap;
+        }
+
+        h1 {
+            font-size: clamp(1.9rem, 3vw, 2.3rem);
+            line-height: 1.1;
+            color: var(--color-primary);
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 0.98rem;
+            color: var(--color-muted);
+            max-width: 36rem;
+            margin-bottom: 18px;
+        }
+
+        .subtitle strong {
+            color: var(--color-primary);
+        }
+
+        /* Sections */
+        .section-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--color-primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--color-text);
+        }
+
+        .card {
+            border-radius: 18px;
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            padding: 14px 16px 16px;
+            margin-bottom: 14px;
+            background: linear-gradient(
+                135deg,
+                rgba(175, 75, 239, 0.06),
+                rgba(255, 255, 255, 0.98)
+            );
+            width: 100%;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--color-text);
+        }
+
+        .small {
+            font-size: 0.82rem;
+            color: var(--color-muted);
+        }
+
+        .week-progress {
+            margin: 24px 0;
+            padding: 20px;
+            background: rgba(248, 250, 252, 0.9);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .week-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .week-dots {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .week-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #d1d5db;
+        }
+
+        .week-dot.completed {
+            background: #10b981;
+        }
+
+        .week-dot.current {
+            background: #e74c3c;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+
+        .exam-card {
+            background: linear-gradient(135deg, #fef3f3, #fef9ff);
+            border: 2px dashed #e74c3c;
+            border-radius: 18px;
+            padding: 20px;
+            margin: 24px 0;
+            text-align: center;
+        }
+
+        .exam-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #e74c3c;
+            margin-bottom: 8px;
+        }
+
+        .exam-subtitle {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            margin-bottom: 16px;
+        }
+
+        .btn-display {
+            border-radius: 999px;
+            border: none;
+            padding: 10px 24px;
+            margin-top: 10px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #e74c3c, #af4bef);
+            color: #ffffff;
+            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.35);
+            display: inline-block;
+            cursor: default;
+            opacity: 0.9;
+        }
+
+        .warning-card {
+            background: rgba(231, 76, 60, 0.05);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+            border-radius: 14px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: left;
+        }
+
+        .warning-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #e74c3c;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            list-style: none;
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tips-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .tip-icon {
+            color: #10b981;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Right column cards */
+        .side-card {
+            background: rgba(12, 10, 24, 0.96);
+            color: #e5e7eb;
+            border-radius: 18px;
+            padding: 16px 18px 18px;
+            font-size: 0.88rem;
+            line-height: 1.7;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.6);
+            margin-bottom: 16px;
+            width: 100%;
+        }
+
+        .side-card strong {
+            color: #ffffff;
+        }
+
+        .side-subtitle {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #c4b5fd;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .side-list {
+            list-style: none;
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.86rem;
+        }
+
+        .side-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 7px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            margin-top: 7px;
+            border-radius: 999px;
+            background: #a5b4fc;
+            flex-shrink: 0;
+        }
+
+        .completion-card {
+            border-radius: 18px;
+            border: 1px dashed rgba(148, 163, 184, 0.7);
+            padding: 12px 14px;
+            font-size: 0.84rem;
+            color: var(--color-muted);
+            background: rgba(248, 250, 252, 0.9);
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <main class="page" aria-labelledby="exam-heading">
+        <!-- LEFT COLUMN -->
+        <section class="column">
+            <header class="brand-row">
+                <div class="brand">
+                    <img
+                        src="https://cdn.prod.website-files.com/64d0ccc1558d601cbfb09021/64e9d2f719b1e5258e5d57f5_IMG_1512-p-500.png"
+                        alt="AlliedRx logo"
+                        class="brand-logo"
+                    />
+                    <div class="course-meta">
+                        <span class="course-name">CMAA Program • Campus & Distance Learning</span>
+                        <div class="week-label">
+                            <span class="week-label-dot"></span>
+                            <span>Week 14 — Comprehensive Final Exam Week</span>
+                        </div>
+                    </div>
+                </div>
+                <span class="badge-mode">Program Completion</span>
+            </header>
+
+            <h1 id="exam-heading">Final Exam: CMAA Comprehensive</h1>
+
+            <p class="subtitle">
+                This week you will be taking your <strong>final exam</strong> covering all curriculum material from the entire 14-week program. 
+                This assessment evaluates your mastery of both Clinical Fundamentals and Medical Administration.
+            </p>
+
+            <!-- COURSE PROGRESS -->
+            <section aria-label="course progress">
+                <p class="section-label">Program Roadmap</p>
+                <h2 class="section-title">Your 14-Week Journey</h2>
+                
+                <div class="week-progress">
+                    <div class="week-title">
+                        <span>Weeks 1-13 (Curriculum Mastery)</span>
+                    </div>
+                    <div class="week-dots">
+                        <!-- 13 completed dots -->
+                        <div class="week-dot completed"></div>
+                        <div class="week-dot completed"></div>
+                        <div class="week-dot completed"></div>
+                        <div class="week-dot completed"></div>
+                        <div class="week-dot completed"></div>
+                        <div class="week-dot completed"></div>
+                        <div class="week-dot completed"></div>
+                        <div class="week-dot completed"></div>
+                        <div class="week-dot completed"></div>
+                        <div class="week-dot completed"></div>
+                        <div class="week-dot completed"></div>
+                        <div class="week-dot completed"></div>
+                        <div class="week-dot completed"></div>
+                    </div>
+                </div>
+
+                <div class="week-progress">
+                    <div class="week-title">
+                        <span>Week 14 (Comprehensive Final Exam)</span>
+                    </div>
+                    <div class="week-dots">
+                        <!-- The final 14th dot -->
+                        <div class="week-dot current"></div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin: 20px 0;">
+                    <h2 style="font-size: 1.5rem; color: var(--color-primary); margin-bottom: 10px;">The Final Milestone 🎯</h2>
+                </div>
+            </section>
+
+            <!-- FINAL EXAM CARD -->
+            <section aria-label="final exam">
+                <div class="exam-card">
+                    <div class="exam-icon">🏆</div>
+                    <div class="exam-title">CMAA Final Exam</div>
+                    <div class="exam-subtitle">Certified Medical Administrative Assistant Program Examination</div>
+                    
+                    <div class="warning-card">
+                        <div class="warning-title">⚠️ Exam Conditions</div>
+                        <p class="small">
+                            This Final Exam is a <strong>closed textbook, closed notes</strong> examination. 
+                            Topics on the final exam will consist of material covered from the Clinical Fundamentals (Weeks 1-7) and Medical Administration (Weeks 8-13).
+                        </p>
+                    </div>
+                    
+                    <p style="margin: 16px 0; font-size: 0.9rem;">
+                        When you are ready to begin, navigate to the next page to access your exam. 
+                        Ensure you have a stable internet connection and adequate time to complete the full assessment.
+                    </p>
+                    
+                    <div class="btn-display">Please click to the next page to begin exam</div>
+                </div>
+            </section>
+        </section>
+
+        <!-- RIGHT COLUMN -->
+        <aside class="column" aria-label="exam preparation and tips">
+            <!-- EXAM PREPARATION TIPS -->
+            <section>
+                <p class="section-label">Preparation</p>
+                <h2 class="section-title">Final Success Tips</h2>
+                
+                <div class="side-card">
+                    <p class="side-subtitle">Maximize Your Performance</p>
+                    <p>
+                        Approach your comprehensive final with the same diligence you've shown throughout the term:
+                    </p>
+                    
+                    <ul class="tips-list" style="margin-top: 16px;">
+                        <li>
+                            <span class="tip-icon">✓</span>
+                            <span><strong>Clinical Review:</strong> Refresh your knowledge of vital signs, infection control, and OSHA safety standards.</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">✓</span>
+                            <span><strong>Admin Review:</strong> Focus on EHR documentation, scheduling protocols, HIPAA compliance, and insurance types.</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">✓</span>
+                            <span><strong>Read Carefully:</strong> Pay attention to keywords like "BEST," "FIRST," and "MOST likely" in the question stems.</span>
+                        </li>
+                        <li>
+                            <span class="tip-icon">✓</span>
+                            <span><strong>Pace Yourself:</strong> You have covered 14 weeks of material. Don't rush; ensure you understand each prompt before answering.</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- TOPICS TO REVIEW -->
+            <section>
+                <p class="section-label">Curriculum Review</p>
+                <h2 class="section-title">Key Core Competencies</h2>
+                
+                <div class="card">
+                    <p class="small">
+                        The final exam tests your readiness across the full program scope:
+                    </p>
+                    
+                    <ul class="side-list" style="margin-top: 12px;">
+                        <li>
+                            <span class="dot"></span>
+                            <span>Medical Ethics, Law, and HIPAA Privacy</span>
+                        </li>
+                        <li>
+                            <span class="dot"></span>
+                            <span>Patient Reception and Front Office Workflow</span>
+                        </li>
+                        <li>
+                            <span class="dot"></span>
+                            <span>Scheduling and Medical Record Management</span>
+                        </li>
+                        <li>
+                            <span class="dot"></span>
+                            <span>Basic Clinical Fundamentals & Infection Control</span>
+                        </li>
+                        <li>
+                            <span class="dot"></span>
+                            <span>Insurance Billing, Coding, and Reimbursement</span>
+                        </li>
+                        <li>
+                            <span class="dot"></span>
+                            <span>Professional Communication & Patient Triage</span>
+                        </li>
+                        <li>
+                            <span class="dot"></span>
+                            <span>Emergency Preparedness & OSHA Standards</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- COMPLETION REMINDER -->
+            <section>
+                <p class="section-label">Final Checklist</p>
+                <h2 class="section-title">Ready for Graduation?</h2>
+                
+                <div class="completion-card">
+                    <p>
+                        Before starting your final exam, ensure you have:
+                    </p>
+                    
+                    <ul class="side-list" style="margin-top: 8px;">
+                        <li>
+                            <span class="dot"></span>
+                            <span>A quiet, distraction-free environment</span>
+                        </li>
+                        <li>
+                            <span class="dot"></span>
+                            <span>A reliable power source and internet connection</span>
+                        </li>
+                        <li>
+                            <span class="dot"></span>
+                            <span>At least 90-120 minutes of uninterrupted time</span>
+                        </li>
+                    </ul>
+                    
+                    <div style="text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px dashed rgba(148, 163, 184, 0.3);">
+                        <h3 style="font-size: 1.1rem; color: #10b981; margin-bottom: 8px;">Congratulations on reaching Week 14!</h3>
+                        <p style="font-size: 0.9rem; color: var(--color-muted);">
+                            You have worked hard to get here. Good luck! 💪
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </aside>
+    </main>
+</body>
+</html>
