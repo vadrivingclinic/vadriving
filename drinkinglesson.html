@@ -44,12 +44,6 @@
             50% { transform: scale(1.05); opacity: 0.8; }
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-
         @keyframes alert {
             0%, 100% { background-color: #dc2626; }
             50% { background-color: #ef4444; }
@@ -530,7 +524,6 @@
             padding: 40px;
             text-align: center;
             border: 2px solid var(--color-success);
-            animation: glow 2s infinite;
         }
 
         .completion-screen.active {
@@ -667,7 +660,7 @@
 <body>
     <div class="module-container">
         <!-- Header -->
-        <div class="header">
+        <div class="header" id="module-header">
             <div class="brand">
                 <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" 
                      alt="VA Driving Clinic Logo" class="brand-logo">
@@ -675,17 +668,17 @@
             </div>
         </div>
 
-        <!-- Main Title -->
-        <h1 class="main-title">The Deadly Reality of Drinking & Driving</h1>
-        <div class="subtitle">10-Minute Interactive Awareness Module</div>
+        <!-- Main Titles -->
+        <h1 class="main-title" id="page-main-title">The Deadly Reality of Drinking & Driving</h1>
+        <div class="subtitle" id="page-subtitle">10-Minute Interactive Awareness Module</div>
 
         <!-- Timer -->
-        <div class="timer-container">
+        <div class="timer-container" id="page-timer-container">
             <div class="timer-display" id="timer">10:00</div>
         </div>
 
         <!-- Progress Navigation -->
-        <div class="progress-nav">
+        <div class="progress-nav" id="page-nav">
             <div class="nav-step active" onclick="showSection(1)">The Dangers</div>
             <div class="nav-step" onclick="showSection(2)">Real Cases 2024</div>
             <div class="nav-step" onclick="showSection(3)">BAC Simulator</div>
@@ -1032,7 +1025,7 @@
                 <button class="action-btn secondary" onclick="showSection(3)">
                     ← Back to BAC Simulator
                 </button>
-                <button class="action-btn" onclick="completeModule()">
+                <button class="action-btn" onclick="completeModule()" style="background: linear-gradient(135deg, #10b981, #059669);">
                     Complete Module
                 </button>
             </div>
@@ -1058,7 +1051,7 @@
                     <div class="stat-label">Quiz Accuracy</div>
                 </div>
                 <div class="completion-stat">
-                    <div class="stat-value">0</div>
+                    <div class="stat-value" id="cases-stat">0</div>
                     <div class="stat-label">Cases Reviewed</div>
                 </div>
             </div>
@@ -1089,7 +1082,7 @@
             bacLevel: 0.08,
             quizScore: 0,
             totalQuestions: 0,
-            quizAnswers: [],
+            casesViewed: 0,
             startTime: Date.now()
         };
 
@@ -1111,14 +1104,21 @@
         function updateTimerDisplay() {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
-            document.getElementById('timer').textContent = 
-                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            const timerEl = document.getElementById('timer');
+            if (timerEl) {
+                timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
         }
 
         // ========== SECTION NAVIGATION ==========
         function showSection(sectionNum) {
             moduleState.currentSection = sectionNum;
             
+            // Track cases reviewed if Section 2 is visited
+            if (sectionNum === 2) {
+                moduleState.casesViewed = 4;
+            }
+
             // Hide all sections
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
@@ -1133,7 +1133,11 @@
             });
             
             // Show selected section
-            document.getElementById(`section-${sectionNum}`).classList.add('active');
+            const target = document.getElementById(`section-${sectionNum}`);
+            if (target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
 
         // ========== BAC SIMULATOR ==========
@@ -1199,7 +1203,6 @@
             }
             
             document.getElementById('bac-label').textContent = label;
-            
             const effectsList = document.getElementById('bac-effects-list');
             effectsList.innerHTML = '';
             effects.forEach(effect => {
@@ -1269,7 +1272,6 @@
 
         function selectAnswer(index) {
             selectedAnswer = index;
-            
             document.querySelectorAll('.quiz-option').forEach((option, i) => {
                 option.classList.remove('selected');
                 if (i === index) {
@@ -1280,7 +1282,6 @@
 
         function checkAnswer() {
             if (selectedAnswer === null) {
-                alert('Please select an answer first!');
                 return;
             }
 
@@ -1297,7 +1298,6 @@
                 document.getElementById('feedback-message').textContent = question.explanation;
             }
             
-            // Show correct answer
             document.querySelectorAll('.quiz-option').forEach((option, i) => {
                 if (i === question.correct) {
                     option.classList.add('correct');
@@ -1316,7 +1316,6 @@
             if (currentQuestion < quizQuestions.length) {
                 loadQuestion();
             } else {
-                // Quiz completed
                 completeModule();
             }
         }
@@ -1325,34 +1324,54 @@
         function completeModule() {
             clearInterval(moduleTimer);
             
+            // Hide all layout elements that might obstruct the results
+            const elementsToHide = [
+                'module-header', 
+                'page-main-title', 
+                'page-subtitle', 
+                'page-timer-container', 
+                'page-nav'
+            ];
+            
+            elementsToHide.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+
+            // Hide all content sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+                section.style.display = 'none';
+            });
+
             // Calculate stats
             const accuracy = moduleState.totalQuestions > 0 
                 ? Math.round((moduleState.quizScore / moduleState.totalQuestions) * 100)
                 : 0;
             
-            const minutes = Math.floor((600 - timeLeft) / 60);
-            const seconds = (600 - timeLeft) % 60;
+            const timeDiff = Math.max(0, 600 - timeLeft);
+            const minutes = Math.floor(timeDiff / 60);
+            const seconds = timeDiff % 60;
             
-            // Update completion screen
-            document.getElementById('time-stat').textContent = 
-                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            // Update completion screen displays
+            document.getElementById('time-stat').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             document.getElementById('quiz-stat').textContent = `${accuracy}%`;
+            document.getElementById('cases-stat').textContent = moduleState.casesViewed;
             
-            // Show completion screen
-            document.getElementById('completion-screen').classList.add('active');
-            
-            // Hide other sections
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
+            // Activate completion screen
+            const completionScreen = document.getElementById('completion-screen');
+            if (completionScreen) {
+                completionScreen.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
 
         // ========== INITIALIZATION ==========
-        document.addEventListener('DOMContentLoaded', function() {
+        window.onload = function() {
             startTimer();
             loadQuestion();
             selectBAC(0.08);
-        });
+        };
     </script>
 </body>
 </html>
