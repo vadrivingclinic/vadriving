@@ -756,7 +756,27 @@
                 grid-template-columns: 1fr;
             }
         }
-    </style>
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
 </head>
 <body>
     <div class="platform-container">
@@ -1790,7 +1810,7 @@ Achievements:
 Keep up the great work! Continue practicing to reach 100% mastery.
             `;
             
-            alert(report);
+            showMobileToast(report);
         }
 
         // Activity Starters
@@ -1822,5 +1842,122 @@ Keep up the great work! Continue practicing to reach 100% mastery.
             return array;
         }
     </script>
+
+<script>
+/* ===== MOBILE TOAST NOTIFICATION (replaces alert) ===== */
+function showMobileToast(msg) {
+  var t = document.getElementById('_va_toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = '_va_toast';
+    t.style.cssText = [
+      'position:fixed','bottom:24px','left:50%','transform:translateX(-50%)',
+      'background:rgba(30,30,30,0.92)','color:#fff','padding:12px 22px',
+      'border-radius:24px','z-index:99999','font-weight:600',
+      'font-size:0.95rem','max-width:85vw','text-align:center',
+      'box-shadow:0 4px 16px rgba(0,0,0,0.3)',
+      'transition:opacity 0.35s','opacity:0','pointer-events:none'
+    ].join(';');
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._to);
+  t._to = setTimeout(function(){ t.style.opacity='0'; }, 3200);
+}
+</script>
+
+
+<script>
+/* ===== TOUCH DRAG-AND-DROP POLYFILL (additive) ===== */
+(function(){
+  if (!('ontouchstart' in window)) return;
+  var _dd = { el: null, data: {}, clone: null, ox: 0, oy: 0 };
+
+  /* Patch DataTransfer so touch-synthesised events carry the stored data */
+  var _origGet = DataTransfer.prototype.getData;
+  DataTransfer.prototype.getData = function(type){
+    var v; try{ v = _origGet.call(this, type); }catch(e){}
+    return (v && v.length) ? v : (_dd.data[type] || _dd.data['text/plain'] || _dd.data['text'] || '');
+  };
+  var _origSet = DataTransfer.prototype.setData;
+  DataTransfer.prototype.setData = function(type, val){
+    _dd.data[type] = val;
+    try{ _origSet.call(this, type, val); }catch(e){}
+  };
+
+  function _makeDT(){ try{ return new DataTransfer(); }catch(e){ return {setData:function(){},getData:function(t){return _dd.data[t]||'';},effectAllowed:'all',dropEffect:'move'}; } }
+
+  function _fireEvent(el, name, dt, bubble){
+    var ev;
+    try{ ev = new DragEvent(name,{bubbles:!!bubble,cancelable:true,dataTransfer:dt}); }
+    catch(e){
+      ev = document.createEvent('Event');
+      ev.initEvent(name,!!bubble,true);
+      ev.dataTransfer = dt;
+    }
+    el.dispatchEvent(ev);
+    return ev;
+  }
+
+  document.addEventListener('touchstart', function(e){
+    var el = e.target && e.target.closest ? e.target.closest('[draggable="true"]') : null;
+    if (!el) return;
+    _dd.el = el; _dd.data = {};
+    var touch = e.touches[0];
+    var rect  = el.getBoundingClientRect();
+    _dd.ox = touch.clientX - rect.left;
+    _dd.oy = touch.clientY - rect.top;
+
+    /* fire dragstart so existing handler stores data via setData */
+    _fireEvent(el, 'dragstart', _makeDT(), true);
+
+    /* visual ghost clone */
+    var cl = el.cloneNode(true);
+    cl.setAttribute('aria-hidden','true');
+    cl.style.cssText = [
+      'position:fixed','z-index:99998','pointer-events:none','margin:0',
+      'width:'+rect.width+'px','height:'+rect.height+'px',
+      'left:'+(touch.clientX - _dd.ox)+'px',
+      'top:'+(touch.clientY - _dd.oy)+'px',
+      'opacity:0.82','transform:scale(1.07) rotate(2deg)',
+      'box-shadow:0 10px 28px rgba(0,0,0,0.25)','border-radius:8px',
+      'transition:none'
+    ].join(';');
+    document.body.appendChild(cl);
+    _dd.clone = cl;
+    e.preventDefault();
+  }, {passive:false});
+
+  document.addEventListener('touchmove', function(e){
+    if (!_dd.clone) return;
+    var t = e.touches[0];
+    _dd.clone.style.left = (t.clientX - _dd.ox)+'px';
+    _dd.clone.style.top  = (t.clientY - _dd.oy)+'px';
+    e.preventDefault();
+  }, {passive:false});
+
+  document.addEventListener('touchend', function(e){
+    if (!_dd.el) return;
+    if (_dd.clone){ _dd.clone.remove(); _dd.clone = null; }
+
+    var t = e.changedTouches[0];
+    /* find element under finger */
+    var hit = document.elementFromPoint(t.clientX, t.clientY);
+    var node = hit;
+    while (node && node !== document.body){
+      var overEv = _fireEvent(node, 'dragover', _makeDT(), false);
+      if (overEv.defaultPrevented){
+        _fireEvent(node, 'drop', _makeDT(), false);
+        break;
+      }
+      node = node.parentElement;
+    }
+    _fireEvent(_dd.el, 'dragend', _makeDT(), true);
+    _dd.el = null; _dd.data = {};
+  }, {passive:false});
+})();
+</script>
+
 </body>
 </html>
