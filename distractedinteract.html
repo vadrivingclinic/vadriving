@@ -584,7 +584,27 @@
                 grid-template-columns: 1fr;
             }
         }
-    </style>
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
 </head>
 <body>
     <div class="module-container">
@@ -629,6 +649,39 @@
                         Keep the car on the road and avoid distractions! Click distractions to remove them.
                     </div>
                 </div>
+
+<!-- Touch controls for mobile (hidden on desktop) -->
+<div id="_va_touch_ctrl" style="display:none;gap:12px;margin:10px 0;">
+  <button id="_va_left_btn"
+    style="flex:1;padding:18px 0;font-size:1.8rem;background:rgba(220,38,38,0.12);
+           border:2px solid rgba(220,38,38,0.3);border-radius:12px;cursor:pointer;
+           touch-action:manipulation;user-select:none;-webkit-user-select:none;">&#9664;</button>
+  <button id="_va_right_btn"
+    style="flex:1;padding:18px 0;font-size:1.8rem;background:rgba(220,38,38,0.12);
+           border:2px solid rgba(220,38,38,0.3);border-radius:12px;cursor:pointer;
+           touch-action:manipulation;user-select:none;-webkit-user-select:none;">&#9654;</button>
+</div>
+<script>
+(function(){
+  if (!('ontouchstart' in window)) return;
+  var ctrl = document.getElementById('_va_touch_ctrl');
+  if (ctrl) ctrl.style.display = 'flex';
+  function tap(key){
+    if (typeof handleKeyPress === 'function') handleKeyPress({key: key});
+  }
+  var L = document.getElementById('_va_left_btn');
+  var R = document.getElementById('_va_right_btn');
+  if (L) {
+    L.addEventListener('touchstart', function(e){ e.preventDefault(); tap('ArrowLeft'); }, {passive:false});
+    L.addEventListener('touchend',   function(e){ e.preventDefault(); }, {passive:false});
+  }
+  if (R) {
+    R.addEventListener('touchstart', function(e){ e.preventDefault(); tap('ArrowRight'); }, {passive:false});
+    R.addEventListener('touchend',   function(e){ e.preventDefault(); }, {passive:false});
+  }
+})();
+</script>
+
             </div>
 
             <!-- Control Panel -->
@@ -1104,7 +1157,7 @@
 
         function checkAnswer() {
             if (selectedAnswer === null) {
-                alert('Please select an answer first!');
+                showMobileToast('Please select an answer first!');
                 return;
             }
 
@@ -1185,5 +1238,30 @@
             car.style.left = `${(scene.offsetWidth - 80) / 2}px`;
         });
     </script>
+
+<script>
+/* ===== MOBILE TOAST NOTIFICATION (replaces alert) ===== */
+function showMobileToast(msg) {
+  var t = document.getElementById('_va_toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = '_va_toast';
+    t.style.cssText = [
+      'position:fixed','bottom:24px','left:50%','transform:translateX(-50%)',
+      'background:rgba(30,30,30,0.92)','color:#fff','padding:12px 22px',
+      'border-radius:24px','z-index:99999','font-weight:600',
+      'font-size:0.95rem','max-width:85vw','text-align:center',
+      'box-shadow:0 4px 16px rgba(0,0,0,0.3)',
+      'transition:opacity 0.35s','opacity:0','pointer-events:none'
+    ].join(';');
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._to);
+  t._to = setTimeout(function(){ t.style.opacity='0'; }, 3200);
+}
+</script>
+
 </body>
 </html>
