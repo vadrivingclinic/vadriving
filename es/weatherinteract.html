@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA: simulación de inclemencias del tiempo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-soft: #8a5feb;
+            --color-secondary: #000000;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-info: #3b82f6;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-light: #f9fafb;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 15px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes rain {
+            0% { transform: translateY(-100px); }
+            100% { transform: translateY(100vh); }
+        }
+
+        @keyframes snow {
+            0% { transform: translateY(-100px) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        @keyframes fog {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+            100% { opacity: 0.3; }
+        }
+
+        /* Main Container */
+        .page {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 20px;
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        /* Header */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .course-name {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .week-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.1);
+            font-size: 0.7rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .week-label-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        .badge-mode {
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.08);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-primary);
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            line-height: 1.1;
+            color: var(--color-text);
+            margin-bottom: 8px;
+        }
+
+        .module-subtitle {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Time Banner */
+        .time-banner {
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .time-icon {
+            font-size: 1rem;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .time-content h3 {
+            color: var(--color-primary);
+            font-size: 0.8rem;
+            margin-bottom: 3px;
+            font-weight: 700;
+        }
+
+        .time-content p {
+            color: var(--color-text);
+            font-size: 0.75rem;
+            margin: 0;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 0.9em;
+        }
+
+        /* Weather Selector */
+        .weather-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .weather-btn {
+            padding: 12px;
+            background: rgba(95, 23, 235, 0.05);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            color: var(--color-primary);
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .weather-btn:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .weather-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+            animation: pulse 2s infinite;
+        }
+
+        .weather-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Driving Simulation */
+        .driving-simulation {
+            background: var(--color-light);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+        }
+
+        .simulation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .weather-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .weather-icon-large {
+            font-size: 1.4rem;
+        }
+
+        .simulation-time {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-muted);
+            background: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        /* Road Visualization */
+        .road-visualization {
+            width: 100%;
+            height: 200px;
+            background: #2a2a2a;
+            border-radius: var(--radius-sm);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 3px solid #333;
+        }
+
+        .road-lane {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: repeating-linear-gradient(
+                90deg,
+                #ffffff 0,
+                #ffffff 20px,
+                transparent 20px,
+                transparent 40px
+            );
+        }
+
+        .car {
+            position: absolute;
+            width: 40px;
+            height: 25px;
+            background: var(--color-primary);
+            border-radius: 4px;
+            transition: all 0.5s ease;
+            z-index: 10;
+        }
+
+        .player-car {
+            background: var(--color-success);
+            z-index: 20;
+        }
+
+        .other-car {
+            background: var(--color-warning);
+        }
+
+        .water-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .rain-drop {
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background: rgba(59, 130, 246, 0.7);
+            animation: rain linear infinite;
+        }
+
+        .snow-flake {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: snow linear infinite;
+        }
+
+        .fog-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.3);
+            animation: fog 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .ice-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(0deg, rgba(173, 216, 230, 0.2) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .control-btn {
+            padding: 10px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.75rem;
+            text-align: center;
+            color: var(--color-primary);
+        }
+
+        .control-btn:hover {
+            background: rgba(95, 23, 235, 0.1);
+            border-color: var(--color-primary);
+        }
+
+        .control-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        /* Hazard Dashboard */
+        .hazard-dashboard {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .hazard-title {
+            color: var(--color-primary);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hazard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .hazard-stat {
+            padding: 10px;
+            background: white;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Decision Making */
+        .decision-making {
+            background: rgba(95, 23, 235, 0.03);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px dashed rgba(95, 23, 235, 0.2);
+        }
+
+        .decision-title {
+            color: var(--color-primary);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .decision-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .decision-option {
+            padding: 12px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            color: var(--color-text);
+        }
+
+        .decision-option:hover {
+            border-color: var(--color-primary);
+            transform: translateX(5px);
+        }
+
+        .decision-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+        }
+
+        .decision-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--color-error);
+        }
+
+        /* Safety Tips */
+        .safety-tips {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid var(--color-success);
+            display: none;
+        }
+
+        .safety-tips.show {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .tips-title {
+            color: var(--color-success);
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tips-list li {
+            font-size: 0.8rem;
+            color: var(--color-text);
+            line-height: 1.5;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .tip-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--color-success);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Results Display */
+        .results-display {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid var(--color-primary);
+        }
+
+        .results-display.show {
+            display: block;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .results-header h3 {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .results-score {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            text-shadow: 0 0 15px rgba(95, 23, 235, 0.7);
+            animation: pulse 2s infinite;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .result-stat {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            color: #e5e7eb;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .weather-mastery {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .mastery-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mastery-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mastery-list li {
+            font-size: 0.8rem;
+            color: #e5e7eb;
+            line-height: 1.5;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .mastery-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background: #4c0fcf;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-icon {
+            font-size: 1em;
+            font-weight: bold;
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <main class="page">
+        <!-- Header -->
+        <header class="brand-row">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo" />
+                <div class="course-meta">
+                    <span class="course-name">Clínica de conducción de VA • Simulación rápida</span>
+                    <div class="week-label">
+                        <span class="week-label-dot"></span>
+                        <span>Inclemencias del tiempo</span>
+                    </div>
+                </div>
+            </div>
+            <span class="badge-mode">Desafío de 5 minutos</span>
+        </header>
+
+        <h1>Desafío de conducción en condiciones climáticas adversas</h1>
+        <p class="module-subtitle">
+            Experimenta 4 condiciones climáticas diferentes en 5 minutos. Aprende a adaptar tu conducción
+            para lluvia, nieve, niebla y hielo a través de la toma de decisiones interactiva.
+        </p>
+
+        <!-- Time Banner -->
+        <div class="time-banner">
+            <div class="time-icon">
+                ⏱️
+            </div>
+            <div class="time-content">
+                <h3>Simulación meteorológica de 5 minutos</h3>
+                <p>Completa los 4 desafíos climáticos en <span class="time-highlight">5 minutos</span> para dominar la conducción segura en condiciones adversas.</p>
+            </div>
+        </div>
+
+        <!-- Weather Selector -->
+        <div class="weather-selector">
+            <button class="weather-btn active" data-weather="rain">
+                <span class="weather-icon">🌧️</span>
+                Desafío de la lluvia
+            </button>
+            <button class="weather-btn" data-weather="snow">
+                <span class="weather-icon">❄️</span>
+                Desafío de nieve
+            </button>
+            <button class="weather-btn" data-weather="fog">
+                <span class="weather-icon">🌫️</span>
+                Desafío de niebla
+            </button>
+            <button class="weather-btn" data-weather="ice">
+                <span class="weather-icon">🧊</span>
+                Desafío de hielo
+            </button>
+        </div>
+
+        <!-- Driving Simulation -->
+        <div class="driving-simulation" id="weather-simulation">
+            <div class="simulation-header">
+                <div class="weather-title">
+                    <span class="weather-icon-large" id="weather-icon">🌧️</span>
+                    <span id="weather-title">Desafío de lluvias intensas</span>
+                </div>
+                <div class="simulation-time">Tiempo: <span id="weather-time">0:00</span></div>
+            </div>
+
+            <!-- Road Visualization -->
+            <div class="road-visualization" id="road-visualization">
+                <!-- Weather effects and road elements added by JavaScript -->
+            </div>
+
+            <!-- Hazard Dashboard -->
+            <div class="hazard-dashboard">
+                <div class="hazard-title">⚠️ Monitoreo de peligros</div>
+                <div class="hazard-stats">
+                    <div class="hazard-stat">
+                        <div class="stat-value" id="traction-level">85%</div>
+                        <div class="stat-label">Tracción</div>
+                    </div>
+                    <div class="hazard-stat">
+                        <div class="stat-value" id="visibility-level">60%</div>
+                        <div class="stat-label">Visibilidad</div>
+                    </div>
+                    <div class="hazard-stat">
+                        <div class="stat-value" id="stopping-distance">+40%</div>
+                        <div class="stat-label">Distancia de parada</div>
+                    </div>
+                    <div class="hazard-stat">
+                        <div class="stat-value" id="risk-level">Alto</div>
+                        <div class="stat-label">Nivel de riesgo</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls Panel -->
+            <div class="controls-panel">
+                <button class="control-btn" data-action="slow-down">⬇️ Más despacio</button>
+                <button class="control-btn" data-action="maintain">⏱️ Mantener la velocidad</button>
+                <button class="control-btn active" data-action="lights">🚗 Utilice faros</button>
+                <button class="control-btn" data-action="distance">↔️ Aumentar distancia</button>
+                <button class="control-btn" data-action="defrost">🌫️ Descongelar ventanas</button>
+                <button class="control-btn" data-action="wipers">🌀 Utilice limpiaparabrisas</button>
+            </div>
+
+            <!-- Decision Making -->
+            <div class="decision-making">
+                <div class="decision-title">❓ Punto de decisión crítico</div>
+                <div class="decision-options" id="decision-options">
+                    <!-- Decision options populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Safety Tips -->
+            <div class="safety-tips" id="safety-tips">
+                <div class="tips-title">💡 Consejos de seguridad específicos para el clima</div>
+                <ul class="tips-list" id="tips-list">
+                    <!-- Tips populated by JavaScript -->
+                </ul>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="start-challenge">
+                    <span class="btn-icon">▶</span>
+                    Iniciar desafío
+                </button>
+                <button class="btn btn-secondary" id="next-weather">
+                    <span class="btn-icon">→</span>
+                    Próxima condición climática
+                </button>
+                <button class="btn btn-secondary" id="show-results" style="display: none;">
+                    <span class="btn-icon">📊</span>
+                    Ver resultados finales
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Display -->
+        <div class="results-display" id="results-display">
+            <div class="results-header">
+                <h3>Dominio de la conducción meteorológica</h3>
+                <div class="results-score" id="final-score">0%</div>
+                <p style="color: #e5e7eb; font-size: 0.8rem;">Su rendimiento en todas las condiciones climáticas</p>
+            </div>
+            
+            <div class="results-stats">
+                <div class="result-stat">
+                    <div class="result-value" id="rain-score">0%</div>
+                    <div class="result-label">Puntuación de lluvia</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="snow-score">0%</div>
+                    <div class="result-label">Puntuación de nieve</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="fog-score">0%</div>
+                    <div class="result-label">Puntuación de niebla</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="ice-score">0%</div>
+                    <div class="result-label">Puntuación de hielo</div>
+                </div>
+            </div>
+
+            <div class="weather-mastery">
+                <div class="mastery-title">🎯 Principios clave de seguridad dominados</div>
+                <ul class="mastery-list">
+                    <li>
+                        <span class="mastery-dot"></span>
+                        <span><strong>Ajuste de velocidad:</strong> Velocidad reducida entre un 30 y un 50 % en condiciones adversas.</span>
+                    </li>
+                    <li>
+                        <span class="mastery-dot"></span>
+                        <span><strong>Mayor distancia de seguimiento:</strong> Distancia de frenado duplicada o triplicada respecto a otros vehículos</span>
+                    </li>
+                    <li>
+                        <span class="mastery-dot"></span>
+                        <span><strong>Iluminación adecuada:</strong> Se utilizaron faros delanteros/luces antiniebla adecuados para cada condición.</span>
+                    </li>
+                    <li>
+                        <span class="mastery-dot"></span>
+                        <span><strong>Entradas de control suaves:</strong> Se evitó frenar, acelerar o girar bruscamente</span>
+                    </li>
+                    <li>
+                        <span class="mastery-dot"></span>
+                        <span><strong>Anticipación de peligros:</strong> Identificados y respondidos exitosamente a riesgos climáticos específicos</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="action-buttons" style="margin-top: 20px;">
+                <button class="btn btn-primary" id="retake-challenge">
+                    <span class="btn-icon">🔄</span>
+                    Retomar el desafío
+                </button>
+                <button class="btn btn-secondary" onclick="window.print()">
+                    <span class="btn-icon">🖨️</span>
+                    Imprimir certificado
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Weather Data Configuration
+            const weatherConditions = {
+                rain: {
+                    title: "Desafío de lluvias intensas",
+                    icon: "🌧️",
+                    hazards: {
+                        traction: 65,
+                        visibility: 50,
+                        stoppingDistance: 50,
+                        risk: "High"
+                    },
+                    decisions: [
+                        {
+                            question: "Te acercas a un gran charco en el camino. ¿Qué deberías hacer?",
+                            options: [
+                                "A. Acelere para pasar rápidamente",
+                                "B. Disminuya la velocidad y evite si es posible",
+                                "C. Mantenga la velocidad y conduzca recto",
+                                "D. Deténgase completamente antes del charco."
+                            ],
+                            correct: "B",
+                            explanation: "Reduzca la velocidad para evitar el hidroplaneo. Si es inevitable, conduzca lentamente."
+                        },
+                        {
+                            question: "Los limpiaparabrisas están en posición alta pero la visibilidad aún es mala. ¿Cuál es tu próxima acción?",
+                            options: [
+                                "A. Deténgase de manera segura y espere a que amaine la lluvia.",
+                                "B. Conduce más despacio y acércate para ver mejor",
+                                "C. Utilice luces altas para ver más lejos",
+                                "D. Aumentar la velocidad para llegar al destino más rápido"
+                            ],
+                            correct: "A",
+                            explanation: "Cuando la visibilidad se reduce gravemente, la opción más segura es detenerse hasta que las condiciones mejoren."
+                        }
+                    ],
+                    tips: [
+                        "Reduzca la velocidad al menos un 20-30%",
+                        "Encienda los faros (no sólo las luces diurnas)",
+                        "Aumentar la distancia de seguimiento a más de 4 segundos.",
+                        "Evite el uso del control de crucero",
+                        "Esté preparado para un hidroplaneo repentino"
+                    ]
+                },
+                snow: {
+                    title: "Desafío de tormenta de nieve",
+                    icon: "❄️",
+                    hazards: {
+                        traction: 40,
+                        visibility: 60,
+                        stoppingDistance: 100,
+                        risk: "muy alto"
+                    },
+                    decisions: [
+                        {
+                            question: "Empiezas a patinar sobre una zona helada. ¿Qué deberías hacer?",
+                            options: [
+                                "A. Pise los frenos de golpe",
+                                "B. Gire para patinar y suelte el acelerador.",
+                                "C. Acelerar para recuperar el control",
+                                "D. Gire la rueda bruscamente en dirección opuesta"
+                            ],
+                            correct: "B",
+                            explanation: "Conduzca en la dirección que desee y suelte suavemente el acelerador."
+                        },
+                        {
+                            question: "Estás conduciendo cuesta arriba sobre nieve profunda y las ruedas empiezan a girar. ¿A qué te dedicas?",
+                            options: [
+                                "A. Pise a fondo el acelerador para pasar",
+                                "B. Balancee el vehículo hacia adelante y hacia atrás",
+                                "C. Relájese suavemente y vuelva a intentarlo con menos potencia.",
+                                "D. Date la vuelta y busca otra ruta."
+                            ],
+                            correct: "C",
+                            explanation: "La aceleración excesiva provoca que las ruedas patinen. Utilice una presión suave sobre el acelerador."
+                        }
+                    ],
+                    tips: [
+                        "Reducir la velocidad en un 50% o más.",
+                        "Acelera y desacelera lentamente",
+                        "Aumentar la distancia de seguimiento a 5-6 segundos.",
+                        "Quite TODA la nieve de las ventanas, las luces y el techo.",
+                        "Utilice neumáticos de invierno para una mejor tracción"
+                    ]
+                },
+                fog: {
+                    title: "Desafío de niebla densa",
+                    icon: "🌫️",
+                    hazards: {
+                        traction: 80,
+                        visibility: 30,
+                        stoppingDistance: 60,
+                        risk: "Extreme"
+                    },
+                    decisions: [
+                        {
+                            question: "¿Qué luces deberías utilizar en caso de niebla densa?",
+                            options: [
+                                "A. Solo luces altas",
+                                "B. Luces bajas o luces antiniebla",
+                                "C. Sólo luces de estacionamiento",
+                                "D. Sin luces para reducir el deslumbramiento"
+                            ],
+                            correct: "B",
+                            explanation: "Las luces bajas o antiniebla proporcionan una mejor visibilidad. Las luces altas se reflejan en la niebla."
+                        },
+                        {
+                            question: "Apenas se pueden ver las luces traseras del coche que va delante. ¿Qué deberías hacer?",
+                            options: [
+                                "A. Acércate para poder ver mejor.",
+                                "B. Deténgase de manera segura y espere a que se disipe la niebla.",
+                                "C. Utilice luces intermitentes de emergencia y continúe lentamente",
+                                "D. Acelera para atravesar la niebla más rápido"
+                            ],
+                            correct: "B",
+                            explanation: "Cuando la visibilidad es muy limitada, la opción más segura es detenerse hasta que las condiciones mejoren."
+                        }
+                    ],
+                    tips: [
+                        "Utilice luces bajas o luces antiniebla",
+                        "Reducir la velocidad significativamente",
+                        "Aumentar drásticamente la distancia de seguimiento",
+                        "Utilice el borde derecho de la carretera como guía (no la línea central)",
+                        "Escuche el tráfico que no puede ver"
+                    ]
+                },
+                ice: {
+                    title: "Desafío de hielo negro",
+                    icon: "🧊",
+                    hazards: {
+                        traction: 20,
+                        visibility: 80,
+                        stoppingDistance: 150,
+                        risk: "Extreme"
+                    },
+                    decisions: [
+                        {
+                            question: "Te encuentras con hielo negro en un puente. ¿Cuál es la respuesta más segura?",
+                            options: [
+                                "A. Frene con fuerza para detenerse rápidamente",
+                                "B. Conduzca suavemente y no frene.",
+                                "C. Acelerar para mantener el control",
+                                "D. Hacer correcciones bruscas en la dirección"
+                            ],
+                            correct: "B",
+                            explanation: "En hielo, evite frenar. Conduzca suavemente en la dirección deseada y deje que el vehículo desacelere naturalmente."
+                        },
+                        {
+                            question: "La temperatura es de 34°F y las carreteras parecen mojadas. ¿Qué deberías sospechar?",
+                            options: [
+                                "A. Carreteras normalmente mojadas, conduzca normalmente",
+                                "B. Posible hielo negro, reducir la velocidad.",
+                                "C. El hielo sólo se forma bajo cero",
+                                "D. Las carreteras son más seguras cuando están mojadas"
+                            ],
+                            correct: "B",
+                            explanation: "El hielo negro se puede formar a temperaturas ligeramente superiores al punto de congelación, especialmente en puentes y pasos elevados."
+                        }
+                    ],
+                    tips: [
+                        "Suponga primero que hay hielo en puentes y pasos elevados.",
+                        "Evite girar, frenar o acelerar bruscamente",
+                        "Aumentar la distancia de seguimiento a más de 8 segundos.",
+                        "Pruebe la tracción suavemente al arrancar",
+                        "Considere posponer el viaje si es posible."
+                    ]
+                }
+            };
+
+            // State Management
+            const state = {
+                currentWeather: 'rain',
+                weatherScores: {
+                    rain: 0,
+                    snow: 0,
+                    fog: 0,
+                    ice: 0
+                },
+                weatherCompleted: {
+                    rain: false,
+                    snow: false,
+                    fog: false,
+                    ice: false
+                },
+                currentDecision: 0,
+                timer: null,
+                elapsedTime: 0,
+                decisionsMade: 0,
+                correctDecisions: 0
+            };
+
+            // DOM Elements
+            const weatherBtns = document.querySelectorAll('.weather-btn');
+            const startBtn = document.getElementById('start-challenge');
+            const nextBtn = document.getElementById('next-weather');
+            const showResultsBtn = document.getElementById('show-results');
+            const retakeBtn = document.getElementById('retake-challenge');
+            const resultsDisplay = document.getElementById('results-display');
+            
+            const weatherTitle = document.getElementById('weather-title');
+            const weatherIcon = document.getElementById('weather-icon');
+            const weatherTime = document.getElementById('weather-time');
+            const roadVisualization = document.getElementById('road-visualization');
+            const decisionOptions = document.getElementById('decision-options');
+            const safetyTips = document.getElementById('safety-tips');
+            const tipsList = document.getElementById('tips-list');
+            
+            // Hazard display elements
+            const tractionLevel = document.getElementById('traction-level');
+            const visibilityLevel = document.getElementById('visibility-level');
+            const stoppingDistance = document.getElementById('stopping-distance');
+            const riskLevel = document.getElementById('risk-level');
+            
+            // Results elements
+            const finalScore = document.getElementById('final-score');
+            const rainScoreEl = document.getElementById('rain-score');
+            const snowScoreEl = document.getElementById('snow-score');
+            const fogScoreEl = document.getElementById('fog-score');
+            const iceScoreEl = document.getElementById('ice-score');
+
+            // Control buttons
+            const controlBtns = document.querySelectorAll('.control-btn');
+
+            // Weather Selection
+            weatherBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const weather = btn.dataset.weather;
+                    
+                    // Update buttons
+                    weatherBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Update weather
+                    state.currentWeather = weather;
+                    loadWeatherCondition(weather);
+                    
+                    // Reset timer and decisions for new weather
+                    if (state.timer) {
+                        clearInterval(state.timer);
+                        state.timer = null;
+                    }
+                    state.currentDecision = 0;
+                    state.elapsedTime = 0;
+                    
+                    // Reset UI
+                    startBtn.disabled = false;
+                    startBtn.innerHTML = '<span class="btn-icon">▶</span> Iniciar desafío';
+                    safetyTips.classList.remove('show');
+                    
+                    // Update time display
+                    weatherTime.textContent = '0:00';
+                });
+            });
+
+            // Load weather condition
+            function loadWeatherCondition(weather) {
+                const condition = weatherConditions[weather];
+                
+                // Update display
+                weatherTitle.textContent = condition.title;
+                weatherIcon.textContent = condition.icon;
+                
+                // Update hazard dashboard
+                tractionLevel.textContent = `${condition.hazards.traction}%`;
+                visibilityLevel.textContent = `${condition.hazards.visibility}%`;
+                stoppingDistance.textContent = `+${condition.hazards.stoppingDistance}%`;
+                riskLevel.textContent = condition.hazards.risk;
+                
+                // Update tips
+                tipsList.innerHTML = '';
+                condition.tips.forEach((tip, index) => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span class="tip-icon">${index + 1}</span>
+                        <span>${tip}</span>
+                    `;
+                    tipsList.appendChild(li);
+                });
+                
+                // Update decisions
+                loadDecision(0);
+                
+                // Create road visualization
+                createRoadVisualization(weather);
+            }
+
+            // Create road visualization with weather effects
+            function createRoadVisualization(weather) {
+                roadVisualization.innerHTML = '';
+                
+                // Create road lanes
+                for (let i = 0; i < 2; i++) {
+                    const lane = document.createElement('div');
+                    lane.className = 'road-lane';
+                    lane.style.top = `${70 + i * 40}px`;
+                    roadVisualization.appendChild(lane);
+                }
+                
+                // Create player car
+                const playerCar = document.createElement('div');
+                playerCar.className = 'coche jugador-coche';
+                playerCar.style.left = '100px';
+                playerCar.style.top = '70px';
+                roadVisualization.appendChild(playerCar);
+                
+                // Create other car
+                const otherCar = document.createElement('div');
+                otherCar.className = 'coche otro-coche';
+                otherCar.style.left = '300px';
+                otherCar.style.top = '70px';
+                roadVisualization.appendChild(otherCar);
+                
+                // Add weather effects
+                const weatherEffect = document.createElement('div');
+                weatherEffect.className = 'water-effect';
+                
+                switch(weather) {
+                    case 'rain':
+                        // Create rain drops
+                        for (let i = 0; i < 50; i++) {
+                            const drop = document.createElement('div');
+                            drop.className = 'rain-drop';
+                            drop.style.left = `${Math.random() * 100}%`;
+                            drop.style.animationDuration = `${0.5 + Math.random() * 1}s`;
+                            drop.style.animationDelay = `${Math.random() * 2}s`;
+                            weatherEffect.appendChild(drop);
+                        }
+                        break;
+                        
+                    case 'snow':
+                        // Create snow flakes
+                        for (let i = 0; i < 30; i++) {
+                            const flake = document.createElement('div');
+                            flake.className = 'snow-flake';
+                            flake.style.left = `${Math.random() * 100}%`;
+                            flake.style.animationDuration = `${3 + Math.random() * 5}s`;
+                            flake.style.animationDelay = `${Math.random() * 3}s`;
+                            weatherEffect.appendChild(flake);
+                        }
+                        // Add snow on road
+                        const snowLayer = document.createElement('div');
+                        snowLayer.style.position = 'absolute';
+                        snowLayer.style.bottom = '0';
+                        snowLayer.style.left = '0';
+                        snowLayer.style.right = '0';
+                        snowLayer.style.height = '30px';
+                        snowLayer.style.background = 'gradiente lineal (0 grados, rgba (255,255,255,0.8) 0%, transparente 100%)';
+                        roadVisualization.appendChild(snowLayer);
+                        break;
+                        
+                    case 'fog':
+                        // Create fog layer
+                        const fogLayer = document.createElement('div');
+                        fogLayer.className = 'fog-layer';
+                        weatherEffect.appendChild(fogLayer);
+                        break;
+                        
+                    case 'ice':
+                        // Create ice effect
+                        const iceLayer = document.createElement('div');
+                        iceLayer.className = 'ice-effect';
+                        weatherEffect.appendChild(iceLayer);
+                        
+                        // Add reflective shine
+                        const shine = document.createElement('div');
+                        shine.style.position = 'absolute';
+                        shine.style.top = '0';
+                        shine.style.left = '0';
+                        shine.style.right = '0';
+                        shine.style.bottom = '0';
+                        shine.style.background = 'gradiente radial (círculo al 30% 30%, rgba(255,255,255,0.1) 0%, transparente 70%)';
+                        weatherEffect.appendChild(shine);
+                        break;
+                }
+                
+                roadVisualization.appendChild(weatherEffect);
+                
+                // Animate scene
+                animateWeatherScene(weather);
+            }
+
+            function animateWeatherScene(weather) {
+                const otherCar = roadVisualization.querySelector('.other-car');
+                
+                if (otherCar) {
+                    const currentLeft = parseInt(otherCar.style.left);
+                    let newLeft;
+                    
+                    // Different movement patterns for different weather
+                    switch(weather) {
+                        case 'rain':
+                            newLeft = (currentLeft + 2) % 700;
+                            break;
+                        case 'snow':
+                            newLeft = (currentLeft + 1) % 700; // Slower in snow
+                            break;
+                        case 'fog':
+                            newLeft = (currentLeft + 1.5) % 700;
+                            break;
+                        case 'ice':
+                            // Simulate sliding on ice
+                            newLeft = (currentLeft + (Math.random() > 0.5 ? 2.5 : 1.5)) % 700;
+                            break;
+                        default:
+                            newLeft = (currentLeft + 2) % 700;
+                    }
+                    
+                    otherCar.style.left = `${newLeft}px`;
+                }
+                
+                // Continue animation
+                requestAnimationFrame(() => animateWeatherScene(weather));
+            }
+
+            // Load decision
+            function loadDecision(decisionIndex) {
+                const condition = weatherConditions[state.currentWeather];
+                const decision = condition.decisions[decisionIndex];
+                
+                decisionOptions.innerHTML = '';
+                
+                // Create question element
+                const question = document.createElement('div');
+                question.className = 'decision-title';
+                question.textContent = decision.question;
+                decisionOptions.appendChild(question);
+                
+                // Create options
+                decision.options.forEach(optionText => {
+                    const option = document.createElement('div');
+                    option.className = 'decision-option';
+                    option.textContent = optionText;
+                    option.dataset.option = optionText.charAt(0);
+                    
+                    option.addEventListener('click', () => {
+                        if (state.timer) {
+                            checkDecision(option, decision.correct, decision.explanation);
+                        }
+                    });
+                    
+                    decisionOptions.appendChild(option);
+                });
+                
+                state.currentDecision = decisionIndex;
+            }
+
+            // Check decision
+            function checkDecision(selectedOption, correctAnswer, explanation) {
+                const options = decisionOptions.querySelectorAll('.decision-option');
+                
+                // Disable all options
+                options.forEach(opt => {
+                    opt.style.pointerEvents = 'none';
+                });
+                
+                // Mark correct/incorrect
+                options.forEach(opt => {
+                    if (opt.dataset.option === correctAnswer) {
+                        opt.classList.add('correct');
+                    }
+                    if (opt === selectedOption && opt.dataset.option !== correctAnswer) {
+                        opt.classList.add('incorrect');
+                        opt.style.animation = 'agitar 0,5 s de facilidad';
+                    }
+                });
+                
+                // Update score
+                state.decisionsMade++;
+                if (selectedOption.dataset.option === correctAnswer) {
+                    state.correctDecisions++;
+                }
+                
+                // Show safety tips after decision
+                setTimeout(() => {
+                    safetyTips.classList.add('show');
+                    
+                    // Load next decision or complete weather
+                    setTimeout(() => {
+                        const condition = weatherConditions[state.currentWeather];
+                        if (state.currentDecision < condition.decisions.length - 1) {
+                            loadDecision(state.currentDecision + 1);
+                        } else {
+                            completeWeatherCondition();
+                        }
+                    }, 3000);
+                }, 1000);
+            }
+
+            // Complete weather condition
+            function completeWeatherCondition() {
+                // Stop timer
+                if (state.timer) {
+                    clearInterval(state.timer);
+                    state.timer = null;
+                }
+                
+                // Calculate score for this weather
+                const decisionScore = state.decisionsMade > 0 ? 
+                    (state.correctDecisions / state.decisionsMade) * 100 : 0;
+                const timeScore = Math.max(0, 100 - (state.elapsedTime / 10));
+                const weatherScore = Math.round((decisionScore + timeScore) / 2);
+                
+                state.weatherScores[state.currentWeather] = weatherScore;
+                state.weatherCompleted[state.currentWeather] = true;
+                
+                // Update button text
+                nextBtn.textContent = 'Próxima condición climática';
+                nextBtn.disabled = false;
+                
+                // Check if all weather conditions completed
+                const allCompleted = Object.values(state.weatherCompleted).every(Boolean);
+                if (allCompleted) {
+                    nextBtn.style.display = 'none';
+                    showResultsBtn.style.display = 'inline-flex';
+                }
+                
+                // Reset for next weather
+                state.decisionsMade = 0;
+                state.correctDecisions = 0;
+            }
+
+            // Start challenge
+            startBtn.addEventListener('click', () => {
+                if (state.timer) return;
+                
+                // Start timer
+                state.elapsedTime = 0;
+                state.timer = setInterval(() => {
+                    state.elapsedTime++;
+                    const minutes = Math.floor(state.elapsedTime / 60);
+                    const seconds = state.elapsedTime % 60;
+                    weatherTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+                
+                // Disable start button
+                startBtn.disabled = true;
+                startBtn.innerHTML = '<span class="btn-icon">⏳</span> Carrera de desafío';
+                
+                // Enable next button
+                nextBtn.disabled = true;
+                
+                // Load first decision
+                loadDecision(0);
+            });
+
+            // Next weather condition
+            nextBtn.addEventListener('click', () => {
+                const weatherOrder = ['rain', 'snow', 'fog', 'ice'];
+                const currentIndex = weatherOrder.indexOf(state.currentWeather);
+                
+                if (currentIndex < weatherOrder.length - 1) {
+                    const nextWeather = weatherOrder[currentIndex + 1];
+                    document.querySelector(`[data-weather="${nextWeather}"]`).click();
+                }
+                
+                // Reset next button
+                nextBtn.disabled = true;
+                nextBtn.textContent = 'Iniciar el próximo desafío';
+            });
+
+            // Show results
+            showResultsBtn.addEventListener('click', () => {
+                // Calculate final score
+                const scores = Object.values(state.weatherScores);
+                const averageScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+                
+                // Update results display
+                finalScore.textContent = `${averageScore}%`;
+                rainScoreEl.textContent = `${state.weatherScores.rain}%`;
+                snowScoreEl.textContent = `${state.weatherScores.snow}%`;
+                fogScoreEl.textContent = `${state.weatherScores.fog}%`;
+                iceScoreEl.textContent = `${state.weatherScores.ice}%`;
+                
+                // Show results
+                resultsDisplay.classList.add('show');
+                resultsDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // Retake challenge
+            retakeBtn.addEventListener('click', () => {
+                // Reset state
+                state.weatherScores = { rain: 0, snow: 0, fog: 0, ice: 0 };
+                state.weatherCompleted = { rain: false, snow: false, fog: false, ice: false };
+                state.currentWeather = 'rain';
+                state.currentDecision = 0;
+                state.elapsedTime = 0;
+                state.decisionsMade = 0;
+                state.correctDecisions = 0;
+                
+                // Reset timer
+                if (state.timer) {
+                    clearInterval(state.timer);
+                    state.timer = null;
+                }
+                
+                // Reset UI
+                startBtn.disabled = false;
+                startBtn.innerHTML = '<span class="btn-icon">▶</span> Iniciar desafío';
+                nextBtn.disabled = true;
+                nextBtn.textContent = 'Próxima condición climática';
+                nextBtn.style.display = 'inline-flex';
+                showResultsBtn.style.display = 'none';
+                safetyTips.classList.remove('show');
+                resultsDisplay.classList.remove('show');
+                
+                // Reset to first weather
+                weatherBtns[0].click();
+            });
+
+            // Control button handlers
+            controlBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!state.timer) return;
+                    
+                    const action = this.dataset.action;
+                    
+                    // Update active button
+                    controlBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Handle actions with visual feedback
+                    switch(action) {
+                        case 'slow-down':
+                            // Simulate slowing down - update hazard stats
+                            const newStopping = parseInt(stoppingDistance.textContent);
+                            stoppingDistance.textContent = `+${Math.min(200, newStopping + 10)}%`;
+                            break;
+                        case 'lights':
+                            // Simulate lights on - improve visibility
+                            const currentVis = parseInt(visibilityLevel.textContent);
+                            visibilityLevel.textContent = `${Math.min(100, currentVis + 15)}%`;
+                            break;
+                        case 'distance':
+                            // Increase following distance
+                            const currentDist = parseInt(stoppingDistance.textContent);
+                            stoppingDistance.textContent = `+${Math.min(200, currentDist + 20)}%`;
+                            break;
+                        case 'wipers':
+                            // Improve visibility with wipers
+                            const visWithWipers = parseInt(visibilityLevel.textContent);
+                            visibilityLevel.textContent = `${Math.min(100, visWithWipers + 10)}%`;
+                            break;
+                    }
+                });
+            });
+
+            // Initialize first weather condition
+            loadWeatherCondition('rain');
+        });
+    </script>
+</body>
+</html>

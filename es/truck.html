@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA: conceptos básicos de seguridad para camiones</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --color-info: #3b82f6;
+            --color-truck: #f59e0b;
+            --color-maintenance: #10b981;
+            --color-training: #3b82f6;
+            --color-tech: #8b5cf6;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes truckDrive {
+            0% { transform: translateX(-100px) rotate(0deg); }
+            100% { transform: translateX(calc(100vw + 100px)) rotate(0deg); }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .time-estimate {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Truck-specific styles */
+        .truck-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .truck-stat {
+            text-align: center;
+            padding: 20px;
+            background: rgba(245, 158, 11, 0.05);
+            border-radius: var(--radius-md);
+            border: 2px solid rgba(245, 158, 11, 0.1);
+        }
+
+        .truck-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-truck);
+            margin-bottom: 5px;
+        }
+
+        .truck-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-card {
+            border-radius: var(--radius-md);
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .truck-comparison {
+            background: rgba(245, 158, 11, 0.05);
+            border: 2px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .car-comparison {
+            background: rgba(95, 23, 235, 0.05);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .comparison-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comparison-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .comparison-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .truck-list li:before {
+            content: "🚛";
+            position: absolute;
+            left: 0;
+        }
+
+        .car-list li:before {
+            content: "🚗";
+            position: absolute;
+            left: 0;
+        }
+
+        .safety-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .safety-card {
+            border-radius: var(--radius-md);
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .safety-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .safety-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .maintenance-card {
+            background: rgba(16, 185, 129, 0.05);
+            border: 2px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .maintenance-card::before {
+            background: var(--color-maintenance);
+        }
+
+        .training-card {
+            background: rgba(59, 130, 246, 0.05);
+            border: 2px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .training-card::before {
+            background: var(--color-training);
+        }
+
+        .tech-card {
+            background: rgba(139, 92, 246, 0.05);
+            border: 2px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .tech-card::before {
+            background: var(--color-tech);
+        }
+
+        .safety-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .safety-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .requirement-list, .practice-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 15px;
+        }
+
+        .requirement-list li, .practice-list li {
+            margin-bottom: 8px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .requirement-list li:before {
+            content: "📋";
+            position: absolute;
+            left: 0;
+        }
+
+        .practice-list li:before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+        }
+
+        .danger-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--color-error);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .danger-title {
+            font-weight: 700;
+            color: var(--color-error);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .tips-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tips-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tips-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        .inspection-checklist {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(16, 185, 129, 0.05);
+            border-radius: var(--radius-sm);
+            border: 2px solid rgba(16, 185, 129, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checklist-item:hover {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--color-maintenance);
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-checkbox.checked {
+            background: var(--color-maintenance);
+            border-color: var(--color-maintenance);
+            color: white;
+        }
+
+        .checklist-checkbox.checked:after {
+            content: "✓";
+            font-weight: bold;
+        }
+
+        .checklist-text {
+            font-size: 0.95rem;
+        }
+
+        .tech-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .tech-feature {
+            padding: 20px;
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: var(--radius-md);
+            border: 2px solid rgba(139, 92, 246, 0.1);
+            text-align: center;
+        }
+
+        .tech-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--color-tech);
+        }
+
+        .tech-name {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 5px;
+        }
+
+        .tech-description {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+        }
+
+        .blindspot-diagram {
+            width: 100%;
+            max-width: 400px;
+            height: 200px;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border-radius: var(--radius-md);
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .truck-outline {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 60px;
+            background: var(--color-truck);
+            border-radius: 8px;
+        }
+
+        .blindspot-area {
+            position: absolute;
+            background: rgba(239, 68, 68, 0.3);
+            border: 2px dashed var(--color-error);
+            border-radius: 10px;
+        }
+
+        .blindspot-left {
+            left: 20%;
+            top: 20%;
+            width: 100px;
+            height: 100px;
+        }
+
+        .blindspot-right {
+            right: 20%;
+            top: 20%;
+            width: 100px;
+            height: 100px;
+        }
+
+        .blindspot-rear {
+            left: 50%;
+            bottom: 10%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 60px;
+        }
+
+        .blindspot-label {
+            position: absolute;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-error);
+        }
+
+        .key-points {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .knowledge-check {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(95, 23, 235, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.6rem;
+            }
+
+            .safety-grid, .inspection-checklist, .tech-features {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Aprendizaje del tiempo</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Módulo de seguridad de vehículos comerciales</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">Conceptos básicos de seguridad para camiones de 15 minutos</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Seguridad de los camiones: protección de las carreteras & Vidas</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">⏱️</div>
+            <div class="time-estimate-text">
+                Complete esta lección en aproximadamente <span class="time-highlight">15 minutos</span> Dominar los principios esenciales de seguridad para camiones.
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Secciones completadas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="quiz-score">0%</span>
+                <span class="stat-label">Puntuación del examen</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Aprendizaje del tiempo</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Progreso de la lección</span>
+                <span>Tiempo de aprendizaje: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: Introduction & Statistics -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🚛</span>
+                    Comprender la importancia de la seguridad de los camiones
+                </h2>
+                
+                <div class="subsection">
+                    <p class="subsection-content">
+                        La seguridad de los camiones es fundamental para la seguridad vial, dada la importante presencia de camiones comerciales en las carreteras y su potencial para causar accidentes graves. Los camiones son más grandes y pesados ​​que los vehículos normales, lo que hace que su operación y mantenimiento sean cruciales para prevenir accidentes y garantizar la seguridad de todos los usuarios de la vía.
+                    </p>
+                    
+                    <div class="truck-stats-grid">
+                        <div class="truck-stat">
+                            <div class="truck-value">80.000 libras</div>
+                            <div class="truck-label">Peso máximo legal</div>
+                        </div>
+                        <div class="truck-stat">
+                            <div class="truck-value">40-70 pies</div>
+                            <div class="truck-label">Longitud típica con remolque</div>
+                        </div>
+                        <div class="truck-stat">
+                            <div class="truck-value">20-40%</div>
+                            <div class="truck-label">Mayor distancia de frenado</div>
+                        </div>
+                        <div class="truck-stat">
+                            <div class="truck-value">4x</div>
+                            <div class="truck-label">Más muertes en accidentes que en automóviles</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">📊 Estadísticas de seguridad de camiones (2024)</h3>
+                    
+                    <div class="comparison-grid">
+                        <div class="comparison-card truck-comparison">
+                            <div class="comparison-title">🚛 Riesgos específicos de camiones</div>
+                            <ul class="comparison-list truck-list">
+                                <li>500.000 accidentes de camiones al año</li>
+                                <li>Más de 5.000 muertes relacionadas con camiones</li>
+                                <li>30% causado por falla mecánica</li>
+                                <li>25% debido a la fatiga del conductor</li>
+                                <li>20% por carga inadecuada</li>
+                                <li>Costo promedio de reparación: $100,000+</li>
+                                <li>Tiempo de inactividad promedio: 3-4 semanas</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-card car-comparison">
+                            <div class="comparison-title">🚗 Impacto en otros conductores</div>
+                            <ul class="comparison-list car-list">
+                                <li>El 74% de las víctimas mortales en accidentes de camión son ocupantes de coches</li>
+                                <li>Un 8% más de gravedad de las lesiones en accidentes de camiones</li>
+                                <li>3 veces más probabilidades de ser fatales que los accidentes automovilísticos</li>
+                                <li>Lo más peligroso: colisiones por debajo del suelo</li>
+                                <li>Escenario común: seguir demasiado de cerca</li>
+                                <li>Conciencia crítica: puntos ciegos de camiones</li>
+                                <li>Regla esencial: nunca cortes el paso a un camión</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="danger-box">
+                        <div class="danger-title">⚠️ Tamaño crítico & Diferencias de peso</div>
+                        <div class="subsection-content">
+                            <strong>Comparación de peso:</strong> Auto típico: 3,000 lbs versus camión máximo: 80,000 lbs (27 veces más pesado)<br>
+                            <strong>Comparación de longitud:</strong> Auto típico: 15 pies versus camión con remolque: 70 pies (4.5 veces más largo)<br>
+                            <strong>Distancia de parada:</strong> Automóvil a 65 mph: 316 pies versus camión a 65 mph: 525 pies (40% más)<br>
+                            <strong>Radio de giro:</strong> El camión necesita 2 o 3 carriles para girar a la derecha<br>
+                            <strong>Puntos ciegos:</strong> Los camiones tienen 4 puntos ciegos principales donde los coches desaparecen
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Core Safety Elements -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🛡️</span>
+                    Elementos centrales de la seguridad de los camiones
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🔧 Excelencia en mantenimiento de vehículos</h3>
+                    
+                    <div class="safety-grid">
+                        <div class="safety-card maintenance-card">
+                            <div class="safety-icon">🔍</div>
+                            <div class="safety-title">Inspecciones periódicas</div>
+                            <ul class="requirement-list">
+                                <li><strong>Controles diarios:</strong> Presión de neumáticos, frenos, luces, niveles de líquidos.</li>
+                                <li><strong>Inspecciones previas al viaje:</strong> Motor, transmisión, dirección, suspensión.</li>
+                                <li><strong>Inspecciones posteriores al viaje:</strong> Identificar problemas para reparación inmediata</li>
+                                <li><strong>Semanal/Mensual:</strong> Comprobaciones integrales del sistema</li>
+                                <li><strong>Documentación:</strong> Mantener registros de inspección (DVIR)</li>
+                            </ul>
+                        </div>
+
+                        <div class="safety-card maintenance-card">
+                            <div class="safety-icon">⚙️</div>
+                            <div class="safety-title">Mantenimiento programado</div>
+                            <ul class="requirement-list">
+                                <li><strong>Cambios de aceite:</strong> Cada 25,000 millas o por fabricante</li>
+                                <li><strong>Sistema de frenos:</strong> Inspección mensual, revisión anual.</li>
+                                <li><strong>Rotación de neumáticos:</strong> Cada 6-8 meses o 50,000 millas</li>
+                                <li><strong>Reemplazos de filtros:</strong> Filtros de aire, combustible y cabina con regularidad.</li>
+                                <li><strong>Mantenimiento de registros:</strong> Historial de mantenimiento completo</li>
+                            </ul>
+                        </div>
+
+                        <div class="safety-card maintenance-card">
+                            <div class="safety-icon">📦</div>
+                            <div class="safety-title">Gestión de carga</div>
+                            <ul class="requirement-list">
+                                <li><strong>Distribución de peso:</strong> Carga uniforme entre ejes</li>
+                                <li><strong>Centro de gravedad:</strong> Mantenga la carga baja y centrada</li>
+                                <li><strong>Aseguramiento:</strong> Amarres y correas que cumplen con el DOT</li>
+                                <li><strong>Verificación de peso:</strong> Controles de báscula antes de la salida</li>
+                                <li><strong>Inspección de carga:</strong> Controles periódicos durante el tránsito</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">📋 Lista de verificación de inspección diaria</h3>
+                    
+                    <div class="inspection-checklist" id="truck-checklist">
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Verifique toda la presión y el estado de los neumáticos.</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Pruebe todas las luces y señales.</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Inspeccionar el sistema de frenos y las pastillas.</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Comprobar los niveles de líquidos (aceite, refrigerante, frenos)</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Verificar el funcionamiento del limpiaparabrisas</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Prueba de bocina y equipo de emergencia.</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Inspeccionar la sujeción de la carga</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Verificar acoplamiento de quinta rueda</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🎓 Formación de conductores & Proceso de dar un título</h3>
+                    
+                    <div class="safety-grid">
+                        <div class="safety-card training-card">
+                            <div class="safety-icon">📜</div>
+                            <div class="safety-title">Requisitos de licencia de conducir comercial</div>
+                            <ul class="requirement-list">
+                                <li><strong>Clase A/B:</strong> Diferentes licencias para tipos de camiones</li>
+                                <li><strong>Pruebas escritas:</strong> Conocimientos generales, combinación, frenos de aire.</li>
+                                <li><strong>Pruebas de habilidades:</strong> Inspección previa al viaje, control básico, prueba en carretera.</li>
+                                <li><strong>Avales:</strong> Materiales peligrosos, camiones cisterna, dobles/triples.</li>
+                                <li><strong>Certificación Médica:</strong> Examen físico del DOT cada 2 años</li>
+                            </ul>
+                        </div>
+
+                        <div class="safety-card training-card">
+                            <div class="safety-icon">🛡️</div>
+                            <div class="safety-title">Conducción defensiva</div>
+                            <ul class="requirement-list">
+                                <li><strong>Gestión del espacio:</strong> Mantenga la distancia de seguimiento (1 segundo cada 10 pies)</li>
+                                <li><strong>Anticipación de peligros:</strong> Escanee con 12-15 segundos de anticipación</li>
+                                <li><strong>Gestión de velocidad:</strong> Ajústese a las condiciones, no solo a los límites</li>
+                                <li><strong>Uso del espejo:</strong> Verifique cada 8-10 segundos</li>
+                                <li><strong>Rutas de escape:</strong> Identifique siempre las posibles salidas</li>
+                            </ul>
+                        </div>
+
+                        <div class="safety-card training-card">
+                            <div class="safety-icon">😴</div>
+                            <div class="safety-title">Gestión de la fatiga</div>
+                            <ul class="requirement-list">
+                                <li><strong>Horas de Servicio:</strong> Máximo 11 horas conduciendo después de 10 de descanso</li>
+                                <li><strong>Descanso de 30 minutos:</strong> Requerido después de 8 horas de conducción.</li>
+                                <li><strong>Límites semanales:</strong> Máximo 60/70 horas en 7/8 días</li>
+                                <li><strong>Higiene del sueño:</strong> Descanso de calidad en litera</li>
+                                <li><strong>Reconocimiento de síntomas:</strong> Identificar los primeros signos de fatiga</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Technology & Best Practices -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🤖</span>
+                    Tecnología de seguridad & Mejores prácticas
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🚀 Tecnologías de seguridad avanzadas</h3>
+                    
+                    <div class="tech-features">
+                        <div class="tech-feature">
+                            <div class="tech-icon">📱</div>
+                            <div class="tech-name">Dispositivos de registro electrónico (ELD)</div>
+                            <div class="tech-description">El seguimiento automatizado del cumplimiento de HOS reduce los errores de papeleo en un 80 %</div>
+                        </div>
+
+                        <div class="tech-feature">
+                            <div class="tech-icon">🛑</div>
+                            <div class="tech-name">Frenado automático de emergencia (AEB)</div>
+                            <div class="tech-description">Previene colisiones por alcance y reduce los accidentes en un 40%</div>
+                        </div>
+
+                        <div class="tech-feature">
+                            <div class="tech-icon">↔️</div>
+                            <div class="tech-name">Advertencia de cambio de carril (LDW)</div>
+                            <div class="tech-description">Alertas por cambios de carril involuntarios y previene accidentes por deslizamiento lateral</div>
+                        </div>
+
+                        <div class="tech-feature">
+                            <div class="tech-icon">👁️</div>
+                            <div class="tech-name">Detección de punto ciego</div>
+                            <div class="tech-description">Los sensores monitorean áreas no visibles en los espejos y reducen las colisiones laterales</div>
+                        </div>
+
+                        <div class="tech-feature">
+                            <div class="tech-icon">🛞</div>
+                            <div class="tech-name">Monitoreo de presión de neumáticos (TPMS)</div>
+                            <div class="tech-description">Monitoreo continuo de la presión, previene explosiones y mejora la eficiencia del combustible.</div>
+                        </div>
+
+                        <div class="tech-feature">
+                            <div class="tech-icon">🎥</div>
+                            <div class="tech-name">Cámaras orientadas al conductor</div>
+                            <div class="tech-description">Supervisa el estado de alerta del conductor y ofrece oportunidades de formación</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">👁️ Comprender los puntos ciegos de los camiones</h3>
+                    
+                    <div class="blindspot-diagram">
+                        <div class="truck-outline"></div>
+                        <div class="blindspot-area blindspot-left"></div>
+                        <div class="blindspot-area blindspot-right"></div>
+                        <div class="blindspot-area blindspot-rear"></div>
+                        <div class="blindspot-label" style="left: 15%; top: 25%;">Punto ciego izquierdo</div>
+                        <div class="blindspot-label" style="right: 15%; top: 25%;">Punto ciego derecho</div>
+                        <div class="blindspot-label" style="left: 50%; bottom: 25%; transform: translateX(-50%);">Punto ciego trasero</div>
+                    </div>
+                    
+                    <div class="tips-box">
+                        <div class="tips-title">🚗 Consejos para conductores de vehículos de pasajeros</div>
+                        <ul class="tips-list">
+                            <li><strong>Si no puedes ver al conductor en su espejo, él no puede verte a ti.</strong></li>
+                            <li>Nunca permanezca al lado de un camión, especialmente en el lado derecho.</li>
+                            <li>Al rebasar, hazlo de forma rápida y completa.</li>
+                            <li>No corten el paso a los camiones: necesitan 2 o 3 campos de fútbol para detenerse</li>
+                            <li>Esté atento a las señales de giro de los camiones con mucha antelación</li>
+                            <li>Dar a los camiones espacio adicional en las intersecciones</li>
+                            <li>Tenga paciencia: los camiones aceleran mucho más lento que los automóviles</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🎯 Mejores prácticas para conductores de camiones</h3>
+                    
+                    <div class="safety-grid">
+                        <div class="safety-card" style="background: rgba(245, 158, 11, 0.05); border-color: rgba(245, 158, 11, 0.2);">
+                            <div class="safety-icon">🐢</div>
+                            <div class="safety-title">Gestión de velocidad</div>
+                            <ul class="practice-list">
+                                <li>Respete siempre los límites de velocidad publicados</li>
+                                <li>Reducir la velocidad un 20% en condiciones meteorológicas adversas.</li>
+                                <li>Ajustar la velocidad para las zonas de construcción.</li>
+                                <li>Utilice el freno motor en descensos pronunciados.</li>
+                                <li>Monitorear la velocidad en áreas urbanas</li>
+                            </ul>
+                        </div>
+
+                        <div class="safety-card" style="background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2);">
+                            <div class="safety-icon">🚦</div>
+                            <div class="safety-title">Señalización adecuada</div>
+                            <ul class="practice-list">
+                                <li>Señale 5-8 segundos antes de cambiar de carril</li>
+                                <li>Utilice luces de emergencia en paradas de emergencia.</li>
+                                <li>La señal cambia con mucha antelación</li>
+                                <li>Toque los frenos antes de reducir significativamente la velocidad</li>
+                                <li>Utilice luces intermitentes de cuatro direcciones en tráfico lento</li>
+                            </ul>
+                        </div>
+
+                        <div class="safety-card" style="background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2);">
+                            <div class="safety-icon">⚡</div>
+                            <div class="safety-title">Preparación para emergencias</div>
+                            <ul class="practice-list">
+                                <li>Lleve el kit de emergencia requerido por el DOT</li>
+                                <li>Conozca la ubicación adecuada de los dispositivos de advertencia.</li>
+                                <li>Tenga lista la información de contacto de emergencia</li>
+                                <li>Practique procedimientos de emergencia con regularidad.</li>
+                                <li>Mantener los dispositivos de comunicación.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="key-points">
+                        <div class="key-points-title">🎯 Principios esenciales de seguridad para camiones</div>
+                        <ul class="key-points-list">
+                            <li><strong>La prevención es primaria:</strong> El mantenimiento regular previene el 30% de los accidentes</li>
+                            <li><strong>El entrenamiento nunca se detiene:</strong> La educación continua reduce el error humano</li>
+                            <li><strong>La tecnología respalda, no reemplaza:</strong> La tecnología de seguridad ayuda a los conductores atentos</li>
+                            <li><strong>El espacio es seguridad:</strong> Mantener distancias de seguimiento adecuadas en todo momento.</li>
+                            <li><strong>La fatiga mata:</strong> Cumplir estrictamente con las regulaciones de Horas de Servicio</li>
+                            <li><strong>La seguridad de la carga es fundamental:</strong> La carga adecuada evita vuelcos y accidentes.</li>
+                            <li><strong>La comunicación salva vidas:</strong> Utilice señales y sea predecible para los demás conductores.</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <div class="tips-title">📈 Estadísticas de impacto en la seguridad</div>
+                        <div class="subsection-content">
+                            • Empresas con programas formales de seguridad: 54% menos accidentes<br>
+                            • Capacitación regular de conductores: reducción del 35% en infracciones<br>
+                            • Implementación de ELD: reducción del 50% en violaciones de HOS<br>
+                            • Sistemas para evitar colisiones: un 40% menos de colisiones traseras<br>
+                            • Mantenimiento adecuado: costo promedio por accidente evitado de $150,000<br>
+                            • Cultura de seguridad integral: 80% menos tasa de rotación
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Check -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Verificación de conocimientos: conceptos básicos de seguridad para camiones</h2>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. ¿Cuánto mayor es la distancia de frenado típica de un camión en comparación con la de un automóvil a 65 mph?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Aproximadamente a la misma distancia</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>20-40% más (aproximadamente 200 pies más)</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>50% más corto porque los camiones tienen mejores frenos</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. ¿Cuál es el máximo de horas de conducción consecutivas permitidas según las normas de Horas de servicio?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>8 horas</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>11 horas (después de 10 horas consecutivas fuera de servicio)</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>14 horas con descansos cada 4 horas.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. ¿Cuándo deben evitar los vehículos de pasajeros permanecer al lado de un camión?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Siempre: esto es en los puntos ciegos del camión.</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Sólo en autopistas, no en el tráfico urbano.</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Sólo cuando el camión está girando.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. ¿Qué porcentaje de accidentes de camiones son causados ​​por fallas mecánicas?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>5-10%</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>30% (prevenible con mantenimiento regular)</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>60%</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">Comprueba tus respuestas</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Resultados de sus conocimientos sobre seguridad de camiones
+                </div>
+                <div class="score" id="score">0/4</div>
+                <div class="feedback" id="feedback">
+                    Revise sus respuestas a continuación para ver qué conceptos domina y cuáles necesitan más atención.
+                </div>
+                <div class="key-points" style="margin-top: 20px;">
+                    <div class="key-points-title">🎯 Conclusiones esenciales sobre seguridad en camiones</div>
+                    <ul class="key-points-list">
+                        <li>Los camiones requieren una distancia de frenado significativamente mayor: nunca les cortes el paso</li>
+                        <li>El mantenimiento regular previene el 30% de los accidentes de camiones</li>
+                        <li>Existen regulaciones de horas de servicio para prevenir accidentes relacionados con la fatiga</li>
+                        <li>Los puntos ciegos de los camiones son extensos: si no puedes ver sus espejos, ellos no pueden verte a ti.</li>
+                        <li>La sujeción adecuada de la carga evita cambios y vuelcos peligrosos</li>
+                        <li>La tecnología de seguridad ayuda pero no reemplaza la conducción alerta</li>
+                        <li>Tanto los conductores de camiones como los de vehículos de pasajeros comparten la responsabilidad de la seguridad</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> ¡Se logró el dominio de la seguridad en los camiones!
+            </div>
+            <p>Ha completado con éxito la lección Conceptos básicos de seguridad para camiones.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>Recuerde: la seguridad de los camiones es una responsabilidad compartida. Ya sea que conduzca un camión o comparta la carretera con ellos, su conocimiento y sus acciones contribuyen a que las carreteras sean más seguras para todos.</p>
+        </div>
+    </div>
+
+    <script>
+        // Timer Configuration - Continuous timer
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let quizCompleted = false;
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const progressFill = document.getElementById('progress-fill');
+        const submitBtn = document.getElementById('submit-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            // Clear any existing interval
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // Start new interval
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            // Update all timer displays
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            // Update progress based on sections read
+            updateProgress();
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 3; // We have 3 main sections
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Update completed count
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            // Update timer appearance based on time
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 900) { // 15 minutes or more
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 1200) { // 20 minutes or more
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Toggle checklist items
+        function toggleChecklist(item) {
+            const checkbox = item.querySelector('.checklist-checkbox');
+            checkbox.classList.toggle('checked');
+        }
+
+        // Update quiz score display
+        function updateQuizScore(score, totalQuestions) {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            quizScoreEl.textContent = `${percentage}%`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the continuous timer
+            startTimer();
+            
+            // Set up option selection
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    // Remove selected class from all options in this question
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+        });
+
+        function checkAnswers() {
+            // Mark quiz as completed
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'A',
+                4: 'B'
+            };
+
+            let score = 0;
+            const totalQuestions = 4;
+            let feedbackHTML = '';
+
+            // Check each question
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#10b981';
+                        selectedOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                    } else {
+                        selectedOption.style.borderColor = '#ef4444';
+                        selectedOption.style.background = 'rgba(239, 68, 68, 0.1)';
+                        
+                        // Highlight correct answer
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#10b981';
+                            correctOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            // Update quiz score
+            updateQuizScore(score, totalQuestions);
+            
+            // Calculate percentage
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            // Show results
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            // Generate feedback based on score
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 ¡Excelente! Entiende los principios esenciales de seguridad de los camiones. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 ¡Buen trabajo! Usted comprende la mayoría de los conceptos clave sobre la seguridad de los camiones. Revisa las respuestas incorrectas para fortalecer tus conocimientos. ';
+            } else {
+                feedbackHTML = '📚 Revise el material de la lección y vuelva a intentarlo. Comprender estos conceptos es crucial para compartir la carretera de forma segura con vehículos comerciales. ';
+            }
+            
+            feedbackHTML += 'Recuerde estos principios clave de seguridad para camiones:';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            // Show results
+            document.getElementById('results').classList.add('show');
+            
+            // Show completion message
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            // Update timer to show "Completed" state
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'gradiente lineal (135 grados, # 10b981, # 34d399)';
+            
+            // Update progress bar to 100%
+            progressFill.style.width = '100%';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Optional: Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>

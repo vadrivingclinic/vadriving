@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA: dominio de las reglas de derecho de paso & Señales de giro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes signalBlink {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .time-estimate {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Turn Signal Demo */
+        .signal-demo {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            text-align: center;
+        }
+
+        .signal-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .signal-arrow {
+            font-size: 4rem;
+            opacity: 0.3;
+            transition: all 0.3s ease;
+        }
+
+        .signal-arrow.active {
+            opacity: 1;
+            color: var(--color-warning);
+            animation: signalBlink 1s infinite;
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+        }
+
+        .signal-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .signal-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid var(--color-primary);
+            color: var(--color-primary);
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .signal-btn:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .signal-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .stats-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--color-error);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .stats-title {
+            font-weight: 700;
+            color: var(--color-error);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .tips-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .tips-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tips-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tips-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        .distance-guide {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border: 2px dashed rgba(95, 23, 235, 0.3);
+        }
+
+        .distance-meter {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 10px 0;
+        }
+
+        .distance-label {
+            font-size: 1.1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .scenario-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .scenario-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .scenario-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .scenario-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .scenario-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .knowledge-check {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(95, 23, 235, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .key-points {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.6rem;
+            }
+
+            .scenario-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .signal-display {
+                flex-direction: column;
+            }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Aprendizaje del tiempo</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Reglas de derecho de paso • Módulo 2</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">Comunicación de conducción esencial de 10 minutos</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Dominar las reglas de derecho de paso & Señales de giro</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">⏱️</div>
+            <div class="time-estimate-text">
+                Complete esta lección en aproximadamente <span class="time-highlight">10 minutos</span> Dominar la comunicación esencial de señales de giro y las reglas de derecho de paso.
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Secciones completadas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="quiz-score">0%</span>
+                <span class="stat-label">Puntuación del examen</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Aprendizaje del tiempo</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Progreso de la lección</span>
+                <span>Tiempo de aprendizaje: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: Introduction -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🚗</span>
+                    Señales de giro: herramienta de comunicación esencial
+                </h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #5f17eb;">📢</span> Por qué son importantes las señales de giro
+                    </h3>
+                    <p class="subsection-content">
+                        Las señales de giro son un componente esencial de la seguridad vial y proporcionan un medio para que los conductores comuniquen sus intenciones a otros usuarios de la vía. El uso adecuado de las señales de giro puede prevenir accidentes, reducir la confusión y mejorar el flujo general del tráfico. Son la voz de su vehículo en la carretera.
+                    </p>
+                    
+                    <div class="stats-box">
+                        <div class="stats-title">📊 Estadísticas de impacto de las señales de giro</div>
+                        <div class="stats-content">
+                            • El 48% de los conductores no utilizan las señales de giro al cambiar de carril.<br>
+                            • El 25 % de los conductores no utilizan las señales de giro al girar.<br>
+                            • Una señalización adecuada podría prevenir más de 2 millones de accidentes al año<br>
+                            • Los accidentes por cambio de carril disminuyen en un 71 % cuando las señales se utilizan correctamente
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Turn Signal Demo -->
+                <div class="signal-demo">
+                    <h3 class="subsection-title" style="margin-top: 0;">
+                        <span style="color: #f59e0b;">⚡</span> Demostración de señales de giro
+                    </h3>
+                    <div class="signal-display">
+                        <div class="signal-arrow" id="left-arrow">⬅️</div>
+                        <div class="signal-arrow" id="right-arrow">➡️</div>
+                    </div>
+                    <p class="subsection-content" style="text-align: center; margin-bottom: 15px;">
+                        Las señales de giro deben parpadear a un ritmo constante de 60 a 120 veces por minuto. Practica la activación de señales para diferentes maniobras.
+                    </p>
+                    <div class="signal-controls">
+                        <button class="signal-btn" data-direction="left">Giro a la izquierda</button>
+                        <button class="signal-btn" data-direction="right">Giro a la derecha</button>
+                        <button class="signal-btn" data-direction="hazard">Luces de peligro</button>
+                        <button class="signal-btn" data-direction="off">Apagar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Proper Usage -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">⏰</span>
+                    Uso adecuado de las señales de giro & Momento
+                </h2>
+
+                <div class="distance-guide">
+                    <div class="distance-meter" id="distance-meter">100 pies</div>
+                    <div class="distance-label">Distancia mínima de señalización antes de girar</div>
+                    <p class="subsection-content" style="margin-top: 10px;">
+                        Esto se traduce en <strong>3-4 segundos</strong> antes de la maniobra prevista. Busque un punto fijo más adelante y cuente: "Uno-mil, dos-un-mil, tres-un-mil, cuatro-un-mil" antes de girar.
+                    </p>
+                </div>
+
+                <div class="scenario-cards">
+                    <div class="scenario-card">
+                        <div class="scenario-icon">🚦</div>
+                        <div class="scenario-title">Intersecciones</div>
+                        <div class="scenario-content">
+                            Señale al menos 100 pies antes de la intersección. Para una conducción urbana a 40 km/h, la longitud es de aproximadamente 4 coches. Para autopistas a 65 mph, señale con aproximadamente 2 cuadras de anticipación.
+                        </div>
+                    </div>
+
+                    <div class="scenario-card">
+                        <div class="scenario-icon">🛣️</div>
+                        <div class="scenario-title">Cambios de carril</div>
+                        <div class="scenario-content">
+                            Señale, revise los espejos, mire por encima del hombro y luego cambie de carril. Mantenga la señal hasta que esté completamente en el nuevo carril. Recuerde: Señal, Espejo, Hombro, ¡Adelante!
+                        </div>
+                    </div>
+
+                    <div class="scenario-card">
+                        <div class="scenario-icon">🔄</div>
+                        <div class="scenario-title">Rotondas</div>
+                        <div class="scenario-content">
+                            Señale a la derecha para salir, a la izquierda si continúa pasando la primera salida. Entre sin hacer señales a menos que gire a la izquierda inmediatamente. Ceda siempre el paso al tráfico que ya se encuentra en la rotonda.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tips-box">
+                    <div class="tips-title">✅ Activación & Reglas de desactivación</div>
+                    <ul class="tips-list">
+                        <li><strong>Activación:</strong> Al menos 100 pies o 3-4 segundos antes de la maniobra.</li>
+                        <li><strong>Desactivación:</strong> Inmediatamente después de completar el giro o cambio de carril</li>
+                        <li><strong>Excepción:</strong> Utilice riesgos cuando esté detenido en la carretera o conduciendo muy por debajo del límite de velocidad.</li>
+                        <li><strong>Conducción nocturna:</strong> Señale más temprano en la noche cuando la visibilidad sea reducida.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Section 3: Safety & Common Mistakes -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">⚠️</span>
+                    Consideraciones de seguridad & Errores comunes
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">👁️ Confirmación visual</h3>
+                    <p class="subsection-content">
+                        <strong>Nunca confíe únicamente en las señales de giro de otro conductor.</strong> Espere siempre hasta que vea que los neumáticos del vehículo comienzan a girar antes de continuar. Muchos conductores hacen señales pero no giran o se olvidan de apagar las señales. ¡Cuidado con las ruedas, no sólo con las luces!
+                    </p>
+                    
+                    <div class="stats-box">
+                        <div class="stats-title">🚨 Errores de señal comunes</div>
+                        <div class="stats-content">
+                            • <strong>Desactivación Temprana:</strong> El 32% de los conductores apagan las señales demasiado pronto<br>
+                            • <strong>Sin señal:</strong> El 48% de los cambios de carril se producen sin señalización<br>
+                            • <strong>Señal incorrecta:</strong> El 12% de los conductores señalan ocasionalmente la dirección equivocada<br>
+                            • <strong"signal left, turn right:< strong> Error peligroso que causa confusión.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🅿️ Estacionamiento & Fusionando</h3>
+                    <p class="subsection-content">
+                        <strong>Aparcamiento:</strong> Utilice las señales de giro al entrar o salir de lugares de estacionamiento. Esto alerta a los peatones y otros conductores sobre sus movimientos en estacionamientos llenos de gente.<br><br>
+                        <strong>Fusionando:</strong> Al ingresar a autopistas o cambiar de carril, haga señales con anticipación para que los conductores en su carril objetivo tengan tiempo para adaptarse. Verifique los puntos ciegos y mantenga una velocidad constante al incorporarse.
+                    </p>
+                </div>
+
+                <div class="key-points">
+                    <div class="key-points-title">💡 Consejos de señal avanzados</div>
+                    <ul class="key-points-list">
+                        <li><strong>Condiciones climáticas:</strong> En caso de lluvia, niebla o nieve, señalice antes y considere utilizar peligros para paradas de emergencia.</li>
+                        <li><strong>Distancia de seguimiento:</strong> Mantenga una distancia de seguimiento de 3 a 4 segundos para que otros puedan ver sus señales.</li>
+                        <li><strong>Mantenimiento de bombillas:</strong> Revise las bombillas de las señales de giro mensualmente: las señales defectuosas son una infracción de tránsito</li>
+                        <li><strong>Uso de tecnología:</strong> Los vehículos modernos tienen monitores de punto ciego, pero complementan, no reemplazan, la señalización adecuada</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Section 4: Right-of-Way Rules -->
+            <div class="section" style="animation-delay: 0.4s" data-section="4">
+                <div class="section-number">4</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🎯</span>
+                    Reglas de derecho de paso & Situaciones de rendimiento
+                </h2>
+
+                <div class="scenario-cards">
+                    <div class="scenario-card">
+                        <div class="scenario-icon">🚸</div>
+                        <div class="scenario-title">Peatones</div>
+                        <div class="scenario-content">
+                            <strong>Ceda siempre el paso a los peatones en los cruces peatonales.</strong> Esto incluye cruces peatonales marcados y no marcados en las intersecciones. Incluso si tiene luz verde, los peatones con una señal para caminar tienen prioridad de paso.
+                        </div>
+                    </div>
+
+                    <div class="scenario-card">
+                        <div class="scenario-icon">🚑</div>
+                        <div class="scenario-title">Vehículos de emergencia</div>
+                        <div class="scenario-content">
+                            Cuando las luces o sirenas están activas, <strong>inmediatamente ceda el derecho de paso.</strong> Diríjase al lado derecho de la carretera y deténgase. No bloquee las intersecciones por donde puedan necesitar pasar vehículos de emergencia.
+                        </div>
+                    </div>
+
+                    <div class="scenario-card">
+                        <div class="scenario-icon">🛑</div>
+                        <div class="scenario-title">Paradas de cuatro vías</div>
+                        <div class="scenario-content">
+                            Primero en detenerse = primero en irse. Si son simultáneos, ceda el paso a la derecha. El tráfico recto pasa antes del tráfico que gira. En caso de duda, ceda el paso: es mejor prevenir que acertar.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🔄 Rotondas & Rotarios</h3>
+                    <p class="subsection-content">
+                        <strong>Regla de oro: el tráfico que ya se encuentra en la rotonda tiene prioridad de paso.</strong> Ceder el paso antes de entrar, señalar al salir. Para rotondas de varios carriles, elija su carril antes de entrar según su salida.
+                    </p>
+                </div>
+
+                <div class="tips-box">
+                    <div class="tips-title">🚦 Lista de prioridades de derecho de paso</div>
+                    <ul class="tips-list">
+                        <li>1. <strong>Peatones</strong> en cruces de peatones</li>
+                        <li>2. <strong>Vehículos de emergencia</strong> con señales activas</li>
+                        <li>3. <strong>Tráfico ya en la intersección</strong></li>
+                        <li>4. <strong>Tráfico a la derecha</strong> en paradas de cuatro vías</li>
+                        <li>5. <strong>Tráfico en carretera principal</strong> en las intersecciones</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Check -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Verificación de conocimientos: ponga a prueba su comprensión</h2>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. ¿Con cuánta anticipación debes activar la señal de giro antes de girar?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>En el momento en que empiezas a girar</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Al menos 100 pies o 3-4 segundos antes de girar</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Cuando veas tu destino</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. ¿Qué debe hacer al acercarse a una parada de cuatro vías con otro vehículo llegando al mismo tiempo?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Acelera para pasar primero</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Ceda el paso al vehículo a su derecha.</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Toca la bocina para establecer el dominio</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. Al cambiar de carril, ¿cuál es la secuencia adecuada de acciones?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Cambie de carril y luego haga señales para avisar a los demás</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Señale, revise los espejos, revise el punto ciego y luego cambie de carril</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Señalizar y cambiar de carril simultáneamente</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. ¿Quién tiene el derecho de paso en una rotonda?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Vehículos que entran en la rotonda.</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Vehículos que ya están en la rotonda.</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>El vehículo más grande</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">5. ¿Cuándo deberías utilizar las luces de emergencia?</div>
+                <div class="options">
+                    <div class="option" data-question="5" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Al conducir lentamente con mal tiempo</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Cuando se detiene en la carretera debido a una emergencia</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Tanto A como B</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">Comprueba tus respuestas</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Tus resultados
+                </div>
+                <div class="score" id="score">0/5</div>
+                <div class="feedback" id="feedback">
+                    Revise sus respuestas a continuación para ver qué conceptos domina y cuáles necesitan más atención.
+                </div>
+                <div class="key-points" style="margin-top: 20px;">
+                    <div class="key-points-title">🎯 Conclusiones clave de esta lección</div>
+                    <ul class="key-points-list">
+                        <li>Las señales de giro son dispositivos de comunicación: úselas de manera consistente y correcta</li>
+                        <li>Siempre señalice al menos 100 pies o 3-4 segundos antes de cualquier maniobra.</li>
+                        <li>Nunca confíes únicamente en las señales de giro de los demás: ten cuidado con sus ruedas.</li>
+                        <li>Conozca las reglas de derecho de paso pero esté preparado para ceder el paso para evitar accidentes.</li>
+                        <li>El mantenimiento regular del vehículo incluye revisar las bombillas de las señales de giro.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> ¡Lección completada!
+            </div>
+            <p>Ha completado con éxito el Dominio de las reglas de derecho de paso. & Lección de señales de giro.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>Recuerde: el uso constante de las señales de giro y la comprensión de las reglas de derecho de paso son fundamentales para una conducción segura. Practique estas habilidades cada vez que conduzca.</p>
+        </div>
+    </div>
+
+    <script>
+        // Timer Configuration - Continuous timer
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let quizCompleted = false;
+        let signalInterval;
+        let currentSignal = null;
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const progressFill = document.getElementById('progress-fill');
+        const submitBtn = document.getElementById('submit-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+        const leftArrow = document.getElementById('left-arrow');
+        const rightArrow = document.getElementById('right-arrow');
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            // Clear any existing interval
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // Start new interval
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            // Update all timer displays
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            // Update progress based on sections read
+            updateProgress();
+            
+            // Update timer appearance based on time
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 300 && totalSeconds < 600) { // 5-10 minutes
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 600) { // 10 minutes or more
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 4; // We have 4 main sections
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Update completed count
+            completedCountEl.textContent = sectionsCompleted.size;
+        }
+
+        // Update quiz score display
+        function updateQuizScore(score, totalQuestions) {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            quizScoreEl.textContent = `${percentage}%`;
+        }
+
+        // Turn Signal Simulation
+        function activateSignal(direction) {
+            // Clear any existing signal interval
+            if (signalInterval) clearInterval(signalInterval);
+            
+            // Reset arrows
+            leftArrow.classList.remove('active');
+            rightArrow.classList.remove('active');
+            currentSignal = null;
+            
+            // Update signal buttons
+            document.querySelectorAll('.signal-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (direction === 'off') return;
+            
+            // Activate selected signal
+            document.querySelector(`.signal-btn[data-direction="${direction}"]`).classList.add('active');
+            currentSignal = direction;
+            
+            if (direction === 'left') {
+                signalInterval = setInterval(() => {
+                    leftArrow.classList.toggle('active');
+                }, 500);
+            } else if (direction === 'right') {
+                signalInterval = setInterval(() => {
+                    rightArrow.classList.toggle('active');
+                }, 500);
+            } else if (direction === 'hazard') {
+                signalInterval = setInterval(() => {
+                    leftArrow.classList.toggle('active');
+                    rightArrow.classList.toggle('active');
+                }, 500);
+            }
+        }
+
+        // Animate distance meter
+        function animateDistanceMeter() {
+            const meter = document.getElementById('distance-meter');
+            const distances = ['50 ft', '75 ft', '100 ft', '125 ft', '150 ft'];
+            let currentIndex = 0;
+            
+            setInterval(() => {
+                meter.textContent = distances[currentIndex];
+                currentIndex = (currentIndex + 1) % distances.length;
+                
+                // Add pulse animation
+                meter.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    meter.style.transform = 'scale(1)';
+                }, 200);
+            }, 2000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the continuous timer
+            startTimer();
+            
+            // Start distance meter animation
+            animateDistanceMeter();
+            
+            // Set up signal buttons
+            const signalButtons = document.querySelectorAll('.signal-btn');
+            signalButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    activateSignal(this.dataset.direction);
+                });
+            });
+            
+            // Set up option selection
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    // Remove selected class from all options in this question
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                            
+                            // Add visual feedback
+                            entry.target.style.boxShadow = '0 15px 35px rgba(95, 23, 235, 0,2)';
+                            setTimeout(() => {
+                                entry.target.style.boxShadow = 'var(--shadow-soft)';
+                            }, 1000);
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+            
+            // Auto-activate left signal as demo
+            setTimeout(() => {
+                activateSignal('left');
+                setTimeout(() => activateSignal('off'), 3000);
+            }, 1000);
+        });
+
+        function checkAnswers() {
+            // Mark quiz as completed
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'B',
+                4: 'B',
+                5: 'C'
+            };
+
+            let score = 0;
+            const totalQuestions = 5;
+            let feedbackHTML = '';
+
+            // Check each question
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#10b981';
+                        selectedOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                    } else {
+                        selectedOption.style.borderColor = '#ef4444';
+                        selectedOption.style.background = 'rgba(239, 68, 68, 0.1)';
+                        
+                        // Highlight correct answer
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#10b981';
+                            correctOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            // Update quiz score
+            updateQuizScore(score, totalQuestions);
+            
+            // Calculate percentage
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            // Show results
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            // Generate feedback based on score
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 ¡Excelente! Ha dominado el uso de las señales de giro y las reglas de derecho de paso. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 ¡Buen trabajo! Entiendes la mayoría de los conceptos. Revisa las respuestas incorrectas para fortalecer tus conocimientos. ';
+            } else {
+                feedbackHTML = '📚 Revise el material de la lección y vuelva a intentarlo. Comprender estos conceptos es crucial para una comunicación de conducción segura. ';
+            }
+            
+            feedbackHTML += 'Recuerde: ¡El uso constante de las señales de giro previene accidentes!';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            // Show results
+            document.getElementById('results').classList.add('show');
+            
+            // Show completion message
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            // Update timer to show "Completed" state
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'gradiente lineal (135 grados, # 10b981, # 34d399)';
+            timerElement.classList.remove('warning', 'critical');
+            
+            // Update progress bar to 100%
+            progressFill.style.width = '100%';
+            
+            // Deactivate any active signals
+            if (signalInterval) clearInterval(signalInterval);
+            leftArrow.classList.remove('active');
+            rightArrow.classList.remove('active');
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Optional: Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>

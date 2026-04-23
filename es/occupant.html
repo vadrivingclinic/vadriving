@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA: dominio de la protección de los ocupantes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-display { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .time-estimate {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(95, 23, 235, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Interactive Elements */
+        .interactive-box {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .interactive-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .interactive-content {
+            color: var(--color-text);
+        }
+
+        .simulation {
+            background: rgba(16, 185, 129, 0.05);
+            border: 2px dashed rgba(16, 185, 129, 0.3);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .simulation-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .simulation-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .simulation-btn {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            color: var(--color-success);
+            padding: 8px 15px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .simulation-btn:hover {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .scenario {
+            background: rgba(245, 158, 11, 0.05);
+            border-left: 4px solid var(--color-warning);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .scenario-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scenario-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .scenario-option {
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .scenario-option:hover {
+            border-color: var(--color-warning);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .scenario-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .scenario-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .scenario-feedback {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .scenario-feedback.correct {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--color-success);
+        }
+
+        .scenario-feedback.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--color-error);
+        }
+
+        .stats-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .stats-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .tips-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .tips-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tips-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tips-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: rgba(95, 23, 235, 0.05);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(95, 23, 235, 0.1);
+        }
+
+        .feature-card.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            animation: pulse 1s;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-name {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+
+        .feature-desc {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .knowledge-check {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(95, 23, 235, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .key-points {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .activity-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.8rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Aprendizaje del tiempo</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Dominio de la protección de los ocupantes</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">Actividad interactiva de 15 minutos</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Protección de los ocupantes del vehículo: cinturones de seguridad, bolsas de aire & Sistemas de seguridad</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">⏱️</div>
+            <div class="time-estimate-text">
+                Complete esta actividad interactiva en aproximadamente <span class="time-highlight">15 minutos</span> Dominar los conceptos esenciales de protección de los ocupantes.
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Secciones completadas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="interaction-count">0</span>
+                <span class="stat-label">Interacciones</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="quiz-score">0%</span>
+                <span class="stat-label">Puntuación del examen</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Aprendizaje del tiempo</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Progreso de la actividad</span>
+                <span>Tiempo de aprendizaje: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: Seat Belts -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🚗</span>
+                    Cinturones de seguridad: su primera línea de defensa
+                </h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>📏</span> Posicionamiento adecuado del cinturón de seguridad
+                    </h3>
+                    <p class="subsection-content">
+                        La posición correcta es crucial para la eficacia del cinturón de seguridad. El cinturón de seguridad debe colocarse 
+                        <strong>a lo largo de las caderas y la pelvis, no del estómago</strong>. El cinturón del hombro debe cruzar 
+                        <strong>el pecho y el hombro, lejos del cuello</strong>.
+                    </p>
+                    
+                    <!-- Interactive: Seat Belt Positioning -->
+                    <div class="simulation">
+                        <div class="simulation-title">
+                            <span>🎮</span> Interactivo: Comprobación de la posición del cinturón de seguridad
+                        </div>
+                        <p>Haga clic en las posiciones correctas del cinturón de seguridad:</p>
+                        <div class="feature-grid" id="belt-positioning">
+                            <div class="feature-card" data-correct="false">
+                                <div class="feature-icon">❌</div>
+                                <div class="feature-name">Cinturón de regazo en el estómago</div>
+                                <div class="feature-desc">Cinturón de hombro en el cuello.</div>
+                            </div>
+                            <div class="feature-card" data-correct="true">
+                                <div class="feature-icon">✅</div>
+                                <div class="feature-name">Cinturón de regazo en las caderas</div>
+                                <div class="feature-desc">Cinturón de hombro sobre el pecho</div>
+                            </div>
+                            <div class="feature-card" data-correct="false">
+                                <div class="feature-icon">❌</div>
+                                <div class="feature-name">Cinturón de regazo demasiado bajo</div>
+                                <div class="feature-desc">Cinturón de hombro debajo del brazo</div>
+                            </div>
+                        </div>
+                        <div id="belt-feedback" style="display: none; margin-top: 15px; padding: 10px; border-radius: var(--radius-sm);"></div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>👶</span> Cinturón de seguridad apto para niños
+                    </h3>
+                    <p class="subsection-content">
+                        Los niños a los que les queden pequeños los asientos de seguridad para niños deben utilizar cinturones de seguridad con <strong>asientos elevados</strong> 
+                        para asegurar la correcta colocación del cinturón.
+                    </p>
+                    
+                    <!-- Scenario: Child Seat Belt Safety -->
+                    <div class="scenario">
+                        <div class="scenario-title">
+                            <span>🤔</span> Escenario: Su hijo de 7 años
+                        </div>
+                        <p>Su hijo tiene 7 años, pesa 55 libras y mide 4 pies. ¿Cuál es la opción más segura?</p>
+                        <div class="scenario-options">
+                            <div class="scenario-option" data-correct="true">Utilice un asiento elevado con cinturón de seguridad</div>
+                            <div class="scenario-option" data-correct="false">Use el cinturón de seguridad solo</div>
+                            <div class="scenario-option" data-correct="false">Utilice un asiento de seguridad orientado hacia adelante</div>
+                        </div>
+                        <div class="scenario-feedback" id="child-scenario-feedback">
+                            Se recomiendan asientos elevados hasta que los niños midan 4'9" de altura (generalmente entre 8 y 12 años).
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>📊</span> Eficacia del cinturón de seguridad
+                    </h3>
+                    
+                    <div class="stats-box">
+                        <div class="stats-title">📈 Estadísticas de seguridad del cinturón de seguridad</div>
+                        <div class="stats-content">
+                            • <strong>45% de reducción</strong> En riesgo de muerte para los pasajeros del asiento delantero.<br>
+                            • <strong>50% de reducción</strong> en riesgo de sufrir lesiones graves<br>
+                            • Previene <strong>expulsión</strong> del vehículo durante choques<br>
+                            • Ahorra aproximadamente <strong>15.000 vidas al año</strong> en los EE.UU.
+                        </div>
+                    </div>
+
+                    <!-- Interactive: Statistics Impact -->
+                    <div class="interactive-box">
+                        <div class="interactive-title">
+                            <span>💡</span> Verificación de conocimientos: impacto del cinturón de seguridad
+                        </div>
+                        <p>Si 100 personas sufren un accidente sin cinturón de seguridad, ¿cuántas más sobrevivirían si lo llevaran puesto?</p>
+                        <div class="simulation-controls">
+                            <button class="simulation-btn" onclick="showStatAnswer(45)">45 más</button>
+                            <button class="simulation-btn" onclick="showStatAnswer(25)">25 más</button>
+                            <button class="simulation-btn" onclick="showStatAnswer(60)">60 más</button>
+                        </div>
+                        <div id="stat-answer" style="display: none; margin-top: 15px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: var(--radius-sm);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Airbags -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">💥</span>
+                    Airbags: sistemas de protección suplementarios
+                </h2>
+
+                <div class="feature-grid">
+                    <div class="feature-card" data-info="front">
+                        <div class="feature-icon">🛡️</div>
+                        <div class="feature-name">Bolsas de aire delanteras</div>
+                        <div class="feature-desc">Se despliega en 1/20 de segundo en choques frontales</div>
+                    </div>
+
+                    <div class="feature-card" data-info="side">
+                        <div class="feature-icon">🚪</div>
+                        <div class="feature-name">Bolsas de aire laterales</div>
+                        <div class="feature-desc">Proteger el torso en choques de impacto lateral</div>
+                    </div>
+
+                    <div class="feature-card" data-info="curtain">
+                        <div class="feature-icon">🪟</div>
+                        <div class="feature-name">Bolsas de aire de cortina</div>
+                        <div class="feature-desc">Protege las cabezas en impactos laterales y vuelcos.</div>
+                    </div>
+
+                    <div class="feature-card" data-info="knee">
+                        <div class="feature-icon">🦵</div>
+                        <div class="feature-name">Bolsas de aire de rodilla</div>
+                        <div class="feature-desc">Prevenir lesiones en las piernas y mantener la posición.</div>
+                    </div>
+                </div>
+
+                <!-- Airbag Information Display -->
+                <div class="interactive-box" id="airbag-info" style="display: none;">
+                    <div class="interactive-title">
+                        <span>ℹ️</span> <span id="airbag-title">Información sobre bolsas de aire</span>
+                    </div>
+                    <div class="interactive-content" id="airbag-details">
+                        Haga clic en un tipo de bolsa de aire arriba para obtener más información al respecto.
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>⚠️</span> Pautas para el uso seguro de bolsas de aire
+                    </h3>
+                    
+                    <!-- Interactive: Airbag Safety Check -->
+                    <div class="simulation">
+                        <div class="simulation-title">
+                            <span>🎮</span> Interactivo: Posición de seguridad del airbag
+                        </div>
+                        <p>Ajuste el control deslizante para encontrar la distancia mínima de seguridad desde una bolsa de aire:</p>
+                        <input type="range" min="5" max="15" value="8" class="slider" id="airbag-distance" style="width: 100%; margin: 15px 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <span>5 pulgadas</span>
+                            <span id="distance-value">8 pulgadas</span>
+                            <span>15 pulgadas</span>
+                        </div>
+                        <button class="simulation-btn" onclick="checkAirbagDistance()">Verificar seguridad</button>
+                        <div id="airbag-feedback" style="display: none; margin-top: 15px; padding: 10px; border-radius: var(--radius-sm);"></div>
+                    </div>
+                </div>
+
+                <div class="stats-box">
+                    <div class="stats-title">📊 Eficacia del airbag</div>
+                    <div class="stats-content">
+                        • <strong>25% de reducción</strong> en traumatismos craneoencefálicos en colisiones frontales<br>
+                        • <strong>50% de reducción</strong> en lesiones graves en el pecho<br>
+                        • Las bolsas de aire laterales reducen el riesgo de muerte al <strong>37%</strong> en accidentes del lado del conductor<br>
+                        • Combinado con cinturones de seguridad, reduce el riesgo de muerte al <strong>61%</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Child Safety Seats -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">👶</span>
+                    Asientos de seguridad para niños: protección a medida
+                </h2>
+
+                <!-- Interactive: Child Seat Selection -->
+                <div class="simulation">
+                    <div class="simulation-title">
+                        <span>🎮</span> Interactivo: elija el asiento adecuado
+                    </div>
+                    <p>Seleccione el asiento de seguridad para niños correcto para cada escenario:</p>
+                    
+                    <div class="scenario" style="margin-bottom: 20px;">
+                        <p><strong>Escenario 1:</strong> Bebé de 9 meses, 20 libras.</p>
+                        <div class="scenario-options">
+                            <div class="scenario-option" data-correct="true" data-scenario="1">Asiento infantil orientado hacia atrás</div>
+                            <div class="scenario-option" data-correct="false" data-scenario="1">Asiento para niños pequeños orientado hacia adelante</div>
+                            <div class="scenario-option" data-correct="false" data-scenario="1">asiento elevado</div>
+                        </div>
+                    </div>
+                    
+                    <div class="scenario" style="margin-bottom: 20px;">
+                        <p><strong>Escenario 2:</strong> Niño de 4 años, 40 libras, asiento que mira hacia atrás y le queda pequeño</p>
+                        <div class="scenario-options">
+                            <div class="scenario-option" data-correct="true" data-scenario="2">Asiento con arnés orientado hacia adelante</div>
+                            <div class="scenario-option" data-correct="false" data-scenario="2">asiento elevado</div>
+                            <div class="scenario-option" data-correct="false" data-scenario="2">Sólo cinturón de seguridad</div>
+                        </div>
+                    </div>
+                    
+                    <div class="scenario">
+                        <p><strong>Escenario 3:</strong> 8 años, 60 libras, 4'6" de altura</p>
+                        <div class="scenario-options">
+                            <div class="scenario-option" data-correct="true" data-scenario="3">Asiento elevador con respaldo alto</div>
+                            <div class="scenario-option" data-correct="false" data-scenario="3">Asiento orientado hacia adelante</div>
+                            <div class="scenario-option" data-correct="false" data-scenario="3">No se necesita asiento especial</div>
+                        </div>
+                    </div>
+                    
+                    <button class="simulation-btn" onclick="checkAllScenarios()" style="margin-top: 20px;">Verifique todas las respuestas</button>
+                    <div id="scenario-feedback" style="display: none; margin-top: 15px; padding: 15px; border-radius: var(--radius-sm);"></div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>🔧</span> Lista de verificación de instalación
+                    </h3>
+                    
+                    <!-- Interactive: Installation Checklist -->
+                    <div class="interactive-box">
+                        <div class="interactive-title">
+                            <span>✅</span> Lista de verificación para la instalación del asiento para el automóvil
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                                <input type="checkbox" class="check-item" data-point="1"> El asiento no se mueve más de 1 pulgada
+                            </label>
+                            <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                                <input type="checkbox" class="check-item" data-point="2"> Arnés al nivel correcto del hombro
+                            </label>
+                            <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                                <input type="checkbox" class="check-item" data-point="3"> Clip para el pecho a la altura de las axilas
+                            </label>
+                            <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                                <input type="checkbox" class="check-item" data-point="4"> Ángulo de reclinación adecuado
+                            </label>
+                        </div>
+                        <button class="simulation-btn" onclick="validateChecklist()">Validar instalación</button>
+                        <div id="checklist-feedback" style="display: none; margin-top: 15px; padding: 10px; border-radius: var(--radius-sm);"></div>
+                    </div>
+                </div>
+
+                <div class="stats-box">
+                    <div class="stats-title">📊 Efectividad de los asientos de seguridad para niños</div>
+                    <div class="stats-content">
+                        • <strong>71% de reducción</strong> en riesgo de lesiones mortales para los bebés<br>
+                        • <strong>54% de reducción</strong> para niños pequeños en turismos<br>
+                        • Los asientos elevados reducen el riesgo de lesiones al <strong>45%</strong> para niños 4-8<br>
+                        • El uso adecuado evita aproximadamente <strong>325 muertes al año</strong> en niños menores de 5 años
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Safety Systems & Maintenance -->
+            <div class="section" style="animation-delay: 0.4s" data-section="4">
+                <div class="section-number">4</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">⚙️</span>
+                    Sistemas de seguridad & Mantenimiento
+                </h2>
+
+                <!-- Safety Systems Matching Game -->
+                <div class="simulation">
+                    <div class="simulation-title">
+                        <span>🎮</span> Interactivo: Haga coincidir el sistema de seguridad
+                    </div>
+                    <p>Relacione cada sistema de seguridad con su función principal:</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+                        <div class="feature-card" data-match="abs">
+                            <div class="feature-icon">🛑</div>
+                            <div class="feature-name">ABS</div>
+                        </div>
+                        <div class="feature-card" data-match="esc">
+                            <div class="feature-icon">🌀</div>
+                            <div class="feature-name">ESC</div>
+                        </div>
+                        <div class="feature-card" data-match="headrest">
+                            <div class="feature-icon">🪑</div>
+                            <div class="feature-name">Reposacabezas</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin: 20px 0;">
+                        <div class="scenario-option" data-match="abs">Evita el bloqueo de las ruedas durante el frenado.</div>
+                        <div class="scenario-option" data-match="esc">Mantiene la estabilidad durante maniobras abruptas.</div>
+                        <div class="scenario-option" data-match="headrest">Reduce el latigazo cervical en colisiones traseras</div>
+                    </div>
+                    
+                    <button class="simulation-btn" onclick="checkMatchingGame()">Comprobar coincidencias</button>
+                    <div id="matching-feedback" style="display: none; margin-top: 15px; padding: 15px; border-radius: var(--radius-sm);"></div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>🔄</span> Programa de mantenimiento
+                    </h3>
+                    
+                    <!-- Interactive: Maintenance Timeline -->
+                    <div class="interactive-box">
+                        <div class="interactive-title">
+                            <span>📅</span> Mantenimiento del sistema de seguridad
+                        </div>
+                        <p>¿Cuándo debería realizar estos controles de seguridad?</p>
+                        
+                        <div style="margin: 20px 0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <span>Inspección del cinturón de seguridad</span>
+                                <select class="maintenance-select" data-item="belts">
+                                    <option value="">Seleccionar frecuencia</option>
+                                    <option value="monthly">Mensual</option>
+                                    <option value="6months">Cada 6 meses</option>
+                                    <option value="yearly">Anual</option>
+                                </select>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <span>Comprobación de caducidad del asiento para niños</span>
+                                <select class="maintenance-select" data-item="seat">
+                                    <option value="">Seleccionar frecuencia</option>
+                                    <option value="monthly">Mensual</option>
+                                    <option value="6months">Cada 6 meses</option>
+                                    <option value="yearly">Anual</option>
+                                </select>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Comprobación del sistema de bolsas de aire</span>
+                                <select class="maintenance-select" data-item="airbag">
+                                    <option value="">Seleccionar frecuencia</option>
+                                    <option value="monthly">Mensual</option>
+                                    <option value="6months">Cada 6 meses</option>
+                                    <option value="yearly">Anual</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button class="simulation-btn" onclick="checkMaintenance()">Consultar programa de mantenimiento</button>
+                        <div id="maintenance-feedback" style="display: none; margin-top: 15px; padding: 10px; border-radius: var(--radius-sm);"></div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-title">⚠️ Recordatorio de mantenimiento de seguridad</div>
+                    <div class="warning-content">
+                        • Reemplace los cinturones de seguridad después de cualquier accidente<br>
+                        • Haga inspeccionar los sistemas de bolsas de aire después del despliegue.<br>
+                        • Verifique las fechas de vencimiento de los asientos para niños (generalmente entre 6 y 10 años)<br>
+                        • Pruebe periódicamente los retractores y las hebillas de los cinturones de seguridad.<br>
+                        • Nunca desactive las luces de advertencia de las bolsas de aire
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Check -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Evaluación final de conocimientos</h2>
+            <p style="text-align: center; margin-bottom: 20px; color: var(--color-muted);">
+                Complete esta evaluación para evaluar su comprensión de todos los conceptos.
+            </p>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. ¿Dónde debe colocarse la parte del regazo del cinturón de seguridad?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>A través del estómago</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>A lo largo de las caderas y la pelvis.</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Lo más bajo posible en los muslos.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. ¿Cuál es la distancia mínima de seguridad desde una bolsa de aire?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>5 pulgadas</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>10 pulgadas</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>15 pulgadas</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. ¿En qué medida reducen los cinturones de seguridad el riesgo de muerte de los pasajeros de los asientos delanteros?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>25%</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>45%</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>65%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. ¿Qué tipo de asiento infantil ofrece la mejor protección para los bebés?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Asiento orientado hacia adelante</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Asiento orientado hacia atrás</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>asiento elevado</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">5. ¿Cuándo se deben reemplazar los cinturones de seguridad después de un accidente?</div>
+                <div class="options">
+                    <div class="option" data-question="5" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Sólo si está visiblemente dañado</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Después de cualquier accidente, independientemente de los daños visibles</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Cada 5 años independientemente de los accidentes</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkFinalAssessment()">Evaluación completa</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Tus resultados finales
+                </div>
+                <div class="score" id="score">0/5</div>
+                <div class="feedback" id="feedback">
+                    Revise sus respuestas a continuación para ver qué conceptos de seguridad domina.
+                </div>
+                <div class="key-points" style="margin-top: 20px;">
+                    <div class="key-points-title">🎯 Principios clave de seguridad dominados</div>
+                    <ul class="key-points-list">
+                        <li>La correcta colocación del cinturón de seguridad reduce el riesgo de lesiones en un 50%</li>
+                        <li>Los airbags funcionan mejor cuando se combinan con los cinturones de seguridad</li>
+                        <li>Los asientos de seguridad para niños deben coincidir con la edad, el peso y la altura del niño.</li>
+                        <li>El mantenimiento regular de los sistemas de seguridad es esencial</li>
+                        <li>Comprender estos sistemas puede salvar vidas en accidentes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> ¡Actividad completada!
+            </div>
+            <p>Ha completado con éxito la actividad de Dominio de la protección de los ocupantes del vehículo.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>Has completado <span id="interactions-total">0</span> ejercicios interactivos y puntuados <span id="final-percentage">0%</span> en la evaluación.</p>
+            <p style="margin-top: 15px; font-weight: 600;">Recuerde: cada viaje debe comenzar asegurándose de que todos los ocupantes estén debidamente asegurados.</p>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Timer Configuration
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let interactionCount = 0;
+        let quizCompleted = false;
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const interactionCountEl = document.getElementById('interaction-count');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const progressFill = document.getElementById('progress-fill');
+        const submitBtn = document.getElementById('submit-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+        const interactionsTotalEl = document.getElementById('interactions-total');
+        const finalPercentageEl = document.getElementById('final-percentage');
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            // Clear any existing interval
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // Start new interval
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            // Update all timer displays
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            // Update progress based on sections read
+            updateProgress();
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 4;
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Update completed count
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            // Update timer appearance based on time
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 900) { // 15 minutes or more
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 1200) { // 20 minutes or more
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update interaction count
+        function incrementInteraction() {
+            interactionCount++;
+            interactionCountEl.textContent = interactionCount;
+            interactionsTotalEl.textContent = interactionCount;
+        }
+
+        // Update quiz score display
+        function updateQuizScore(score, totalQuestions) {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            quizScoreEl.textContent = `${percentage}%`;
+            finalPercentageEl.textContent = `${percentage}%`;
+        }
+
+        // Interactive Functions
+        function showStatAnswer(answer) {
+            const feedback = document.getElementById('stat-answer');
+            if (answer === 45) {
+                feedback.innerHTML = '<strong>¡Correcto!</strong> Los cinturones de seguridad reducen el riesgo de muerte en un 45%, por lo que sobrevivirían 45 personas más.';
+                feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+                feedback.style.border = '1px rgba sólido (16, 185, 129, 0,3)';
+                feedback.style.color = '#10b981';
+            } else {
+                feedback.innerHTML = '<strong>Incorrecto.</strong> Los cinturones de seguridad reducen el riesgo de muerte en un 45%, por lo que sobrevivirían 45 personas más.';
+                feedback.style.background = 'rgba(239, 68, 68, 0.1)';
+                feedback.style.border = '1px rgba sólido (239, 68, 68, 0,3)';
+                feedback.style.color = '#ef4444';
+            }
+            feedback.style.display = 'block';
+            incrementInteraction();
+        }
+
+        function checkAirbagDistance() {
+            const distance = document.getElementById('airbag-distance').value;
+            const feedback = document.getElementById('airbag-feedback');
+            document.getElementById('distance-value').textContent = distance + ' inches';
+            
+            if (distance >= 10) {
+                feedback.innerHTML = '<strong>¡Correcto!</strong> La NHTSA recomienda al menos 10 pulgadas de la cubierta de la bolsa de aire.';
+                feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+                feedback.style.border = '1px rgba sólido (16, 185, 129, 0,3)';
+                feedback.style.color = '#10b981';
+            } else {
+                feedback.innerHTML = '<strong>¡Demasiado cerca!</strong> La NHTSA recomienda al menos 10 pulgadas de la cubierta de la bolsa de aire por seguridad.';
+                feedback.style.background = 'rgba(239, 68, 68, 0.1)';
+                feedback.style.border = '1px rgba sólido (239, 68, 68, 0,3)';
+                feedback.style.color = '#ef4444';
+            }
+            feedback.style.display = 'block';
+            incrementInteraction();
+        }
+
+        function checkAllScenarios() {
+            let correctCount = 0;
+            const totalScenarios = 3;
+            const feedback = document.getElementById('scenario-feedback');
+            
+            // Check each scenario
+            for (let i = 1; i <= totalScenarios; i++) {
+                const options = document.querySelectorAll(`.scenario-option[data-scenario="${i}"]`);
+                options.forEach(option => {
+                    if (option.dataset.correct === 'true' && option.classList.contains('selected')) {
+                        correctCount++;
+                        option.classList.add('correct');
+                    } else if (option.dataset.correct === 'false' && option.classList.contains('selected')) {
+                        option.classList.add('incorrect');
+                    } else if (option.dataset.correct === 'true') {
+                        option.classList.add('correct');
+                    }
+                });
+            }
+            
+            if (correctCount === totalScenarios) {
+                feedback.innerHTML = '<strong>¡Perfecto!</strong> Ha seleccionado los asientos de seguridad correctos para todos los escenarios.';
+                feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+                feedback.style.border = '1px rgba sólido (16, 185, 129, 0,3)';
+                feedback.style.color = '#10b981';
+            } else {
+                feedback.innerHTML = `<strong>${correctCount} fuera de ${totalScenarios} correcto.</strong> Revise las respuestas correctas resaltadas en verde.`;
+                feedback.style.background = 'rgba(245, 158, 11, 0.1)';
+                feedback.style.border = '1px rgba sólido (245, 158, 11, 0,3)';
+                feedback.style.color = '#f59e0b';
+            }
+            feedback.style.display = 'block';
+            incrementInteraction();
+        }
+
+        function validateChecklist() {
+            const checkboxes = document.querySelectorAll('.check-item:checked');
+            const feedback = document.getElementById('checklist-feedback');
+            
+            if (checkboxes.length === 4) {
+                feedback.innerHTML = '<strong>¡Instalación perfecta!</strong> Todos los elementos de la lista de verificación están completos.';
+                feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+                feedback.style.border = '1px rgba sólido (16, 185, 129, 0,3)';
+                feedback.style.color = '#10b981';
+            } else {
+                feedback.innerHTML = `<strong>${checkboxes.length} de 4 elementos comprobados.</strong> Revise todos los requisitos de instalación.`;
+                feedback.style.background = 'rgba(245, 158, 11, 0.1)';
+                feedback.style.border = '1px rgba sólido (245, 158, 11, 0,3)';
+                feedback.style.color = '#f59e0b';
+            }
+            feedback.style.display = 'block';
+            incrementInteraction();
+        }
+
+        function checkMatchingGame() {
+            // This would be more complex in a real implementation
+            const feedback = document.getElementById('matching-feedback');
+            feedback.innerHTML = '<strong>¡Juego de correspondencias completado!</strong> En la versión completa, esto validaría tus coincidencias.';
+            feedback.style.background = 'rgba(95, 23, 235, 0.1)';
+            feedback.style.border = '1px rgba sólido (95, 23, 235, 0,3)';
+            feedback.style.color = '#5f17eb';
+            feedback.style.display = 'block';
+            incrementInteraction();
+        }
+
+        function checkMaintenance() {
+            const selects = document.querySelectorAll('.maintenance-select');
+            let allSelected = true;
+            
+            selects.forEach(select => {
+                if (select.value === '') {
+                    allSelected = false;
+                }
+            });
+            
+            const feedback = document.getElementById('maintenance-feedback');
+            if (allSelected) {
+                feedback.innerHTML = '<strong>¡Programa de mantenimiento establecido!</strong> Los controles periódicos garantizan que los sistemas de seguridad funcionen correctamente.';
+                feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+                feedback.style.border = '1px rgba sólido (16, 185, 129, 0,3)';
+                feedback.style.color = '#10b981';
+            } else {
+                feedback.innerHTML = '<strong>Seleccione la frecuencia para todos los artículos.</strong>';
+                feedback.style.background = 'rgba(245, 158, 11, 0.1)';
+                feedback.style.border = '1px rgba sólido (245, 158, 11, 0,3)';
+                feedback.style.color = '#f59e0b';
+            }
+            feedback.style.display = 'block';
+            incrementInteraction();
+        }
+
+        function checkFinalAssessment() {
+            // Mark quiz as completed
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'B',
+                4: 'B',
+                5: 'B'
+            };
+
+            let score = 0;
+            const totalQuestions = 5;
+            let feedbackHTML = '';
+
+            // Check each question
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#10b981';
+                        selectedOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                    } else {
+                        selectedOption.style.borderColor = '#ef4444';
+                        selectedOption.style.background = 'rgba(239, 68, 68, 0.1)';
+                        
+                        // Highlight correct answer
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#10b981';
+                            correctOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            // Update quiz score
+            updateQuizScore(score, totalQuestions);
+            
+            // Calculate percentage
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            // Show results
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            // Generate feedback based on score
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 <strong>¡Excelente!</strong> Ha dominado todos los conceptos de protección de ocupantes. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 <strong>¡Buen trabajo!</strong> Entiendes la mayoría de los conceptos de seguridad. ';
+            } else {
+                feedbackHTML = '📚 <strong>Se necesita revisión.</strong> Por favor revise el material de la lección. ';
+            }
+            
+            feedbackHTML += 'Sus resultados muestran en qué áreas debe concentrarse.';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            // Show results
+            document.getElementById('results').classList.add('show');
+            
+            // Show completion message
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            // Update timer to show "Completed" state
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'gradiente lineal (135 grados, # 10b981, # 34d399)';
+            
+            // Update progress bar to 100%
+            progressFill.style.width = '100%';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            
+            incrementInteraction();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the continuous timer
+            startTimer();
+            
+            // Set up option selection for final assessment
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    // Remove selected class from all options in this question
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                });
+            });
+
+            // Set up seat belt positioning interactive
+            const beltCards = document.querySelectorAll('#posicionamiento-del-cinturón .tarjeta-de-características');
+            beltCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    beltCards.forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    const feedback = document.getElementById('belt-feedback');
+                    if (this.dataset.correct === 'true') {
+                        feedback.innerHTML = '<strong>¡Correcto!</strong> El cinturón de regazo debe quedar sobre las caderas y el cinturón de hombro sobre el pecho.';
+                        feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+                        feedback.style.border = '1px rgba sólido (16, 185, 129, 0,3)';
+                        feedback.style.color = '#10b981';
+                    } else {
+                        feedback.innerHTML = '<strong>Incorrecto.</strong> Esta posición podría provocar lesiones en caso de accidente.';
+                        feedback.style.background = 'rgba(239, 68, 68, 0.1)';
+                        feedback.style.border = '1px rgba sólido (239, 68, 68, 0,3)';
+                        feedback.style.color = '#ef4444';
+                    }
+                    feedback.style.display = 'block';
+                    incrementInteraction();
+                });
+            });
+
+            // Set up airbag cards
+            const airbagCards = document.querySelectorAll('.feature-card[data-info]');
+            airbagCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const infoBox = document.getElementById('airbag-info');
+                    const title = document.getElementById('airbag-title');
+                    const details = document.getElementById('airbag-details');
+                    
+                    const airbagInfo = {
+                        'front': {
+                            title: 'Bolsas de aire delanteras',
+                            details: 'Desplácese desde el volante y el tablero en choques frontales a velocidades de hasta 200 mph en 1/20 de segundo. Diseñado para funcionar con cinturones de seguridad.'
+                        },
+                        'side': {
+                            title: 'Bolsas de aire laterales',
+                            details: 'Normalmente se monta en asientos o paneles de puertas. Se implementa en choques de impacto lateral para proteger el torso. Reducir el riesgo de muerte en un 37 % en accidentes del lado del conductor.'
+                        },
+                        'curtain': {
+                            title: 'Bolsas de aire de cortina',
+                            details: 'Caída desde el techo interior para proteger las cabezas en impactos laterales y vuelcos. Cubra el área de la ventana y brinde protección contra vidrios voladores.'
+                        },
+                        'knee': {
+                            title: 'Bolsas de aire de rodilla',
+                            details: 'Desplácese debajo del tablero para evitar lesiones en las piernas y mantener a los ocupantes en la posición adecuada durante choques frontales. Reduce las lesiones en las piernas hasta en un 82%.'
+                        }
+                    };
+                    
+                    const info = airbagInfo[this.dataset.info];
+                    title.textContent = info.title;
+                    details.textContent = info.details;
+                    infoBox.style.display = 'block';
+                    
+                    airbagCards.forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    incrementInteraction();
+                });
+            });
+
+            // Set up scenario options
+            const scenarioOptions = document.querySelectorAll('.scenario-option');
+            scenarioOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selection from other options in same scenario
+                    const scenario = this.dataset.scenario;
+                    if (scenario) {
+                        document.querySelectorAll(`.scenario-option[data-scenario="${scenario}"]`)
+                            .forEach(opt => opt.classList.remove('selected'));
+                    }
+                    
+                    this.classList.add('selected');
+                    
+                    // Show feedback for child scenario
+                    if (this.closest('.scenario') && this.closest('.scenario').querySelector('#child-scenario-feedback')) {
+                        const feedback = document.getElementById('child-scenario-feedback');
+                        if (this.dataset.correct === 'true') {
+                            feedback.classList.add('correct');
+                            feedback.classList.remove('incorrect');
+                            feedback.innerHTML = '<strong>¡Correcto!</strong> Se recomiendan asientos elevados hasta que los niños midan 4\'9" de altura (generalmente entre 8 y 12 años).';
+                        } else {
+                            feedback.classList.add('incorrect');
+                            feedback.classList.remove('correct');
+                            feedback.innerHTML = '<strong>Incorrecto.</strong> Un asiento elevado proporciona la posición adecuada del cinturón de seguridad para este niño.';
+                        }
+                        feedback.style.display = 'block';
+                    }
+                    
+                    incrementInteraction();
+                });
+            });
+
+            // Set up airbag distance slider
+            const airbagSlider = document.getElementById('airbag-distance');
+            airbagSlider.addEventListener('input', function() {
+                document.getElementById('distance-value').textContent = this.value + ' inches';
+            });
+
+            // Set up checklist items
+            const checkItems = document.querySelectorAll('.check-item');
+            checkItems.forEach(item => {
+                item.addEventListener('change', function() {
+                    incrementInteraction();
+                });
+            });
+
+            // Set up maintenance selects
+            const maintenanceSelects = document.querySelectorAll('.maintenance-select');
+            maintenanceSelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    incrementInteraction();
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+        });
+
+        // Optional: Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkFinalAssessment();
+            }
+        });
+    </script>
+</body>
+</html>

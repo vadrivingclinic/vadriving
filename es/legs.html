@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA: nueva legislación de conducción de Virginia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --color-info: #3b82f6;
+            --color-environment: #06b6d4;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes highlight {
+            0%, 100% { background-color: transparent; }
+            50% { background-color: rgba(245, 158, 11, 0.2); }
+        }
+
+        @keyframes lawFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .time-estimate {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        /* Legislation Banner */
+        .law-banner {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .law-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .law-stat {
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            animation: lawFloat 2s infinite;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Legislation Card */
+        .law-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 6px solid var(--color-primary);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .law-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .law-card.highlight {
+            animation: highlight 2s ease-in-out;
+        }
+
+        .law-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .law-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .law-name {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            flex: 1;
+        }
+
+        .law-effective {
+            background: var(--color-primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .law-details {
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 3px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .law-penalty {
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid var(--color-error);
+        }
+
+        .penalty-title {
+            font-weight: 700;
+            color: var(--color-error);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Environment Box */
+        .environment-box {
+            background: rgba(6, 182, 212, 0.1);
+            border-left: 4px solid var(--color-environment);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .environment-title {
+            font-weight: 700;
+            color: var(--color-environment);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Tips Box */
+        .tips-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .tips-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tips-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .tips-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        /* Law Grid */
+        .law-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        /* EV Infrastructure Grid */
+        .ev-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .ev-card {
+            background: rgba(6, 182, 212, 0.05);
+            border: 2px solid rgba(6, 182, 212, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .ev-card:hover {
+            border-color: var(--color-environment);
+            transform: translateY(-3px);
+        }
+
+        .ev-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .ev-name {
+            font-weight: 700;
+            color: var(--color-environment);
+            margin-bottom: 8px;
+        }
+
+        .ev-desc {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Funding Grid */
+        .funding-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .funding-card {
+            background: rgba(59, 130, 246, 0.05);
+            border: 2px solid rgba(59, 130, 246, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .funding-card:hover {
+            border-color: var(--color-info);
+            transform: translateY(-3px);
+        }
+
+        .funding-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--color-info);
+        }
+
+        .funding-name {
+            font-weight: 700;
+            color: var(--color-info);
+            margin-bottom: 8px;
+        }
+
+        .funding-desc {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .funding-amount {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-top: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Knowledge Check */
+        .knowledge-check {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(95, 23, 235, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .key-points {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .update-banner {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .update-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .update-btn {
+            background: white;
+            color: #8b5cf6;
+            border: none;
+            padding: 12px 30px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .update-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.6rem;
+            }
+
+            .law-grid, .ev-grid, .funding-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .law-stat {
+                font-size: 2rem;
+            }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Aprendizaje del tiempo</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Módulo de Actualización de Legislación</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">Actualizaciones de 8 minutos sobre las leyes de Virginia</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Nueva legislación de conducción de Virginia</h1>
+
+        <!-- Legislation Impact Banner -->
+        <div class="law-banner">
+            <div class="law-title">
+                <span>📜</span> Ley de manos libres vigente desde
+            </div>
+            <div class="law-stat">2021</div>
+            <p>Nuevas leyes importantes que afectan a los conductores, la seguridad y el medio ambiente de Virginia</p>
+        </div>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">⏱️</div>
+            <div class="time-estimate-text">
+                Manténgase al día con las leyes de Virginia en <span class="time-highlight">8 minutos</span>
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Secciones completadas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="quiz-score">0%</span>
+                <span class="stat-label">Puntaje de Cumplimiento</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Aprendizaje del tiempo</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Progreso de la lección</span>
+                <span>Tiempo de aprendizaje: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: Enhanced Safety Regulations -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🛡️</span>
+                    Normas de seguridad mejoradas
+                </h2>
+                
+                <div class="warning-box">
+                    <div class="warning-title">⚠️ Actualizaciones críticas de seguridad</div>
+                    <div class="subsection-content">
+                        Las nuevas leyes de Virginia aumentan significativamente las sanciones por comportamientos peligrosos para proteger a todos los usuarios de la vía.
+                    </div>
+                </div>
+
+                <div class="law-card highlight" id="hands-free-law">
+                    <div class="law-header">
+                        <div class="law-icon">📱❌</div>
+                        <div class="law-name">Ley de conducción manos libres</div>
+                        <div class="law-effective">A partir de 2021</div>
+                    </div>
+                    <div class="law-details">
+                        <strong>Qué está prohibido:</strong><br>
+                        • Sostener cualquier dispositivo de comunicación personal portátil mientras conduce<br>
+                        • Leer, escribir o enviar cualquier comunicación basada en texto.<br>
+                        • Sostener el teléfono para llamadas telefónicas o videollamadas<br>
+                        <br>
+                        <strong>Qué está permitido:</strong><br>
+                        • Deslizamiento/toque único para activar el modo manos libres<br>
+                        • Navegación GPS (debe estar montado)<br>
+                        • Llamadas de emergencia al 911<br>
+                        • Vehículos estacionados (no sólo detenidos en el tráfico)
+                    </div>
+                    <div class="law-penalty">
+                        <div class="penalty-title">💰 Penalizaciones</div>
+                        <div class="subsection-content">
+                            • <strong>Primera infracción:</strong> multa de $125<br>
+                            • <strong>Reincidencia:</strong> multa de $250<br>
+                            • <strong>Violación de la zona de trabajo:</strong> Multas DOBLADAS<br>
+                            • <strong>Conducción imprudente:</strong> Se puede acusar si la infracción contribuye al accidente
+                        </div>
+                    </div>
+                </div>
+
+                <div class="law-card">
+                    <div class="law-header">
+                        <div class="law-icon">🚧👷</div>
+                        <div class="law-name">Aplicación de la velocidad en la zona de trabajo</div>
+                        <div class="law-effective">Mejorado 2023</div>
+                    </div>
+                    <div class="law-details">
+                        <strong>Nuevas sanciones mejoradas:</strong><br>
+                        • Exceso de velocidad en zonas de trabajo (sin trabajadores presentes): multa mínima de $500<br>
+                        • Exceso de velocidad en zonas de trabajo (trabajadores presentes): Mínimo $750, hasta $2,500<br>
+                        • Cámaras de control automatizadas en zonas de trabajo<br>
+                        • 3 infracciones = comparecencia ante el tribunal obligatoria
+                    </div>
+                    <div class="tips-box">
+                        <div class="tips-title">💡 Consejos de seguridad en la zona de trabajo</div>
+                        <ul class="tips-list">
+                            <li>Reduce la velocidad cuando veas señales naranjas.</li>
+                            <li>Mantener una distancia de seguimiento segura (doble normal)</li>
+                            <li>Esté atento a paradas repentinas y cambios de carril</li>
+                            <li>Esté alerta a los trabajadores y equipos.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="law-card">
+                    <div class="law-header">
+                        <div class="law-icon">🚌🛑</div>
+                        <div class="law-name">Mejora de la seguridad del autobús escolar</div>
+                        <div class="law-effective">Fortalecido 2022</div>
+                    </div>
+                    <div class="law-details">
+                        <strong>Leyes mejoradas de paso de autobuses escolares:</strong><br>
+                        • <strong>PARADA Requerido:</strong> Cuando las luces rojas parpadean Y el brazo de parada se extiende<br>
+                        • <strong>Ambas direcciones:</strong> En carreteras indivisas, TODO el tráfico debe detenerse<br>
+                        • <strong>Carreteras divididas:</strong> Sólo se detiene el tráfico en la misma dirección<br>
+                        • <strong>Aplicación de cámaras:</strong> Los autobuses escolares ahora equipados con cámaras
+                    </div>
+                    <div class="law-penalty">
+                        <div class="penalty-title">💰 Sanciones mejoradas</div>
+                        <div class="subsection-content">
+                            • <strong>Primera infracción:</strong> Multa mínima de $250<br>
+                            • <strong>Segunda infracción:</strong> Multa mínima de $500<br>
+                            • <strong>Tercera+ Violación:</strong> Hasta $1,000 + suspensión de licencia<br>
+                            • <strong>Con lesión:</strong> Delito menor de clase 1, hasta 1 año de cárcel
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Environmental & EV Legislation -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🌱</span>
+                    Ambiental & Legislación sobre vehículos eléctricos
+                </h2>
+
+                <div class="environment-box">
+                    <div class="environment-title">🚗 El futuro del transporte limpio de Virginia</div>
+                    <div class="subsection-content">
+                        Virginia ha adoptado los estrictos estándares de emisiones de vehículos de California y está expandiendo rápidamente la infraestructura de vehículos eléctricos para cumplir con los objetivos climáticos.
+                    </div>
+                </div>
+
+                <div class="law-card">
+                    <div class="law-header">
+                        <div class="law-icon">🌿🚗</div>
+                        <div class="law-name">Ley de Autos Limpios de 2021</div>
+                        <div class="law-effective">Progresivamente en 2025</div>
+                    </div>
+                    <div class="law-details">
+                        <strong>Disposiciones clave:</strong><br>
+                        • Adopta los estándares de vehículos de bajas emisiones (LEV) de California<br>
+                        • Mandato de vehículos de cero emisiones (ZEV) para los fabricantes<br>
+                        • <strong>Año modelo 2025:</strong> Los coches nuevos deben cumplir estrictas normas de emisiones<br>
+                        • <strong>Objetivo 2035:</strong> Todos los vehículos de pasajeros nuevos vendidos deben ser de cero emisiones.<br>
+                        <br>
+                        <strong>Requisitos del fabricante:</strong><br>
+                        • Porcentaje creciente de ventas de ZEV cada año<br>
+                        • Sistema de créditos por cumplimiento.<br>
+                        • Sanciones por incumplimiento
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #06b6d4;">🔌</span> Expansión de la infraestructura de carga de vehículos eléctricos
+                    </h3>
+                    <div class="ev-grid">
+                        <div class="ev-card">
+                            <div class="ev-icon">🏢🔌</div>
+                            <div class="ev-name">Subvenciones de carga pública</div>
+                            <div class="ev-desc">
+                                $50 millones asignados para estaciones de carga públicas en edificios gubernamentales, parques y centros de tránsito
+                            </div>
+                        </div>
+                        <div class="ev-card">
+                            <div class="ev-icon">🛒🔌</div>
+                            <div class="ev-name">Minorista & Lugar de trabajo</div>
+                            <div class="ev-desc">
+                                Créditos fiscales para empresas que instalen cargadores. Objetivo: 30% de las plazas de aparcamiento en los grandes comercios
+                            </div>
+                        </div>
+                        <div class="ev-card">
+                            <div class="ev-icon">🏠🔌</div>
+                            <div class="ev-name">Reembolsos residenciales</div>
+                            <div class="ev-desc">
+                                Hasta $2,500 de reembolso por instalación de cargador doméstico. Incentivos de vivienda multifamiliar disponibles
+                            </div>
+                        </div>
+                        <div class="ev-card">
+                            <div class="ev-icon">🛣️🔌</div>
+                            <div class="ev-name">Corredores de carreteras</div>
+                            <div class="ev-desc">
+                                Cargadores cada 50 millas en las principales autopistas para 2026. Se requiere capacidad de carga rápida
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #10b981;">💰</span> Programas de incentivos para vehículos eléctricos
+                    </h3>
+                    <div class="tips-box">
+                        <div class="tips-title">🎯 Incentivos actuales para vehículos eléctricos en Virginia</div>
+                        <ul class="tips-list">
+                            <li><strong>Programa de reembolso:</strong> Hasta $2,500 para compras de vehículos eléctricos nuevos (basado en los ingresos)</li>
+                            <li><strong>Exención del impuesto sobre las ventas:</strong> Vehículos eléctricos de menos de $25,000 exentos del impuesto estatal sobre las ventas</li>
+                            <li><strong>Acceso al carril HOV:</strong> Placas de combustible especiales limpias para uso HOV de un solo ocupante</li>
+                            <li><strong>Inscripciones Reducidas:</strong> Tarifas de registro anual más bajas para vehículos eléctricos</li>
+                            <li><strong>Incentivos de servicios públicos:</strong> Tarifas eléctricas reducidas para la carga de vehículos eléctricos durante las horas valle</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Transportation & Driver Education -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🚦</span>
+                    Transporte & Actualizaciones de educación vial
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #3b82f6;">🏗️</span> Iniciativas de financiación de infraestructura
+                    </h3>
+                    <div class="funding-grid">
+                        <div class="funding-card">
+                            <div class="funding-icon">🛣️</div>
+                            <div class="funding-name">Modernización de Carreteras</div>
+                            <div class="funding-desc">
+                                $3.700 millones asignados para ampliación de carreteras, sistemas de tráfico inteligentes y alivio de cuellos de botella
+                            </div>
+                            <div class="funding-amount">$3.7 mil millones</div>
+                        </div>
+                        <div class="funding-card">
+                            <div class="funding-icon">🌉</div>
+                            <div class="funding-name">Programa de reparación de puentes</div>
+                            <div class="funding-desc">
+                                Más de 400 puentes estructuralmente deficientes programados para reparación o reemplazo
+                            </div>
+                            <div class="funding-amount">$1.2 mil millones</div>
+                        </div>
+                        <div class="funding-card">
+                            <div class="funding-icon">🚌</div>
+                            <div class="funding-name">Expansión del transporte público</div>
+                            <div class="funding-desc">
+                                Nuevas líneas de autobuses de tránsito rápido, servicio ferroviario ampliado y accesibilidad mejorada
+                            </div>
+                            <div class="funding-amount">$850 millones</div>
+                        </div>
+                        <div class="funding-card">
+                            <div class="funding-icon">🚶‍♂️</div>
+                            <div class="funding-name">Iniciativa Calles Completas</div>
+                            <div class="funding-desc">
+                                Diseños de carreteras que se adaptan a peatones, ciclistas y usuarios del transporte público.
+                            </div>
+                            <div class="funding-amount">$300 millones</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="law-card">
+                    <div class="law-header">
+                        <div class="law-icon">🎓🚗</div>
+                        <div class="law-name">Actualizaciones graduadas de licencias de conducir</div>
+                        <div class="law-effective">Actualizado 2023</div>
+                    </div>
+                    <div class="law-details">
+                        <strong>Requisitos mejorados para conductores adolescentes:</strong><br>
+                        • <strong>Horas supervisadas aumentadas:</strong> 60 horas (era 45), con 20 después del anochecer (era 15)<br>
+                        • <strong>Restricción de conducción nocturna:</strong> 9 p. m. - 4 a. m. (antes de medianoche a 4 a. m.)<br>
+                        • <strong>Límite de pasajeros:</strong> No más de 1 pasajero menor de 21 años durante el primer año.<br>
+                        • <strong>Educación obligatoria:</strong> Plan de estudios de educación vial mejorado con módulo de conducción distraída<br>
+                        <br>
+                        <strong>Certificación de padres:</strong><br>
+                        • Los padres deben certificar la finalización de horas de conducción bajo pena de perjurio.<br>
+                        • Se requiere asistir a una sesión de orientación para padres de 2 horas.
+                    </div>
+                </div>
+
+                <div class="law-card">
+                    <div class="law-header">
+                        <div class="law-icon">👵🚗</div>
+                        <div class="law-name">Programa de seguridad para conductores mayores</div>
+                        <div class="law-effective">Lanzado en 2022</div>
+                    </div>
+                    <div class="law-details">
+                        <strong>Nuevos programas de apoyo para conductores mayores:</strong><br>
+                        • <strong>Cursos de actualización gratuitos:</strong> Disponible para conductores mayores de 65 años<br>
+                        • <strong>Consejo Asesor Médico:</strong> Los médicos pueden denunciar de forma confidencial a conductores inseguros<br>
+                        • <strong>Subvenciones para transporte alternativo:</strong> Subsidios para viajes compartidos cuando conducir ya no es seguro<br>
+                        • <strong>Visión & Pruebas de reacción:</strong> Evaluaciones gratuitas en las oficinas del DMV<br>
+                        <br>
+                        <strong>Cambios de renovación de licencia:</strong><br>
+                        • Se requiere renovación en persona cada 5 años después de los 75 años<br>
+                        • Se requiere prueba de la vista en cada renovación después de los 80 años<br>
+                        • Es posible que se requiera una prueba práctica según las recomendaciones médicas.
+                    </div>
+                </div>
+
+                <div class="tips-box">
+                    <div class="tips-title">💡 Mantenerse al día con las leyes de Virginia</div>
+                    <ul class="tips-list">
+                        <li><strong>Sitio web del DMV:</strong> dmvNOW.virginia.gov para obtener actualizaciones oficiales</li>
+                        <li><strong>Alertas por correo electrónico:</strong> Suscríbase al Sistema de Información Legislativa de Virginia</li>
+                        <li><strong>Aplicación móvil:</strong> Aplicación VA DMV Connect para notificaciones</li>
+                        <li><strong>DMV local:</strong> Visita en persona para materiales impresos.</li>
+                        <li><strong>Formación de conductores:</strong> Considerar cursos de actualización cada 5 años.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Notification Banner -->
+        <div class="update-banner">
+            <div class="update-title">Manténgase actualizado sobre las leyes de Virginia</div>
+            <p>La nueva legislación entra en vigor el 1 de julio y el 1 de enero de cada año. Regístrese para recibir notificaciones.</p>
+            <button class="update-btn" onclick="showUpdateOptions()">
+                <span>📧</span> Obtenga actualizaciones legislativas
+            </button>
+        </div>
+
+        <!-- Knowledge Check -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Verificación de conocimientos: actualizaciones de las leyes de Virginia</h2>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. ¿Cuál es la multa mínima por la primera infracción de la ley de manos libres de Virginia?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>$50</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>$125</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>$250</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. ¿Cuándo entra en vigor la Ley de Automóviles Limpios de Virginia para los vehículos nuevos?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>año modelo 2023</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>año modelo 2025</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>año modelo 2030</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. ¿Cuál es la multa mínima por exceso de velocidad en una zona de trabajo cuando hay trabajadores presentes?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>$250</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>$750</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>$1,000</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. ¿Cuántas horas de conducción supervisada se requieren ahora para los conductores adolescentes?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>45 horas (15 después del anochecer)</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>60 horas (20 después del anochecer)</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>50 horas (20 después del anochecer)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">5. ¿Cuál es el objetivo de Virginia en materia de ventas de vehículos con cero emisiones para 2035?</div>
+                <div class="options">
+                    <div class="option" data-question="5" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>50% de vehículos nuevos</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>100% de los turismos nuevos</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>El 75% de todos los vehículos en carretera.</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">Compruebe sus conocimientos jurídicos</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Tus resultados
+                </div>
+                <div class="score" id="score">0/5</div>
+                <div class="feedback" id="feedback">
+                    Revise sus respuestas para asegurarse de cumplir con las últimas leyes de Virginia.
+                </div>
+                <div class="key-points" style="margin-top: 20px;">
+                    <div class="key-points-title">🎯 Actualizaciones legislativas clave</div>
+                    <ul class="key-points-list">
+                        <li>La ley de manos libres prohíbe estrictamente el uso de dispositivos portátiles mientras se conduce</li>
+                        <li>Las sanciones por exceso de velocidad en zonas de trabajo han aumentado significativamente</li>
+                        <li>Virginia sigue los estrictos estándares de emisiones de California a partir de 2025</li>
+                        <li>La infraestructura de vehículos eléctricos se está expandiendo rápidamente con el apoyo estatal</li>
+                        <li>Se han reforzado los requisitos para los conductores adolescentes por motivos de seguridad</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> ¡Dominio de la legislación completo!
+            </div>
+            <p>Ahora está al día con las últimas leyes y regulaciones de conducción de Virginia.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>Recuerde buscar actualizaciones periódicamente, ya que las nuevas leyes entran en vigor dos veces al año.</p>
+            <div style="margin-top: 20px; font-size: 0.9rem; opacity: 0.9;">
+                Las leyes de Virginia se actualizan el 1 de julio y el 1 de enero de cada año.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Timer Configuration
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let quizCompleted = false;
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const progressFill = document.getElementById('progress-fill');
+        const submitBtn = document.getElementById('submit-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Animate law cards
+        function animateLawCards() {
+            const lawCards = document.querySelectorAll('.law-card');
+            lawCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.transform = 'translateX(0)';
+                    card.style.opacity = '1';
+                }, index * 100);
+            });
+        }
+
+        // Show update options
+        function showUpdateOptions() {
+            showMobileToast("Manténgase actualizado con las leyes de Virginia: 1. Suscríbase en dmvNOW.virginia.gov 2. Descargue la aplicación VA DMV Connect 3. Siga a @VirginiaDMV en las redes sociales 4. Regístrese en el Sistema de información legislativa en lis.virginia.gov Las nuevas leyes generalmente entran en vigor el 1 de julio y el 1 de enero de cada año.");
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            updateProgress();
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 3;
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 480) { // 8 minutes or more
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 960) { // 16 minutes or more
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update quiz score display
+        function updateQuizScore(score, totalQuestions) {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            quizScoreEl.textContent = `${percentage}%`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            startTimer();
+            animateLawCards();
+            
+            // Set up option selection
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                            
+                            // Highlight the hands-free law when section 1 is viewed
+                            if (sectionNumber === "1") {
+                                setTimeout(() => {
+                                    const handsFreeLaw = document.getElementById('hands-free-law');
+                                    handsFreeLaw.classList.add('highlight');
+                                    setTimeout(() => {
+                                        handsFreeLaw.classList.remove('highlight');
+                                    }, 3000);
+                                }, 500);
+                            }
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+        });
+
+        function checkAnswers() {
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'B',
+                4: 'B',
+                5: 'B'
+            };
+
+            let score = 0;
+            const totalQuestions = 5;
+            let feedbackHTML = '';
+
+            // Check each question
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#10b981';
+                        selectedOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                    } else {
+                        selectedOption.style.borderColor = '#ef4444';
+                        selectedOption.style.background = 'rgba(239, 68, 68, 0.1)';
+                        
+                        // Highlight correct answer
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#10b981';
+                            correctOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            updateQuizScore(score, totalQuestions);
+            
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 ¡Perfecto! Estás completamente al día con las leyes de Virginia. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍¡Excelente! Usted comprende las actualizaciones legislativas clave. ';
+            } else {
+                feedbackHTML = '📚 Revisa los puntos clave. Mantenerse actualizado previene violaciones. ';
+            }
+            
+            feedbackHTML += 'Áreas de cumplimiento clave para recordar:';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            document.getElementById('results').classList.add('show');
+            
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'gradiente lineal (135 grados, # 10b981, # 34d399)';
+            
+            progressFill.style.width = '100%';
+            
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkAnswers();
+            } else if (e.key === 'u' || e.key === 'U') {
+                showUpdateOptions();
+            }
+        });
+    </script>
+
+<script>
+/* ===== MOBILE TOAST NOTIFICATION (replaces alert) ===== */
+function showMobileToast(msg) {
+  var t = document.getElementById('_va_toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = '_va_toast';
+    t.style.cssText = [
+      'position:fixed','bottom:24px','left:50%','transform:translateX(-50%)',
+      'background:rgba(30,30,30,0.92)','color:#fff','relleno: 12px 22px',
+      'border-radius:24px','z-index:99999','font-weight:600',
+      'font-size:0.95rem','max-width:85vw','text-align:center',
+      'sombra de cuadro: 0 4px 16px rgba (0,0,0,0.3)',
+      'transición:opacidad 0,35s','opacity:0','pointer-events:none'
+    ].join(';');
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._to);
+  t._to = setTimeout(function(){ t.style.opacity='0'; }, 3200);
+}
+</script>
+
+</body>
+</html>

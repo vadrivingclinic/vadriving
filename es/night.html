@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA: seguridad al conducir de noche</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #0d4f8b;
+            --color-primary-light: #5b9bd5;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #5f6368;
+            --color-danger: #c00000;
+            --color-warning: #ffc000;
+            --color-success: #00b050;
+            --color-caution: #ff6b35;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(13, 79, 139, 0.1);
+            --shadow-hover: 0 15px 35px rgba(13, 79, 139, 0.15);
+            --shadow-dark: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%);
+            color: #e0e1dd;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { 
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.3),
+                          0 0 30px rgba(91, 155, 213, 0.2);
+            }
+            50% { 
+                box-shadow: 0 0 25px rgba(255, 255, 255, 0.5),
+                          0 0 50px rgba(91, 155, 213, 0.3);
+            }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+            position: relative;
+            z-index: 1;
+        }
+
+        .night-sky-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: starTwinkle 3s infinite;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #0d4f8b, #2a7bc8);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(13, 79, 139, 0.5),
+                       0 0 15px rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #ffc000, #ffd966);
+            color: #333;
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #c00000, #ff6666);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-dark);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary-light);
+            box-shadow: 0 10px 25px rgba(91, 155, 213, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary-light);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+            text-shadow: 0 0 15px rgba(91, 155, 213, 0.5);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.3));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary-light);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-shadow: 0 0 10px rgba(91, 155, 213, 0.5);
+        }
+
+        .lesson-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 10px;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .title-highlight {
+            color: var(--color-primary-light);
+            text-shadow: 0 0 15px rgba(91, 155, 213, 0.7);
+        }
+
+        .time-estimate {
+            background: rgba(13, 79, 139, 0.3);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(91, 155, 213, 0.5);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 0 20px rgba(91, 155, 213, 0.2);
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary-light);
+            filter: drop-shadow(0 0 10px rgba(91, 155, 213, 0.5));
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary-light);
+            font-weight: 800;
+            font-size: 1.2em;
+            text-shadow: 0 0 10px rgba(91, 155, 213, 0.5);
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0d4f8b, #5b9bd5);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 15px rgba(91, 155, 213, 0.5);
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-dark);
+            border: 1px solid rgba(91, 155, 213, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #0d4f8b, #5b9bd5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3),
+                       0 0 20px rgba(91, 155, 213, 0.2);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #0d4f8b, #5b9bd5);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(91, 155, 213, 0.5);
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .section-title-icon {
+            font-size: 1.4rem;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+        }
+
+        .subsection {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-primary-light);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 10px rgba(91, 155, 213, 0.3);
+        }
+
+        .subsection-content {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .danger-box {
+            background: rgba(192, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            border-left: 4px solid var(--color-danger);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            box-shadow: 0 0 15px rgba(192, 0, 0, 0.3);
+        }
+
+        .danger-title {
+            font-weight: 700;
+            color: #ff6666;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .danger-content {
+            color: var(--color-primary-light);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .warning-box {
+            background: rgba(255, 192, 0, 0.2);
+            backdrop-filter: blur(5px);
+            border-left: 4px solid var(--color-warning);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            box-shadow: 0 0 15px rgba(255, 192, 0, 0.3);
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: #ffd966;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .warning-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .warning-list li {
+            margin-bottom: 10px;
+            padding-left: 30px;
+            position: relative;
+            color: var(--color-primary-light);
+        }
+
+        .warning-list li:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+        }
+
+        .success-box {
+            background: rgba(0, 176, 80, 0.2);
+            backdrop-filter: blur(5px);
+            border-left: 4px solid var(--color-success);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            box-shadow: 0 0 15px rgba(0, 176, 80, 0.3);
+        }
+
+        .success-title {
+            font-weight: 700;
+            color: #66ff99;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .success-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .success-list li {
+            margin-bottom: 10px;
+            padding-left: 30px;
+            position: relative;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .success-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .challenge-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .challenge-card:hover {
+            border-color: var(--color-primary-light);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(91, 155, 213, 0.3);
+        }
+
+        .challenge-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #0d4f8b, #5b9bd5);
+            opacity: 0.7;
+        }
+
+        .challenge-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        }
+
+        .challenge-name {
+            font-weight: 700;
+            color: var(--color-primary-light);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .challenge-description {
+            color: var(--color-primary-light);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .tip-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .tip-card {
+            background: rgba(91, 155, 213, 0.1);
+            border: 2px solid rgba(91, 155, 213, 0.3);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .tip-card:hover {
+            border-color: var(--color-primary-light);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(91, 155, 213, 0.2);
+        }
+
+        .tip-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .tip-title {
+            font-weight: 700;
+            color: var(--color-primary-light);
+            margin-bottom: 8px;
+        }
+
+        .tip-content {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .knowledge-check {
+            background: rgba(13, 79, 139, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(91, 155, 213, 0.5);
+            box-shadow: 0 0 30px rgba(91, 155, 213, 0.2);
+        }
+
+        .knowledge-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 25px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .quiz-question {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary-light);
+            background: rgba(91, 155, 213, 0.2);
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary-light);
+            background: rgba(91, 155, 213, 0.3);
+            font-weight: 600;
+            box-shadow: 0 0 15px rgba(91, 155, 213, 0.3);
+        }
+
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(91, 155, 213, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary-light);
+            color: white;
+            box-shadow: 0 0 10px rgba(91, 155, 213, 0.5);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #0d4f8b, #5b9bd5);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 40px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 5px 20px rgba(13, 79, 139, 0.4);
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #0a3d6d, #4a8bca);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(13, 79, 139, 0.6);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(13, 79, 139, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            margin-top: 30px;
+            border-left: 4px solid var(--color-primary-light);
+            box-shadow: 0 0 20px rgba(91, 155, 213, 0.3);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.3rem;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--color-primary-light);
+            margin: 25px 0;
+            animation: pulse 2s infinite;
+            text-shadow: 0 0 20px rgba(91, 155, 213, 0.7);
+        }
+
+        .feedback {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.7;
+            font-size: 1.05rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .key-points {
+            background: rgba(0, 176, 80, 0.2);
+            backdrop-filter: blur(5px);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid rgba(0, 176, 80, 0.3);
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: #66ff99;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.2rem;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 12px;
+            padding-left: 30px;
+            position: relative;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .key-points-list li:before {
+            content: "★";
+            position: absolute;
+            left: 10px;
+            color: var(--color-primary-light);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, rgba(13, 79, 139, 0.8), rgba(91, 155, 213, 0.8));
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 3s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .completion-time {
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.8rem;
+            }
+
+            .challenge-grid,
+            .tip-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <!-- Night Sky Background -->
+    <div class="night-sky-bg" id="night-sky"></div>
+
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">🌙</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Aprendizaje del tiempo</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Módulo de seguridad de conducción nocturna</div>
+                    <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem;">Guía esencial de 10 minutos</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Conducción nocturna <span class="title-highlight">Seguridad & Guía de supervivencia</span></h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">🌙</div>
+            <div class="time-estimate-text">
+                Completa esta lección en <span class="time-highlight">10 minutos</span> para dominar la seguridad en la conducción nocturna
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Secciones completadas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="quiz-score">0%</span>
+                <span class="stat-label">Puntuación del examen</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Aprendizaje del tiempo</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Progreso de la lección</span>
+                <span>Tiempo de aprendizaje: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: Challenges -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">⚠️</span>
+                    El <span class="title-highlight">Peligros</span> de conducción nocturna
+                </h2>
+                
+                <div class="danger-box">
+                    <div class="danger-title">📊 Estadísticas críticas de conducción nocturna</div>
+                    <div class="danger-content">
+                        • Las tasas de mortalidad por accidentes de tráfico son <strong>tres veces mayor</strong> de noche que de día<br>
+                        • El 50% de las muertes en accidentes de tránsito ocurren durante las horas nocturnas.<br>
+                        • La visibilidad se reduce hasta un 90% en comparación con el día.<br>
+                        • El tiempo de reacción aumenta en 1,5 segundos en condiciones de poca luz.
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #ff6666;">👁️</span> Cinco desafíos principales de la conducción nocturna
+                    </h3>
+                    
+                    <div class="challenge-grid">
+                        <div class="challenge-card">
+                            <div class="challenge-icon">🌑</div>
+                            <div class="challenge-name">Visibilidad reducida</div>
+                            <div class="challenge-description">
+                                No hay luz natural, lo que dificulta ver a los peatones, los animales, las señales de tráfico y los obstáculos. La percepción de profundidad y el reconocimiento de colores se ven significativamente afectados.
+                            </div>
+                        </div>
+
+                        <div class="challenge-card">
+                            <div class="challenge-icon">💡</div>
+                            <div class="challenge-name">Resplandor de los faros</div>
+                            <div class="challenge-description">
+                                Las luces de cruce pueden cegar temporalmente a los conductores durante 2 o 3 segundos. Después de pasar luces brillantes, los ojos tardan hasta 5 segundos en reajustarse a la oscuridad.
+                            </div>
+                        </div>
+
+                        <div class="challenge-card">
+                            <div class="challenge-icon">😴</div>
+                            <div class="challenge-name">Fatiga & Modorra</div>
+                            <div class="challenge-description">
+                                Los ritmos circadianos naturales nos hacen sentir más somnolientos por la noche. La fatiga afecta el tiempo de reacción, la concentración y la capacidad de tomar decisiones.
+                            </div>
+                        </div>
+
+                        <div class="challenge-card">
+                            <div class="challenge-icon">🍺</div>
+                            <div class="challenge-name">Conductores ebrios</div>
+                            <div class="challenge-description">
+                                Durante la noche hay un 300% más de conductores ebrios en la carretera, especialmente los fines de semana y días festivos. Horas pico: 22:00 a 4:00 horas.
+                            </div>
+                        </div>
+
+                        <div class="challenge-card">
+                            <div class="challenge-icon">🦌</div>
+                            <div class="challenge-name">Actividad de vida silvestre</div>
+                            <div class="challenge-description">
+                                La mayoría de los animales son crepusculares (activos al amanecer o al anochecer). Los ciervos, los mapaches y otros animales salvajes plantean importantes riesgos de colisión, especialmente en las zonas rurales.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-title">⏰ Tiempos más peligrosos</div>
+                    <ul class="warning-list">
+                        <li><strong>Anochecer al amanecer:</strong> Períodos de transición donde la visibilidad cambia rápidamente</li>
+                        <li><strong>Tarde en la noche (12 a.m. - 4 a.m.):</strong> Mayor concentración de conductores ebrios</li>
+                        <li><strong>Tardes de fin de semana:</strong> Mayor actividad social y consumo de alcohol.</li>
+                        <li><strong>Temporadas de migración animal:</strong> Primavera y otoño en las zonas rurales</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Section 2: Practical Safety Tips -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🛡️</span>
+                    <span class="title-highlight">Proactivo</span> Estrategias de conducción nocturna
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #5b9bd5;">💡</span> Técnicas esenciales para conducir de noche
+                    </h3>
+                    
+                    <div class="tip-grid">
+                        <div class="tip-card">
+                            <div class="tip-icon">🚗💡</div>
+                            <div class="tip-title">Dominio de los faros</div>
+                            <div class="tip-content">
+                                Utilice luces altas en áreas rurales y atenúelas 500 pies antes del tráfico que viene en sentido contrario. Limpie las lentes con regularidad para obtener el máximo brillo.
+                            </div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-icon">🐢</div>
+                            <div class="tip-title">Reducción de velocidad</div>
+                            <div class="tip-content">
+                                Reduzca la velocidad entre 10 y 15 mph por la noche. Más tiempo para reaccionar significa más posibilidades de evitar peligros.
+                            </div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-icon">📏</div>
+                            <div class="tip-title">Mayor distancia de seguimiento</div>
+                            <div class="tip-content">
+                                Mantenga más de 4 segundos detrás de otros vehículos (el doble que durante el día). Utilice objetos fijos para medir la distancia.
+                            </div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-icon">👁️</div>
+                            <div class="tip-title">Gestión del deslumbramiento</div>
+                            <div class="tip-content">
+                                Utilice el modo nocturno en el espejo retrovisor. Mire hacia el borde derecho de la carretera cuando se encuentre frente a luces brillantes que se aproximan.
+                            </div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-icon">🚶‍♂️</div>
+                            <div class="tip-title">Vigilancia peatonal</div>
+                            <div class="tip-content">
+                                Escanee aceras y cruces peatonales constantemente. La ropa oscura hace que los peatones sean casi invisibles por la noche.
+                            </div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-icon">🦌</div>
+                            <div class="tip-title">Concientización sobre la vida silvestre</div>
+                            <div class="tip-content">
+                                Esté atento a los ojos brillantes al borde de la carretera. Si ves un animal, espera más. Frena, no te desvíes.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: #00b050;">⚡</span> Contramedidas contra la fatiga
+                    </h3>
+                    
+                    <div class="success-box">
+                        <div class="success-title">✅ Mantenerse alerta & enfocado</div>
+                        <ul class="success-list">
+                            <li><strong>Descanso previo al viaje:</strong> Duerma entre 7 y 8 horas antes de realizar largos viajes nocturnos</li>
+                            <li><strong>Descansos estratégicos:</strong> Deténgase cada 2 horas o 100 millas, lo que ocurra primero</li>
+                            <li><strong>Hidratación:</strong> Beba agua con regularidad: la deshidratación provoca fatiga</li>
+                            <li><strong>Control de temperatura:</strong> Mantenga la cabina ligeramente fresca (68-72°F) para mantenerse alerta</li>
+                            <li><strong>Conducción complementaria:</strong> Compartir tareas de conducción en viajes largos</li>
+                            <li><strong>Protocolo de siesta:</strong> Si tiene sueño, deténgase inmediatamente. Una siesta de 20 minutos puede restaurar el estado de alerta</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <div class="warning-title">⚠️ Señales de advertencia de conducción con sueño</div>
+                        <ul class="warning-list">
+                            <li>Bostezar repetidamente o frotarse los ojos.</li>
+                            <li>Dificultad para mantener la cabeza erguida o los ojos abiertos.</li>
+                            <li>Faltan salidas o señales de tráfico.</li>
+                            <li>Desviarse entre carriles o golpear franjas sonoras</li>
+                            <li>Soñar despierto o pensamientos desconectados</li>
+                            <li>Sentirse inquieto o irritable</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Vehicle Preparation -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🔧</span>
+                    Vehículo <span class="title-highlight">Preparación</span> & Mantenimiento
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🚗 Lista de verificación esencial antes de conducir por la noche</h3>
+                    
+                    <div class="success-box">
+                        <div class="success-title">✅ Inspección del sistema de iluminación</div>
+                        <ul class="success-list">
+                            <li><strong>Faros:</strong> Verifique las luces altas y bajas. Reemplace cualquier bombilla apagada o amarillenta inmediatamente</li>
+                            <li><strong>Alineación:</strong> Asegúrese de que los faros estén correctamente orientados: las luces desalineadas ciegan a los demás y reducen su visibilidad.</li>
+                            <li><strong>Limpieza:</strong> Limpie los lentes de suciedad, insectos y suciedad de la carretera. Utilice kits de restauración de faros especializados si es necesario</li>
+                            <li><strong>Luces de señal:</strong> Pruebe todas las señales de giro, luces de freno y luces de emergencia.</li>
+                            <li><strong>Luces antiniebla:</strong> Asegúrese de que funcionen y se utilicen únicamente en condiciones adecuadas (niebla, lluvia intensa, nieve)</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <div class="success-title">✅ Optimización de la visibilidad</div>
+                        <ul class="success-list">
+                            <li><strong>Parabrisas:</strong> Limpiar por dentro y por fuera. Las rayas provocan deslumbramiento. Reemplace los limpiaparabrisas cada 6-12 meses</li>
+                            <li><strong>Ventanas:</strong> Limpia todas las ventanas y espejos. Utilice tratamiento antivaho en superficies interiores.</li>
+                            <li><strong>Desempañador:</strong> Pruebe los desempañadores delanteros y traseros antes de necesitarlos</li>
+                            <li><strong>Espejos:</strong> Ajuste todos los espejos. Limpie el vidrio y asegúrese de que la configuración del modo nocturno sea adecuada</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <div class="success-title">✅ Sistemas críticos de seguridad</div>
+                        <ul class="success-list">
+                            <li><strong>Llantas:</strong> Verifique la presión (incluido el repuesto) y la profundidad de la banda de rodamiento (mínimo 4/32")</li>
+                            <li><strong>Frenos:</strong> Escuche sonidos inusuales. Pruebe la capacidad de respuesta del freno</li>
+                            <li><strong>Fluidos:</strong> Revisar el aceite, el refrigerante, el líquido de frenos y el líquido lavaparabrisas.</li>
+                            <li><strong>Kit de emergencia:</strong> Incluye linterna, triángulos reflectantes, botiquín de primeros auxilios y mantas abrigadas.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🌙 Equipo especializado para conducción nocturna</h3>
+                    <p class="subsection-content">
+                        Los vehículos modernos ofrecen tecnologías que mejoran significativamente la seguridad en la conducción nocturna. Conoce qué tiene tu vehículo y cómo usarlo correctamente.
+                    </p>
+
+                    <div class="tip-grid">
+                        <div class="tip-card">
+                            <div class="tip-icon">🤓</div>
+                            <div class="tip-title">Sistemas de visión nocturna</div>
+                            <div class="tip-content">
+                                Utiliza cámaras infrarrojas para detectar peatones y animales más allá del alcance de los faros. No es un sustituto de la vigilancia.
+                            </div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-icon">👁️</div>
+                            <div class="tip-title">Faros adaptativos</div>
+                            <div class="tip-content">
+                                Faros que giran con el volante. Mejora la visibilidad en las curvas. Saber activar/desactivar.
+                            </div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-icon">🚦</div>
+                            <div class="tip-title">Luces altas automáticas</div>
+                            <div class="tip-content">
+                                Los sensores detectan el tráfico que viene en sentido contrario y atenúan automáticamente las luces altas. Todavía requiere supervisión del conductor.
+                            </div>
+                        </div>
+
+                        <div class="tip-card">
+                            <div class="tip-icon">⚡</div>
+                            <div class="tip-title">Faros LED/láser</div>
+                            <div class="tip-content">
+                                Proporciona una luz más brillante y blanca con mayor alcance. Puede ser más llamativo para los conductores que vienen en sentido contrario; úselo de manera responsable.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <div class="key-points-title">🎯 Resumen de supervivencia al conducir de noche</div>
+                    <ul class="key-points-list">
+                        <li><strong>La visibilidad lo es todo:</strong> Limpie todos los vidrios y asegúrese de que haya una iluminación adecuada antes de cada viaje nocturno.</li>
+                        <li><strong>La velocidad mata por la noche:</strong> Reduzca significativamente la velocidad: los tiempos de reacción son más lentos en la oscuridad.</li>
+                        <li><strong>La distancia es tu amiga:</strong> Duplique su distancia de seguimiento desde la conducción diurna</li>
+                        <li><strong>La fatiga es un asesino silencioso:</strong> Reconocer los signos de somnolencia y dejar de conducir inmediatamente.</li>
+                        <li><strong>La gestión del deslumbramiento es fundamental:</strong> Utilice los espejos correctamente y evite mirar directamente a las luces que se aproximan.</li>
+                        <li><strong>Prepárese para lo inesperado:</strong> La vida silvestre, los conductores ebrios y la visibilidad reducida requieren vigilancia adicional</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Check -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">🌙 Evaluación de conocimientos de conducción nocturna</h2>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. ¿Cuánto más altas son las tasas de muerte por accidentes de tránsito durante la noche en comparación con las del día?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Casi lo mismo que durante el día</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Dos veces mayor</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Tres veces mayor</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. ¿Cuál es la distancia de seguimiento recomendada de noche en buenas condiciones?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>2 segundos (igual que durante el día)</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>3 segundos</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>4+ segundos (doble distancia diurna)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. ¿Cuándo debería atenuar las luces altas para el tráfico que viene en sentido contrario?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>500 pies antes de encontrarse con el vehículo.</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Cuando puedes ver sus faros</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Sólo en caminos sinuosos</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. ¿Qué debes hacer si te encuentras con un ciervo en el camino por la noche?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Desvíate para evitarlo</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Frene con firmeza y permanezca en su carril.</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Enciende tus luces altas para ahuyentarlo</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">Compruebe sus conocimientos de conducción nocturna</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>🌙</span> Sus resultados de seguridad al conducir de noche
+                </div>
+                <div class="score" id="score">0/4</div>
+                <div class="feedback" id="feedback">
+                    Revise sus respuestas para ver qué conceptos de conducción nocturna domina.
+                </div>
+                <div class="key-points" style="margin-top: 20px;">
+                    <div class="key-points-title">🎯 Conclusiones esenciales sobre la conducción nocturna</div>
+                    <ul class="key-points-list">
+                        <li>Conducir de noche es 3 veces más peligroso: respete la oscuridad</li>
+                        <li>La preparación es clave: revise las luces, limpie las ventanas y asegúrese de que el vehículo esté listo</li>
+                        <li>Reduzca la velocidad y aumente significativamente la distancia de seguimiento.</li>
+                        <li>Reconocer y combatir la fatiga: es tan peligrosa como el alcoholismo</li>
+                        <li>El uso adecuado de los faros lo protege a usted y a los demás conductores</li>
+                        <li>Espere siempre lo inesperado: vida salvaje, conductores ebrios y visibilidad reducida.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🌙</span> ¡Dominio de la conducción nocturna logrado!
+            </div>
+            <p>Ha completado con éxito la lección Seguridad al conducir de noche. Recuerde, la oscuridad exige respeto y preparación.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>Aplique estas técnicas cada vez que conduzca de noche. Su preparación podría significar la diferencia entre un viaje seguro y un resultado trágico.</p>
+        </div>
+    </div>
+
+    <script>
+        // Create starry night background
+        function createNightSky() {
+            const sky = document.getElementById('night-sky');
+            const starCount = 150;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random position
+                const top = Math.random() * 100;
+                const left = Math.random() * 100;
+                
+                // Random size
+                const size = Math.random() * 3 + 1;
+                
+                // Random twinkle delay
+                const delay = Math.random() * 5;
+                
+                star.style.top = `${top}%`;
+                star.style.left = `${left}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDelay = `${delay}s`;
+                
+                sky.appendChild(star);
+            }
+        }
+
+        // Timer Configuration
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let quizCompleted = false;
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const progressFill = document.getElementById('progress-fill');
+        const submitBtn = document.getElementById('submit-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            updateProgress();
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 3;
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 600) { // 10 minutes or more
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 900) { // 15 minutes or more
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update quiz score display
+        function updateQuizScore(score, totalQuestions) {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            quizScoreEl.textContent = `${percentage}%`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create night sky background
+            createNightSky();
+            
+            // Start the continuous timer
+            startTimer();
+            
+            // Set up option selection
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+        });
+
+        function checkAnswers() {
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'C',
+                2: 'C',
+                3: 'A',
+                4: 'B'
+            };
+
+            let score = 0;
+            const totalQuestions = 4;
+            let feedbackHTML = '';
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#00b050';
+                        selectedOption.style.background = 'rgba(0, 176, 80, 0.2)';
+                    } else {
+                        selectedOption.style.borderColor = '#c00000';
+                        selectedOption.style.background = 'rgba(192, 0, 0, 0.2)';
+                        
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#00b050';
+                            correctOption.style.background = 'rgba(0, 176, 80, 0.2)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            updateQuizScore(score, totalQuestions);
+            
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            if (score === totalQuestions) {
+                feedbackHTML = '🌙Excelente! Ha dominado los conceptos esenciales de seguridad en la conducción nocturna. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 Buen conocimiento de los principios de conducción nocturna. ';
+            } else {
+                feedbackHTML = '📚 Revisa el material de la lección. La seguridad al conducir de noche es fundamental. ';
+            }
+            
+            feedbackHTML += 'Aplique estos conceptos cada vez que conduzca de noche.';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            document.getElementById('results').classList.add('show');
+            
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'gradiente lineal (135 grados, # 00b050, # 4caf50)';
+            
+            progressFill.style.width = '100%';
+            
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA - Donación de órganos en Virginia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb; /* Brand purple */
+            --color-primary-soft: #8a5feb;
+            --color-secondary: #000000; /* Black */
+            --color-accent: #7c3aed;
+            --color-success: #10b981;
+            --color-hero: #0077cc;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-bg: #ffffff; /* White */
+            --color-text: #000000; /* Black */
+            --color-muted: #6b7280;
+            --color-dark: #000000; /* Black */
+            --color-light: #f9fafb;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+            --shadow-card: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Main Container */
+        .page {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        @media (max-width: 900px) {
+            .page { padding: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 0; }
+            .page {
+                border-radius: 0;
+                box-shadow: none;
+                padding: 16px 12px 20px;
+            }
+        }
+
+        /* Header */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            max-width: 100%;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .brand-logo:hover { 
+            transform: scale(1.05); 
+            animation: glow 2s infinite;
+        }
+
+        .course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 100%;
+        }
+
+        .course-name {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .week-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.1);
+            font-size: 0.8rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .week-label-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        .badge-mode {
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.08);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-primary);
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .badge-mode:hover {
+            background: rgba(95, 23, 235, 0.15);
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            line-height: 1.1;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .module-subtitle {
+            font-size: 1rem;
+            color: var(--color-muted);
+            max-width: 800px;
+            margin-bottom: 28px;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+            line-height: 1.7;
+        }
+
+        /* Time Estimate Banner */
+        .time-estimate-banner {
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .time-estimate-content h3 {
+            color: var(--color-primary);
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .time-estimate-content p {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.1em;
+        }
+
+        /* Hero Impact Display */
+        .hero-impact {
+            background: linear-gradient(135deg, #0077cc 0%, #0055aa 100%);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .hero-impact::before {
+            content: '❤️';
+            position: absolute;
+            font-size: 120px;
+            opacity: 0.1;
+            right: -20px;
+            bottom: -20px;
+            transform: rotate(20deg);
+        }
+
+        .impact-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .impact-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 600px) {
+            .impact-stats { grid-template-columns: 1fr; }
+        }
+
+        .impact-stat {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .impact-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            animation: heartbeat 2s infinite;
+        }
+
+        .impact-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        /* Simulation Container */
+        .simulation-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .simulation-container { grid-template-columns: 1fr; }
+        }
+
+        /* Donor Journey */
+        .donor-journey {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .journey-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .journey-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .journey-steps::before {
+            content: '';
+            position: absolute;
+            left: 25px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: rgba(95, 23, 235, 0.2);
+            z-index: 1;
+        }
+
+        .journey-step {
+            display: flex;
+            gap: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(95, 23, 235, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .journey-step.active .step-number {
+            background: var(--color-success);
+            transform: scale(1.1);
+            animation: pulse 2s infinite;
+        }
+
+        .step-content {
+            flex-grow: 1;
+            padding-top: 10px;
+        }
+
+        .step-title {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 5px;
+        }
+
+        .step-description {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            line-height: 1.5;
+        }
+
+        /* Impact Visualization */
+        .impact-visualization {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .visualization-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .organs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .organ-item {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .organ-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .organ-item.saved {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--color-success);
+        }
+
+        .organ-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .organ-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--color-text);
+        }
+
+        .organ-lives {
+            font-size: 0.75rem;
+            color: var(--color-success);
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        /* Registration Simulator */
+        .registration-simulator {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 25px;
+        }
+
+        .simulator-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .registration-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-step {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-question {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .form-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-option {
+            padding: 15px;
+            border-radius: var(--radius-sm);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .form-option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .form-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .option-checkbox {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid rgba(95, 23, 235, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .form-option.selected .option-checkbox {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+        }
+
+        .option-content {
+            flex-grow: 1;
+        }
+
+        .option-title {
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 5px;
+        }
+
+        .option-description {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+        }
+
+        /* Navigation Buttons */
+        .simulator-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--color-primary);
+            background: white;
+            color: var(--color-primary);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: var(--color-muted);
+            color: var(--color-muted);
+        }
+
+        .nav-btn.next {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        /* Final Impact Display */
+        .final-impact {
+            text-align: center;
+            padding: 30px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            border: 2px solid var(--color-success);
+            margin-top: 30px;
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .final-impact.show {
+            display: block;
+        }
+
+        .final-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-success);
+            margin-bottom: 15px;
+        }
+
+        .impact-summary {
+            font-size: 1.1rem;
+            color: var(--color-text);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .lives-saved {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(95, 23, 235, 0.3);
+            animation: heartbeat 2s infinite;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.4);
+            animation: glow 1.5s infinite;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.2);
+        }
+
+        .btn-hero {
+            background: var(--color-hero);
+            color: white;
+            border: 2px solid var(--color-hero);
+        }
+
+        .btn-hero:hover {
+            background: #0055aa;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 119, 204, 0.4);
+        }
+
+        .btn-icon { 
+            font-size: 1.2em; 
+            font-weight: bold;
+        }
+
+        /* Footer Note */
+        .footer-note {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(95, 23, 235, 0.1);
+            color: var(--color-muted);
+            font-size: 0.9rem;
+        }
+
+        .legal-note {
+            background: rgba(95, 23, 235, 0.03);
+            padding: 15px;
+            border-radius: var(--radius-sm);
+            margin-top: 10px;
+            font-size: 0.8rem;
+            border-left: 3px solid var(--color-primary);
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <main class="page" aria-labelledby="module-heading">
+        <!-- Header -->
+        <header class="brand-row">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo" />
+                <div class="course-meta">
+                    <span class="course-name">Clínica de conducción de VA • Módulo de servicio público</span>
+                    <div class="week-label">
+                        <span class="week-label-dot"></span>
+                        <span>Donación de órganos en Virginia</span>
+                    </div>
+                </div>
+            </div>
+            <span class="badge-mode">Simulación que salva vidas</span>
+        </header>
+
+        <h1 id="module-heading">El regalo de la vida: donación de órganos en Virginia</h1>
+        <p class="module-subtitle">
+            Experimente el profundo impacto de la donación de órganos a través de esta simulación interactiva. 
+            Aprenda cómo una decisión puede salvar hasta 8 vidas, comprenda el sencillo proceso de registro de Virginia, 
+            y descubra la diferencia transformadora que puede marcar.
+        </p>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate-banner">
+            <div class="time-estimate-icon">
+                ⏱️
+            </div>
+            <div class="time-estimate-content">
+                <h3>Estimación del tiempo de simulación</h3>
+                <p>Completa esta experiencia interactiva en aproximadamente <span class="time-highlight">5 minutos</span>. Sea testigo de cómo su decisión crea un efecto dominó que puede salvar vidas.</p>
+            </div>
+        </div>
+
+        <!-- Hero Impact Display -->
+        <div class="hero-impact">
+            <div class="impact-title">Un donante puede crear este impacto</div>
+            <div class="impact-stats">
+                <div class="impact-stat">
+                    <span class="impact-number" id="lives-saved">8</span>
+                    <span class="impact-label">Vidas salvadas</span>
+                </div>
+                <div class="impact-stat">
+                    <span class="impact-number" id="lives-improved">75+</span>
+                    <span class="impact-label">Vidas mejoradas</span>
+                </div>
+                <div class="impact-stat">
+                    <span class="impact-number" id="waiting-list">100,000+</span>
+                    <span class="impact-label">En lista de espera</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulation Container -->
+        <div class="simulation-container">
+            <!-- Left Column: Donor Journey -->
+            <div class="donor-journey">
+                <div class="journey-title">
+                    <span>🛣️</span>
+                    El viaje de los donantes
+                </div>
+                <div class="journey-steps">
+                    <div class="journey-step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Decisión & Registro</div>
+                            <div class="step-description">Elija convertirse en donante en el DMV de Virginia o en línea a través de Donate Life Virginia</div>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Comunicación familiar</div>
+                            <div class="step-description">Comparta su decisión con sus seres queridos para asegurarse de que se cumplan sus deseos.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Evaluación Médica</div>
+                            <div class="step-description">Los profesionales de la salud determinan la viabilidad del órgano y la compatibilidad con los receptores.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-step" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <div class="step-title">Regalo que salva vidas</div>
+                            <div class="step-description">Se trasplantan órganos a receptores en espera, salvando y mejorando vidas</div>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-step" data-step="5">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <div class="step-title">Legado de esperanza</div>
+                            <div class="step-description">Su donación crea un legado duradero y brinda consuelo a las familias de los donantes.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Impact Visualization -->
+            <div class="impact-visualization">
+                <div class="visualization-title">
+                    <span>🎯</span>
+                    Su impacto potencial
+                </div>
+                <p style="text-align: center; margin-bottom: 25px; color: var(--color-muted); font-size: 0.95rem;">
+                    Haga clic en cada órgano para ver cuántas vidas puede salvar o mejorar
+                </p>
+                
+                <div class="organs-grid">
+                    <div class="organ-item" data-organ="heart" data-lives="1">
+                        <span class="organ-icon">❤️</span>
+                        <div class="organ-label">Corazón</div>
+                        <div class="organ-lives">Salva 1 vida</div>
+                    </div>
+                    
+                    <div class="organ-item" data-organ="lungs" data-lives="2">
+                        <span class="organ-icon">🫁</span>
+                        <div class="organ-label">Pulmones (2)</div>
+                        <div class="organ-lives">Salva 2 vidas</div>
+                    </div>
+                    
+                    <div class="organ-item" data-organ="liver" data-lives="2">
+                        <span class="organ-icon">🫀</span>
+                        <div class="organ-label">Hígado</div>
+                        <div class="organ-lives">Salva 2 vidas</div>
+                    </div>
+                    
+                    <div class="organ-item" data-organ="kidneys" data-lives="2">
+                        <span class="organ-icon">🧠</span>
+                        <div class="organ-label">Riñones (2)</div>
+                        <div class="organ-lives">Salva 2 vidas</div>
+                    </div>
+                    
+                    <div class="organ-item" data-organ="pancreas" data-lives="1">
+                        <span class="organ-icon">🩸</span>
+                        <div class="organ-label">Páncreas</div>
+                        <div class="organ-lives">Salva 1 vida</div>
+                    </div>
+                    
+                    <div class="organ-item" data-organ="intestines" data-lives="1">
+                        <span class="organ-icon">🦴</span>
+                        <div class="organ-label">intestinos</div>
+                        <div class="organ-lives">Salva 1 vida</div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(95, 23, 235, 0.05); padding: 20px; border-radius: var(--radius-sm); margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 700; color: var(--color-primary);">Impacto de la donación de tejidos</div>
+                            <div style="font-size: 0.9rem; color: var(--color-muted);">Córneas, piel, huesos, válvulas cardíacas.</div>
+                        </div>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--color-success);">75+ vidas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Simulator -->
+        <div class="registration-simulator">
+            <div class="simulator-title">
+                <span>📝</span>
+                Simulador de registro de Virginia
+            </div>
+            
+            <div class="registration-form">
+                <!-- Step 1: Decision -->
+                <div class="form-step active" data-step="1">
+                    <div class="form-question">¿Está listo para salvar vidas convirtiéndose en donante de órganos en Virginia?</div>
+                    <div class="form-options">
+                        <div class="form-option" data-option="yes">
+                            <div class="option-checkbox"></div>
+                            <div class="option-content">
+                                <div class="option-title">✅ Sí, quiero salvar vidas</div>
+                                <div class="option-description">Regístrese como donante de órganos y potencialmente salve hasta 8 vidas</div>
+                            </div>
+                        </div>
+                        <div class="form-option" data-option="undecided">
+                            <div class="option-checkbox"></div>
+                            <div class="option-content">
+                                <div class="option-title">🤔 Todavía estoy considerando</div>
+                                <div class="option-description">Obtenga más información antes de tomar esta importante decisión</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Registration Method -->
+                <div class="form-step" data-step="2">
+                    <div class="form-question">¿Cómo le gustaría registrarse en Virginia?</div>
+                    <div class="form-options">
+                        <div class="form-option" data-option="dmv">
+                            <div class="option-checkbox"></div>
+                            <div class="option-content">
+                                <div class="option-title">🚗 En el DMV de Virginia</div>
+                                <div class="option-description">Marque "Sí" al solicitar o renovar su licencia de conducir/identificación</div>
+                            </div>
+                        </div>
+                        <div class="form-option" data-option="online">
+                            <div class="option-checkbox"></div>
+                            <div class="option-content">
+                                <div class="option-title">🌐 Registro en línea</div>
+                                <div class="option-description">Regístrese a través de DonateLifeVirginia.org en 5 minutos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Family Communication -->
+                <div class="form-step" data-step="3">
+                    <div class="form-question">¿Compartirás tu decisión con tu familia?</div>
+                    <div class="form-options">
+                        <div class="form-option" data-option="yes-family">
+                            <div class="option-checkbox"></div>
+                            <div class="option-content">
+                                <div class="option-title">👨‍👩‍👧‍👦 Sí, se lo diré a mi familia</div>
+                                <div class="option-description">Garantiza que sus deseos sean conocidos y respetados (recomendado)</div>
+                            </div>
+                        </div>
+                        <div class="form-option" data-option="notify-later">
+                            <div class="option-checkbox"></div>
+                            <div class="option-content">
+                                <div class="option-title">📱 Lo agregaré a mi directiva de salud</div>
+                                <div class="option-description">Incluya en su directiva anticipada de atención médica o testamento</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="simulator-nav">
+                <button class="nav-btn prev" id="prev-btn" disabled>
+                    ← Anterior
+                </button>
+                <button class="nav-btn next" id="next-btn">
+                    Siguiente paso →
+                </button>
+            </div>
+        </div>
+
+        <!-- Final Impact Display -->
+        <div class="final-impact" id="final-impact">
+            <div class="final-title">🎉 ¡Has tomado una decisión que te salvará la vida!</div>
+            <div class="impact-summary">
+                Al elegir convertirse en donante de órganos en Virginia, ha dado un paso que podría tener este increíble impacto:
+            </div>
+            <div class="lives-saved" id="total-lives-saved">0</div>
+            <div style="font-size: 1.2rem; font-weight: 700; color: var(--color-primary); margin-bottom: 20px;">
+                Se podrían salvar vidas
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: var(--radius-sm); margin: 25px 0;">
+                <div style="font-weight: 700; color: var(--color-text); margin-bottom: 10px;">Su legado incluye:</div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; text-align: left;">
+                    <div>• 8 receptores de trasplantes de órganos</div>
+                    <div>• Más de 75 receptores de trasplantes de tejido</div>
+                    <div>• Esperanza para más de 100.000 esperando</div>
+                    <div>• Comodidad para tu familia</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-secondary" id="reset-btn">
+                <span class="btn-icon">↻</span>
+                Reiniciar simulación
+            </button>
+            <button class="btn btn-hero" id="register-btn">
+                <span class="btn-icon">❤️</span>
+                Aprenda cómo registrarse
+            </button>
+            <button class="btn btn-primary" id="share-btn">
+                <span class="btn-icon">📢</span>
+                Comparte este mensaje
+            </button>
+        </div>
+
+        <!-- Footer Note -->
+        <div class="footer-note">
+            <p>La donación de órganos está regulada por la Ley Uniforme de Donaciones Anatómicas de Virginia y se gestiona a través de Donate Life Virginia.</p>
+            <div class="legal-note">
+                <strong>Importante:</strong> La idoneidad médica para la donación la determinan los profesionales sanitarios en el momento del fallecimiento. 
+                El registro no garantiza la donación, pero sí garantiza que sus deseos se conozcan y se cumplan de acuerdo con la ley de Virginia.
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // State Management
+            const state = {
+                currentStep: 1,
+                totalSteps: 3,
+                decisions: {},
+                organsSaved: 0,
+                livesImpacted: 0,
+                completed: false
+            };
+
+            // Organ data
+            const organData = {
+                'heart': { lives: 1, saved: false },
+                'lungs': { lives: 2, saved: false },
+                'liver': { lives: 2, saved: false },
+                'kidneys': { lives: 2, saved: false },
+                'pancreas': { lives: 1, saved: false },
+                'intestines': { lives: 1, saved: false }
+            };
+
+            // DOM Elements
+            const journeySteps = document.querySelectorAll('.journey-step');
+            const formSteps = document.querySelectorAll('.form-step');
+            const organItems = document.querySelectorAll('.organ-item');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const finalImpact = document.getElementById('final-impact');
+            const totalLivesSaved = document.getElementById('total-lives-saved');
+            const resetBtn = document.getElementById('reset-btn');
+            const registerBtn = document.getElementById('register-btn');
+            const shareBtn = document.getElementById('share-btn');
+            const livesSavedEl = document.getElementById('lives-saved');
+            const livesImprovedEl = document.getElementById('lives-improved');
+
+            // Initialize simulation
+            function initSimulation() {
+                updateJourneySteps();
+                updateFormSteps();
+                updateNavigation();
+                setupOrganInteractions();
+                setupFormInteractions();
+            }
+
+            // Update journey step visualization
+            function updateJourneySteps() {
+                journeySteps.forEach(step => {
+                    const stepNum = parseInt(step.dataset.step);
+                    if (stepNum <= state.currentStep) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active');
+                    }
+                });
+            }
+
+            // Update form steps
+            function updateFormSteps() {
+                formSteps.forEach(step => {
+                    const stepNum = parseInt(step.dataset.step);
+                    if (stepNum === state.currentStep) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active');
+                    }
+                });
+            }
+
+            // Update navigation buttons
+            function updateNavigation() {
+                prevBtn.disabled = state.currentStep === 1;
+                if (state.currentStep < state.totalSteps) {
+                    nextBtn.textContent = 'Siguiente paso →';
+                    nextBtn.onclick = nextStep;
+                } else {
+                    nextBtn.textContent = 'Registro completo →';
+                    nextBtn.onclick = completeRegistration;
+                }
+            }
+
+            // Setup organ interactions
+            function setupOrganInteractions() {
+                organItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        const organ = this.dataset.organ;
+                        const lives = parseInt(this.dataset.lives);
+                        
+                        if (!organData[organ].saved) {
+                            organData[organ].saved = true;
+                            state.organsSaved++;
+                            state.livesImpacted += lives;
+                            this.classList.add('saved');
+                            
+                            // Update live counter
+                            let currentLives = parseInt(livesSavedEl.textContent);
+                            if (currentLives < 8) {
+                                livesSavedEl.textContent = Math.min(8, currentLives + lives);
+                            }
+                            
+                            // Pulse animation
+                            this.style.animation = 'pulso 0,5 s facilidad';
+                            setTimeout(() => {
+                                this.style.animation = '';
+                            }, 500);
+                        }
+                    });
+                });
+            }
+
+            // Setup form interactions
+            function setupFormInteractions() {
+                document.querySelectorAll('.form-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        const step = this.closest('.form-step').dataset.step;
+                        const optionValue = this.dataset.option;
+                        
+                        // Remove selection from other options in same step
+                        const otherOptions = this.parentElement.querySelectorAll('.form-option');
+                        otherOptions.forEach(opt => opt.classList.remove('selected'));
+                        
+                        // Select this option
+                        this.classList.add('selected');
+                        
+                        // Store decision
+                        state.decisions[`step${step}`] = optionValue;
+                        
+                        // Enable next button
+                        nextBtn.disabled = false;
+                    });
+                });
+            }
+
+            // Next step function
+            function nextStep() {
+                if (state.currentStep < state.totalSteps) {
+                    state.currentStep++;
+                    updateJourneySteps();
+                    updateFormSteps();
+                    updateNavigation();
+                    
+                    // Auto-select first option in new step if not selected
+                    setTimeout(() => {
+                        const currentStepEl = document.querySelector(`.form-step[data-step="${state.currentStep}"]`);
+                        const options = currentStepEl.querySelectorAll('.form-option');
+                        if (options.length > 0 && !state.decisions[`step${state.currentStep}`]) {
+                            options[0].click();
+                        }
+                    }, 100);
+                }
+            }
+
+            // Previous step function
+            prevBtn.addEventListener('click', function() {
+                if (state.currentStep > 1) {
+                    state.currentStep--;
+                    updateJourneySteps();
+                    updateFormSteps();
+                    updateNavigation();
+                }
+            });
+
+            // Complete registration
+            function completeRegistration() {
+                state.completed = true;
+                
+                // Calculate total lives saved (8 maximum for organs + tissue impact)
+                const totalLives = Math.min(8, state.livesImpacted);
+                totalLivesSaved.textContent = totalLives;
+                
+                // Show final impact
+                finalImpact.classList.add('show');
+                finalImpact.scrollIntoView({ behavior: 'smooth' });
+                
+                // Update live counters with animation
+                animateCounter(livesSavedEl, 0, 8, 1500);
+                animateCounter(livesImprovedEl, 0, 75, 2000);
+                
+                // Auto-save all organs for visual impact
+                setTimeout(() => {
+                    organItems.forEach(item => {
+                        if (!item.classList.contains('saved')) {
+                            item.classList.add('saved');
+                            item.style.animation = 'pulso 0,5 s facilidad';
+                        }
+                    });
+                }, 500);
+            }
+
+            // Animate counter
+            function animateCounter(element, start, end, duration) {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    const value = Math.floor(progress * (end - start) + start);
+                    element.textContent = value + (element.id === 'lives-improved' ? '+' : '');
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            }
+
+            // Reset simulation
+            resetBtn.addEventListener('click', function() {
+                // Reset state
+                state.currentStep = 1;
+                state.decisions = {};
+                state.organsSaved = 0;
+                state.livesImpacted = 0;
+                state.completed = false;
+                
+                // Reset organ data
+                Object.keys(organData).forEach(key => {
+                    organData[key].saved = false;
+                });
+                
+                // Reset UI
+                journeySteps.forEach(step => step.classList.remove('active'));
+                journeySteps[0].classList.add('active');
+                
+                formSteps.forEach(step => step.classList.remove('active'));
+                formSteps[0].classList.add('active');
+                
+                organItems.forEach(item => item.classList.remove('saved'));
+                
+                document.querySelectorAll('.form-option').forEach(opt => opt.classList.remove('selected'));
+                
+                finalImpact.classList.remove('show');
+                
+                livesSavedEl.textContent = '8';
+                livesImprovedEl.textContent = '75+';
+                
+                updateNavigation();
+                
+                // Auto-select first option
+                setTimeout(() => {
+                    document.querySelector('.form-step.active .form-opción').click();
+                }, 100);
+            });
+
+            // Register button
+            registerBtn.addEventListener('click', function() {
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                    animation: fadeIn 0.3s ease;
+                `;
+                
+                modal.innerHTML = `
+                    <div style="
+                        background: white;
+                        border-radius: ${getComputedStyle(document.documentElement).getPropertyValue('--radius-lg')};
+                        padding: 30px;
+                        max-width: 500px;
+                        width: 90%;
+                        max-height: 90vh;
+                        overflow-y: auto;
+                    ">
+                        <h2 style="color: var(--color-primary); margin-bottom: 20px;">Regístrese como donante de órganos en Virginia</h2>
+                        
+                        <div style="margin-bottom: 25px;">
+                            <h3 style="color: var(--color-text); margin-bottom: 10px;">📋 Dos formas sencillas de registrarse:</h3>
+                            <div style="background: rgba(95, 23, 235, 0.05); padding: 15px; border-radius: var(--radius-sm); margin-bottom: 15px;">
+                                <strong>1. En el DMV de Virginia</strong><br>
+                                <span style="font-size: 0.9rem; color: var(--color-muted);">
+                                    Simplemente marque "SÍ" cuando solicite o renueve su licencia de conducir o tarjeta de identificación.
+                                </span>
+                            </div>
+                            <div style="background: rgba(95, 23, 235, 0.05); padding: 15px; border-radius: var(--radius-sm);">
+                                <strong>2. Registro en línea</strong><br>
+                                <span style="font-size: 0.9rem; color: var(--color-muted);">
+                                    Visita <strong>DonarVidaVirginia.org</strong> y completa el registro en 5 minutos.
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: var(--radius-sm); margin-bottom: 25px;">
+                            <strong>💡 Consejos importantes:</strong><br>
+                            • Cuéntale a tu familia tu decisión<br>
+                            • Lleve una tarjeta de donante en su billetera<br>
+                            • Agréguelo a su directiva anticipada de atención médica
+                        </div>
+                        
+                        <button id="close-modal" style="
+                            padding: 12px 24px;
+                            background: var(--color-primary);
+                            color: white;
+                            border: none;
+                            border-radius: var(--radius-sm);
+                            font-weight: 700;
+                            cursor: pointer;
+                            width: 100%;
+                        ">
+                            Cerrar y continuar aprendiendo
+                        </button>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                modal.querySelector('#close-modal').addEventListener('click', function() {
+                    document.body.removeChild(modal);
+                });
+                
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        document.body.removeChild(modal);
+                    }
+                });
+            });
+
+            // Share button
+            shareBtn.addEventListener('click', function() {
+                const shareText = `¡Acabo de enterarme de cómo la donación de órganos en Virginia puede salvar hasta 8 vidas! Un donante puede marcar una diferencia increíble. Obtenga más información sobre este regalo que salva vidas.`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Donación de órganos en Virginia',
+                        text: shareText,
+                        url: window.location.href
+                    });
+                } else {
+                    // Fallback for browsers without Web Share API
+                    navigator.clipboard.writeText(shareText + ' ' + window.location.href).then(() => {
+                        showMobileToast('¡Comparte el mensaje copiado al portapapeles! Pégalo para compartirlo con otros.');
+                    });
+                }
+            });
+
+            // Initialize the simulation
+            initSimulation();
+            
+            // Auto-select first option
+            setTimeout(() => {
+                document.querySelector('.form-step.active .form-opción').click();
+            }, 100);
+        });
+    </script>
+
+<script>
+/* ===== MOBILE TOAST NOTIFICATION (replaces alert) ===== */
+function showMobileToast(msg) {
+  var t = document.getElementById('_va_toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = '_va_toast';
+    t.style.cssText = [
+      'position:fixed','bottom:24px','left:50%','transform:translateX(-50%)',
+      'background:rgba(30,30,30,0.92)','color:#fff','relleno: 12px 22px',
+      'border-radius:24px','z-index:99999','font-weight:600',
+      'font-size:0.95rem','max-width:85vw','text-align:center',
+      'sombra de cuadro: 0 4px 16px rgba (0,0,0,0.3)',
+      'transición:opacidad 0,35s','opacity:0','pointer-events:none'
+    ].join(';');
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._to);
+  t._to = setTimeout(function(){ t.style.opacity='0'; }, 3200);
+}
+</script>
+
+</body>
+</html>

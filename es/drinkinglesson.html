@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA: bebida & Conciencia de conducción</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-danger: #dc2626;
+            --color-danger-light: #ef4444;
+            --color-warning: #f59e0b;
+            --color-success: #10b981;
+            --color-info: #3b82f6;
+            --color-dark: #1f2937;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --radius: 12px;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            line-height: 1.5;
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        @keyframes alert {
+            0%, 100% { background-color: #dc2626; }
+            50% { background-color: #ef4444; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(220, 38, 38, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(220, 38, 38, 0.8); }
+        }
+
+        .module-container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            height: 45px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .module-title {
+            font-size: 1rem;
+            color: #fca5a5;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .main-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(135deg, #fca5a5, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #cbd5e1;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        /* Timer */
+        .timer-container {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+            border-radius: 40px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            margin-bottom: 25px;
+            animation: glow 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        /* Progress Navigation */
+        .progress-nav {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .progress-nav {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .nav-step {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius);
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .nav-step:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--color-warning);
+        }
+
+        .nav-step.active {
+            background: var(--color-danger);
+            border-color: var(--color-danger);
+            animation: pulse 2s infinite;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: #fca5a5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            font-size: 1.8rem;
+        }
+
+        /* Statistics Banner */
+        .stats-banner {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+            animation: alert 3s infinite;
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+
+        /* Case Studies Grid */
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .case-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--color-danger);
+        }
+
+        .case-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .case-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(220, 38, 38, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .case-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .case-details {
+            margin-bottom: 15px;
+        }
+
+        .case-detail {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .case-detail strong {
+            color: #fca5a5;
+            min-width: 100px;
+        }
+
+        .case-sentence {
+            background: rgba(220, 38, 38, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid var(--color-danger);
+        }
+
+        .sentence-title {
+            font-weight: 700;
+            color: #fca5a5;
+            margin-bottom: 8px;
+        }
+
+        /* BAC Simulator */
+        .bac-simulator {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .bac-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .bac-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius);
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .bac-option:hover {
+            border-color: var(--color-warning);
+            transform: translateY(-3px);
+        }
+
+        .bac-option.selected {
+            border-color: var(--color-danger);
+            background: rgba(220, 38, 38, 0.2);
+            animation: pulse 1s infinite;
+        }
+
+        .bac-display {
+            font-size: 4rem;
+            font-weight: 900;
+            margin: 20px 0;
+            color: var(--color-danger);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .bac-effects {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .effect-item {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .effect-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--color-danger);
+            font-size: 1.5rem;
+        }
+
+        /* Prevention Strategies */
+        .strategies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .strategy-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius);
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .strategy-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-success);
+        }
+
+        .strategy-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .strategy-title {
+            font-weight: 700;
+            color: #86efac;
+            margin-bottom: 10px;
+        }
+
+        .strategy-desc {
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+
+        /* Interactive Quiz */
+        .quiz-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin: 25px 0;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: white;
+            line-height: 1.4;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--color-warning);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--color-danger);
+            background: rgba(220, 38, 38, 0.2);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--color-danger);
+            background: rgba(220, 38, 38, 0.2);
+        }
+
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 14px 35px;
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            min-width: 180px;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.4);
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+            border: 2px solid var(--color-warning);
+            color: var(--color-warning);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        /* Completion Screen */
+        .completion-screen {
+            display: none;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: var(--radius);
+            padding: 40px;
+            text-align: center;
+            border: 2px solid var(--color-success);
+        }
+
+        .completion-screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: #86efac;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .completion-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        @media (max-width: 768px) {
+            .completion-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .completion-stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-success);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .pledge-card {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px solid var(--color-success);
+        }
+
+        .pledge-title {
+            font-weight: 700;
+            color: #86efac;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .pledge-list {
+            text-align: left;
+            display: inline-block;
+            margin: 0 auto;
+        }
+
+        .pledge-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .pledge-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Feedback Messages */
+        .feedback-message {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--color-danger);
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            color: #fca5a5;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.4rem;
+            }
+            
+            .stat-number {
+                font-size: 2.5rem;
+            }
+            
+            .bac-display {
+                font-size: 3rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <div class="module-container">
+        <!-- Header -->
+        <div class="header" id="module-header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo">
+                <div class="module-title">Bebida & Conciencia de conducción</div>
+            </div>
+        </div>
+
+        <!-- Main Titles -->
+        <h1 class="main-title" id="page-main-title">La mortal realidad de beber & Conduciendo</h1>
+        <div class="subtitle" id="page-subtitle">Módulo interactivo de concientización de 10 minutos</div>
+
+        <!-- Timer -->
+        <div class="timer-container" id="page-timer-container">
+            <div class="timer-display" id="timer">10:00</div>
+        </div>
+
+        <!-- Progress Navigation -->
+        <div class="progress-nav" id="page-nav">
+            <div class="nav-step active" onclick="showSection(1)">Los peligros</div>
+            <div class="nav-step" onclick="showSection(2)">Casos Reales 2024</div>
+            <div class="nav-step" onclick="showSection(3)">Simulador BAC</div>
+            <div class="nav-step" onclick="showSection(4)">Cuestionario de prevención</div>
+        </div>
+
+        <!-- Section 1: The Dangers -->
+        <div class="content-section active" id="section-1">
+            <h2 class="section-title">
+                <span class="section-icon">☠️</span>
+                Las consecuencias mortales
+            </h2>
+
+            <div class="stats-banner">
+                <div class="stat-number">10,142</div>
+                <div class="stat-text">Personas murieron en accidentes de conducción bajo los efectos del alcohol en 2019</div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <p>El alcohol afecta todas las habilidades necesarias para una conducción segura:</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 25px 0;">
+                <div style="background: rgba(255,255,255,0.08); padding: 20px; border-radius: var(--radius); text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">⏱️</div>
+                    <div style="font-weight: 700; color: #fca5a5; margin-bottom: 8px;">Reacciones más lentas</div>
+                    <div style="font-size: 0.9rem;">Tiempo de reacción 2 veces más largo con 0,08% BAC</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.08); padding: 20px; border-radius: var(--radius); text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🤚</div>
+                    <div style="font-weight: 700; color: #fca5a5; margin-bottom: 8px;">Mala coordinación</div>
+                    <div style="font-size: 0.9rem;">Dificultad para conducir, frenar, acelerar.</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.08); padding: 20px; border-radius: var(--radius); text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🧠</div>
+                    <div style="font-weight: 700; color: #fca5a5; margin-bottom: 8px;">Juicio deteriorado</div>
+                    <div style="font-size: 0.9rem;">Decisiones arriesgadas que aceleran los errores de juicio</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.08); padding: 20px; border-radius: var(--radius); text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">👁️</div>
+                    <div style="font-weight: 700; color: #fca5a5; margin-bottom: 8px;">Visión borrosa</div>
+                    <div style="font-size: 0.9rem;">Visión nocturna reducida, visión doble.</div>
+                </div>
+            </div>
+
+            <div class="feedback-message">
+                <div class="feedback-title">⚠️ Hecho crítico</div>
+                <div>Incluso con un BAC del 0,05% (por debajo del límite legal), el riesgo de accidente se DUPLICA. Al 0,08%, el riesgo se multiplica por 4.</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" onclick="showSection(2)">
+                    Ver Casos Reales →
+                </button>
+            </div>
+        </div>
+
+        <!-- Section 2: Real Cases 2024 -->
+        <div class="content-section" id="section-2">
+            <h2 class="section-title">
+                <span class="section-icon">⚖️</span>
+                2024 Consecuencias de la vida real
+            </h2>
+
+            <p style="margin-bottom: 25px;">Estos casos recientes muestran las severas sanciones por conducir bajo los efectos del alcohol:</p>
+
+            <div class="cases-grid">
+                <!-- Case 1: Union County -->
+                <div class="case-card">
+                    <div class="case-header">
+                        <div class="case-icon">🚗</div>
+                        <div class="case-title">Condado de Union, Carolina del Norte</div>
+                    </div>
+                    <div class="case-details">
+                        <div class="case-detail">
+                            <strong>Fecha:</strong> 7 de enero de 2024
+                        </div>
+                        <div class="case-detail">
+                            <strong>Conductor:</strong> Samuel Reece Freeman (20)
+                        </div>
+                        <div class="case-detail">
+                            <strong>bachillerato:</strong> Por encima del límite legal
+                        </div>
+                        <div class="case-detail">
+                            <strong>Chocar:</strong> Colisión fatal en la autopista estadounidense 74
+                        </div>
+                    </div>
+                    <div class="case-sentence">
+                        <div class="sentence-title">🚨 Cargos & Oración</div>
+                        <div>• Muerte por delito grave por vehículo motorizado</div>
+                        <div>• Conducción imprudente</div>
+                        <div>• Múltiples otros delitos</div>
+                        <div style="margin-top: 10px; color: #fca5a5; font-weight: 600;">
+                            El pasajero (20) murió en el lugar
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case 2: California -->
+                <div class="case-card">
+                    <div class="case-header">
+                        <div class="case-icon">🚓</div>
+                        <div class="case-title">California</div>
+                    </div>
+                    <div class="case-details">
+                        <div class="case-detail">
+                            <strong>bachillerato:</strong> 0,15% (casi el doble del límite legal)
+                        </div>
+                        <div class="case-detail">
+                            <strong>Previo:</strong> Condena anterior por DUI
+                        </div>
+                        <div class="case-detail">
+                            <strong>Chocar:</strong> Colisión de varios autos en la I-5
+                        </div>
+                        <div class="case-detail">
+                            <strong>Resultado:</strong> 2 muertes
+                        </div>
+                    </div>
+                    <div class="case-sentence">
+                        <div class="sentence-title">⛓️ Oración</div>
+                        <div>• 10 años de prisión</div>
+                        <div>• Homicidio vehicular</div>
+                        <div>• DUI agravado</div>
+                        <div style="margin-top: 10px; color: #fca5a5; font-weight: 600;">
+                            Sanciones para reincidentes
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case 3: Texas -->
+                <div class="case-card">
+                    <div class="case-header">
+                        <div class="case-icon">🚨</div>
+                        <div class="case-title">Texas</div>
+                    </div>
+                    <div class="case-details">
+                        <div class="case-detail">
+                            <strong>bachillerato:</strong> 0,20% (2,5x límite legal)
+                        </div>
+                        <div class="case-detail">
+                            <strong>Chocar:</strong> Accidente fatal de peatones
+                        </div>
+                        <div class="case-detail">
+                            <strong>Cargar:</strong> Homicidio por intoxicación
+                        </div>
+                        <div class="case-detail">
+                            <strong>Nivel:</strong> Delito grave de segundo grado
+                        </div>
+                    </div>
+                    <div class="case-sentence">
+                        <div class="sentence-title">⚖️ oración</div>
+                        <div>• 15 años de prisión</div>
+                        <div>• Revocación de la licencia de conducir de por vida</div>
+                        <div>• Multa de $10,000</div>
+                        <div style="margin-top: 10px; color: #fca5a5; font-weight: 600;">
+                            Texas tiene tolerancia cero
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case 4: Florida -->
+                <div class="case-card">
+                    <div class="case-header">
+                        <div class="case-icon">💀</div>
+                        <div class="case-title">Florida</div>
+                    </div>
+                    <div class="case-details">
+                        <div class="case-detail">
+                            <strong>bachillerato:</strong> 0.18%
+                        </div>
+                        <div class="case-detail">
+                            <strong>Chocar:</strong> Colisión de vehículo familiar
+                        </div>
+                        <div class="case-detail">
+                            <strong>Resultado:</strong> Familia de 3 miembros asesinados
+                        </div>
+                        <div class="case-detail">
+                            <strong>Cargos:</strong> Múltiples recuentos
+                        </div>
+                    </div>
+                    <div class="case-sentence">
+                        <div class="sentence-title">🚫 Oración</div>
+                        <div>• 25 años de prisión</div>
+                        <div>• Homicidio por DUI (x3)</div>
+                        <div>• Homicidio Vehicular</div>
+                        <div style="margin-top: 10px; color: #fca5a5; font-weight: 600;">
+                            Una de las sentencias más largas en 2024
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feedback-message">
+                <div class="feedback-title">📊 Realidad Jurídica</div>
+                <div>Costos promedio de una condena por DUI: <strong>$10,000+ en multas</strong>, <strong>tiempo en la cárcel</strong>, <strong>suspensión de licencia</strong>, <strong>antecedentes penales</strong>.</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn secondary" onclick="showSection(1)">
+                    ← Volver a Peligros
+                </button>
+                <button class="action-btn" onclick="showSection(3)">
+                    Pruebe el simulador BAC →
+                </button>
+            </div>
+        </div>
+
+        <!-- Section 3: BAC Simulator -->
+        <div class="content-section" id="section-3">
+            <h2 class="section-title">
+                <span class="section-icon">🧪</span>
+                Simulador de efectos BAC
+            </h2>
+
+            <p style="margin-bottom: 25px;">Seleccione un nivel de BAC para ver cómo el alcohol afecta la capacidad de conducir:</p>
+
+            <div class="bac-simulator">
+                <div class="bac-controls">
+                    <div class="bac-option" onclick="selectBAC(0.02)" id="bac-0.02">
+                        <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 10px;">0.02%</div>
+                        <div style="font-size: 0.9rem; color: #cbd5e1;">1 trago - Sensación de relajación</div>
+                    </div>
+                    <div class="bac-option" onclick="selectBAC(0.05)" id="bac-0.05">
+                        <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 10px;">0.05%</div>
+                        <div style="font-size: 0.9rem; color: #cbd5e1;">2-3 tragos - Coordinación reducida</div>
+                    </div>
+                    <div class="bac-option selected" onclick="selectBAC(0.08)" id="bac-0.08">
+                        <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 10px;">0.08%</div>
+                        <div style="font-size: 0.9rem; color: #cbd5e1;">Límite Legal - Deterioro claro</div>
+                    </div>
+                    <div class="bac-option" onclick="selectBAC(0.15)" id="bac-0.15">
+                        <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 10px;">0.15%</div>
+                        <div style="font-size: 0.9rem; color: #cbd5e1;">Beber en exceso: deterioro grave</div>
+                    </div>
+                </div>
+
+                <div class="bac-display" id="bac-display">0.08%</div>
+                <div style="margin-bottom: 15px; font-size: 1.1rem; color: #fca5a5; font-weight: 600;">
+                    <span id="bac-label">LÍMITE LEGAL - ESTÁS DISCAPACITADO</span>
+                </div>
+
+                <div class="bac-effects">
+                    <div style="font-weight: 700; margin-bottom: 15px; color: #fca5a5;">
+                        🚨 Efectos en este nivel BAC:
+                    </div>
+                    <div id="bac-effects-list">
+                        <div class="effect-item">Tiempo de reacción 2 veces más lento</div>
+                        <div class="effect-item">Mala coordinación y equilibrio.</div>
+                        <div class="effect-item">Reducción del juicio y del autocontrol.</div>
+                        <div class="effect-item">Visión borrosa y problemas de seguimiento.</div>
+                        <div class="effect-item">Riesgo de accidente 4 veces mayor</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 25px; padding: 15px; background: rgba(220, 38, 38, 0.2); border-radius: var(--radius); border-left: 4px solid var(--color-danger);">
+                    <div style="font-weight: 700; margin-bottom: 8px;">⚠️ Consecuencias legales:</div>
+                    <div id="legal-consequences">• Arresto por DUI • Suspensión de licencia • Multa de más de $1,000 • Posible tiempo en prisión</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn secondary" onclick="showSection(2)">
+                    ← Volver a Casos
+                </button>
+                <button class="action-btn" onclick="showSection(4)">
+                    Realice el cuestionario de prevención →
+                </button>
+            </div>
+        </div>
+
+        <!-- Section 4: Prevention Quiz -->
+        <div class="content-section" id="section-4">
+            <h2 class="section-title">
+                <span class="section-icon">🧠</span>
+                Prueba de conocimientos sobre prevención
+            </h2>
+
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <div class="question-text" id="question-text">
+                        ¿Qué porcentaje de todas las muertes por accidentes de tránsito se deben a la conducción bajo los efectos del alcohol?
+                    </div>
+                    <div class="quiz-options" id="quiz-options">
+                        <div class="quiz-option" onclick="selectAnswer(0)">
+                            <div class="option-label">A</div>
+                            <div>10%</div>
+                        </div>
+                        <div class="quiz-option" onclick="selectAnswer(1)">
+                            <div class="option-label">B</div>
+                            <div>18%</div>
+                        </div>
+                        <div class="quiz-option" onclick="selectAnswer(2)">
+                            <div class="option-label">C</div>
+                            <div>28%</div>
+                        </div>
+                        <div class="quiz-option" onclick="selectAnswer(3)">
+                            <div class="option-label">D</div>
+                            <div>35%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="quiz-feedback" style="display: none;">
+                    <div class="feedback-message">
+                        <div class="feedback-title" id="feedback-title">📝 Comentarios</div>
+                        <div id="feedback-message"></div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="checkAnswer()" id="check-btn">
+                        Verificar respuesta
+                    </button>
+                    <button class="action-btn secondary" onclick="nextQuestion()" id="next-btn" style="display: none;">
+                        Siguiente pregunta
+                    </button>
+                </div>
+            </div>
+
+            <div class="strategies-grid">
+                <div class="strategy-card">
+                    <div class="strategy-icon">🚗</div>
+                    <div class="strategy-title">Conductor designado</div>
+                    <div class="strategy-desc">Tenga siempre previsto un conductor sobrio antes de empezar a beber</div>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-icon">🏨</div>
+                    <div class="strategy-title">pasar la noche</div>
+                    <div class="strategy-desc">Si no hay un viaje seguro, quédese donde está en lugar de conducir</div>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-icon">📱</div>
+                    <div class="strategy-title">Aplicaciones para compartir viajes</div>
+                    <div class="strategy-desc">Utilice los servicios de Uber, Lyft o taxi como plan de respaldo</div>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-icon">👥</div>
+                    <div class="strategy-title">Intervención entre pares</div>
+                    <div class="strategy-desc">Evite que sus amigos conduzcan bajo los efectos del alcohol: lléveles las llaves</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn secondary" onclick="showSection(3)">
+                    ← Volver al Simulador BAC
+                </button>
+                <button class="action-btn" onclick="completeModule()" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    Módulo completo
+                </button>
+            </div>
+        </div>
+
+        <!-- Completion Screen -->
+        <div class="completion-screen" id="completion-screen">
+            <h2 class="completion-title">
+                <span>🎓</span>
+                ¡Módulo completado!
+            </h2>
+            <p style="font-size: 1.1rem; color: #cbd5e1; margin-bottom: 20px;">
+                Ha adquirido conocimientos críticos sobre los peligros de conducir bajo los efectos del alcohol.
+            </p>
+
+            <div class="completion-stats">
+                <div class="completion-stat">
+                    <div class="stat-value" id="time-stat">10:00</div>
+                    <div class="stat-label">Aprendizaje del tiempo</div>
+                </div>
+                <div class="completion-stat">
+                    <div class="stat-value" id="quiz-stat">0%</div>
+                    <div class="stat-label">Precisión del cuestionario</div>
+                </div>
+                <div class="completion-stat">
+                    <div class="stat-value" id="cases-stat">0</div>
+                    <div class="stat-label">Casos revisados</div>
+                </div>
+            </div>
+
+            <div class="pledge-card">
+                <div class="pledge-title">📋 Su compromiso de conducción segura</div>
+                <ul class="pledge-list">
+                    <li>NUNCA conduciré después de beber alcohol</li>
+                    <li>Planearé un transporte seguro ANTES de beber</li>
+                    <li>Intervendré si mis amigos intentan conducir bajo los efectos del alcohol.</li>
+                    <li>Educaré a otros sobre las consecuencias mortales.</li>
+                    <li>Tomaré decisiones responsables para proteger vidas.</li>
+                </ul>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" onclick="location.reload()">
+                    Revisar de nuevo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== GLOBAL STATE ==========
+        const moduleState = {
+            currentSection: 1,
+            bacLevel: 0.08,
+            quizScore: 0,
+            totalQuestions: 0,
+            casesViewed: 0,
+            startTime: Date.now()
+        };
+
+        // ========== TIMER MANAGEMENT ==========
+        let moduleTimer;
+        let timeLeft = 600; // 10 minutes
+
+        function startTimer() {
+            moduleTimer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    completeModule();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const timerEl = document.getElementById('timer');
+            if (timerEl) {
+                timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // ========== SECTION NAVIGATION ==========
+        function showSection(sectionNum) {
+            moduleState.currentSection = sectionNum;
+            
+            // Track cases reviewed if Section 2 is visited
+            if (sectionNum === 2) {
+                moduleState.casesViewed = 4;
+            }
+
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Update navigation
+            document.querySelectorAll('.nav-step').forEach((step, index) => {
+                step.classList.remove('active');
+                if (index === sectionNum - 1) {
+                    step.classList.add('active');
+                }
+            });
+            
+            // Show selected section
+            const target = document.getElementById(`section-${sectionNum}`);
+            if (target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // ========== BAC SIMULATOR ==========
+        function selectBAC(level) {
+            moduleState.bacLevel = level;
+            
+            // Update UI
+            document.querySelectorAll('.bac-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.getElementById(`bac-${level.toFixed(2)}`).classList.add('selected');
+            
+            // Update display
+            document.getElementById('bac-display').textContent = `${level.toFixed(2)}%`;
+            
+            // Update label and effects
+            updateBACEffects(level);
+        }
+
+        function updateBACEffects(level) {
+            let label = '';
+            let effects = [];
+            let legal = '';
+            
+            if (level === 0.02) {
+                label = 'EFECTOS MENORES - TENGA CUIDADO';
+                effects = [
+                    'Ligera elevación del humor',
+                    'Alguna pérdida de juicio',
+                    'Sensación relajada',
+                    'Aumento del doble del riesgo de accidente'
+                ];
+                legal = '• Legal para conducir pero riesgoso';
+            } else if (level === 0.05) {
+                label = 'DETERIORO - PELIGROSO';
+                effects = [
+                    'Coordinación reducida',
+                    'Dificultad para seguir objetos en movimiento.',
+                    'Juicio deteriorado',
+                    'Riesgo de accidente 3 veces mayor'
+                ];
+                legal = '• Legal en algunos estados pero peligroso';
+            } else if (level === 0.08) {
+                label = 'LÍMITE LEGAL - ESTÁS DISCAPACITADO';
+                effects = [
+                    'Tiempo de reacción 2 veces más lento',
+                    'Mala coordinación y equilibrio.',
+                    'Reducción del juicio y del autocontrol.',
+                    'Visión borrosa y problemas de seguimiento.',
+                    'Riesgo de accidente 4 veces mayor'
+                ];
+                legal = '• Arresto por DUI • Suspensión de licencia • Multa de más de $1,000 • Posible tiempo en prisión';
+            } else if (level === 0.15) {
+                label = 'DETERIORO GRAVE - EXTREMADAMENTE PELIGROSO';
+                effects = [
+                    'Deterioro sustancial en todas las habilidades.',
+                    'Gran pérdida de equilibrio',
+                    'Habla arrastrada',
+                    'Pueden producirse vómitos.',
+                    'Riesgo de accidente 25 veces mayor'
+                ];
+                legal = '• Tiempo de cárcel obligatorio • Revocación de licencia • Multa de más de $5,000 • Antecedentes penales';
+            }
+            
+            document.getElementById('bac-label').textContent = label;
+            const effectsList = document.getElementById('bac-effects-list');
+            effectsList.innerHTML = '';
+            effects.forEach(effect => {
+                const div = document.createElement('div');
+                div.className = 'effect-item';
+                div.textContent = effect;
+                effectsList.appendChild(div);
+            });
+            
+            document.getElementById('legal-consequences').textContent = legal;
+        }
+
+        // ========== QUIZ SYSTEM ==========
+        const quizQuestions = [
+            {
+                question: "¿Qué porcentaje de todas las muertes por accidentes de tránsito se deben a la conducción bajo los efectos del alcohol?",
+                options: ["10%", "18%", "28%", "35%"],
+                correct: 2,
+                explanation: "✅ ¡Correcto! La NHTSA informa que el 28% de todas las muertes por accidentes de tránsito se deben a la conducción bajo los efectos del alcohol."
+            },
+            {
+                question: "¿Cuál es el costo promedio de una condena por DUI (incluidas multas, honorarios legales, etc.)?",
+                options: ["$2,500", "$5,000", "$10,000+", "$20,000+"],
+                correct: 2,
+                explanation: "✅ ¡Correcto! Los costos promedio de DUI superan los $10,000, incluidas multas, honorarios legales y aumento del seguro."
+            },
+            {
+                question: "¿A qué nivel de BAC el riesgo de accidente aumenta 4 veces?",
+                options: ["0.02%", "0.05%", "0.08%", "0.10%"],
+                correct: 2,
+                explanation: "✅ ¡Correcto! Con un BAC del 0,08% (límite legal), el riesgo de accidente es 4 veces mayor."
+            },
+            {
+                question: "¿Cuál es la MEJOR estrategia de prevención para beber y conducir?",
+                options: ["Bebe café antes de conducir.", "Tener un conductor designado antes de beber", "Conducir despacio después de beber", "Toma una ducha fría antes de conducir."],
+                correct: 1,
+                explanation: "✅ ¡Perfecto! Planificar un conductor designado ANTES de beber es la prevención más eficaz."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let selectedAnswer = null;
+
+        function loadQuestion() {
+            const question = quizQuestions[currentQuestion];
+            document.getElementById('question-text').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'quiz-option';
+                optionDiv.onclick = () => selectAnswer(index);
+                optionDiv.innerHTML = `
+                    <div class="option-label">${String.fromCharCode(65 + index)}</div>
+                    <div>${option}</div>
+                `;
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('quiz-feedback').style.display = 'none';
+            document.getElementById('check-btn').style.display = 'block';
+            document.getElementById('next-btn').style.display = 'none';
+            selectedAnswer = null;
+        }
+
+        function selectAnswer(index) {
+            selectedAnswer = index;
+            document.querySelectorAll('.quiz-option').forEach((option, i) => {
+                option.classList.remove('selected');
+                if (i === index) {
+                    option.classList.add('selected');
+                }
+            });
+        }
+
+        function checkAnswer() {
+            if (selectedAnswer === null) {
+                return;
+            }
+
+            const question = quizQuestions[currentQuestion];
+            const isCorrect = selectedAnswer === question.correct;
+            
+            moduleState.totalQuestions++;
+            if (isCorrect) {
+                moduleState.quizScore++;
+                document.getElementById('feedback-title').innerHTML = '✅ ¡Correcto!';
+                document.getElementById('feedback-message').textContent = question.explanation;
+            } else {
+                document.getElementById('feedback-title').innerHTML = '❌ Incorrecto';
+                document.getElementById('feedback-message').textContent = question.explanation;
+            }
+            
+            document.querySelectorAll('.quiz-option').forEach((option, i) => {
+                if (i === question.correct) {
+                    option.classList.add('correct');
+                } else if (i === selectedAnswer && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            document.getElementById('quiz-feedback').style.display = 'block';
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < quizQuestions.length) {
+                loadQuestion();
+            } else {
+                completeModule();
+            }
+        }
+
+        // ========== COMPLETION ==========
+        function completeModule() {
+            clearInterval(moduleTimer);
+            
+            // Hide all layout elements that might obstruct the results
+            const elementsToHide = [
+                'module-header', 
+                'page-main-title', 
+                'page-subtitle', 
+                'page-timer-container', 
+                'page-nav'
+            ];
+            
+            elementsToHide.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+
+            // Hide all content sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+                section.style.display = 'none';
+            });
+
+            // Calculate stats
+            const accuracy = moduleState.totalQuestions > 0 
+                ? Math.round((moduleState.quizScore / moduleState.totalQuestions) * 100)
+                : 0;
+            
+            const timeDiff = Math.max(0, 600 - timeLeft);
+            const minutes = Math.floor(timeDiff / 60);
+            const seconds = timeDiff % 60;
+            
+            // Update completion screen displays
+            document.getElementById('time-stat').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('quiz-stat').textContent = `${accuracy}%`;
+            document.getElementById('cases-stat').textContent = moduleState.casesViewed;
+            
+            // Activate completion screen
+            const completionScreen = document.getElementById('completion-screen');
+            if (completionScreen) {
+                completionScreen.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // ========== INITIALIZATION ==========
+        window.onload = function() {
+            startTimer();
+            loadQuestion();
+            selectBAC(0.08);
+        };
+    </script>
+</body>
+</html>

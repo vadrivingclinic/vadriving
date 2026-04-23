@@ -1,0 +1,2613 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA: prevención de conducción con sueño</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --color-info: #3b82f6;
+            --color-sleep: #8b5cf6;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes roadLines {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes eyeBlink {
+            0%, 100% { height: 40px; }
+            50% { height: 5px; }
+        }
+
+        @keyframes drowsyPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-display { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .time-estimate {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(95, 23, 235, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Drowsiness Simulation */
+        .drowsiness-simulation {
+            width: 100%;
+            height: 180px;
+            background: #1a1a1a;
+            border-radius: var(--radius-md);
+            margin: 25px 0;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .eye-simulation {
+            width: 300px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .eye {
+            width: 60px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #333;
+        }
+
+        .eye-lid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: #1a1a1a;
+            transition: height 0.3s ease;
+            border-radius: 50%;
+        }
+
+        .eye-pupil {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 25px;
+            height: 25px;
+            background: #000;
+            border-radius: 50%;
+            border: 4px solid #333;
+        }
+
+        .alertness-meter {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .alertness-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
+            border-radius: 10px;
+            width: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .drowsiness-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            display: none;
+            animation: drowsyPulse 1s infinite;
+        }
+
+        .alert-indicator {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            display: block;
+        }
+
+        /* Interactive Elements */
+        .interactive-box {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .interactive-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .interactive-content {
+            color: var(--color-text);
+        }
+
+        .simulation {
+            background: rgba(16, 185, 129, 0.05);
+            border: 2px dashed rgba(16, 185, 129, 0.3);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .simulation-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .simulation-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .simulation-btn {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.3);
+            color: var(--color-primary);
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .simulation-btn:hover {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .simulation-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .scenario {
+            background: rgba(245, 158, 11, 0.05);
+            border-left: 4px solid var(--color-warning);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .scenario-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scenario-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .scenario-option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .scenario-option:hover {
+            border-color: var(--color-warning);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .scenario-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+        }
+
+        .scenario-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .scenario-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .scenario-feedback {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .scenario-feedback.correct {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--color-success);
+        }
+
+        .scenario-feedback.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--color-error);
+        }
+
+        .stats-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .stats-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--color-info);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .info-title {
+            font-weight: 700;
+            color: var(--color-info);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .sleep-box {
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 4px solid var(--color-sleep);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .sleep-title {
+            font-weight: 700;
+            color: var(--color-sleep);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sleep-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .tips-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .tips-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tips-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tips-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: rgba(95, 23, 235, 0.05);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(95, 23, 235, 0.1);
+        }
+
+        .feature-card.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            animation: pulse 1s;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-name {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+
+        .feature-desc {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .knowledge-check {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(95, 23, 235, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .key-points {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .risk-meter {
+            width: 100%;
+            height: 30px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .risk-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
+            border-radius: 15px;
+            width: 0%;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .risk-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .checklist {
+            margin: 20px 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            border-color: rgba(95, 23, 235, 0.3);
+        }
+
+        .checklist-item.completed {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .checklist-label {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .sleep-cycle {
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6, #60a5fa, #93c5fd);
+            border-radius: var(--radius-md);
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sleep-stage {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .reaction-test {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .reaction-button {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: white;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .reaction-button:hover {
+            transform: scale(1.05);
+        }
+
+        .reaction-button.active {
+            background: #10b981;
+        }
+
+        .time-slider {
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .time-slider input[type="range"] {
+            width: 100%;
+            height: 10px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.8rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .drowsiness-simulation {
+                height: 150px;
+            }
+
+            .eye-simulation {
+                gap: 20px;
+            }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Aprendizaje del tiempo</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Prevención de conducir con sueño</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">Dominio del estado de alerta en 15 minutos</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Conducir con sueño: manténgase despierto, manténgase vivo</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">⏱️</div>
+            <div class="time-estimate-text">
+                Complete este curso interactivo de seguridad en <span class="time-highlight">15 minutos</span> para dominar la prevención de la conducción con sueño
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Secciones completadas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="alertness-score">100%</span>
+                <span class="stat-label">Puntuación de alerta</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="interaction-count">0</span>
+                <span class="stat-label">Interacciones</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Aprendizaje del tiempo</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Progreso del curso</span>
+                <span>Tiempo de aprendizaje: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: The Drowsy Driving Crisis -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🚨</span>
+                    La crisis de la conducción somnolienta
+                </h2>
+                
+                <!-- Eye Simulation -->
+                <div class="drowsiness-simulation">
+                    <div class="alert-indicator" id="alert-indicator">✅ ALERTA</div>
+                    <div class="drowsiness-indicator" id="drowsiness-indicator">😴 SOMNOLENTO</div>
+                    <div class="eye-simulation">
+                        <div class="eye" id="left-eye">
+                            <div class="eye-lid" id="left-lid"></div>
+                            <div class="eye-pupil"></div>
+                        </div>
+                        <div class="eye" id="right-eye">
+                            <div class="eye-lid" id="right-lid"></div>
+                            <div class="eye-pupil"></div>
+                        </div>
+                    </div>
+                    <div class="alertness-meter">
+                        <div class="alertness-fill" id="alertness-fill"></div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>📊</span> Las estadísticas alarmantes
+                    </h3>
+                    <p class="subsection-content">
+                        Conducir con sueño es uno de los comportamientos más peligrosos y menos denunciados en nuestras carreteras. 
+                        A diferencia del deterioro del alcohol, no existe un alcoholímetro para la fatiga, pero los efectos pueden ser igual de mortales.
+                    </p>
+                    
+                    <div class="stats-box">
+                        <div class="stats-title">📈 Datos de la Administración Nacional de Seguridad del Tráfico en Carreteras (NHTSA)</div>
+                        <div class="stats-content">
+                            • <strong>100,000+</strong> Accidentes anuales causados ​​por conducir con sueño.<br>
+                            • <strong>71,000+</strong> lesiones cada año<br>
+                            • <strong>1,550+</strong> muertes anualmente<br>
+                            • <strong>1 de cada 6</strong> Los accidentes mortales involucran a un conductor somnoliento (AAA)<br>
+                            • <strong>96%</strong> de los conductores considera inaceptable conducir con sueño, pero el 37% admite haberlo hecho
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>⚖️</span> Interactivo: Conducir con sueño versus conducir en estado de ebriedad
+                    </h3>
+                    
+                    <div class="simulation">
+                        <div class="simulation-title">
+                            <span>🧪</span> Comparación del impacto de la fatiga
+                        </div>
+                        <p>Ajuste las horas de sueño para ver cómo se compara la fatiga con la concentración de alcohol en sangre:</p>
+                        
+                        <div class="time-slider">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Horas de sueño: <span id="sleep-hours">7</span> horas</label>
+                            <input type="range" min="0" max="8" value="7" class="slider" id="sleep-slider" style="width: 100%;">
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; margin: 20px 0;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 800; color: var(--color-primary);" id="bac-equivalent">0.00%</div>
+                                <div style="font-size: 0.9rem; color: var(--color-muted);">Equivalente de BAC</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 800; color: var(--color-primary);" id="reaction-increase">0%</div>
+                                <div style="font-size: 0.9rem; color: var(--color-muted);">Aumento del tiempo de reacción</div>
+                            </div>
+                        </div>
+                        
+                        <button class="simulation-btn" onclick="updateEyeSimulation()">Simular la respuesta ocular</button>
+                        
+                        <div id="fatigue-feedback" style="display: none; margin-top: 15px; padding: 10px; border-radius: var(--radius-sm);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Causes & Risk Factors -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🔍</span>
+                    Causas & Factores de riesgo
+                </h2>
+
+                <div class="feature-grid">
+                    <div class="feature-card" data-cause="sleep">
+                        <div class="feature-icon">😴</div>
+                        <div class="feature-name">Privación del sueño</div>
+                        <div class="feature-desc">Los adultos necesitan de 7 a 9 horas; la mayoría obtiene menos de 7</div>
+                    </div>
+
+                    <div class="feature-card" data-cause="shift">
+                        <div class="feature-icon">🌙</div>
+                        <div class="feature-name">Trabajo por turnos</div>
+                        <div class="feature-desc">Los trabajadores nocturnos tienen un 30% más de riesgo de sufrir accidentes</div>
+                    </div>
+
+                    <div class="feature-card" data-cause="disorders">
+                        <div class="feature-icon">🩺</div>
+                        <div class="feature-name">Trastornos del sueño</div>
+                        <div class="feature-desc">La apnea del sueño aumenta el riesgo 7 veces</div>
+                    </div>
+
+                    <div class="feature-card" data-cause="medications">
+                        <div class="feature-icon">💊</div>
+                        <div class="feature-name">Medicamentos</div>
+                        <div class="feature-desc">Más de 500 medicamentos causan somnolencia</div>
+                    </div>
+                </div>
+
+                <!-- Cause Information Display -->
+                <div class="interactive-box" id="cause-info" style="display: none;">
+                    <div class="interactive-title">
+                        <span>ℹ️</span> <span id="cause-title">Información sobre factores de riesgo</span>
+                    </div>
+                    <div class="interactive-content" id="cause-details">
+                        Haga clic en un factor de riesgo arriba para obtener más información al respecto.
+                    </div>
+                </div>
+
+                <!-- Sleep Cycle Visualization -->
+                <div class="sleep-cycle">
+                    <div class="sleep-stage" style="left: 0%; width: 5%; background: rgba(30, 58, 138, 0.9);">Despierto</div>
+                    <div class="sleep-stage" style="left: 5%; width: 45%; background: rgba(59, 130, 246, 0.9);">sueño ligero</div>
+                    <div class="sleep-stage" style="left: 50%; width: 25%; background: rgba(96, 165, 250, 0.9);">sueño profundo</div>
+                    <div class="sleep-stage" style="left: 75%; width: 25%; background: rgba(147, 197, 253, 0.9);">Sueño REM</div>
+                </div>
+
+                <div class="sleep-box">
+                    <div class="sleep-title">
+                        <span>💤</span> Comprender los ciclos del sueño
+                    </div>
+                    <div class="sleep-content">
+                        • Cada ciclo dura <strong>90-110 minutos</strong><br>
+                        • Necesidad <strong>4-5 ciclos</strong> (7-9 horas) para una restauración completa<br>
+                        • La falta de sueño REM reduce el estado de alerta al <strong>40%</strong><br>
+                        • Ciclos interrumpidos (turnos de noche) = <strong>fatiga cronica</strong><br>
+                        • Después de 18 horas despierto = equivalente a <strong>0,05% CAS</strong>
+                    </div>
+                </div>
+
+                <!-- Personal Risk Assessment -->
+                <div class="scenario">
+                    <div class="scenario-title">
+                        <span>📋</span> Interactivo: Evaluación de riesgos personales
+                    </div>
+                    <p>Marque los factores que se aplican a usted:</p>
+                    
+                    <div class="checklist">
+                        <div class="checklist-item" data-risk="15">
+                            <input type="checkbox" class="checklist-checkbox" id="risk1">
+                            <label class="checklist-label" for="risk1">Dormir regularmente menos de 7 horas</label>
+                        </div>
+                        <div class="checklist-item" data-risk="20">
+                            <input type="checkbox" class="checklist-checkbox" id="risk2">
+                            <label class="checklist-label" for="risk2">Trabajar en turnos nocturnos o turnos rotativos.</label>
+                        </div>
+                        <div class="checklist-item" data-risk="25">
+                            <input type="checkbox" class="checklist-checkbox" id="risk3">
+                            <label class="checklist-label" for="risk3">Tomar medicamentos que causen somnolencia.</label>
+                        </div>
+                        <div class="checklist-item" data-risk="10">
+                            <input type="checkbox" class="checklist-checkbox" id="risk4">
+                            <label class="checklist-label" for="risk4">Conduzca regularmente entre las 12 a. m. y las 6 a. m.</label>
+                        </div>
+                        <div class="checklist-item" data-risk="30">
+                            <input type="checkbox" class="checklist-checkbox" id="risk5">
+                            <label class="checklist-label" for="risk5">Tiene diagnosticado un trastorno del sueño (apnea, insomnio)</label>
+                        </div>
+                    </div>
+                    
+                    <button class="simulation-btn" onclick="calculateDrowsyRisk()">Calcule su riesgo</button>
+                    
+                    <div class="risk-label">
+                        <span>Nivel de riesgo de conducir con sueño</span>
+                        <span id="risk-percentage">0%</span>
+                    </div>
+                    <div class="risk-meter">
+                        <div class="risk-fill" id="risk-fill" style="width: 0%; background: linear-gradient(90deg, #10b981 0%, #10b981 0%);"></div>
+                    </div>
+                    <div id="risk-feedback" style="display: none; margin-top: 15px; padding: 10px; border-radius: var(--radius-sm);"></div>
+                </div>
+            </div>
+
+            <!-- Section 3: Prevention Strategies -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🛡️</span>
+                    Estrategias de prevención
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>💤</span> Planificador de horarios de sueño
+                    </h3>
+                    <p class="subsection-content">
+                        Dormir constantemente es la prevención más eficaz. Utilice este planificador para optimizar su horario de sueño.
+                    </p>
+                    
+                    <div class="simulation">
+                        <div class="simulation-title">
+                            <span>📅</span> Interactivo: Creador de horarios de sueño
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Su hora objetivo para despertarse:</label>
+                            <select id="wake-time" style="width: 100%; padding: 10px; border-radius: var(--radius-sm); border: 2px solid rgba(95, 23, 235, 0.2);">
+                                <option value="6">6:00 a.m.</option>
+                                <option value="7" selected>7:00 a.m.</option>
+                                <option value="8">8:00 a.m.</option>
+                                <option value="9">9:00 a.m.</option>
+                            </select>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Objetivo de calidad del sueño:</label>
+                            <div class="simulation-controls">
+                                <button class="simulation-btn" data-quality="good" onclick="setSleepQuality(&#x27;good&#x27;)">Bueno (más de 7 horas)</button>
+                                <button class="simulation-btn" data-quality="optimal" onclick="setSleepQuality(&#x27;optimal&#x27;)">Óptimo (8 horas)</button>
+                                <button class="simulation-btn" data-quality="excellent" onclick="setSleepQuality(&#x27;excellent&#x27;)">Excelente (9 horas)</button>
+                            </div>
+                        </div>
+                        
+                        <button class="simulation-btn" onclick="generateSleepSchedule()">Generar horario de sueño</button>
+                        
+                        <div id="sleep-schedule" style="display: none; margin-top: 20px; padding: 15px; background: rgba(139, 92, 246, 0.1); border-radius: var(--radius-md);">
+                            <div style="font-weight: 700; color: var(--color-sleep); margin-bottom: 10px;">Horario de sueño recomendado:</div>
+                            <div id="schedule-details" style="margin-bottom: 10px;"></div>
+                            <div id="sleep-tips" style="font-size: 0.9rem; color: var(--color-text);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>🛣️</span> Planificación de viajes por carretera
+                    </h3>
+                    
+                    <div class="tips-box">
+                        <div class="tips-title">✅ Lista de verificación de preparación previa al viaje</div>
+                        <ul class="tips-list">
+                            <li>Duerma más de 7 horas durante 2 noches antes del viaje</li>
+                            <li>El plan se rompe cada 100 millas o 2 horas</li>
+                            <li>Evite conducir de 1 a 3 p.m. (chapuzón después del almuerzo)</li>
+                            <li>Evite conducir de 2 a 6 a.m. (mínimo circadiano)</li>
+                            <li>Comparte la conducción con pasajeros descansados</li>
+                            <li>Empaque refrigerios saludables y agua.</li>
+                            <li>Descargue podcasts/audiolibros atractivos</li>
+                        </ul>
+                    </div>
+
+                    <!-- Break Planning Calculator -->
+                    <div class="interactive-box">
+                        <div class="interactive-title">
+                            <span>🗺️</span> Interactivo: Planificador de vacaciones de viaje
+                        </div>
+                        <p>Planifique descansos seguros para su viaje:</p>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Distancia del viaje: <span id="distance-value">300</span> millas</label>
+                            <input type="range" min="100" max="600" value="300" class="slider" id="distance-slider" style="width: 100%;">
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Tiempo de viaje:</label>
+                            <div class="simulation-controls">
+                                <button class="simulation-btn" data-time="day" onclick="setTravelTime(&#x27;day&#x27;)">Día</button>
+                                <button class="simulation-btn" data-time="night" onclick="setTravelTime(&#x27;night&#x27;)">Noche</button>
+                                <button class="simulation-btn" data-time="mixed" onclick="setTravelTime(&#x27;mixed&#x27;)">Mezclado</button>
+                            </div>
+                        </div>
+                        
+                        <button class="simulation-btn" onclick="calculateTripBreaks()">Calcular el horario de descanso</button>
+                        
+                        <div id="trip-breaks" style="display: none; margin-top: 15px; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: var(--radius-md);">
+                            <div style="font-weight: 700; color: var(--color-success); margin-bottom: 5px;">Horario de descanso recomendado:</div>
+                            <div id="break-details"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-title">
+                        <span>⚠️</span> Protocolo de respuesta inmediata
+                    </div>
+                    <div class="warning-content">
+                        Cuando note CUALQUIERA de estos signos:<br>
+                        1. <strong>Deténgase inmediatamente</strong> en el próximo lugar seguro<br>
+                        2. <strong>Toma una siesta de 20 minutos</strong> (restaura el estado de alerta en un 34%)<br>
+                        3. <strong>Sal y camina</strong> durante 5-10 minutos<br>
+                        4. <strong>beber agua</strong> y salpicar la cara si es posible<br>
+                        5. <strong>Espera 15 minutos</strong> antes de conducir de nuevo<br>
+                        6. Si todavía tienes sueño, <strong>encontrar alojamiento para pasar la noche</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Technology & Legal Measures -->
+            <div class="section" style="animation-delay: 0.4s" data-section="4">
+                <div class="section-number">4</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🤖</span>
+                    Tecnología & Soluciones Legales
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>📱</span> Tecnología de seguridad moderna
+                    </h3>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card" data-tech="detection">
+                            <div class="feature-icon">👁️</div>
+                            <div class="feature-name">Monitoreo del conductor</div>
+                            <div class="feature-desc">Las cámaras rastrean el cierre de los ojos y la posición de la cabeza.</div>
+                        </div>
+
+                        <div class="feature-card" data-tech="lane">
+                            <div class="feature-icon">↔️</div>
+                            <div class="feature-name">Asistente de mantenimiento de carril</div>
+                            <div class="feature-desc">Detecta desvíos involuntarios de carril</div>
+                        </div>
+
+                        <div class="feature-card" data-tech="steering">
+                            <div class="feature-icon">🎮</div>
+                            <div class="feature-name">Análisis del patrón de dirección</div>
+                            <div class="feature-desc">Identifica microcorrecciones (signo de fatiga)</div>
+                        </div>
+
+                        <div class="feature-card" data-tech="apps">
+                            <div class="feature-icon">📲</div>
+                            <div class="feature-name">Aplicaciones de alerta</div>
+                            <div class="feature-desc">Utilice sensores de teléfonos inteligentes para detectar somnolencia</div>
+                        </div>
+                    </div>
+
+                    <!-- Tech Information Display -->
+                    <div class="interactive-box" id="tech-info" style="display: none;">
+                        <div class="interactive-title">
+                            <span>ℹ️</span> <span id="tech-title">Información tecnológica</span>
+                        </div>
+                        <div class="interactive-content" id="tech-details">
+                            Haga clic en una de las tecnologías anteriores para obtener más información al respecto.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>⚖️</span> Legal & Medidas en el lugar de trabajo
+                    </h3>
+                    
+                    <div class="info-box">
+                        <div class="info-title">
+                            <span>🏛️</span> Normativa vigente
+                        </div>
+                        <div class="info-content">
+                            • <strong>Conductores comerciales:</strong> 11 horas conduciendo como máximo, 10 horas fuera de servicio<br>
+                            • <strong>límite de trabajo de 14 horas</strong> para operadores de vehículos comerciales<br>
+                            • <strong>descanso de 30 minutos</strong> requerido después de 8 horas de conducción<br>
+                            • <strong>reinicio de 34 horas</strong> provisión para reinicio semanal<br>
+                            • <strong>Dispositivos de registro electrónico</strong> (ELD) obligatorios para el seguimiento
+                        </div>
+                    </div>
+
+                    <!-- Workplace Policy Scenario -->
+                    <div class="scenario">
+                        <div class="scenario-title">
+                            <span>💼</span> Escenario: Responsabilidad del empleador
+                        </div>
+                        <p>Como gerente, un empleado le dice que está demasiado cansado para conducir a casa después de un turno de 12 horas. ¿Qué deberías hacer?</p>
+                        <div class="scenario-options">
+                            <div class="scenario-option" data-correct="false">Diles que tomen café y conduzcan con cuidado.</div>
+                            <div class="scenario-option" data-correct="true">Proporcionar alojamiento o reembolso de taxi.</div>
+                            <div class="scenario-option" data-correct="false">Dicen que deberían haber planeado mejor</div>
+                            <div class="scenario-option" data-correct="false">Permítales dormir en su escritorio durante 30 minutos.</div>
+                        </div>
+                        <div class="scenario-feedback" id="workplace-feedback" style="display: none;">
+                            <strong>Los empleadores tienen el deber de diligencia.</strong> Proporcionar transporte o alojamiento seguros previene posibles tragedias y reduce la responsabilidad.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>⏱️</span> Interactivo: Desafío del tiempo de reacción
+                    </h3>
+                    
+                    <div class="simulation">
+                        <div class="simulation-title">
+                            <span>🎯</span> Pruebe su tiempo de reacción de alerta
+                        </div>
+                        <p>Haga clic en el botón tan pronto como se ponga verde para ver cómo la fatiga afecta la reacción:</p>
+                        
+                        <div class="reaction-test">
+                            <button class="reaction-button" id="reaction-button" onclick="stopReactionTest()">ESPERAR...</button>
+                            <div id="reaction-result" style="font-size: 1.2rem; font-weight: 600; margin-top: 15px;"></div>
+                        </div>
+                        
+                        <div id="reaction-feedback" style="display: none; margin-top: 20px; padding: 15px; background: rgba(95, 23, 235, 0.1); border-radius: var(--radius-md);">
+                            <div style="font-weight: 700; color: var(--color-primary); margin-bottom: 5px;">Análisis de impacto de fatiga:</div>
+                            <div style="font-size: 0.9rem;">
+                                A 60 mph, cada 0,1 segundo adicional de tiempo de reacción equivale <strong>8,8 pies</strong> de distancia de frenado adicional.<br>
+                                Experiencia de conductores somnolientos <strong>50-100% más</strong> tiempos de reacción: suficientes para convertir un casi accidente en una colisión.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Final Statistics -->
+                <div class="stats-box">
+                    <div class="stats-title">📊 Efectividad de la Prevención</div>
+                    <div class="stats-content">
+                        • Dormir adecuadamente reduce el riesgo de accidentes al <strong>48%</strong><br>
+                        • Los descansos programados evitan <strong>30%</strong> de incidentes de conducción con sueño<br>
+                        • Los sistemas de monitoreo del conductor reducen los accidentes relacionados con la fatiga al <strong>37%</strong><br>
+                        • Las políticas de los empleadores reducen la conducción con sueño relacionado con el trabajo al <strong>52%</strong><br>
+                        • Los programas educativos aumentan las conductas de prevención al <strong>65%</strong>
+                    </div>
+                </div>
+
+                <!-- Emergency Protocol -->
+                <div class="warning-box">
+                    <div class="warning-title">
+                        <span>🆘</span> Protocolo de somnolencia de emergencia
+                    </div>
+                    <div class="warning-content">
+                        Si experimenta CUALQUIERA de estos síntomas mientras conduce:<br>
+                        1. <strong>Bostezando repetidamente</strong> o parpadear con frecuencia<br>
+                        2. <strong>dificultad para concentrarse</strong> o mantener los ojos abiertos<br>
+                        3. <strong>Salidas faltantes</strong> o señales de tráfico<br>
+                        4. <strong>Desviarse del carril</strong> o golpear las bandas sonoras<br>
+                        5. <strong>no puedo recordar</strong> últimos kilómetros recorridos<br>
+                        <strong>→ DETÉNGASE INMEDIATAMENTE Y DESCANSE</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Knowledge Assessment -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Evaluación final de seguridad</h2>
+            <p style="text-align: center; margin-bottom: 20px; color: var(--color-muted);">
+                Pon a prueba tu comprensión sobre la prevención de la conducción con sueño
+            </p>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. ¿Cuántas horas de sueño suelen necesitar los adultos por noche?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>5-6 horas</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>7-9 horas</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>10-12 horas</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. Después de estar despierto durante 18 horas, ¿la alteración del tiempo de reacción es equivalente a qué concentración de alcohol en sangre?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>0.02%</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>0.05%</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>0.08%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. ¿Cuál es el tiempo máximo de conducción recomendado entre descansos?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>1 hora</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>2 horas</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>4 horas</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. ¿Qué síntoma NO se asocia típicamente con conducir con sueño?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>bostezos frecuentes</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Desviarse del carril</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Mayor concentración</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">5. ¿Qué debes hacer si te sientes somnoliento mientras conduces?</div>
+                <div class="options">
+                    <div class="option" data-question="5" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Sube la radio</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>abre las ventanas</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Deténgase y descanse</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkFinalAssessment()">Evaluación de seguridad completa</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Sus resultados de dominio de la seguridad
+                </div>
+                <div class="score" id="score">0/5</div>
+                <div class="feedback" id="feedback">
+                    Revise sus respuestas para identificar áreas de mejora.
+                </div>
+                <div class="key-points" style="margin-top: 20px;">
+                    <div class="key-points-title">🎯 Principios clave de prevención dominados</div>
+                    <ul class="key-points-list">
+                        <li>Priorice entre 7 y 9 horas de sueño de calidad antes de conducir</li>
+                        <li>Tome descansos cada 100 millas o 2 horas en viajes largos</li>
+                        <li>Reconocer y responder inmediatamente a los signos de somnolencia.</li>
+                        <li>Utilice la tecnología disponible para monitorear el estado de alerta.</li>
+                        <li>Nunca superes la fatiga: la seguridad es lo primero</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> ¡Dominio de la seguridad logrado!
+            </div>
+            <p>Ha completado con éxito el curso de Prevención de conducción con sueño.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>Has completado <span id="interactions-total">0</span> ejercicios interactivos y logró una puntuación de alerta de <span id="final-percentage">100%</span>.</p>
+            <p style="margin-top: 15px; font-weight: 600; font-size: 1.1rem;">
+                Recuerde: No vale la pena arriesgar vidas por ninguna reunión, cita o fecha límite. Cuando esté cansado, deténgase y descanse.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Timer Configuration
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let interactionCount = 0;
+        let currentAlertnessScore = 100;
+        let maxAlertnessScore = 100;
+        let quizCompleted = false;
+        let reactionStartTime = 0;
+        let reactionTestActive = false;
+        let currentSleepQuality = 'optimal';
+        let currentTravelTime = 'day';
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const interactionCountEl = document.getElementById('interaction-count');
+        const alertnessScoreEl = document.getElementById('alertness-score');
+        const progressFill = document.getElementById('progress-fill');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+        const interactionsTotalEl = document.getElementById('interactions-total');
+        const finalPercentageEl = document.getElementById('final-percentage');
+        const leftLid = document.getElementById('left-lid');
+        const rightLid = document.getElementById('right-lid');
+        const alertnessFill = document.getElementById('alertness-fill');
+        const drowsinessIndicator = document.getElementById('drowsiness-indicator');
+        const alertIndicator = document.getElementById('alert-indicator');
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            // Clear any existing interval
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // Start new interval
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+                
+                // Simulate eye blinking every 30 seconds
+                if (totalSeconds % 30 === 0) {
+                    simulateEyeBlink();
+                }
+                
+                // Simulate drowsiness if alertness is low
+                if (totalSeconds % 45 === 0 && currentAlertnessScore < 70) {
+                    simulateDrowsiness();
+                }
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            // Update all timer displays
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            // Update progress based on sections read
+            updateProgress();
+        }
+
+        // Simulate eye blinking
+        function simulateEyeBlink() {
+            leftLid.style.height = '5px';
+            rightLid.style.height = '5px';
+            
+            setTimeout(() => {
+                leftLid.style.height = '40px';
+                rightLid.style.height = '40px';
+            }, 200);
+        }
+
+        // Simulate drowsiness effect
+        function simulateDrowsiness() {
+            if (currentAlertnessScore < 50) {
+                leftLid.style.height = '20px';
+                rightLid.style.height = '20px';
+                drowsinessIndicator.style.display = 'block';
+                alertIndicator.style.display = 'none';
+                
+                setTimeout(() => {
+                    if (currentAlertnessScore >= 70) {
+                        leftLid.style.height = '40px';
+                        rightLid.style.height = '40px';
+                        alertIndicator.style.display = 'block';
+                        drowsinessIndicator.style.display = 'none';
+                    }
+                }, 3000);
+            }
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 4;
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Update completed count
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            // Update timer appearance based on time
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 900) { // 15 minutes or more
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 1200) { // 20 minutes or more
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update interaction count
+        function incrementInteraction() {
+            interactionCount++;
+            interactionCountEl.textContent = interactionCount;
+            interactionsTotalEl.textContent = interactionCount;
+        }
+
+        // Update alertness score
+        function updateAlertnessScore(points) {
+            currentAlertnessScore = Math.max(0, Math.min(currentAlertnessScore + points, maxAlertnessScore));
+            alertnessScoreEl.textContent = `${Math.round(currentAlertnessScore)}%`;
+            finalPercentageEl.textContent = `${Math.round(currentAlertnessScore)}%`;
+            
+            // Update eye simulation based on alertness
+            const eyeOpenness = (currentAlertnessScore / 100) * 40;
+            leftLid.style.height = `${eyeOpenness}px`;
+            rightLid.style.height = `${eyeOpenness}px`;
+            
+            // Update alertness meter
+            alertnessFill.style.width = `${currentAlertnessScore}%`;
+            
+            // Update indicators
+            if (currentAlertnessScore > 70) {
+                alertIndicator.style.display = 'block';
+                drowsinessIndicator.style.display = 'none';
+                alertnessFill.style.background = 'gradiente lineal (90 grados, #ef4444 0%, #f59e0b 50%, #10b981 100%)';
+            } else if (currentAlertnessScore > 30) {
+                alertIndicator.style.display = 'none';
+                drowsinessIndicator.style.display = 'block';
+                drowsinessIndicator.textContent = '⚠️ BAJA ALERTA';
+                drowsinessIndicator.style.background = 'rgba(245, 158, 11, 0.9)';
+                alertnessFill.style.background = 'gradiente lineal (90 grados, #ef4444 0%, #f59e0b 100%)';
+            } else {
+                alertIndicator.style.display = 'none';
+                drowsinessIndicator.style.display = 'block';
+                drowsinessIndicator.textContent = '😴 SOMNOLENTO';
+                drowsinessIndicator.style.background = 'rgba(239, 68, 68, 0.9)';
+                alertnessFill.style.background = 'gradiente lineal (90 grados, #ef4444 0%, #ef4444 100%)';
+            }
+        }
+
+        // Interactive Functions
+        function updateEyeSimulation() {
+            const sleepHours = parseInt(document.getElementById('sleep-slider').value);
+            const sleepDisplay = document.getElementById('sleep-hours');
+            const bacDisplay = document.getElementById('bac-equivalent');
+            const reactionDisplay = document.getElementById('reaction-increase');
+            const feedback = document.getElementById('fatigue-feedback');
+            
+            sleepDisplay.textContent = `${sleepHours} hours`;
+            
+            // Calculate BAC equivalent and reaction time increase
+            let bacEquivalent = 0;
+            let reactionIncrease = 0;
+            
+            if (sleepHours >= 7) {
+                bacEquivalent = 0.00;
+                reactionIncrease = 0;
+            } else if (sleepHours >= 6) {
+                bacEquivalent = 0.02;
+                reactionIncrease = 10;
+            } else if (sleepHours >= 5) {
+                bacEquivalent = 0.05;
+                reactionIncrease = 30;
+            } else if (sleepHours >= 4) {
+                bacEquivalent = 0.08;
+                reactionIncrease = 50;
+            } else {
+                bacEquivalent = 0.10;
+                reactionIncrease = 100;
+            }
+            
+            bacDisplay.textContent = `${bacEquivalent.toFixed(2)}%`;
+            reactionDisplay.textContent = `${reactionIncrease}%`;
+            
+            // Update eye simulation
+            const eyeOpenness = Math.max(5, (sleepHours / 8) * 40);
+            leftLid.style.height = `${eyeOpenness}px`;
+            rightLid.style.height = `${eyeOpenness}px`;
+            
+            // Update alertness score
+            const alertnessPoints = sleepHours * 12.5; // 100/8 = 12.5 points per hour
+            updateAlertnessScore(alertnessPoints - currentAlertnessScore);
+            
+            // Provide feedback
+            if (sleepHours >= 7) {
+                feedback.innerHTML = '<strong>¡Bien descansado!</strong> Estás en un estado de alerta óptimo para conducir.';
+                feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+                feedback.style.border = '1px rgba sólido (16, 185, 129, 0,3)';
+                feedback.style.color = '#10b981';
+            } else if (sleepHours >= 5) {
+                feedback.innerHTML = `<strong>Deterioro moderado.</strong> equivalente a ${bacEquivalent.toFixed(2)}% CAS. Considere retrasar su viaje.`;
+                feedback.style.background = 'rgba(245, 158, 11, 0.1)';
+                feedback.style.border = '1px rgba sólido (245, 158, 11, 0,3)';
+                feedback.style.color = '#f59e0b';
+            } else {
+                feedback.innerHTML = `<strong>Gravemente deteriorado.</strong> equivalente a ${bacEquivalent.toFixed(2)}% CAS. NO conduzca.`;
+                feedback.style.background = 'rgba(239, 68, 68, 0.1)';
+                feedback.style.border = '1px rgba sólido (239, 68, 68, 0,3)';
+                feedback.style.color = '#ef4444';
+            }
+            
+            feedback.style.display = 'block';
+            incrementInteraction();
+        }
+
+        function calculateDrowsyRisk() {
+            const checkboxes = document.querySelectorAll('.checklist-checkbox:checked');
+            let totalRisk = 0;
+            
+            checkboxes.forEach(checkbox => {
+                const item = checkbox.closest('.checklist-item');
+                const risk = parseInt(item.dataset.risk);
+                totalRisk += risk;
+                item.classList.add('completed');
+            });
+            
+            const riskPercentage = Math.min(totalRisk, 100);
+            const riskFill = document.getElementById('risk-fill');
+            const riskDisplay = document.getElementById('risk-percentage');
+            const feedback = document.getElementById('risk-feedback');
+            
+            // Calculate alertness score (inverse of risk)
+            const alertnessPoints = 100 - riskPercentage;
+            updateAlertnessScore(alertnessPoints - currentAlertnessScore);
+            
+            riskFill.style.width = `${riskPercentage}%`;
+            
+            // Update gradient based on risk level
+            if (riskPercentage <= 25) {
+                riskFill.style.background = 'gradiente lineal (90 grados, #10b981 0%, #10b981 100%)';
+                feedback.innerHTML = '<strong>¡Bajo riesgo!</strong> Tienes buenos hábitos de conducción.';
+                feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+                feedback.style.border = '1px rgba sólido (16, 185, 129, 0,3)';
+                feedback.style.color = '#10b981';
+            } else if (riskPercentage <= 50) {
+                riskFill.style.background = 'gradiente lineal (90 grados, #10b981 0%, #f59e0b 100%)';
+                feedback.innerHTML = '<strong>Riesgo moderado.</strong> Implementar estrategias de prevención.';
+                feedback.style.background = 'rgba(245, 158, 11, 0.1)';
+                feedback.style.border = '1px rgba sólido (245, 158, 11, 0,3)';
+                feedback.style.color = '#f59e0b';
+            } else if (riskPercentage <= 75) {
+                riskFill.style.background = 'gradiente lineal (90 grados, #10b981 0%, #f59e0b 50%, #ef4444 100%)';
+                feedback.innerHTML = '<strong>Alto riesgo.</strong> Considere seriamente los cambios en el estilo de vida.';
+                feedback.style.background = 'rgba(239, 68, 68, 0.1)';
+                feedback.style.border = '1px rgba sólido (239, 68, 68, 0,3)';
+                feedback.style.color = '#ef4444';
+            } else {
+                riskFill.style.background = 'gradiente lineal (90 grados, #ef4444 0%, #ef4444 100%)';
+                feedback.innerHTML = '<strong>Riesgo crítico.</strong> No conduzca hasta que aborde estos factores.';
+                feedback.style.background = 'rgba(239, 68, 68, 0.2)';
+                feedback.style.border = '1px rgba sólido (239, 68, 68, 0,4)';
+                feedback.style.color = '#ef4444';
+            }
+            
+            riskDisplay.textContent = `${riskPercentage}%`;
+            feedback.style.display = 'block';
+            incrementInteraction();
+        }
+
+        function setSleepQuality(quality) {
+            currentSleepQuality = quality;
+            const buttons = document.querySelectorAll('.simulation-btn[data-quality]');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.quality === quality) {
+                    btn.classList.add('active');
+                }
+            });
+            incrementInteraction();
+        }
+
+        function generateSleepSchedule() {
+            const wakeTime = parseInt(document.getElementById('wake-time').value);
+            const scheduleDiv = document.getElementById('sleep-schedule');
+            const scheduleDetails = document.getElementById('schedule-details');
+            const sleepTips = document.getElementById('sleep-tips');
+            
+            let targetSleepHours = 8;
+            switch(currentSleepQuality) {
+                case 'good':
+                    targetSleepHours = 7;
+                    break;
+                case 'optimal':
+                    targetSleepHours = 8;
+                    break;
+                case 'excellent':
+                    targetSleepHours = 9;
+                    break;
+            }
+            
+            // Calculate bed times (accounting for 15-20 minutes to fall asleep)
+            const bedTime1 = (wakeTime - targetSleepHours) % 24;
+            const bedTime2 = (wakeTime - targetSleepHours - 1) % 24;
+            
+            const formatTime = (hour) => {
+                const period = hour >= 12 ? 'PM' : 'AM';
+                const displayHour = hour % 12 || 12;
+                return `${displayHour}:00 ${period}`;
+            };
+            
+            scheduleDetails.innerHTML = `
+                <div>• Sueño objetivo: <strong>${targetSleepHours} horas</strong></div>
+                <div>• Despertar: <strong>${formatTime(wakeTime)}</strong></div>
+                <div>• Hora ideal de acostarse: <strong>${formatTime(bedTime1)}</strong></div>
+                <div>• Alternativa: <strong>${formatTime(bedTime2)}</strong> (cuenta para la latencia del sueño)</div>
+                <div>• Inicio con calma: <strong>${formatTime((bedTime1 - 1) % 24)}</strong></div>
+            `;
+            
+            sleepTips.textContent = `Consejos: Evite las pantallas 1 hora antes de acostarse. Mantenga el dormitorio fresco (65-68°F). Un horario constante mejora la calidad del sueño en un 40%.`;
+            
+            scheduleDiv.style.display = 'block';
+            updateAlertnessScore(15);
+            incrementInteraction();
+        }
+
+        function setTravelTime(time) {
+            currentTravelTime = time;
+            const buttons = document.querySelectorAll('.simulation-btn[data-time]');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.time === time) {
+                    btn.classList.add('active');
+                }
+            });
+            incrementInteraction();
+        }
+
+        function calculateTripBreaks() {
+            const distance = parseInt(document.getElementById('distance-slider').value);
+            const distanceValue = document.getElementById('distance-value');
+            const breaksDiv = document.getElementById('trip-breaks');
+            const breakDetails = document.getElementById('break-details');
+            
+            distanceValue.textContent = distance;
+            
+            // Calculate breaks based on distance and travel time
+            let breakInterval = 100; // Default: every 100 miles
+            let breakDuration = 15; // Default: 15 minutes
+            
+            switch(currentTravelTime) {
+                case 'night':
+                    breakInterval = 75; // More frequent breaks at night
+                    breakDuration = 20;
+                    break;
+                case 'mixed':
+                    breakInterval = 90;
+                    breakDuration = 15;
+                    break;
+            }
+            
+            const numberOfBreaks = Math.max(1, Math.ceil(distance / breakInterval));
+            const breakLocations = [];
+            
+            for (let i = 1; i <= numberOfBreaks; i++) {
+                const breakLocation = Math.round((distance / numberOfBreaks) * i);
+                breakLocations.push(`${breakLocation} miles`);
+            }
+            
+            breakDetails.innerHTML = `
+                <div>• <strong>${numberOfBreaks}</strong> descansos recomendados</div>
+                <div>• Cada <strong>${breakInterval}</strong> millas o <strong>${Math.round(breakInterval/60*60)}</strong> minutos</div>
+                <div>• Duración del descanso: <strong>${breakDuration}</strong> minutos cada uno</div>
+                <div>• Puntos de quiebre sugeridos: ${breakLocations.join(', ')}</div>
+                <div>• Tiempo total de descanso: <strong>${numberOfBreaks * breakDuration}</strong> minutos</div>
+            `;
+            
+            breaksDiv.style.display = 'block';
+            updateAlertnessScore(10);
+            incrementInteraction();
+        }
+
+        function startReactionTest() {
+            const button = document.getElementById('reaction-button');
+            const resultDisplay = document.getElementById('reaction-result');
+            const feedbackDiv = document.getElementById('reaction-feedback');
+            
+            button.textContent = 'WAIT...';
+            button.style.background = '#ef4444';
+            button.classList.remove('active');
+            resultDisplay.textContent = '';
+            feedbackDiv.style.display = 'none';
+            reactionTestActive = true;
+            
+            // Random delay between 2-5 seconds
+            const delay = 2000 + Math.random() * 3000;
+            
+            setTimeout(() => {
+                if (reactionTestActive) {
+                    button.textContent = '¡HAGA CLIC AHORA!';
+                    button.style.background = '#10b981';
+                    button.classList.add('active');
+                    reactionStartTime = Date.now();
+                }
+            }, delay);
+            
+            incrementInteraction();
+        }
+
+        function stopReactionTest() {
+            if (!reactionTestActive || !reactionStartTime) return;
+            
+            const stopTime = Date.now();
+            const reactionTime = (stopTime - reactionStartTime) / 1000;
+            const button = document.getElementById('reaction-button');
+            const resultDisplay = document.getElementById('reaction-result');
+            const feedbackDiv = document.getElementById('reaction-feedback');
+            
+            reactionTestActive = false;
+            button.textContent = 'WAIT...';
+            button.style.background = '#ef4444';
+            button.classList.remove('active');
+            
+            resultDisplay.textContent = `Tiempo de reacción: ${reactionTime.toFixed(2)} artículos de segunda clase`;
+            
+            // Calculate distance traveled at 60 mph during reaction time
+            const mph = 60;
+            const fps = mph * 1.46667;
+            const distance = (reactionTime * fps).toFixed(1);
+            
+            feedbackDiv.innerHTML = `
+                <div style="font-weight: 700; color: var(--color-primary); margin-bottom: 5px;">Análisis de Impacto:</div>
+                <div style="font-size: 0.9rem;">
+                    A 60 mph, viajaste <strong>${distance} pies</strong> durante su tiempo de reacción.<br>
+                    Al conducir con sueño, los tiempos de reacción pueden aumentar a <strong>${(reactionTime*1.5).toFixed(2)}-${(reactionTime*2).toFixed(2)} artículos de segunda clase</strong>, 
+                    lo que significa que viajarías <strong>${(distance*1.5).toFixed(1)}-${(distance*2).toFixed(1)} pies</strong> ¡Antes de reaccionar!
+                </div>
+            `;
+            
+            feedbackDiv.style.display = 'block';
+            
+            if (reactionTime < 0.3) {
+                updateAlertnessScore(20);
+            } else if (reactionTime < 0.5) {
+                updateAlertnessScore(15);
+            } else {
+                updateAlertnessScore(10);
+            }
+            
+            incrementInteraction();
+        }
+
+        function checkFinalAssessment() {
+            // Mark quiz as completed
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'B',
+                4: 'C',
+                5: 'C'
+            };
+
+            let score = 0;
+            const totalQuestions = 5;
+            let feedbackHTML = '';
+
+            // Check each question
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#10b981';
+                        selectedOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                        updateAlertnessScore(10);
+                    } else {
+                        selectedOption.style.borderColor = '#ef4444';
+                        selectedOption.style.background = 'rgba(239, 68, 68, 0.1)';
+                        updateAlertnessScore(-5);
+                        
+                        // Highlight correct answer
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#10b981';
+                            correctOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            // Calculate percentage
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            // Show results
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            // Generate feedback based on score
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 <strong>¡Puntuación perfecta!</strong> Ha dominado la prevención de conducir con sueño. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 <strong>¡Buen trabajo!</strong> Entiendes las estrategias clave de prevención. ';
+            } else {
+                feedbackHTML = '📚 <strong>Se necesita revisión.</strong> Por favor revise el material del curso. ';
+            }
+            
+            feedbackHTML += 'Su compromiso de mantenerse alerta salva vidas.';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            // Show results
+            document.getElementById('results').classList.add('show');
+            
+            // Show completion message
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            // Update timer to show "Completed" state
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'gradiente lineal (135 grados, # 10b981, # 34d399)';
+            
+            // Update progress bar to 100%
+            progressFill.style.width = '100%';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            
+            incrementInteraction();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the continuous timer
+            startTimer();
+            
+            // Set up sleep slider
+            const sleepSlider = document.getElementById('sleep-slider');
+            sleepSlider.addEventListener('input', function() {
+                document.getElementById('sleep-hours').textContent = `${this.value} hours`;
+            });
+
+            // Set up distance slider
+            const distanceSlider = document.getElementById('distance-slider');
+            distanceSlider.addEventListener('input', function() {
+                document.getElementById('distance-value').textContent = this.value;
+            });
+
+            // Set initial sleep quality
+            setSleepQuality('optimal');
+            
+            // Set initial travel time
+            setTravelTime('day');
+            
+            // Set up cause cards
+            const causeCards = document.querySelectorAll('.feature-card[data-cause]');
+            const causeInfo = document.getElementById('cause-info');
+            const causeTitle = document.getElementById('cause-title');
+            const causeDetails = document.getElementById('cause-details');
+            
+            const causeInfoMap = {
+                'sleep': {
+                    title: 'Privación del sueño',
+                    details: 'La causa más común. Después de 24 horas despierto = 0,10 % de deterioro del BAC. La deuda crónica de sueño se acumula y no se puede "recuperar" los fines de semana. El 35% de los adultos duerme menos de 7 horas por noche.'
+                },
+                'shift': {
+                    title: 'Trabajo por turnos',
+                    details: 'Los trabajadores nocturnos tienen un 30% más de riesgo de sufrir accidentes. La alteración del ritmo circadiano provoca fatiga permanente. Horas más peligrosas: 2-6 a.m. Los turnos rotativos son peores y aumentan el riesgo en un 40%.'
+                },
+                'disorders': {
+                    title: 'Trastornos del sueño',
+                    details: 'La apnea del sueño aumenta siete veces el riesgo de sufrir un accidente. El insomnio afecta al 30% de los adultos. La narcolepsia provoca ataques repentinos de sueño. Los trastornos no diagnosticados afectan al 80% de los enfermos.'
+                },
+                'medications': {
+                    title: 'Medications',
+                    details: 'Más de 500 medicamentos recetados causan somnolencia. Culpables comunes: antihistamínicos, antidepresivos, relajantes musculares, opioides. Etiquetas de advertencia ignoradas por el 60% de los usuarios.'
+                }
+            };
+            
+            causeCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const cause = this.dataset.cause;
+                    const info = causeInfoMap[cause];
+                    
+                    if (info) {
+                        causeTitle.textContent = info.title;
+                        causeDetails.textContent = info.details;
+                        causeInfo.style.display = 'block';
+                        
+                        causeCards.forEach(c => c.classList.remove('selected'));
+                        this.classList.add('selected');
+                        incrementInteraction();
+                    }
+                });
+            });
+            
+            // Set up technology cards
+            const techCards = document.querySelectorAll('.feature-card[data-tech]');
+            const techInfo = document.getElementById('tech-info');
+            const techTitle = document.getElementById('tech-title');
+            const techDetails = document.getElementById('tech-details');
+            
+            const techInfoMap = {
+                'detection': {
+                    title: 'Sistemas de monitoreo de conductores',
+                    details: 'Las cámaras infrarrojas rastrean el cierre de los ojos (métrica PERCLOS). Alertas cuando los ojos se cierran >20% del tiempo. Algunos utilizan el reconocimiento facial para alertas personalizadas. Reduce los choques por fatiga en un 37%.'
+                },
+                'lane': {
+                    title: 'Asistente de mantenimiento de carril',
+                    details: 'Utiliza cámaras para detectar marcas de carril. Proporciona corrección de dirección al derrapar. Retroalimentación háptica a través del volante. Avisos visuales y sonoros en caso de derrapes repetidos.'
+                },
+                'steering': {
+                    title: 'Análisis del patrón de dirección',
+                    details: 'Supervisa las microcorrecciones (signo de fatiga). Línea de base establecida durante la conducción en alerta. Los algoritmos detectan patrones de fatiga. Las alertas aumentan con el deterioro continuo.'
+                },
+                'apps': {
+                    title: 'Aplicaciones de alerta',
+                    details: 'Las aplicaciones para teléfonos inteligentes utilizan una cámara frontal y un acelerómetro. Algunos utilizan el análisis de voz para detectar la fatiga. El GPS rastrea los tiempos de conducción y sugiere descansos. Conéctese a los sistemas del vehículo en algunos modelos.'
+                }
+            };
+            
+            techCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const tech = this.dataset.tech;
+                    const info = techInfoMap[tech];
+                    
+                    if (info) {
+                        techTitle.textContent = info.title;
+                        techDetails.textContent = info.details;
+                        techInfo.style.display = 'block';
+                        
+                        techCards.forEach(c => c.classList.remove('selected'));
+                        this.classList.add('selected');
+                        incrementInteraction();
+                    }
+                });
+            });
+            
+            // Set up scenario options
+            const scenarioOptions = document.querySelectorAll('.scenario-option');
+            scenarioOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selection from other options in same parent
+                    const parent = this.parentElement;
+                    const siblings = parent.querySelectorAll('.scenario-option');
+                    siblings.forEach(sib => sib.classList.remove('selected'));
+                    
+                    this.classList.add('selected');
+                    
+                    // Show feedback for workplace scenario
+                    if (this.closest('.scenario') && this.closest('.scenario').querySelector('#workplace-feedback')) {
+                        const feedback = document.getElementById('workplace-feedback');
+                        if (this.dataset.correct === 'true') {
+                            feedback.classList.add('correct');
+                            feedback.classList.remove('incorrect');
+                            feedback.style.display = 'block';
+                            updateAlertnessScore(15);
+                        } else {
+                            feedback.classList.add('incorrect');
+                            feedback.classList.remove('correct');
+                            feedback.style.display = 'block';
+                            updateAlertnessScore(-10);
+                        }
+                    }
+                    
+                    incrementInteraction();
+                });
+            });
+
+            // Set up checklist items
+            const checklistItems = document.querySelectorAll('.checklist-checkbox');
+            checklistItems.forEach(item => {
+                item.addEventListener('change', function() {
+                    incrementInteraction();
+                });
+            });
+
+            // Set up final assessment options
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    // Remove selected class from all options in this question
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                            updateAlertnessScore(5); // Bonus for completing sections
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+            
+            // Initialize reaction test
+            const reactionButton = document.getElementById('reaction-button');
+            reactionButton.addEventListener('click', startReactionTest);
+            
+            // Initialize eye simulation
+            updateAlertnessScore(0); // This will set initial eye state
+        });
+
+        // Optional: Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkFinalAssessment();
+            }
+        });
+    </script>
+</body>
+</html>

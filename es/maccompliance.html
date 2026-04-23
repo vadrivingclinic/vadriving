@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cumplimiento, Privacidad, Fraude & Abuso en la facturación de seguros</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #af4bef;
+            --color-primary-light: #d492ff;
+            --color-accent: #8380f0;
+            --color-success: #00b894;
+            --color-bg-light: #f7f5fb;
+            --color-bg-gradient: linear-gradient(to bottom, white, #f1ecff, #f7f5fb);
+            --color-error: #e17055;
+            --color-text: #333333;
+            --color-muted: #666666;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(175, 75, 239, 0.1);
+            --shadow-hover: 0 15px 35px rgba(175, 75, 239, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-bg-gradient);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(175, 75, 239, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(175, 75, 239, 0.8); }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(175, 75, 239, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(175, 75, 239, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(175, 75, 239, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+
+        .lesson-subtitle {
+            font-size: 1.2rem;
+            color: var(--color-text);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(175, 75, 239, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(175, 75, 239, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(175, 75, 239, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        .key-terms-box {
+            background: rgba(131, 128, 240, 0.1);
+            border-left: 4px solid var(--color-accent);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .key-terms-title {
+            font-weight: 700;
+            color: var(--color-accent);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .key-term {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--color-accent);
+        }
+
+        .term-name {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 4px;
+        }
+
+        .term-definition {
+            color: var(--color-text);
+            font-size: 0.9rem;
+        }
+
+        .compliance-box {
+            background: rgba(0, 184, 148, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .compliance-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-box {
+            background: rgba(225, 112, 85, 0.1);
+            border-left: 4px solid var(--color-error);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: var(--color-error);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .important-note {
+            background: rgba(175, 75, 239, 0.1);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            margin: 15px 0;
+            border: 2px dashed rgba(175, 75, 239, 0.3);
+        }
+
+        .important-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .comparison-card {
+            background: rgba(175, 75, 239, 0.05);
+            border: 2px solid rgba(175, 75, 239, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+        }
+
+        .comparison-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .comparison-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .comparison-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .comparison-list li:before {
+            content: "•";
+            position: absolute;
+            left: 8px;
+            color: var(--color-primary);
+            font-size: 1.2rem;
+        }
+
+        .knowledge-check {
+            background: rgba(175, 75, 239, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(175, 75, 239, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(175, 75, 239, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(175, 75, 239, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(175, 75, 239, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(175, 75, 239, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(175, 75, 239, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #8c3ac7;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(175, 75, 239, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(175, 75, 239, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .key-points {
+            background: rgba(0, 184, 148, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, var(--color-success), #26d7ab);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .penalty-scale {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .penalty-level {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 15px;
+            text-align: center;
+            border: 2px solid rgba(175, 75, 239, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .penalty-level:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .penalty-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .penalty-amount {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--color-error);
+            margin-bottom: 5px;
+        }
+
+        .penalty-description {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+        }
+
+        .objectives-box {
+            background: linear-gradient(135deg, rgba(175, 75, 239, 0.1), rgba(131, 128, 240, 0.1));
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(175, 75, 239, 0.2);
+        }
+
+        .objectives-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+
+        .objectives-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .objectives-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .objectives-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 5px;
+            color: var(--color-success);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.6rem;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .penalty-scale {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://cdn.prod.website-files.com/64d0ccc1558d601cbfb09021/64e9d2f719b1e5258e5d57f5_IMG_1512-p-500.png" alt="Logotipo de la marca" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Módulo de Cumplimiento de Atención Médica</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">Reglamento de facturación de seguros</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Cumplimiento, Privacidad, Fraude & Abuso en la facturación de seguros</h1>
+        <div class="lesson-subtitle">Dominar HIPAA, HITECH y las regulaciones sanitarias</div>
+
+        <!-- Objectives Box -->
+        <div class="objectives-box">
+            <div class="objectives-title">
+                <span>🎯</span> Objetivos de aprendizaje
+            </div>
+            <ul class="objectives-list">
+                <li>Definir el cumplimiento en el contexto de facturación de atención médica</li>
+                <li>Identificar las disposiciones clave de HIPAA y HITECH Act</li>
+                <li>Distinguir entre fraude y abuso en la atención sanitaria</li>
+                <li>Aplicar reglas de privacidad a escenarios prácticos</li>
+                <li>Reconocer las consecuencias del incumplimiento</li>
+                <li>Comprender los requisitos de salvaguardia de seguridad</li>
+                <li>Implementar programas de cumplimiento efectivos</li>
+            </ul>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Secciones completadas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="quiz-score">0%</span>
+                <span class="stat-label">Puntuación del examen</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Progreso de la lección</span>
+                <span><span id="completed-percentage">0%</span> Completo</span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: HIPAA Fundamentals -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🏛️</span>
+                    Fundamentos de HIPAA: Título I & II
+                </h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>📋</span> Definición de cumplimiento
+                    </h3>
+                    <p class="subsection-content">
+                        <strong>Cumplimiento en la atención sanitaria</strong> Implica cumplir con diversas leyes, regulaciones y pautas que rigen el funcionamiento de las instituciones de atención médica. Esto incluye garantizar la seguridad del paciente, mantener la confidencialidad de la información del paciente, prácticas de facturación precisas y prevenir actividades fraudulentas.
+                    </p>
+                    
+                    <div class="important-note">
+                        <div class="important-title">💡 Perspectiva crítica</div>
+                        El cumplimiento no es sólo un requisito reglamentario; forma la base de la confianza entre pacientes, proveedores y pagadores. El incumplimiento puede dar lugar a sanciones legales, incluidas multas sustanciales, revocación de licencias y erosión de la confianza pública.
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>🔒</span> Título I de HIPAA: Reforma de seguros
+                    </h3>
+                    <p class="subsection-content">
+                        El Título I regula la disponibilidad y amplitud de la cobertura del seguro médico. Su objetivo principal es proporcionar cobertura de seguro médico continua para personas en transición entre trabajos, protegiendo a aquellos con condiciones preexistentes de que se les niegue cobertura o se les cobren tarifas exorbitantes.
+                    </p>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>💻</span> Título II de HIPAA: Simplificación administrativa
+                    </h3>
+                    <p class="subsection-content">
+                        El Título II se centra en la privacidad y seguridad de los registros médicos de los pacientes. Exige la creación de estándares nacionales para el procesamiento de transacciones electrónicas de atención médica, con el objetivo de simplificar el sistema de atención médica y al mismo tiempo mejorar la privacidad y seguridad de los datos de los pacientes.
+                    </p>
+                    
+                    <div class="key-terms-box">
+                        <div class="key-terms-title">📚 Términos clave</div>
+                        <div class="key-term">
+                            <div class="term-name">Información de salud protegida (PHI)</div>
+                            <div class="term-definition">Cualquier información en un registro médico que pueda usarse para identificar a un individuo y que haya sido creada, utilizada o divulgada durante la prestación de atención médica.</div>
+                        </div>
+                        <div class="key-term">
+                            <div class="term-name">Entidad cubierta</div>
+                            <div class="term-definition">Planes de salud, cámaras de compensación de atención médica y proveedores de atención médica que transmiten información de salud electrónicamente.</div>
+                        </div>
+                        <div class="key-term">
+                            <div class="term-name">Socio comercial</div>
+                            <div class="term-definition">Una persona o entidad que realiza funciones o actividades en nombre de una entidad cubierta que implican acceso a PHI.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <div class="comparison-title">Título I: Reforma del Seguro</div>
+                        <ul class="comparison-list">
+                            <li>Se centra en la cobertura de seguros.</li>
+                            <li>Protege condiciones preexistentes.</li>
+                            <li>Garantiza la portabilidad entre trabajos</li>
+                            <li>Regula las prácticas del mercado de seguros.</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <div class="comparison-title">Título II: Administrativo</div>
+                        <ul class="comparison-list">
+                            <li>Se centra en la privacidad & seguridad</li>
+                            <li>Protege los registros médicos electrónicos</li>
+                            <li>Exige estándares nacionales</li>
+                            <li>Incluye Privacidad & Reglas de seguridad</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Privacy & Security Rules -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🔐</span>
+                    Regla de privacidad & Medidas de seguridad
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>👁️</span> Fundamentos de las reglas de privacidad
+                    </h3>
+                    <p class="subsection-content">
+                        La Regla de Privacidad HIPAA establece estándares nacionales para proteger los registros médicos de las personas y otra información de salud personal. Se aplica a todas las formas de PHI (electrónica, escrita u oral) y brinda a los pacientes derechos sobre su información de salud.
+                    </p>
+                    
+                    <div class="important-note">
+                        <div class="important-title">🎯 Derechos del paciente según la regla de privacidad</div>
+                        • Derecho a acceder a sus registros médicos.<br>
+                        • Derecho a solicitar correcciones<br>
+                        • Derecho a solicitar restricciones sobre el uso de PHI<br>
+                        • Derecho a comunicaciones confidenciales<br>
+                        • Derecho a la contabilidad de las revelaciones
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>🛡️</span> Tres tipos de medidas de seguridad
+                    </h3>
+                    
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <div class="comparison-title">Administrativo</div>
+                            <ul class="comparison-list">
+                                <li>Procesos de gestión de seguridad</li>
+                                <li>Capacitación de la fuerza laboral</li>
+                                <li>Gestión de acceso a la información.</li>
+                                <li>Procedimientos de incidentes de seguridad</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card">
+                            <div class="comparison-title">Físico</div>
+                            <ul class="comparison-list">
+                                <li>Controles de acceso a las instalaciones</li>
+                                <li>Seguridad de la estación de trabajo</li>
+                                <li>Controles de dispositivos y medios</li>
+                                <li>Barreras físicas</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card">
+                            <div class="comparison-title">Técnico</div>
+                            <ul class="comparison-list">
+                                <li>Sistemas de control de acceso</li>
+                                <li>Controles de auditoría</li>
+                                <li>Seguridad de transmisión</li>
+                                <li>Cifrado & autenticación</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>⚡</span> Mejoras a la Ley HITECH
+                    </h3>
+                    <p class="subsection-content">
+                        La Ley de Tecnología de la Información de Salud para la Salud Económica y Clínica (HITECH) amplía los requisitos de HIPAA con:
+                    </p>
+                    
+                    <div class="compliance-box">
+                        <div class="compliance-title">✅ Disposiciones clave de HITECH</div>
+                        • Mayores sanciones por infracciones<br>
+                        • Requisitos de notificación de incumplimiento<br>
+                        • Expansión a socios comerciales<br>
+                        • Promoción de la adopción de EHR<br>
+                        • Mecanismos de aplicación mejorados
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>⚠️</span> Consecuencias del incumplimiento
+                    </h3>
+                    
+                    <div class="penalty-scale">
+                        <div class="penalty-level">
+                            <div class="penalty-title">Violación sin saberlo</div>
+                            <div class="penalty-amount">$100-$50,000</div>
+                            <div class="penalty-description">Por infracción, hasta 1,5 millones de dólares al año</div>
+                        </div>
+                        <div class="penalty-level">
+                            <div class="penalty-title">Causa razonable</div>
+                            <div class="penalty-amount">$1,000-$50,000</div>
+                            <div class="penalty-description">Por infracción, hasta 1,5 millones de dólares al año</div>
+                        </div>
+                        <div class="penalty-level">
+                            <div class="penalty-title">Negligencia intencional</div>
+                            <div class="penalty-amount">$10,000-$50,000</div>
+                            <div class="penalty-description">Por infracción, hasta 1,5 millones de dólares al año</div>
+                        </div>
+                        <div class="penalty-level">
+                            <div class="penalty-title">Sanciones penales</div>
+                            <div class="penalty-amount">Hasta $250,000</div>
+                            <div class="penalty-description">+ Hasta 10 años de prisión</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Fraud & Abuse -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🚨</span>
+                    Detección de fraude versus abuso & Prevención
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">⚖️ Distinguir fraude del abuso</h3>
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <div class="comparison-title">Fraude</div>
+                            <ul class="comparison-list">
+                                <li><strong>Intencional</strong> engaño</li>
+                                <li>Afirmaciones deliberadamente falsas</li>
+                                <li>Clara intención de defraudar</li>
+                                <li>Ejemplos: facturación por servicios no prestados, actualización</li>
+                                <li><strong>Resultado:</strong> Beneficio no autorizado</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-card">
+                            <div class="comparison-title">Abuso</div>
+                            <ul class="comparison-list">
+                                <li><strong>Involuntario</strong> pero inadecuado</li>
+                                <li>Inconsistente con buenas prácticas</li>
+                                <li>Ninguna intención fraudulenta clara</li>
+                                <li>Ejemplos: cargos excesivos, servicios innecesarios</li>
+                                <li><strong>Resultado:</strong> Costos innecesarios</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🏛️ Leyes Federales & Reglamento</h3>
+                    
+                    <div class="key-terms-box">
+                        <div class="key-terms-title">⚖️ Fraude de claves & Leyes de abuso</div>
+                        <div class="key-term">
+                            <div class="term-name">Ley de reclamaciones falsas</div>
+                            <div class="term-definition">Permite al gobierno reclamar daños y perjuicios a quienes presenten reclamaciones fraudulentas de fondos federales (incluidas las disposiciones de Qui Tam).</div>
+                        </div>
+                        <div class="key-term">
+                            <div class="term-name">Estatuto antisobornos</div>
+                            <div class="term-definition">Prohíbe incentivos financieros inadecuados para derivaciones de pacientes de Medicare/Medicaid.</div>
+                        </div>
+                        <div class="key-term">
+                            <div class="term-name">Ley Stark (Stark I & II)</div>
+                            <div class="term-definition">Prohíbe las autorreferencias de médicos a entidades con las que tienen relaciones financieras.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🔍 Programas de auditoría & Vigilancia</h3>
+                    
+                    <div class="compliance-box">
+                        <div class="compliance-title">📊 Auditoría clave & Programas de supervisión</div>
+                        <strong>Contratistas de auditoría de recuperación (RAC):</strong> Identificar y recuperar pagos indebidos de Medicare<br><br>
+                        <strong>Programa de Integridad de Medicare (MIP):</strong> Protege los recursos de Medicare a través de auditorías y revisiones.<br><br>
+                        <strong>Contratistas de Integridad del Programa de Zona (ZPIC):</strong> Combatir el fraude examinando patrones de facturación sospechosos<br><br>
+                        <strong>Asociación para la prevención del fraude en la atención médica (HEAT):</strong> Iniciativa colaborativa de prevención del fraude
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🏥 Programas de cumplimiento efectivos</h3>
+                    
+                    <div class="key-points">
+                        <div class="key-points-title">✅ 7 elementos de programas de cumplimiento eficaces</div>
+                        <ul class="key-points-list">
+                            <li><strong>Políticas escritas & Procedimientos:</strong> Documentación clara de los estándares de cumplimiento</li>
+                            <li><strong>Oficial de Cumplimiento Designado:</strong> Liderazgo responsable de la supervisión.</li>
+                            <li><strong>Capacitación & Educación:</strong> Formación periódica e integral del personal.</li>
+                            <li><strong>Comunicación efectiva:</strong> Canales abiertos para informar inquietudes</li>
+                            <li><strong>Escucha & Revisión de cuentas:</strong> Revisiones periódicas y evaluaciones de riesgos</li>
+                            <li><strong>Aplicación & Disciplina:</strong> Aplicación consistente de estándares.</li>
+                            <li><strong>Respuesta & Corrección:</strong> Investigación inmediata y acción correctiva.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-title">🚨 Señales de alerta de fraude & Abuso</div>
+                    • Procedimientos excesivos o innecesarios<br>
+                    • Facturación por servicios no prestados realmente<br>
+                    • Documentación inconsistente o incompleta<br>
+                    • Patrones de facturación inusuales<br>
+                    • Cambios frecuentes en las prácticas de facturación.<br>
+                    • Aumentos inexplicables en los cargos<br>
+                    • Servicios inconsistentes con el diagnóstico del paciente
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Check -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Verificación de conocimientos: ponga a prueba su comprensión</h2>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. ¿Cuál es el enfoque principal del Título II de HIPAA?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Portabilidad de seguros para transiciones laborales</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Privacidad y seguridad de la información de salud del paciente.</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Regulación de las tarifas de las primas de seguros.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. ¿Cuál de los siguientes NO se considera un tipo de salvaguardia de seguridad según HIPAA?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Salvaguardias administrativas</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Salvaguardias físicas</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Salvaguardias financieras</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. ¿Qué distingue el fraude del abuso en la facturación de la atención sanitaria?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>El fraude implica engaño intencional, mientras que el abuso implica prácticas incompatibles con normas sólidas.</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>El abuso siempre es criminal, mientras que el fraude no lo es</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Son términos intercambiables con el mismo significado.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. ¿Qué ley prohíbe a los médicos derivar pacientes a entidades con las que tienen relaciones financieras?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>La Ley HITECH</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>La ley dura</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>La regla de privacidad</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">5. ¿Cuál es la multa anual máxima por infracciones de HIPAA según el sistema de niveles de sanciones?</div>
+                <div class="options">
+                    <div class="option" data-question="5" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>$250,000</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>$1,000,000</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>$1,500,000</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">Comprueba tus respuestas</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Tus resultados
+                </div>
+                <div class="score" id="score">0/5</div>
+                <div class="feedback" id="feedback">
+                    Revise sus respuestas a continuación para ver qué conceptos de cumplimiento domina.
+                </div>
+                <div class="key-points" style="margin-top: 20px;">
+                    <div class="key-points-title">🎯 Conclusiones esenciales sobre el cumplimiento</div>
+                    <ul class="key-points-list">
+                        <li>El cumplimiento de HIPAA es obligatorio para todas las entidades cubiertas y socios comerciales.</li>
+                        <li>Comprender la diferencia entre fraude y abuso es fundamental para una facturación ética</li>
+                        <li>Las salvaguardias de seguridad deben ser de naturaleza administrativa, física y técnica.</li>
+                        <li>La capacitación regular y los programas de cumplimiento efectivos previenen violaciones</li>
+                        <li>Las sanciones por incumplimiento pueden ser severas, incluidas multas y prisión.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> ¡Módulo completado!
+            </div>
+            <p>Ha completado con éxito la sección Cumplimiento, Privacidad y Fraude. & Lección de Abuso en Facturación de Seguros.</p>
+            <p>Ahora comprende la importancia fundamental del cumplimiento de HIPAA, puede distinguir entre fraude y abuso y reconocer las graves consecuencias del incumplimiento. Aplicar este conocimiento para garantizar prácticas de facturación de atención médica éticas y legales.</p>
+            
+            <div class="key-points" style="background: rgba(255, 255, 255, 0.2); margin: 20px 0; border: none;">
+                <div class="key-points-title" style="color: white;">📚 ¿Listo para aplicar tus conocimientos?</div>
+                <ul class="key-points-list" style="color: white;">
+                    <li>Revisar las políticas laborales relacionadas con el cumplimiento de HIPAA.</li>
+                    <li>Identificar posibles señales de alerta de fraude/abuso en las prácticas de facturación</li>
+                    <li>Participe en oportunidades de capacitación sobre cumplimiento</li>
+                    <li>Manténgase actualizado sobre los cambios regulatorios en la atención médica</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let sectionsCompleted = new Set();
+        let quizCompleted = false;
+        
+        // DOM Elements
+        const completedCountEl = document.getElementById('completed-count');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const progressFill = document.getElementById('progress-fill');
+        const completedPercentageEl = document.getElementById('completed-percentage');
+        const completionMessage = document.getElementById('completion-message');
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 3;
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Update completed count
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            // Update percentage display
+            completedPercentageEl.textContent = `${Math.round(progressPercentage)}%`;
+        }
+
+        // Update quiz score display
+        function updateQuizScore(score, totalQuestions) {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            quizScoreEl.textContent = `${percentage}%`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up option selection
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    // Remove selected class from all options in this question
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+        });
+
+        function checkAnswers() {
+            // Mark quiz as completed
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'C',
+                3: 'A',
+                4: 'B',
+                5: 'C'
+            };
+
+            let score = 0;
+            const totalQuestions = 5;
+            let feedbackHTML = '';
+
+            // Check each question
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#00b894';
+                        selectedOption.style.background = 'rgba(0, 184, 148, 0.1)';
+                    } else {
+                        selectedOption.style.borderColor = '#e17055';
+                        selectedOption.style.background = 'rgba(225, 112, 85, 0.1)';
+                        
+                        // Highlight correct answer
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#00b894';
+                            correctOption.style.background = 'rgba(0, 184, 148, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            // Update quiz score
+            updateQuizScore(score, totalQuestions);
+            
+            // Calculate percentage
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            // Show results
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            // Generate feedback based on score
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 <strong>¡Excelente!</strong> Ha dominado los conceptos de cumplimiento. Entiende los requisitos de HIPAA, puede distinguir el fraude del abuso y reconoce la importancia de las medidas de seguridad. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 <strong>¡Buen trabajo!</strong> Entiende la mayoría de los conceptos de cumplimiento. Revisa las respuestas incorrectas para fortalecer tus conocimientos. ';
+            } else {
+                feedbackHTML = '📚 <strong>Se necesita revisión.</strong> Comprender estos conceptos de cumplimiento es crucial para una facturación ética de la atención médica. Por favor revise el material de la lección. ';
+            }
+            
+            feedbackHTML += 'Recuerde estos principios clave:';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            // Show results
+            document.getElementById('results').classList.add('show');
+            
+            // Show completion message
+            completionMessage.classList.add('show');
+            
+            // Update progress bar to 100%
+            progressFill.style.width = '100%';
+            completedPercentageEl.textContent = '100%';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>

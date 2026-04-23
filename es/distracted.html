@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA: concienciación sobre la conducción distraída</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #dc2626;
+            --color-primary-light: #ef4444;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-info: #3b82f6;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --shadow-soft: 0 8px 20px rgba(220, 38, 38, 0.1);
+            --shadow-hover: 0 12px 28px rgba(220, 38, 38, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            color: var(--color-text);
+            line-height: 1.5;
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes alert {
+            0%, 100% { background-color: #dc2626; }
+            50% { background-color: #ef4444; }
+        }
+
+        .lesson-container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            height: 45px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .module-title {
+            font-size: 1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .lesson-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Timer */
+        .timer-container {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+            border-radius: 40px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning { background: linear-gradient(135deg, #f59e0b, #fbbf24); animation: pulse 1s infinite; }
+        .timer.critical { background: linear-gradient(135deg, #dc2626, #ef4444); animation: pulse 0.5s infinite; }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Progress */
+        .progress-section {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            margin-bottom: 25px;
+            align-items: center;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(220, 38, 38, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #dc2626, #ef4444);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .score-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            min-width: 250px;
+        }
+
+        .score-card {
+            background: rgba(220, 38, 38, 0.05);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(220, 38, 38, 0.1);
+        }
+
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .score-label {
+            font-size: 0.7rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+        }
+
+        /* Activity Navigation */
+        .activity-nav {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .activity-tab {
+            padding: 14px;
+            background: rgba(220, 38, 38, 0.1);
+            border: 2px solid rgba(220, 38, 38, 0.2);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .activity-tab.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        /* Activity Containers */
+        .activity-container {
+            display: none;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .activity-container.active { display: block; }
+
+        /* Awareness Builder */
+        .stat-banner {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+            animation: alert 2s infinite;
+        }
+
+        .distraction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .distraction-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            box-shadow: var(--shadow-soft);
+            border: 2px solid rgba(220, 38, 38, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .distraction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .distraction-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .distraction-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(220, 38, 38, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .distraction-type {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .distraction-examples {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .distraction-examples li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .distraction-examples li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+
+        /* Reaction Test */
+        .reaction-display {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 20px 0;
+        }
+
+        .reaction-stat {
+            text-align: center;
+        }
+
+        .reaction-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 4px;
+        }
+
+        .reaction-label {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .driving-simulation {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: var(--radius-md);
+            margin: 25px 0;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #475569;
+        }
+
+        .road {
+            position: absolute;
+            width: 100%;
+            height: 150px;
+            bottom: 0;
+            left: 0;
+            background: #475569;
+            border-top: 8px dashed #ffffff;
+        }
+
+        .obstacle {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: #dc2626;
+            border-radius: 50%;
+            cursor: pointer;
+            animation: obstacleMove linear infinite;
+        }
+
+        .distraction-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .distraction-btn {
+            padding: 15px;
+            background: white;
+            border: 2px solid rgba(220, 38, 38, 0.2);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .distraction-btn.active {
+            border-color: var(--color-primary);
+            background: rgba(220, 38, 38, 0.1);
+        }
+
+        @keyframes obstacleMove {
+            from { top: -100px; }
+            to { top: 100%; }
+        }
+
+        /* Quiz */
+        .quiz-timer {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .quiz-option {
+            padding: 14px;
+            background: white;
+            border: 2px solid rgba(220, 38, 38, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .quiz-option.selected { border-color: var(--color-primary); background: rgba(220, 38, 38, 0.1); }
+        .quiz-option.correct { border-color: var(--color-success); background: rgba(16, 185, 129, 0.1); }
+        .quiz-option.incorrect { border-color: var(--color-primary); background: rgba(220, 38, 38, 0.1); }
+
+        .option-label {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(220, 38, 38, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        /* Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .action-btn {
+            padding: 14px 35px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .action-btn.secondary { background: white; color: var(--color-primary); border: 2px solid var(--color-primary); }
+
+        /* Feedback Message */
+        .feedback-area {
+            background: rgba(220, 38, 38, 0.05);
+            border-radius: var(--radius-md);
+            padding: 18px;
+            margin: 20px 0;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        /* Completion Message */
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 35px;
+            text-align: center;
+        }
+
+        .completion-message.show { display: block; }
+        
+        .completion-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .completion-stat {
+            text-align: center;
+        }
+
+        .prevention-pledge {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <div class="timer-container">
+        <div class="timer" id="timer-box">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <div class="header" id="module-header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Conciencia de conducción distraída</div>
+                    <div style="color: var(--color-muted); font-size: 0.85rem;">Módulo interactivo de 10 minutos</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title" id="page-lesson-title">Comprender la conducción distraída</h1>
+
+        <div class="progress-section" id="page-progress-section">
+            <div class="progress-indicator">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-label">
+                    <span>Progreso del módulo</span>
+                    <span><span id="time-spent">0:00</span> / 10:00</span>
+                </div>
+            </div>
+            <div class="score-display">
+                <div class="score-card"><span class="score-value" id="awareness-score">0</span><span class="score-label">Conciencia</span></div>
+                <div class="score-card"><span class="score-value" id="reaction-score">0</span><span class="score-label">Reacción</span></div>
+                <div class="score-card"><span class="score-value" id="knowledge-score">0%</span><span class="score-label">Conocimiento</span></div>
+            </div>
+        </div>
+
+        <div class="activity-nav" id="page-activity-nav">
+            <div class="activity-tab active" onclick="switchActivity(1)">Hechos</div>
+            <div class="activity-tab" onclick="switchActivity(2)">Prueba de reacción</div>
+            <div class="activity-tab" onclick="switchActivity(3)">Prueba</div>
+        </div>
+
+        <!-- Activity 1 -->
+        <div class="activity-container active" id="activity-1">
+            <h2 style="margin-bottom:15px;">La realidad de conducir distraído</h2>
+            <div class="stat-banner">
+                <div style="font-size:2.5rem; font-weight:900;">9+</div>
+                <div>Muertes diarias en EE. UU. por accidentes por conducción distraída</div>
+            </div>
+            <p style="margin-bottom:20px;">La conducción distraída abarca cualquier actividad que desvíe la atención de la tarea principal de conducir.</p>
+            <div class="distraction-grid">
+                <div class="distraction-card">
+                    <div class="distraction-header">
+                        <div class="distraction-icon">👁️</div>
+                        <div class="distraction-type">Distracciones visuales</div>
+                    </div>
+                    <ul class="distraction-examples">
+                        <li>Mirando la pantalla de tu teléfono</li>
+                        <li>Leer un mapa o GPS</li>
+                    </ul>
+                </div>
+                <div class="distraction-card">
+                    <div class="distraction-header">
+                        <div class="distraction-icon">✋</div>
+                        <div class="distraction-type">Distracciones manuales</div>
+                    </div>
+                    <ul class="distraction-examples">
+                        <li>Enviar mensajes de texto o escribir por teléfono</li>
+                        <li>Comer o beber</li>
+                    </ul>
+                </div>
+                <div class="distraction-card">
+                    <div class="distraction-header">
+                        <div class="distraction-icon">🧠</div>
+                        <div class="distraction-type">Distracciones cognitivas</div>
+                    </div>
+                    <ul class="distraction-examples">
+                        <li>Soñar despierto o distraerse</li>
+                        <li>Conversaciones intensas</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn" onclick="markAwarenessComplete()">✓ Marcar como revisado</button>
+                <button class="action-btn secondary" onclick="switchActivity(2)">Siguiente: Prueba de reacción →</button>
+            </div>
+        </div>
+
+        <!-- Activity 2 -->
+        <div class="activity-container" id="activity-2">
+            <h2>Desafío del tiempo de reacción</h2>
+            <p>¡Haz clic en los peligros a medida que aparecen! Seleccione un nivel de distracción para ver la diferencia.</p>
+            
+            <div class="reaction-display">
+                <div class="reaction-stat">
+                    <div class="reaction-value" id="avg-reaction-time">0.0s</div>
+                    <div class="reaction-label">Reacción promedio</div>
+                </div>
+                <div class="reaction-stat">
+                    <div class="reaction-value" id="hits-count">0</div>
+                    <div class="reaction-label">Visitas</div>
+                </div>
+                <div class="reaction-stat">
+                    <div class="reaction-value" id="misses-count">0</div>
+                    <div class="reaction-label">falla</div>
+                </div>
+            </div>
+
+            <div class="driving-simulation" id="driving-simulation">
+                <div class="road"></div>
+            </div>
+
+            <div class="distraction-buttons">
+                <div class="distraction-btn active" onclick="setDistraction(&#x27;none&#x27;)" id="btn-none">Ninguno</div>
+                <div class="distraction-btn" onclick="setDistraction(&#x27;mild&#x27;)" id="btn-mild">Llamada telefónica</div>
+                <div class="distraction-btn" onclick="setDistraction(&#x27;severe&#x27;)" id="btn-severe">mensajes de texto</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" onclick="startReactionTest()" id="start-reaction-btn">Iniciar desafío</button>
+            </div>
+        </div>
+
+        <!-- Activity 3 -->
+        <div class="activity-container" id="activity-3">
+            <h2>Prueba de conocimientos sobre prevención</h2>
+            <div class="quiz-timer" id="quiz-timer">2:00</div>
+            <div class="quiz-content">
+                <div class="quiz-question">
+                    <div class="question-text" id="quiz-question-text">Cargando...</div>
+                    <div class="quiz-options" id="quiz-options-container"></div>
+                </div>
+            </div>
+            <div class="feedback-area" id="quiz-feedback" style="display: none;">
+                <div id="quiz-feedback-message"></div>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn" onclick="checkQuizAnswer()" id="check-quiz-btn">Verificar Respuesta</button>
+                <button class="action-btn" onclick="nextQuizQuestion()" id="next-quiz-btn" style="display:none;">Siguiente pregunta</button>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <h2 class="completion-title">🎉Módulo Completado!</h2>
+            <div style="font-size:2.5rem; margin:15px 0;" id="completion-time">00:00</div>
+            
+            <div class="completion-stats">
+                <div class="completion-stat">
+                    <div style="font-size: 2rem; font-weight: 900;" id="final-awareness">0</div>
+                    <div style="font-size: 0.85rem; opacity: 0.9;">Conciencia</div>
+                </div>
+                <div class="completion-stat">
+                    <div style="font-size: 2rem; font-weight: 900;" id="final-reaction">0</div>
+                    <div style="font-size: 0.85rem; opacity: 0.9;">Reacción</div>
+                </div>
+                <div class="completion-stat">
+                    <div style="font-size: 2rem; font-weight: 900;" id="final-knowledge">0%</div>
+                    <div style="font-size: 0.85rem; opacity: 0.9;">Conocimiento</div>
+                </div>
+            </div>
+
+            <div class="prevention-pledge">
+                <h3 style="margin-bottom: 15px;">📋 Tu compromiso de prevención</h3>
+                <ul style="text-align: left; display: inline-block; margin: 0 auto; list-style-type: &#x27;✓ &#x27;;">
+                    <li>Realizar llamadas telefónicas y arreglarse antes de conducir.</li>
+                    <li>Mantener el foco en la carretera en todo momento.</li>
+                    <li>Configurar el teléfono en "No molestar" mientras se conduce</li>
+                    <li>Ser un pasajero responsable</li>
+                </ul>
+            </div>
+            <button class="action-btn secondary" onclick="location.reload()" style="margin-top:20px;">Revisar de nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        const moduleState = {
+            currentActivity: 1,
+            activitiesCompleted: new Set(),
+            awarenessScore: 0,
+            reactionScore: 0,
+            knowledgeScore: 0,
+            correctAnswers: 0,
+            totalQuestions: 0,
+            timeElapsed: 0,
+            distraction: 'none'
+        };
+
+        // Timer Logic
+        setInterval(() => {
+            moduleState.timeElapsed++;
+            const min = Math.floor(moduleState.timeElapsed / 60);
+            const sec = moduleState.timeElapsed % 60;
+            const str = `${min}:${sec.toString().padStart(2, '0')}`;
+            document.getElementById('timer-display').textContent = str;
+            document.getElementById('time-spent').textContent = str;
+            const progress = Math.min((moduleState.timeElapsed / 600) * 100, 100);
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }, 1000);
+
+        function switchActivity(num) {
+            document.querySelectorAll('.activity-container').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.activity-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(`activity-${num}`).classList.add('active');
+            document.querySelectorAll('.activity-tab')[num-1].classList.add('active');
+            if (num === 3) startQuiz();
+        }
+
+        function markAwarenessComplete() {
+            moduleState.awarenessScore = 100;
+            document.getElementById('awareness-score').textContent = 100;
+            moduleState.activitiesCompleted.add(1);
+        }
+
+        // Reaction Test Restored
+        let reactionActive = false;
+        let testHits = 0;
+        let testMisses = 0;
+        let testReactionTimes = [];
+        let lastObstacleTime = 0;
+
+        function setDistraction(level) {
+            moduleState.distraction = level;
+            document.querySelectorAll('.distraction-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${level}`).classList.add('active');
+            const sim = document.getElementById('driving-simulation');
+            if (level === 'mild') sim.style.filter = 'blur(1px)';
+            else if (level === 'severe') sim.style.filter = 'desenfoque (3px) opacidad (0,7)';
+            else sim.style.filter = 'none';
+        }
+
+        function startReactionTest() {
+            if (reactionActive) return;
+            reactionActive = true;
+            testHits = 0;
+            testMisses = 0;
+            testReactionTimes = [];
+            document.getElementById('hits-count').textContent = '0';
+            document.getElementById('misses-count').textContent = '0';
+            document.getElementById('avg-reaction-time').textContent = '0.0s';
+            document.getElementById('start-reaction-btn').disabled = true;
+            
+            const sim = document.getElementById('driving-simulation');
+            const interval = setInterval(() => {
+                const obs = document.createElement('div');
+                obs.className = 'obstacle';
+                obs.style.left = Math.random() * 80 + '%';
+                
+                let speed = 2000;
+                if(moduleState.distraction === 'mild') speed = 1500;
+                if(moduleState.distraction === 'severe') speed = 1000;
+
+                const spawnTime = Date.now();
+                obs.onclick = () => {
+                    const reaction = (Date.now() - spawnTime) / 1000;
+                    testReactionTimes.push(reaction);
+                    testHits++;
+                    document.getElementById('hits-count').textContent = testHits;
+                    updateReactionAvg();
+                    obs.remove();
+                };
+                sim.appendChild(obs);
+                setTimeout(() => {
+                    if(obs.parentNode) {
+                        testMisses++;
+                        document.getElementById('misses-count').textContent = testMisses;
+                        obs.remove();
+                    }
+                }, speed);
+            }, 1200);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                reactionActive = false;
+                moduleState.reactionScore = Math.min(testHits * 10, 100);
+                document.getElementById('reaction-score').textContent = moduleState.reactionScore;
+                document.getElementById('start-reaction-btn').disabled = false;
+                moduleState.activitiesCompleted.add(2);
+                showMobileToast('¡Prueba completa!');
+            }, 15000);
+        }
+
+        function updateReactionAvg() {
+            if(testReactionTimes.length === 0) return;
+            const avg = testReactionTimes.reduce((a, b) => a + b, 0) / testReactionTimes.length;
+            document.getElementById('avg-reaction-time').textContent = avg.toFixed(1) + 's';
+        }
+
+        // Quiz Restored with 5 questions
+        const quizQuestions = [
+            { q: "¿Cuál es la forma más eficaz de prevenir la conducción distraída?", a: ["Dispositivos manos libres", "Completar actividades antes de conducir.", "Utilice semáforos", "Volcar"], c: 1, e: "¡Correcto! Completar todas las actividades antes de conducir es el método de prevención más eficaz." },
+            { q: "¿Qué tipo de distracción implica apartar la vista de la carretera?", a: ["Manual", "Visual", "Cognitive", "Auditory"], c: 1, e: "¡Bien! Las distracciones visuales implican apartar la vista de la carretera." },
+            { q: "¿Cuántas muertes diarias ocurren en los EE. UU. por conducir distraído?", a: ["3+", "6+", "9+", "12+"], c: 2, e: "Lamentablemente, la NHTSA informa más de 9 muertes diarias por conducción distraída." },
+            { q: "¿Qué debe hacer si necesita usar su teléfono mientras conduce?", a: ["Usar solo comandos de voz", "Deténgase en un lugar seguro", "Sostenga el teléfono a la altura de los ojos", "preguntar al pasajero"], c: 1, e: "¡Bien! Siempre deténgase en un lugar seguro si debe usar su teléfono." },
+            { q: "¿Qué actividad NO suele ser una forma de conducción distraída?", a: ["Comer mientras conduce", "Ajuste del GPS", "Escuchar música tranquila", "Enviar mensajes de texto en semáforos en rojo"], c: 2, e: "¡Correcto! Por lo general, escuchar música tranquila no se considera una distracción peligrosa." }
+        ];
+
+        let currentQuizIndex = 0;
+        let selectedOption = null;
+        let qTimerVal = 120;
+        let qInterval;
+
+        function startQuiz() {
+            currentQuizIndex = 0;
+            moduleState.correctAnswers = 0;
+            moduleState.totalQuestions = 0;
+            qTimerVal = 120;
+            if(qInterval) clearInterval(qInterval);
+            qInterval = setInterval(() => {
+                qTimerVal--;
+                const m = Math.floor(qTimerVal / 60);
+                const s = qTimerVal % 60;
+                document.getElementById('quiz-timer').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+                if(qTimerVal <= 0) { clearInterval(qInterval); completeModule(); }
+            }, 1000);
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            const question = quizQuestions[currentQuizIndex];
+            document.getElementById('quiz-question-text').textContent = question.q;
+            const container = document.getElementById('quiz-options-container');
+            container.innerHTML = '';
+            
+            question.a.forEach((opt, idx) => {
+                const div = document.createElement('div');
+                div.className = 'quiz-option';
+                div.innerHTML = `<div class="option-label">${String.fromCharCode(65+idx)}</div><div>${opt}</div>`;
+                div.onclick = () => {
+                    selectedOption = idx;
+                    document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+                    div.classList.add('selected');
+                };
+                container.appendChild(div);
+            });
+            document.getElementById('quiz-feedback').style.display = 'none';
+            document.getElementById('check-quiz-btn').style.display = 'block';
+            document.getElementById('next-quiz-btn').style.display = 'none';
+            selectedOption = null;
+        }
+
+        function checkQuizAnswer() {
+            if (selectedOption === null) { showMobileToast('Por favor seleccione una opción'); return; }
+            const question = quizQuestions[currentQuizIndex];
+            const isCorrect = selectedOption === question.c;
+            if (isCorrect) moduleState.correctAnswers++;
+            moduleState.totalQuestions++;
+            
+            const msg = document.getElementById('quiz-feedback-message');
+            msg.innerHTML = `<div style="font-weight:700; color:${isCorrect?'var(--color-success)':'var(--color-primary)'};">${isCorrect?'✅ Correct':'❌ Incorrect'}</div><div>${question.e}</div>`;
+            document.getElementById('quiz-feedback').style.display = 'block';
+            
+            document.getElementById('check-quiz-btn').style.display = 'none';
+            document.getElementById('next-quiz-btn').style.display = 'block';
+            
+            moduleState.knowledgeScore = Math.round((moduleState.correctAnswers / moduleState.totalQuestions) * 100);
+            document.getElementById('knowledge-score').textContent = moduleState.knowledgeScore + '%';
+        }
+
+        function nextQuizQuestion() {
+            currentQuizIndex++;
+            if (currentQuizIndex < quizQuestions.length) {
+                loadQuizQuestion();
+            } else {
+                clearInterval(qInterval);
+                completeModule();
+            }
+        }
+
+        function completeModule() {
+            // UI Cleanup
+            document.getElementById('module-header').style.display = 'none';
+            document.getElementById('page-lesson-title').style.display = 'none';
+            document.getElementById('page-progress-section').style.display = 'none';
+            document.getElementById('page-activity-nav').style.display = 'none';
+            document.getElementById('timer-box').style.background = 'gradiente lineal (135 grados, # 10b981, # 34d399)';
+            document.querySelectorAll('.activity-container').forEach(c => c.style.display = 'none');
+            
+            // Stats
+            const min = Math.floor(moduleState.timeElapsed / 60);
+            const sec = moduleState.timeElapsed % 60;
+            document.getElementById('completion-time').textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+            document.getElementById('final-awareness').textContent = moduleState.awarenessScore;
+            document.getElementById('final-reaction').textContent = moduleState.reactionScore;
+            document.getElementById('final-knowledge').textContent = moduleState.knowledgeScore + '%';
+            
+            document.getElementById('completion-message').classList.add('show');
+            window.scrollTo(0,0);
+        }
+    </script>
+
+<script>
+/* ===== MOBILE TOAST NOTIFICATION (replaces alert) ===== */
+function showMobileToast(msg) {
+  var t = document.getElementById('_va_toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = '_va_toast';
+    t.style.cssText = [
+      'position:fixed','bottom:24px','left:50%','transform:translateX(-50%)',
+      'background:rgba(30,30,30,0.92)','color:#fff','relleno: 12px 22px',
+      'border-radius:24px','z-index:99999','font-weight:600',
+      'font-size:0.95rem','max-width:85vw','text-align:center',
+      'sombra de cuadro: 0 4px 16px rgba (0,0,0,0.3)',
+      'transición:opacidad 0,35s','opacity:0','pointer-events:none'
+    ].join(';');
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._to);
+  t._to = setTimeout(function(){ t.style.opacity='0'; }, 3200);
+}
+</script>
+
+</body>
+</html>
