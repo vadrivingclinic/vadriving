@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA: conducción en condiciones climáticas adversas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --color-info: #3b82f6;
+            --color-rain: #3b82f6;
+            --color-snow: #60a5fa;
+            --color-fog: #9ca3af;
+            --color-wind: #8b5cf6;
+            --color-heat: #ef4444;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes rainAnimation {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 20% 100%; }
+        }
+
+        @keyframes snowAnimation {
+            0% { transform: translateY(-100px) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .time-estimate {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Weather-specific cards */
+        .weather-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .weather-card {
+            border-radius: var(--radius-md);
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .weather-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .weather-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .rain-card {
+            background: rgba(59, 130, 246, 0.05);
+            border: 2px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .rain-card::before {
+            background: var(--color-rain);
+        }
+
+        .snow-card {
+            background: rgba(96, 165, 250, 0.05);
+            border: 2px solid rgba(96, 165, 250, 0.2);
+        }
+
+        .snow-card::before {
+            background: var(--color-snow);
+        }
+
+        .fog-card {
+            background: rgba(156, 163, 175, 0.05);
+            border: 2px solid rgba(156, 163, 175, 0.2);
+        }
+
+        .fog-card::before {
+            background: var(--color-fog);
+        }
+
+        .wind-card {
+            background: rgba(139, 92, 246, 0.05);
+            border: 2px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .wind-card::before {
+            background: var(--color-wind);
+        }
+
+        .heat-card {
+            background: rgba(239, 68, 68, 0.05);
+            border: 2px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .heat-card::before {
+            background: var(--color-heat);
+        }
+
+        .weather-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .weather-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .challenge-list, .practice-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 15px;
+        }
+
+        .challenge-list li, .practice-list li {
+            margin-bottom: 8px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .challenge-list li:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+        }
+
+        .practice-list li:before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+        }
+
+        .danger-level {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .danger-high {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--color-error);
+        }
+
+        .danger-medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--color-warning);
+        }
+
+        .danger-low {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--color-info);
+        }
+
+        .stat-box {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-box-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .weather-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .weather-stat {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .weather-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .weather-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+        }
+
+        .tips-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .tips-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tips-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tips-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .emergency-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--color-error);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .emergency-title {
+            font-weight: 700;
+            color: var(--color-error);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vehicle-checklist {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-sm);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checklist-item:hover {
+            background: rgba(95, 23, 235, 0.1);
+            border-color: var(--color-primary);
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(95, 23, 235, 0.3);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-checkbox.checked {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+        }
+
+        .checklist-checkbox.checked:after {
+            content: "✓";
+            font-weight: bold;
+        }
+
+        .checklist-text {
+            font-size: 0.95rem;
+        }
+
+        .key-points {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .knowledge-check {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(95, 23, 235, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.6rem;
+            }
+
+            .weather-grid, .vehicle-checklist {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Rain animation effect */
+        .rain-effect {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rain-effect::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom,
+                transparent 30%,
+                rgba(59, 130, 246, 0.1) 50%,
+                transparent 70%
+            );
+            animation: rainAnimation 2s linear infinite;
+            pointer-events: none;
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Aprendizaje del tiempo</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Módulo de seguridad meteorológica</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">Guía de conducción en condiciones climáticas adversas de 15 minutos</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Conducción segura en condiciones climáticas adversas</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">⏱️</div>
+            <div class="time-estimate-text">
+                Complete esta lección en aproximadamente <span class="time-highlight">15 minutos</span> para dominar la conducción en todas las condiciones climáticas
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Secciones completadas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="quiz-score">0%</span>
+                <span class="stat-label">Puntuación del examen</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Aprendizaje del tiempo</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Progreso de la lección</span>
+                <span>Tiempo de aprendizaje: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: Weather Statistics & Introduction -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🌧️❄️</span>
+                    Conducción meteorológica: comprender los riesgos
+                </h2>
+                
+                <div class="subsection">
+                    <p class="subsection-content">
+                        Conducir en condiciones climáticas adversas plantea importantes desafíos y riesgos. Condiciones como lluvia, nieve, niebla y hielo pueden reducir drásticamente la visibilidad y la tracción, dificultando el control de su vehículo. Comprender estos riesgos es el primer paso hacia una conducción segura en condiciones meteorológicas adversas.
+                    </p>
+                    
+                    <div class="stat-box">
+                        <div class="stat-box-title">📊 Estadísticas de accidentes relacionados con el clima (2024)</div>
+                        <div class="weather-stats">
+                            <div class="weather-stat">
+                                <div class="weather-value">21%</div>
+                                <div class="weather-label">de todos los accidentes ocurren bajo la lluvia</div>
+                            </div>
+                            <div class="weather-stat">
+                                <div class="weather-value">46%</div>
+                                <div class="weather-label">mayor tasa de mortalidad en nieve/hielo</div>
+                            </div>
+                            <div class="weather-stat">
+                                <div class="weather-value">17%</div>
+                                <div class="weather-label">de los accidentes mortales implican niebla</div>
+                            </div>
+                            <div class="weather-stat">
+                                <div class="weather-value">76%</div>
+                                <div class="weather-label">aumento de los accidentes de derrape</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">⚠️ Principios universales de conducción meteorológica</h3>
+                    
+                    <div class="warning-box">
+                        <div class="warning-title">🌡️ Conciencia de temperatura crítica</div>
+                        <div class="subsection-content">
+                            <strong>Formación de hielo negro:</strong> Más peligroso a 32°F (0°C)<br>
+                            <strong>Riesgo de hidroplaneo:</strong> Aumenta con los primeros 10 minutos de lluvia<br>
+                            <strong>Formación de niebla:</strong> Común cuando temperatura = punto de rocío<br>
+                            <strong>Presión de neumáticos:</strong> Cambia 1 PSI por cada cambio de temperatura de 10°F
+                        </div>
+                    </div>
+
+                    <div class="tips-box">
+                        <div class="tips-title">🎯 Filosofía de seguridad básica para todo tipo de clima</div>
+                        <ul class="tips-list">
+                            <li><strong>Desacelerar:</strong> La velocidad es el factor número uno en los accidentes relacionados con el clima</li>
+                            <li><strong>Aumentar la distancia:</strong> Duplica o triplica tu distancia de seguimiento</li>
+                            <li><strong>Sea predecible:</strong> Los movimientos suaves y graduales evitan derrapes.</li>
+                            <li><strong>Manténgase visible:</strong> Utilice siempre luces apropiadas para las condiciones</li>
+                            <li><strong>Sepa cuándo detenerse:</strong> Si las condiciones son demasiado peligrosas, deténgase de manera segura</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Specific Weather Conditions -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🌪️</span>
+                    Dominar desafíos climáticos específicos
+                </h2>
+
+                <div class="subsection">
+                    <div class="weather-grid">
+                        <!-- Rain Card -->
+                        <div class="weather-card rain-card rain-effect">
+                            <div class="weather-icon">🌧️</div>
+                            <div class="weather-title">Conducir bajo la lluvia
+                                <span class="danger-level danger-medium">Peligro medio</span>
+                            </div>
+                            
+                            <div class="subsection-content" style="font-weight: 600; margin-bottom: 10px;">Desafíos:</div>
+                            <ul class="challenge-list">
+                                <li>Visibilidad reducida en caso de lluvia intensa</li>
+                                <li>Riesgo de hidroplaneo en superficies mojadas</li>
+                                <li>Distancias de frenado más largas</li>
+                                <li>Los primeros 10 minutos son los más peligrosos.</li>
+                            </ul>
+                            
+                            <div class="subsection-content" style="font-weight: 600; margin: 15px 0 10px 0;">Mejores prácticas:</div>
+                            <ul class="practice-list">
+                                <li>Reducir la velocidad en un 30-50%</li>
+                                <li>Aumentar la distancia de seguimiento a más de 4 segundos.</li>
+                                <li>Utilice luces delanteras (no sólo las de día)</li>
+                                <li>Evite frenar o girar bruscamente</li>
+                                <li>Mantenga los neumáticos con una banda de rodadura mínima de 4/32"</li>
+                                <li>Esté atento al agua estancada y los charcos.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Snow & Ice Card -->
+                        <div class="weather-card snow-card">
+                            <div class="weather-icon">❄️</div>
+                            <div class="weather-title">Conducir en la nieve & Hielo
+                                <span class="danger-level danger-high">Alto peligro</span>
+                            </div>
+                            
+                            <div class="subsection-content" style="font-weight: 600; margin-bottom: 10px;">Desafíos:</div>
+                            <ul class="challenge-list">
+                                <li>Superficies resbaladizas con mala tracción.</li>
+                                <li>Visibilidad reducida en nevadas</li>
+                                <li>Hielo negro (hielo transparente en el pavimento)</li>
+                                <li>Acumulación de nieve en las carreteras</li>
+                            </ul>
+                            
+                            <div class="subsection-content" style="font-weight: 600; margin: 15px 0 10px 0;">Mejores prácticas:</div>
+                            <ul class="practice-list">
+                                <li>Reducir la velocidad en un 50% o más.</li>
+                                <li>Utilice neumáticos o cadenas para nieve cuando sea necesario.</li>
+                                <li>Acelera y frena suavemente</li>
+                                <li>Aumentar la distancia de seguimiento a 8-10 segundos.</li>
+                                <li>Quite TODA la nieve de las ventanas, las luces y el techo.</li>
+                                <li>Pruebe los frenos suavemente al arrancar</li>
+                            </ul>
+                        </div>
+
+                        <!-- Fog Card -->
+                        <div class="weather-card fog-card">
+                            <div class="weather-icon">🌫️</div>
+                            <div class="weather-title">Conducir en la niebla
+                                <span class="danger-level danger-high">Alto peligro</span>
+                            </div>
+                            
+                            <div class="subsection-content" style="font-weight: 600; margin-bottom: 10px;">Desafíos:</div>
+                            <ul class="challenge-list">
+                                <li>Visibilidad muy reducida (a menudo < 100 pies)</li>
+                                <li>Dificultad para juzgar distancias y velocidades.</li>
+                                <li>Es posible que otros conductores no utilicen las luces adecuadas.</li>
+                                <li>Parches repentinos de niebla densa</li>
+                            </ul>
+                            
+                            <div class="subsection-content" style="font-weight: 600; margin: 15px 0 10px 0;">Mejores prácticas:</div>
+                            <ul class="practice-list">
+                                <li>Utilice SOLAMENTE luces de cruce</li>
+                                <li>Reduzca la velocidad muy por debajo del límite publicado</li>
+                                <li>Aumentar significativamente la distancia de seguimiento</li>
+                                <li>Utilice el borde derecho de la carretera como guía.</li>
+                                <li>Evite detenerse en la carretera</li>
+                                <li>Utilice luces antiniebla si están equipadas (no luces altas)</li>
+                            </ul>
+                        </div>
+
+                        <!-- Wind Card -->
+                        <div class="weather-card wind-card">
+                            <div class="weather-icon">💨</div>
+                            <div class="weather-title">Conducir con viento fuerte
+                                <span class="danger-level danger-medium">Peligro medio</span>
+                            </div>
+                            
+                            <div class="subsection-content" style="font-weight: 600; margin-bottom: 10px;">Desafíos:</div>
+                            <ul class="challenge-list">
+                                <li>Dificultad para mantener la posición en el carril.</li>
+                                <li>Peligros de escombros voladores</li>
+                                <li>Las ráfagas repentinas pueden provocar la pérdida de control.</li>
+                                <li>Vehículos de alto perfil especialmente vulnerables</li>
+                            </ul>
+                            
+                            <div class="subsection-content" style="font-weight: 600; margin: 15px 0 10px 0;">Mejores prácticas:</div>
+                            <ul class="practice-list">
+                                <li>Mantenga ambas manos firmemente en el volante.</li>
+                                <li>Reduzca la velocidad para un mejor control</li>
+                                <li>Aumentar la distancia de seguimiento</li>
+                                <li>Tenga mucho cuidado con vehículos grandes</li>
+                                <li>Esté atento a los escombros en la carretera</li>
+                                <li>Prepárate para ráfagas repentinas</li>
+                            </ul>
+                        </div>
+
+                        <!-- Heat Card -->
+                        <div class="weather-card heat-card">
+                            <div class="weather-icon">🔥</div>
+                            <div class="weather-title">Conducir en calor extremo
+                                <span class="danger-level danger-low">Peligro bajo</span>
+                            </div>
+                            
+                            <div class="subsection-content" style="font-weight: 600; margin-bottom: 10px;">Desafíos:</div>
+                            <ul class="challenge-list">
+                                <li>Riesgos de sobrecalentamiento del vehículo</li>
+                                <li>Mayor potencial de explosión de neumáticos</li>
+                                <li>Fatiga y deshidratación del conductor</li>
+                                <li>Ablandamiento o pandeo de la superficie de la carretera</li>
+                            </ul>
+                            
+                            <div class="subsection-content" style="font-weight: 600; margin: 15px 0 10px 0;">Mejores prácticas:</div>
+                            <ul class="practice-list">
+                                <li>Compruebe periódicamente los niveles de refrigerante y aceite</li>
+                                <li>Controlar la presión de los neumáticos (ajustar según el calor)</li>
+                                <li>Manténgase hidratado y tome descansos frecuentes</li>
+                                <li>Observe atentamente el indicador de temperatura</li>
+                                <li>Lleve agua adicional y suministros de emergencia.</li>
+                                <li>Estacione a la sombra cuando sea posible</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="emergency-box">
+                        <div class="emergency-title">🚨 Respuesta de emergencia crítica para incidentes climáticos</div>
+                        <div class="subsection-content">
+                            <strong>Si patina o se hidroaviona:</strong> Quita el pie del acelerador, gira suavemente en la dirección que deseas ir, no frenes bruscamente.<br>
+                            <strong>Si la visibilidad es cero:</strong> Salga completamente de la carretera, encienda las luces de emergencia y espere a que mejoren las condiciones.<br>
+                            <strong>Si el motor se sobrecalienta:</strong> Apague el aire acondicionado, encienda el calentador para disipar el calor, deténgase de manera segura cuando sea posible<br>
+                            <strong>Si está varado:</strong> Quédese en el vehículo, use suministros de emergencia, llame para pedir ayuda con la ubicación precisa
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Preparation & General Tips -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🛡️</span>
+                    Preparación & Estrategias de seguridad avanzadas
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">📋 Lista de verificación de preparación climática previa a la conducción</h3>
+                    
+                    <div class="vehicle-checklist" id="weather-checklist">
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Consultar la previsión meteorológica y las condiciones de la carretera.</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Permitir tiempo de viaje adicional para velocidades más lentas</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Limpie TODAS las ventanas, espejos y luces por completo</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Comprobar la profundidad y presión de la banda de rodadura de los neumáticos</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Pruebe todas las luces (faros, luces de freno, señales)</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Llene el líquido lavaparabrisas con fórmula descongelante</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Compruebe que las escobillas del limpiaparabrisas funcionen correctamente</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Asegúrese de que el kit de emergencia esté abastecido y sea accesible.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🚗 Preparativos climáticos específicos para vehículos</h3>
+                    
+                    <div class="weather-grid">
+                        <div class="weather-card" style="background: rgba(95, 23, 235, 0.05); border-color: rgba(95, 23, 235, 0.2);">
+                            <div class="weather-icon">🛞</div>
+                            <div class="weather-title">Requisitos de neumáticos según el clima</div>
+                            <ul class="practice-list">
+                                <li><strong>Lluvia:</strong> Profundidad mínima de la banda de rodadura de 4/32"</li>
+                                <li><strong>Nieve:</strong> Neumáticos para nieve o banda de rodadura de 6/32"</li>
+                                <li><strong>Para toda la temporada:</strong> Bueno para condiciones leves</li>
+                                <li><strong>Neumáticos de invierno:</strong> Usar por debajo de 45°F (7°C)</li>
+                                <li><strong>Cadenas:</strong> Requerido en algunas zonas montañosas.</li>
+                            </ul>
+                        </div>
+
+                        <div class="weather-card" style="background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2);">
+                            <div class="weather-icon">💡</div>
+                            <div class="weather-title">Estrategias de iluminación</div>
+                            <ul class="practice-list">
+                                <li><strong>Lluvia diurna:</strong> Faros de luz baja</li>
+                                <li><strong>Lluvia nocturna:</strong> Luces bajas, cristales limpios</li>
+                                <li><strong>Niebla:</strong> Solo luces bajas, luces antiniebla si están equipadas</li>
+                                <li><strong>Nieve:</strong> Luces bajas, limpie con frecuencia</li>
+                                <li><strong>Regla general:</strong> Ver y ser visto</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="stat-box">
+                        <div class="stat-box-title">📊 Comparación de distancias de frenado en diferentes condiciones</div>
+                        <div class="weather-stats">
+                            <div class="weather-stat">
+                                <div class="weather-value">Seco</div>
+                                <div class="weather-label">100 pies a 40 mph</div>
+                            </div>
+                            <div class="weather-stat">
+                                <div class="weather-value">Húmedo</div>
+                                <div class="weather-label">150 pies a 40 mph</div>
+                            </div>
+                            <div class="weather-stat">
+                                <div class="weather-value">Nieve</div>
+                                <div class="weather-label">250 pies a 40 mph</div>
+                            </div>
+                            <div class="weather-stat">
+                                <div class="weather-value">Hielo</div>
+                                <div class="weather-label">450 pies a 40 mph</div>
+                            </div>
+                        </div>
+                        <div class="subsection-content" style="margin-top: 15px; font-size: 0.9rem; color: var(--color-muted);">
+                            <strong>Nota:</strong> Estas distancias suponen un conductor alerta, buenos frenos y neumáticos correctamente inflados. Las distancias reales pueden variar.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="key-points">
+                        <div class="key-points-title">🎯 Técnicas avanzadas de conducción meteorológica</div>
+                        <ul class="key-points-list">
+                            <li><strong>Mire hacia dónde quiere ir:</strong> Al patinar, diríjase hacia el camino previsto, no hacia los obstáculos.</li>
+                            <li><strong>Frenado de umbral:</strong> Aplique la presión máxima de freno sin bloquear las ruedas (para vehículos sin ABS)</li>
+                            <li><strong>Conducción con cojín espacial:</strong> Mantenga rutas de escape en todos los lados de su vehículo</li>
+                            <li><strong>Selección de velocidad:</strong> Conduce a una velocidad que te permita detenerte dentro de tu distancia visible.</li>
+                            <li><strong>Conducción en clima nocturno:</strong> Reducir la velocidad un 20% adicional por debajo de las velocidades climáticas diurnas.</li>
+                            <li><strong>Conciencia del puente:</strong> Los puentes se congelan primero; reduzca la velocidad antes de cruzar en climas fríos</li>
+                            <li><strong>Siguientes pistas:</strong> En la nieve, siga las huellas del vehículo que va delante para obtener una mejor tracción.</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <div class="tips-title">🔄 Cuándo posponer tu viaje</div>
+                        <ul class="tips-list">
+                            <li>La visibilidad es inferior a 100 pies.</li>
+                            <li>Las autoridades locales desaconsejan viajar</li>
+                            <li>Las carreteras están cerradas o intransitables</li>
+                            <li>No tienes el equipo adecuado (llantas, cadenas)</li>
+                            <li>Estás cansado, estresado o distraído</li>
+                            <li>Se emiten alertas meteorológicas de emergencia</li>
+                            <li>Recuerda: Ningún viaje vale la pena arriesgar tu vida</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="warning-box">
+                        <div class="warning-title">📱 Tecnología & Clima Conducción</div>
+                        <div class="subsection-content">
+                            <strong>Aplicaciones útiles:</strong> Radar meteorológico, informes del estado de las carreteras, alertas de emergencia.<br>
+                            <strong>Tecnología del vehículo:</strong> ABS, control de tracción, control electrónico de estabilidad, AWD/4WD<br>
+                            <strong>Recordar:</strong> La tecnología ayuda pero no reemplaza las prácticas de conducción segura<br>
+                            <strong>Advertencia:</strong> No utilice el teléfono mientras conduce, ni siquiera para navegar; configúrelo antes de partir
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Check -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Verificación de conocimientos: conducción en condiciones climáticas adversas</h2>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. ¿Qué debes hacer si empiezas a hidroplanear sobre una carretera mojada?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Frena fuerte para detenerte rápidamente</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Conduce suavemente hacia donde quieras ir y suelta el acelerador.</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Acelera para recuperar tracción.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. Al conducir con niebla, ¿qué luces debería utilizar?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Faros de luz alta</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Luces de cruce o luces antiniebla</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Solo luces de estacionamiento</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. ¿Cuánto deberías aumentar la distancia de seguimiento en condiciones de nieve?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Igual que las condiciones normales.</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>8-10 segundos (el triple de distancia normal)</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Disminuya la distancia para mantenerse en el camino</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. ¿Cuál es el momento más peligroso para el riesgo de hidroplaneo?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Después de varias horas de lluvia constante</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Primeros 10 minutos de lluvia</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Cuando el agua es claramente visible en la carretera</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">Comprueba tus respuestas</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Resultados de sus conocimientos sobre conducción meteorológica
+                </div>
+                <div class="score" id="score">0/4</div>
+                <div class="feedback" id="feedback">
+                    Revise sus respuestas a continuación para ver qué conceptos domina y cuáles necesitan más atención.
+                </div>
+                <div class="key-points" style="margin-top: 20px;">
+                    <div class="key-points-title">🎯 Conclusiones esenciales sobre la conducción meteorológica</div>
+                    <ul class="key-points-list">
+                        <li>Ajuste su velocidad y distancia de seguimiento según las condiciones.</li>
+                        <li>Utilice la iluminación adecuada: sea visto y vea claramente</li>
+                        <li>Mantenga su vehículo y neumáticos preparados para el clima.</li>
+                        <li>Sepa cómo responder a derrapes, hidroplaneo y emergencias.</li>
+                        <li>En caso de duda, reduzca la velocidad o espere a que pase el mal tiempo.</li>
+                        <li>La preparación y la planificación previenen accidentes relacionados con el clima.</li>
+                        <li>Tu seguridad siempre es más importante que tu horario</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> ¡Dominio de la conducción meteorológica logrado!
+            </div>
+            <p>Ha completado con éxito la lección de conducción en condiciones climáticas adversas.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>Recuerde: Conducir de forma segura en condiciones meteorológicas adversas se trata de preparación, adaptación y conocimiento de sus límites. Su conocimiento podría salvar vidas en condiciones difíciles.</p>
+        </div>
+    </div>
+
+    <script>
+        // Timer Configuration - Continuous timer
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let quizCompleted = false;
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const progressFill = document.getElementById('progress-fill');
+        const submitBtn = document.getElementById('submit-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            // Clear any existing interval
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // Start new interval
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            // Update all timer displays
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            // Update progress based on sections read
+            updateProgress();
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 3; // We have 3 main sections
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Update completed count
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            // Update timer appearance based on time
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 900) { // 15 minutes or more
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 1200) { // 20 minutes or more
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Toggle checklist items
+        function toggleChecklist(item) {
+            const checkbox = item.querySelector('.checklist-checkbox');
+            checkbox.classList.toggle('checked');
+        }
+
+        // Update quiz score display
+        function updateQuizScore(score, totalQuestions) {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            quizScoreEl.textContent = `${percentage}%`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the continuous timer
+            startTimer();
+            
+            // Set up option selection
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    // Remove selected class from all options in this question
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+        });
+
+        function checkAnswers() {
+            // Mark quiz as completed
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'B',
+                4: 'B'
+            };
+
+            let score = 0;
+            const totalQuestions = 4;
+            let feedbackHTML = '';
+
+            // Check each question
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#10b981';
+                        selectedOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                    } else {
+                        selectedOption.style.borderColor = '#ef4444';
+                        selectedOption.style.background = 'rgba(239, 68, 68, 0.1)';
+                        
+                        // Highlight correct answer
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#10b981';
+                            correctOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            // Update quiz score
+            updateQuizScore(score, totalQuestions);
+            
+            // Calculate percentage
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            // Show results
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            // Generate feedback based on score
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 ¡Excelente! Entiendes las prácticas de conducción segura para todas las condiciones climáticas. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 ¡Buen trabajo! Usted comprende la mayoría de los conceptos clave sobre la conducción en condiciones meteorológicas adversas. Revisa las respuestas incorrectas para fortalecer tus conocimientos. ';
+            } else {
+                feedbackHTML = '📚 Revise el material de la lección y vuelva a intentarlo. Comprender estos conceptos es crucial para una conducción segura en condiciones climáticas adversas. ';
+            }
+            
+            feedbackHTML += 'Recuerde estos principios clave para conducir en condiciones meteorológicas adversas:';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            // Show results
+            document.getElementById('results').classList.add('show');
+            
+            // Show completion message
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            // Update timer to show "Completed" state
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'gradiente lineal (135 grados, # 10b981, # 34d399)';
+            
+            // Update progress bar to 100%
+            progressFill.style.width = '100%';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Optional: Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>

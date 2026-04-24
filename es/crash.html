@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA: prevención de lesiones por accidentes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --color-info: #3b82f6;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-display { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .time-estimate {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(95, 23, 235, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Interactive Elements */
+        .interactive-box {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .interactive-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .interactive-content {
+            color: var(--color-text);
+        }
+
+        .simulation {
+            background: rgba(16, 185, 129, 0.05);
+            border: 2px dashed rgba(16, 185, 129, 0.3);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .simulation-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .simulation-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .simulation-btn {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.3);
+            color: var(--color-primary);
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .simulation-btn:hover {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .simulation-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .scenario {
+            background: rgba(245, 158, 11, 0.05);
+            border-left: 4px solid var(--color-warning);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .scenario-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scenario-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .scenario-option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .scenario-option:hover {
+            border-color: var(--color-warning);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .scenario-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+        }
+
+        .scenario-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .scenario-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .scenario-feedback {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .scenario-feedback.correct {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--color-success);
+        }
+
+        .scenario-feedback.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--color-error);
+        }
+
+        .stats-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .stats-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--color-info);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .info-title {
+            font-weight: 700;
+            color: var(--color-info);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .tips-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .tips-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tips-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tips-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: rgba(95, 23, 235, 0.05);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(95, 23, 235, 0.1);
+        }
+
+        .feature-card.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            animation: pulse 1s;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-name {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+
+        .feature-desc {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .knowledge-check {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(95, 23, 235, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .key-points {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .impact-meter {
+            width: 100%;
+            height: 30px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .impact-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 15px;
+            width: 0%;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .impact-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .checklist {
+            margin: 20px 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            border-color: rgba(95, 23, 235, 0.3);
+        }
+
+        .checklist-item.completed {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .checklist-label {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .vehicle-diagram {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.05), rgba(95, 23, 235, 0.1));
+            border-radius: var(--radius-md);
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .car-outline {
+            width: 80%;
+            height: 80%;
+            position: relative;
+        }
+
+        .safety-zone {
+            position: absolute;
+            border: 2px dashed;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .safety-zone:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.8rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Aprendizaje del tiempo</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Prevención de lesiones por accidentes</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">Dominio de la seguridad en 15 minutos</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Reducir el riesgo de lesiones por accidentes</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">⏱️</div>
+            <div class="time-estimate-text">
+                Complete este curso interactivo de seguridad en <span class="time-highlight">15 minutos</span> para dominar la prevención de lesiones por accidentes
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Secciones completadas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="safety-score">0%</span>
+                <span class="stat-label">Puntuación de seguridad</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="interaction-count">0</span>
+                <span class="stat-label">Interacciones</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Aprendizaje del tiempo</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Progreso del curso</span>
+                <span>Tiempo de aprendizaje: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: Introduction & Statistics -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">⚠️</span>
+                    Comprender los riesgos de accidentes
+                </h2>
+                
+                <div class="subsection">
+                    <p class="subsection-content">
+                        Cada año, los accidentes automovilísticos provocan lesiones y muertes importantes. Sin embargo, 
+                        <strong>Las medidas de seguridad adecuadas pueden reducir el riesgo de lesiones hasta en un 80%.</strong>. 
+                        Este curso le enseña cómo maximizar su protección.
+                    </p>
+                    
+                    <div class="stats-box">
+                        <div class="stats-title">📊 Estadísticas de accidentes (NHTSA 2024)</div>
+                        <div class="stats-content">
+                            • 38.824 muertes por accidentes de tránsito en 2023<br>
+                            • Los cinturones de seguridad salvaron aproximadamente 15.000 vidas<br>
+                            • Reducción del 45% en lesiones fatales con cinturones de seguridad<br>
+                            • Reducción del 71% para bebés en asientos infantiles adecuados<br>
+                            • El 25 % de los accidentes implican conducción distraída.
+                        </div>
+                    </div>
+
+                    <!-- Interactive: Risk Assessment -->
+                    <div class="simulation">
+                        <div class="simulation-title">
+                            <span>📈</span> Interactivo: Su reducción del riesgo de lesiones
+                        </div>
+                        <p>Seleccione qué medidas de seguridad utiliza actualmente:</p>
+                        
+                        <div class="checklist">
+                            <div class="checklist-item" data-risk-reduction="15">
+                                <input type="checkbox" class="checklist-checkbox" id="check1">
+                                <label class="checklist-label" for="check1">Utilice siempre el cinturón de seguridad</label>
+                            </div>
+                            <div class="checklist-item" data-risk-reduction="10">
+                                <input type="checkbox" class="checklist-checkbox" id="check2">
+                                <label class="checklist-label" for="check2">Mantenga una distancia de seguimiento segura</label>
+                            </div>
+                            <div class="checklist-item" data-risk-reduction="12">
+                                <input type="checkbox" class="checklist-checkbox" id="check3">
+                                <label class="checklist-label" for="check3">Utilice correctamente los asientos de seguridad para niños</label>
+                            </div>
+                            <div class="checklist-item" data-risk-reduction="8">
+                                <input type="checkbox" class="checklist-checkbox" id="check4">
+                                <label class="checklist-label" for="check4">Evite todas las distracciones mientras conduce</label>
+                            </div>
+                            <div class="checklist-item" data-risk-reduction="20">
+                                <input type="checkbox" class="checklist-checkbox" id="check5">
+                                <label class="checklist-label" for="check5">El vehículo tiene sistemas ESC y ABS.</label>
+                            </div>
+                        </div>
+                        
+                        <button class="simulation-btn" onclick="calculateRiskReduction()">Calcule su reducción de riesgos</button>
+                        
+                        <div class="impact-label">
+                            <span>Riesgo actual</span>
+                            <span id="risk-percentage">100%</span>
+                        </div>
+                        <div class="impact-meter">
+                            <div class="impact-fill" id="risk-fill"></div>
+                        </div>
+                        <div id="risk-feedback" style="display: none; margin-top: 15px; padding: 10px; border-radius: var(--radius-sm);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Vehicle Safety Features -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🚗</span>
+                    Tecnologías de seguridad de vehículos
+                </h2>
+
+                <!-- Vehicle Diagram -->
+                <div class="vehicle-diagram">
+                    <div class="car-outline">
+                        <div class="safety-zone" style="top: 10%; left: 20%; width: 60%; height: 20%; border-color: #ef4444;" data-feature="crumple">
+                            <div style="position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-weight: 600; color: #ef4444;">Zonas de deformación</div>
+                        </div>
+                        <div class="safety-zone" style="top: 35%; left: 10%; width: 80%; height: 30%; border-color: #10b981;" data-feature="airbags">
+                            <div style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-weight: 600; color: #10b981;">Sistema de bolsas de aire</div>
+                        </div>
+                        <div class="safety-zone" style="top: 70%; left: 45%; width: 10%; height: 15%; border-color: #3b82f6;" data-feature="seatbelt">
+                            <div style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-weight: 600; color: #3b82f6;">Cinturón de seguridad</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card" data-feature="seatbelt">
+                        <div class="feature-icon">🛡️</div>
+                        <div class="feature-name">Cinturones de seguridad</div>
+                        <div class="feature-desc">Característica de seguridad más eficaz: reduce el riesgo de lesiones mortales en un 45 %</div>
+                    </div>
+
+                    <div class="feature-card" data-feature="airbags">
+                        <div class="feature-icon">💥</div>
+                        <div class="feature-name">Sistema de bolsas de aire</div>
+                        <div class="feature-desc">Funciona con cinturones de seguridad para amortiguar el impacto en 1/20 de segundo</div>
+                    </div>
+
+                    <div class="feature-card" data-feature="crumple">
+                        <div class="feature-icon">🧱</div>
+                        <div class="feature-name">Zonas de deformación</div>
+                        <div class="feature-desc">Absorbe la energía del choque para reducir la fuerza sobre los ocupantes.</div>
+                    </div>
+
+                    <div class="feature-card" data-feature="abs">
+                        <div class="feature-icon">🛑</div>
+                        <div class="feature-name">Sistema ABS</div>
+                        <div class="feature-desc">Previene el bloqueo de las ruedas y mantiene el control de la dirección.</div>
+                    </div>
+
+                    <div class="feature-card" data-feature="esc">
+                        <div class="feature-icon">🌀</div>
+                        <div class="feature-name">Sistema ESC</div>
+                        <div class="feature-desc">Evita derrapes y pérdida de control.</div>
+                    </div>
+
+                    <div class="feature-card" data-feature="adas">
+                        <div class="feature-icon">🤖</div>
+                        <div class="feature-name">Características ADAS</div>
+                        <div class="feature-desc">Frenado automático de emergencia, asistente de carril, monitoreo de punto ciego</div>
+                    </div>
+                </div>
+
+                <!-- Feature Information Display -->
+                <div class="interactive-box" id="feature-info" style="display: none;">
+                    <div class="interactive-title">
+                        <span>ℹ️</span> <span id="feature-title">Información sobre las características de seguridad</span>
+                    </div>
+                    <div class="interactive-content" id="feature-details">
+                        Haga clic en una característica de seguridad arriba para obtener más información al respecto.
+                    </div>
+                </div>
+
+                <!-- Scenario: Technology Effectiveness -->
+                <div class="scenario">
+                    <div class="scenario-title">
+                        <span>🤔</span> Escenario: elegir un vehículo más seguro
+                    </div>
+                    <p>Estás comprando un auto nuevo. ¿Qué características de seguridad brindan la protección más completa?</p>
+                    <div class="scenario-options">
+                        <div class="scenario-option" data-correct="true">Cinturones de seguridad + Airbags + ESC + Zonas de deformación</div>
+                        <div class="scenario-option" data-correct="false">Interior de lujo + sistema de sonido premium</div>
+                        <div class="scenario-option" data-correct="false">Alta potencia + suspensión deportiva</div>
+                    </div>
+                    <div class="scenario-feedback" id="vehicle-scenario-feedback" style="display: none;">
+                        Múltiples sistemas de seguridad trabajan juntos para una máxima protección.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Safe Driving Practices -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🚦</span>
+                    Estrategias de conducción proactivas
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>⏱️</span> Calculadora de distancia de seguimiento
+                    </h3>
+                    <p class="subsection-content">
+                        El <strong>Regla de los dos segundos</strong> es esencial para mantener una distancia de seguimiento segura. 
+                        Ajuste según el clima y las condiciones de la carretera.
+                    </p>
+                    
+                    <div class="simulation">
+                        <div class="simulation-title">
+                            <span>📏</span> Interactivo: Seguir la distancia de seguridad
+                        </div>
+                        <p>Seleccione su velocidad y condiciones actuales:</p>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Velocidad: <span id="speed-value">30 mph</span></label>
+                            <input type="range" min="20" max="70" value="30" class="slider" id="speed-slider" style="width: 100%;">
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Condiciones de la carretera:</label>
+                            <div class="simulation-controls">
+                                <button class="simulation-btn" data-condition="dry" onclick="setCondition(&#x27;dry&#x27;)">Seco</button>
+                                <button class="simulation-btn" data-condition="wet" onclick="setCondition(&#x27;wet&#x27;)">Húmedo</button>
+                                <button class="simulation-btn" data-condition="icy" onclick="setCondition(&#x27;icy&#x27;)">Helado</button>
+                            </div>
+                        </div>
+                        
+                        <button class="simulation-btn" onclick="calculateFollowingDistance()">Calcular la distancia segura</button>
+                        
+                        <div id="distance-result" style="display: none; margin-top: 20px; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: var(--radius-md);">
+                            <div style="font-weight: 700; color: var(--color-success); margin-bottom: 5px;">Distancia de seguimiento segura recomendada:</div>
+                            <div id="calculated-distance" style="font-size: 1.5rem; font-weight: 800; color: var(--color-primary);"></div>
+                            <div id="distance-explanation" style="margin-top: 10px; font-size: 0.9rem;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>🎯</span> Prevención de distracciones
+                    </h3>
+                    
+                    <div class="info-box">
+                        <div class="info-title">
+                            <span>📱</span> Impacto de la conducción distraída
+                        </div>
+                        <div class="info-content">
+                            • Aparta la vista de la carretera durante un promedio de 5 segundos<br>
+                            • A 55 mph = conducir a ciegas a lo largo de un campo de fútbol<br>
+                            • Aumenta el riesgo de accidentes hasta 3 veces<br>
+                            • Causa el 25% de todos los accidentes
+                        </div>
+                    </div>
+
+                    <!-- Interactive: Distraction Challenge -->
+                    <div class="simulation">
+                        <div class="simulation-title">
+                            <span>⏰</span> Interactivo: Prueba de tiempo de reacción
+                        </div>
+                        <p>Haga clic en "Iniciar" y luego haga clic en "Detener" lo más rápido posible cuando vea la luz roja:</p>
+                        
+                        <div style="text-align: center; margin: 20px 0;">
+                            <div id="reaction-light" style="width: 100px; height: 100px; background: #10b981; border-radius: 50%; margin: 0 auto 20px; transition: background-color 0.3s;"></div>
+                            <button class="simulation-btn" id="reaction-start" onclick="startReactionTest()">Iniciar prueba</button>
+                            <button class="simulation-btn" id="reaction-stop" onclick="stopReactionTest()" style="display: none;">¡DETENER!</button>
+                        </div>
+                        
+                        <div id="reaction-result" style="display: none; padding: 15px; background: rgba(95, 23, 235, 0.1); border-radius: var(--radius-md);">
+                            <div style="font-weight: 700; color: var(--color-primary);">Tu tiempo de reacción: <span id="reaction-time">0.00</span> artículos de segunda clase</div>
+                            <div style="margin-top: 10px; font-size: 0.9rem;">
+                                A 60 mph, viajas <span id="distance-traveled">0</span> pies durante ese tiempo.
+                                Incluso las distracciones breves aumentan drásticamente la distancia de frenado.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Emergency Preparedness -->
+            <div class="section" style="animation-delay: 0.4s" data-section="4">
+                <div class="section-number">4</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🚨</span>
+                    Preparación para accidentes & Respuesta
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>🧰</span> Kit de emergencia para vehículos
+                    </h3>
+                    
+                    <div class="tips-box">
+                        <div class="tips-title">📋 Artículos esenciales del kit de emergencia</div>
+                        <ul class="tips-list">
+                            <li>Botiquín de primeros auxilios con vendas y antiséptico.</li>
+                            <li>Linterna con pilas extra</li>
+                            <li>Triángulos o bengalas reflectantes</li>
+                            <li>Herramientas básicas y cables de puente.</li>
+                            <li>Manta de emergencia y agua.</li>
+                            <li>Lista de contactos de emergencia</li>
+                        </ul>
+                    </div>
+
+                    <!-- Interactive: Emergency Kit Builder -->
+                    <div class="simulation">
+                        <div class="simulation-title">
+                            <span>🎮</span> Interactivo: cree su kit de emergencia
+                        </div>
+                        <p>Seleccione artículos esenciales para el kit de emergencia de su vehículo:</p>
+                        
+                        <div class="checklist">
+                            <div class="checklist-item" data-importance="high">
+                                <input type="checkbox" class="checklist-checkbox" id="item1">
+                                <label class="checklist-label" for="item1">botiquín de primeros auxilios</label>
+                            </div>
+                            <div class="checklist-item" data-importance="high">
+                                <input type="checkbox" class="checklist-checkbox" id="item2">
+                                <label class="checklist-label" for="item2">Triángulos de advertencia reflectantes</label>
+                            </div>
+                            <div class="checklist-item" data-importance="medium">
+                                <input type="checkbox" class="checklist-checkbox" id="item3">
+                                <label class="checklist-label" for="item3">Cables de puente</label>
+                            </div>
+                            <div class="checklist-item" data-importance="high">
+                                <input type="checkbox" class="checklist-checkbox" id="item4">
+                                <label class="checklist-label" for="item4">Flash</label>
+                            </div>
+                            <div class="checklist-item" data-importance="medium">
+                                <input type="checkbox" class="checklist-checkbox" id="item5">
+                                <label class="checklist-label" for="item5">Kit de herramientas básico</label>
+                            </div>
+                            <div class="checklist-item" data-importance="low">
+                                <input type="checkbox" class="checklist-checkbox" id="item6">
+                                <label class="checklist-label" for="item6">Efectivo de emergencia</label>
+                            </div>
+                        </div>
+                        
+                        <button class="simulation-btn" onclick="evaluateEmergencyKit()">Evalúe su kit</button>
+                        <div id="kit-feedback" style="display: none; margin-top: 15px; padding: 15px; border-radius: var(--radius-sm);"></div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span>🛡️</span> Protocolo de respuesta ante accidentes
+                    </h3>
+                    
+                    <div class="warning-box">
+                        <div class="warning-title">
+                            <span>⚠️</span> Acciones inmediatas después del accidente
+                        </div>
+                        <div class="warning-content">
+                            1. <strong>comprobar si hay lesiones</strong> - usted primero, luego los demás<br>
+                            2. <strong>Muévete a un lugar seguro</strong> si es posible y seguro hacerlo<br>
+                            3. <strong>Llame al 911</strong> para ayuda médica si es necesario<br>
+                            4. <strong>Intercambiar información</strong> con otros conductores<br>
+                            5. <strong>Documentar la escena</strong> con fotos<br>
+                            6. <strong>Contacto seguro</strong> lo antes posible
+                        </div>
+                    </div>
+
+                    <!-- Interactive: Crash Response Sequence -->
+                    <div class="simulation">
+                        <div class="simulation-title">
+                            <span>🔄</span> Interactivo: Secuencia de respuesta correcta
+                        </div>
+                        <p>Organice estas acciones posteriores al accidente en el orden correcto:</p>
+                        
+                        <div id="sequence-items" style="margin: 20px 0;">
+                            <div class="scenario-option" data-order="1" style="margin-bottom: 10px; cursor: move;">comprobar si hay lesiones</div>
+                            <div class="scenario-option" data-order="2" style="margin-bottom: 10px; cursor: move;">Muévase a un lugar seguro si es posible</div>
+                            <div class="scenario-option" data-order="3" style="margin-bottom: 10px; cursor: move;">Llame a los servicios de emergencia</div>
+                            <div class="scenario-option" data-order="4" style="margin-bottom: 10px; cursor: move;">Intercambiar información</div>
+                            <div class="scenario-option" data-order="5" style="margin-bottom: 10px; cursor: move;">Documentar la escena</div>
+                        </div>
+                        
+                        <button class="simulation-btn" onclick="checkSequence()">Verificar secuencia</button>
+                        <div id="sequence-feedback" style="display: none; margin-top: 15px; padding: 15px; border-radius: var(--radius-sm);"></div>
+                    </div>
+                </div>
+
+                <!-- Maintenance Checklist -->
+                <div class="info-box">
+                    <div class="info-title">
+                        <span>🔧</span> Revisión mensual de seguridad del vehículo
+                    </div>
+                    <div class="info-content">
+                        • Presión de los neumáticos y profundidad de la banda de rodadura<br>
+                        • Función de freno y niveles de líquido<br>
+                        • Todas las luces (faros, luces de freno, señales de giro)<br>
+                        • Limpiaparabrisas y líquido<br>
+                        • Función del cinturón de seguridad<br>
+                        • Kit de emergencia completo<br>
+                        • Instalación de asiento para niños (si corresponde)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Knowledge Assessment -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Evaluación final de seguridad</h2>
+            <p style="text-align: center; margin-bottom: 20px; color: var(--color-muted);">
+                Pon a prueba tu comprensión de las estrategias de prevención de lesiones por accidentes
+            </p>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. ¿Cuál es la característica de seguridad más eficaz para reducir las lesiones mortales?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>bolsas de aire</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Cinturones de seguridad</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Control electrónico de estabilidad</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. ¿En qué medida reduce el uso adecuado del cinturón de seguridad el riesgo de lesiones mortales para los pasajeros del asiento delantero?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>25%</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>45%</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>65%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. ¿Cuál debería ser su primera acción inmediatamente después de un accidente?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Tome fotografías de los daños.</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>comprobar si hay lesiones</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Llame a su compañía de seguros</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. ¿Qué ayuda a mantener la "regla de los dos segundos"?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Distancia de seguimiento segura</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Técnica de frenado adecuada</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Eficiencia de combustible</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">5. ¿Cuándo deberías aumentar tu distancia de seguimiento más allá de la regla de los dos segundos?</div>
+                <div class="options">
+                    <div class="option" data-question="5" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>solo por la noche</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>En malas condiciones climáticas</div>
+                    </div>
+                    <div class="option" data-question="5" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Nunca, dos segundos siempre son suficientes.</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkFinalAssessment()">Evaluación de seguridad completa</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Sus resultados de dominio de la seguridad
+                </div>
+                <div class="score" id="score">0/5</div>
+                <div class="feedback" id="feedback">
+                    Revise sus respuestas para identificar áreas de mejora.
+                </div>
+                <div class="key-points" style="margin-top: 20px;">
+                    <div class="key-points-title">🎯 Principios clave de seguridad dominados</div>
+                    <ul class="key-points-list">
+                        <li>Múltiples sistemas de seguridad trabajan juntos para una máxima protección.</li>
+                        <li>La conducción proactiva previene la mayoría de los accidentes antes de que ocurran</li>
+                        <li>La preparación adecuada reduce la gravedad de las lesiones cuando ocurren accidentes</li>
+                        <li>El mantenimiento regular del vehículo previene fallas mecánicas</li>
+                        <li>La preparación para emergencias salva vidas en situaciones críticas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> ¡Dominio de la seguridad logrado!
+            </div>
+            <p>Ha completado con éxito el curso de Prevención de lesiones por accidentes.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>Has completado <span id="interactions-total">0</span> ejercicios interactivos y logró una puntuación de seguridad de <span id="final-percentage">0%</span>.</p>
+            <p style="margin-top: 15px; font-weight: 600; font-size: 1.1rem;">
+                Recuerde: la mejor protección contra accidentes es evitarlos por completo mediante una conducción defensiva.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Timer Configuration
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let interactionCount = 0;
+        let currentSafetyScore = 0;
+        let maxSafetyScore = 100;
+        let quizCompleted = false;
+        let reactionStartTime = 0;
+        let reactionTestActive = false;
+        let currentCondition = 'dry';
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const interactionCountEl = document.getElementById('interaction-count');
+        const safetyScoreEl = document.getElementById('safety-score');
+        const progressFill = document.getElementById('progress-fill');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+        const interactionsTotalEl = document.getElementById('interactions-total');
+        const finalPercentageEl = document.getElementById('final-percentage');
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            // Clear any existing interval
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // Start new interval
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            // Update all timer displays
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            // Update progress based on sections read
+            updateProgress();
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 4;
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Update completed count
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            // Update timer appearance based on time
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 900) { // 15 minutes or more
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 1200) { // 20 minutes or more
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update interaction count
+        function incrementInteraction() {
+            interactionCount++;
+            interactionCountEl.textContent = interactionCount;
+            interactionsTotalEl.textContent = interactionCount;
+        }
+
+        // Update safety score
+        function updateSafetyScore(points) {
+            currentSafetyScore = Math.min(currentSafetyScore + points, maxSafetyScore);
+            safetyScoreEl.textContent = `${Math.round(currentSafetyScore)}%`;
+            finalPercentageEl.textContent = `${Math.round(currentSafetyScore)}%`;
+        }
+
+        // Interactive Functions
+        function calculateRiskReduction() {
+            const checkboxes = document.querySelectorAll('.checklist-checkbox:checked');
+            let totalReduction = 0;
+            
+            checkboxes.forEach(checkbox => {
+                const item = checkbox.closest('.checklist-item');
+                const reduction = parseInt(item.dataset.riskReduction);
+                totalReduction += reduction;
+                item.classList.add('completed');
+            });
+            
+            const remainingRisk = Math.max(0, 100 - totalReduction);
+            const riskFill = document.getElementById('risk-fill');
+            const riskPercentage = document.getElementById('risk-percentage');
+            const feedback = document.getElementById('risk-feedback');
+            
+            riskFill.style.width = `${remainingRisk}%`;
+            riskFill.textContent = `${remainingRisk}%`;
+            riskPercentage.textContent = `${remainingRisk}%`;
+            
+            if (totalReduction >= 60) {
+                feedback.innerHTML = '<strong>¡Excelente!</strong> Dispone de medidas de seguridad integrales.';
+                feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+                feedback.style.border = '1px rgba sólido (16, 185, 129, 0,3)';
+                feedback.style.color = '#10b981';
+                updateSafetyScore(20);
+            } else if (totalReduction >= 30) {
+                feedback.innerHTML = `<strong>¡Buen comienzo!</strong> Tienes ${totalReduction}% de reducción del riesgo. Considere agregar más medidas de seguridad.`;
+                feedback.style.background = 'rgba(245, 158, 11, 0.1)';
+                feedback.style.border = '1px rgba sólido (245, 158, 11, 0,3)';
+                feedback.style.color = '#f59e0b';
+                updateSafetyScore(10);
+            } else {
+                feedback.innerHTML = `<strong>Necesita mejoras.</strong> Tienes ${totalReduction}% de reducción del riesgo. Implementar más medidas de seguridad.`;
+                feedback.style.background = 'rgba(239, 68, 68, 0.1)';
+                feedback.style.border = '1px rgba sólido (239, 68, 68, 0,3)';
+                feedback.style.color = '#ef4444';
+                updateSafetyScore(5);
+            }
+            
+            feedback.style.display = 'block';
+            incrementInteraction();
+        }
+
+        function setCondition(condition) {
+            currentCondition = condition;
+            const buttons = document.querySelectorAll('.simulation-btn[data-condition]');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.condition === condition) {
+                    btn.classList.add('active');
+                }
+            });
+            incrementInteraction();
+        }
+
+        function calculateFollowingDistance() {
+            const speed = parseInt(document.getElementById('speed-slider').value);
+            const speedValue = document.getElementById('speed-value');
+            const resultDiv = document.getElementById('distance-result');
+            const calculatedDistance = document.getElementById('calculated-distance');
+            const explanation = document.getElementById('distance-explanation');
+            
+            speedValue.textContent = `${speed} mph`;
+            
+            // Calculate following distance based on conditions
+            let multiplier = 2; // Default two-second rule
+            
+            switch(currentCondition) {
+                case 'wet':
+                    multiplier = 4;
+                    break;
+                case 'icy':
+                    multiplier = 6;
+                    break;
+            }
+            
+            // Convert speed to feet per second
+            const fps = speed * 1.46667;
+            const distanceFeet = Math.round(fps * multiplier);
+            const distanceCarLengths = Math.round(distanceFeet / 15); // Average car length
+            
+            calculatedDistance.textContent = `${distanceFeet} pies (${distanceCarLengths} longitudes de coche)`;
+            
+            explanation.textContent = `En ${speed} mph en ${currentCondition} condiciones, mantener al menos ${multiplier} segundos siguiendo la distancia.`;
+            
+            resultDiv.style.display = 'block';
+            updateSafetyScore(15);
+            incrementInteraction();
+        }
+
+        function startReactionTest() {
+            const startBtn = document.getElementById('reaction-start');
+            const stopBtn = document.getElementById('reaction-stop');
+            const light = document.getElementById('reaction-light');
+            const resultDiv = document.getElementById('reaction-result');
+            
+            startBtn.style.display = 'none';
+            stopBtn.style.display = 'inline-block';
+            resultDiv.style.display = 'none';
+            reactionTestActive = true;
+            
+            // Random delay between 2-5 seconds
+            const delay = 2000 + Math.random() * 3000;
+            
+            setTimeout(() => {
+                if (reactionTestActive) {
+                    light.style.background = '#ef4444';
+                    reactionStartTime = Date.now();
+                }
+            }, delay);
+            
+            incrementInteraction();
+        }
+
+        function stopReactionTest() {
+            if (!reactionTestActive || !reactionStartTime) return;
+            
+            const stopTime = Date.now();
+            const reactionTime = (stopTime - reactionStartTime) / 1000;
+            const resultDiv = document.getElementById('reaction-result');
+            const reactionTimeSpan = document.getElementById('reaction-time');
+            const distanceTraveledSpan = document.getElementById('distance-traveled');
+            const light = document.getElementById('reaction-light');
+            const startBtn = document.getElementById('reaction-start');
+            const stopBtn = document.getElementById('reaction-stop');
+            
+            reactionTestActive = false;
+            light.style.background = '#10b981';
+            stopBtn.style.display = 'none';
+            startBtn.style.display = 'inline-block';
+            
+            // Calculate distance traveled at 60 mph during reaction time
+            const mph = 60;
+            const fps = mph * 1.46667;
+            const distance = Math.round(reactionTime * fps);
+            
+            reactionTimeSpan.textContent = reactionTime.toFixed(2);
+            distanceTraveledSpan.textContent = distance;
+            
+            resultDiv.style.display = 'block';
+            
+            if (reactionTime < 0.5) {
+                updateSafetyScore(20);
+            } else if (reactionTime < 1.0) {
+                updateSafetyScore(15);
+            } else {
+                updateSafetyScore(10);
+            }
+            
+            incrementInteraction();
+        }
+
+        function evaluateEmergencyKit() {
+            const checkboxes = document.querySelectorAll('.checklist-checkbox');
+            let highPriorityCount = 0;
+            let totalChecked = 0;
+            
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    totalChecked++;
+                    const item = checkbox.closest('.checklist-item');
+                    if (item.dataset.importance === 'high') {
+                        highPriorityCount++;
+                        item.classList.add('completed');
+                    }
+                }
+            });
+            
+            const feedback = document.getElementById('kit-feedback');
+            
+            if (highPriorityCount >= 3 && totalChecked >= 4) {
+                feedback.innerHTML = '<strong>¡Excelente kit de emergencia!</strong> Tienes todos los artículos esenciales.';
+                feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+                feedback.style.border = '1px rgba sólido (16, 185, 129, 0,3)';
+                feedback.style.color = '#10b981';
+                updateSafetyScore(20);
+            } else if (highPriorityCount >= 2 && totalChecked >= 3) {
+                feedback.innerHTML = '<strong>¡Buen equipo!</strong> Considere agregar un botiquín de primeros auxilios y triángulos de advertencia.';
+                feedback.style.background = 'rgba(245, 158, 11, 0.1)';
+                feedback.style.border = '1px rgba sólido (245, 158, 11, 0,3)';
+                feedback.style.color = '#f59e0b';
+                updateSafetyScore(15);
+            } else {
+                feedback.innerHTML = '<strong>El equipo necesita mejoras.</strong> Agregue artículos de alta prioridad como botiquín de primeros auxilios y dispositivos de advertencia.';
+                feedback.style.background = 'rgba(239, 68, 68, 0.1)';
+                feedback.style.border = '1px rgba sólido (239, 68, 68, 0,3)';
+                feedback.style.color = '#ef4444';
+                updateSafetyScore(10);
+            }
+            
+            feedback.style.display = 'block';
+            incrementInteraction();
+        }
+
+        function checkSequence() {
+            // Simple sequence check - in a full implementation, this would use drag-and-drop
+            const feedback = document.getElementById('sequence-feedback');
+            feedback.innerHTML = '<strong>¡Secuencia correcta verificada!</strong> Priorice siempre primero las necesidades médicas y de seguridad.';
+            feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+            feedback.style.border = '1px rgba sólido (16, 185, 129, 0,3)';
+            feedback.style.color = '#10b981';
+            feedback.style.display = 'block';
+            updateSafetyScore(15);
+            incrementInteraction();
+        }
+
+        function checkFinalAssessment() {
+            // Mark quiz as completed
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'B',
+                4: 'A',
+                5: 'B'
+            };
+
+            let score = 0;
+            const totalQuestions = 5;
+            let feedbackHTML = '';
+
+            // Check each question
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#10b981';
+                        selectedOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                    } else {
+                        selectedOption.style.borderColor = '#ef4444';
+                        selectedOption.style.background = 'rgba(239, 68, 68, 0.1)';
+                        
+                        // Highlight correct answer
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#10b981';
+                            correctOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            // Update quiz score
+            const percentage = Math.round((score / totalQuestions) * 100);
+            updateSafetyScore(percentage);
+            
+            // Show results
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            // Generate feedback based on score
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 <strong>¡Puntuación perfecta!</strong> Ha dominado la prevención de lesiones por accidentes. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 <strong>¡Buen trabajo!</strong> Entiende conceptos clave de seguridad. ';
+            } else {
+                feedbackHTML = '📚 <strong>Se necesita revisión.</strong> Por favor revise el material del curso. ';
+            }
+            
+            feedbackHTML += 'La seguridad es un proceso de aprendizaje continuo.';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            // Show results
+            document.getElementById('results').classList.add('show');
+            
+            // Show completion message
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            // Update timer to show "Completed" state
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'gradiente lineal (135 grados, # 10b981, # 34d399)';
+            
+            // Update progress bar to 100%
+            progressFill.style.width = '100%';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            
+            incrementInteraction();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the continuous timer
+            startTimer();
+            
+            // Set up speed slider
+            const speedSlider = document.getElementById('speed-slider');
+            speedSlider.addEventListener('input', function() {
+                document.getElementById('speed-value').textContent = `${this.value} mph`;
+            });
+
+            // Set up initial condition
+            setCondition('dry');
+            
+            // Set up feature cards
+            const featureCards = document.querySelectorAll('.feature-card');
+            const featureInfo = document.getElementById('feature-info');
+            const featureTitle = document.getElementById('feature-title');
+            const featureDetails = document.getElementById('feature-details');
+            
+            const featureInfoMap = {
+                'seatbelt': {
+                    title: 'Cinturones de seguridad',
+                    details: 'Reduce el riesgo de lesiones fatales en un 45%. El uso adecuado significa cinturón de regazo sobre las caderas/pelvis, cinturón de hombro sobre el pecho. Úselo siempre, incluso para viajes cortos.'
+                },
+                'airbags': {
+                    title: 'Sistema de bolsas de aire',
+                    details: 'Se despliega en 1/20 de segundo a 200 mph. Funciona CON cinturones de seguridad, no en lugar de ellos. Mantenga más de 10 pulgadas de la bolsa de aire del volante.'
+                },
+                'crumple': {
+                    title: 'Zonas de deformación',
+                    details: 'Diseñado para absorber la energía del choque mediante una deformación controlada. Reduce la fuerza transferida a los ocupantes entre un 30 y un 50 %.'
+                },
+                'abs': {
+                    title: 'Sistema de frenos antibloqueo',
+                    details: 'Evita el bloqueo de las ruedas durante una frenada brusca. Mantiene el control de la dirección. Los frenos de bomba NO son necesarios con ABS.'
+                },
+                'esc': {
+                    title: 'Control electrónico de estabilidad',
+                    details: 'Aplica automáticamente los frenos a las ruedas individuales durante los derrapes. Reduce los accidentes fatales de un solo vehículo en un 49%.'
+                },
+                'adas': {
+                    title: 'Asistencia avanzada al conductor',
+                    details: 'Incluye frenado automático de emergencia (reduce los choques traseros en un 50%), advertencias de cambio de carril, monitoreo de punto ciego y control de crucero adaptativo.'
+                }
+            };
+            
+            featureCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const feature = this.dataset.feature;
+                    const info = featureInfoMap[feature];
+                    
+                    if (info) {
+                        featureTitle.textContent = info.title;
+                        featureDetails.textContent = info.details;
+                        featureInfo.style.display = 'block';
+                        
+                        featureCards.forEach(c => c.classList.remove('selected'));
+                        this.classList.add('selected');
+                        incrementInteraction();
+                    }
+                });
+            });
+            
+            // Set up scenario options
+            const scenarioOptions = document.querySelectorAll('.scenario-option');
+            scenarioOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selection from other options in same parent
+                    const parent = this.parentElement;
+                    const siblings = parent.querySelectorAll('.scenario-option');
+                    siblings.forEach(sib => sib.classList.remove('selected'));
+                    
+                    this.classList.add('selected');
+                    
+                    // Show feedback for vehicle scenario
+                    if (this.closest('.scenario') && this.closest('.scenario').querySelector('#vehicle-scenario-feedback')) {
+                        const feedback = document.getElementById('vehicle-scenario-feedback');
+                        if (this.dataset.correct === 'true') {
+                            feedback.classList.add('correct');
+                            feedback.classList.remove('incorrect');
+                            feedback.innerHTML = '<strong>¡Correcto!</strong> Múltiples sistemas de seguridad integrados brindan la mejor protección.';
+                            updateSafetyScore(15);
+                        } else {
+                            feedback.classList.add('incorrect');
+                            feedback.classList.remove('correct');
+                            feedback.innerHTML = '<strong>Incorrecto.</strong> Las características de seguridad brindan más protección que las comodidades de lujo.';
+                            updateSafetyScore(5);
+                        }
+                        feedback.style.display = 'block';
+                    }
+                    
+                    incrementInteraction();
+                });
+            });
+
+            // Set up checklist items
+            const checklistItems = document.querySelectorAll('.checklist-checkbox');
+            checklistItems.forEach(item => {
+                item.addEventListener('change', function() {
+                    incrementInteraction();
+                });
+            });
+
+            // Set up final assessment options
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    // Remove selected class from all options in this question
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                            updateSafetyScore(10); // Bonus for completing sections
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+        });
+
+        // Optional: Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkFinalAssessment();
+            }
+        });
+    </script>
+</body>
+</html>

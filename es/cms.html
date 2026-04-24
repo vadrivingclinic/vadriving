@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo de aprendizaje: Formulario CMS-1500 (Versión 02-12)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e5799 0%, #207cca 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .module-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #1e5799;
+        }
+        
+        h2 {
+            color: #1e5799;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        h3 {
+            color: #207cca;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        h4 {
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .objective-item {
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4d90fe;
+        }
+        
+        .form-section {
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .block-number {
+            display: inline-block;
+            background-color: #1e5799;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .highlight {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+        
+        .tip {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #4caf50;
+            margin: 20px 0;
+        }
+        
+        .important {
+            background-color: #ffebee;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #f44336;
+            margin: 20px 0;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .examples {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 15px 0;
+            border-left: 3px solid #9e9e9e;
+        }
+        
+        .block-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .block-item {
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #d1e3ff;
+        }
+        
+        .quiz-container {
+            background-color: #e3f2fd;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .quiz-question {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #bbdefb;
+        }
+        
+        .quiz-options {
+            margin-left: 20px;
+        }
+        
+        .quiz-options label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        
+        button {
+            background-color: #1e5799;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #154275;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .objectives-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <header>
+        <h1>Módulo de aprendizaje sobre cómo completar formularios CMS-1500</h1>
+        <p class="subtitle">Versión 02-12 | Número de Control OMB: 0938-1197</p>
+    </header>
+    
+    <div class="module-container">
+        <section class="card">
+            <h2>Descripción general del módulo</h2>
+            <p>Este módulo proporciona una guía completa para completar el formulario de reclamo CMS-1500 (versión 02-12), el formulario en papel estándar para presentar reclamos de atención médica a Medicare y otras aseguradoras cuando el envío electrónico no es posible o cuando se utiliza una cámara de compensación.</p>
+            
+            <div class="highlight">
+                <strong>Hechos clave:</strong> El formulario CMS-1500 lo mantiene el Comité Nacional Uniforme de Reclamaciones (NUCC) y lo aprueba la Oficina de Gestión y Presupuesto de la Casa Blanca (OMB). La versión 02-12 es la versión aprobada actual.
+            </div>
+        </section>
+        
+        <section class="card">
+            <h2>Objetivos de aprendizaje</h2>
+            <div class="objectives-grid">
+                <div class="objective-item">
+                    <h4>Objetivo 1</h4>
+                    <p>Identificar el propósito y la importancia del formulario CMS-1500 en la facturación de atención médica.</p>
+                </div>
+                <div class="objective-item">
+                    <h4>Objetivo 2</h4>
+                    <p>Completar correctamente los bloques de información de pacientes, asegurados y seguros.</p>
+                </div>
+                <div class="objective-item">
+                    <h4>Objetivo 3</h4>
+                    <p>Documentar con precisión la información del proveedor, los servicios prestados y los diagnósticos.</p>
+                </div>
+                <div class="objective-item">
+                    <h4>Objetivo 4</h4>
+                    <p>Aplicar reglas de formato adecuadas para fechas, códigos e identificadores</p>
+                </div>
+                <div class="objective-item">
+                    <h4>Objetivo 5</h4>
+                    <p>Reconocer cuándo dejar bloques en blanco o marcarlos apropiadamente</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="card">
+            <h2>Conceptos clave & Estructura del formulario</h2>
+            
+            <h3>Secciones del formulario</h3>
+            <div class="block-grid">
+                <div class="block-item">
+                    <h4>Información de miembros (Bloques 1-13)</h4>
+                    <p>Datos demográficos del paciente, detalles del seguro y coordinación de beneficios.</p>
+                </div>
+                <div class="block-item">
+                    <h4>Información del Proveedor/Proveedor (Bloques 14-33)</h4>
+                    <p>Detalles del servicio, diagnósticos, procedimientos e información de facturación.</p>
+                </div>
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Utilice siempre una "X" para marcar las casillas de verificación. No se permiten caracteres especiales en los formularios de reclamo.
+            </div>
+            
+            <div class="important">
+                <strong>Importante:</strong> Medicare solo acepta reclamaciones en papel que utilicen TODAS LETRAS MAYÚSCULAS.
+            </div>
+        </section>
+        
+        <section class="card">
+            <h2>Instrucciones detalladas del bloque</h2>
+            
+            <h3>Paciente Crítico & Bloques de seguros</h3>
+            
+            <div class="form-section">
+                <h4><span class="block-number">1</span> Tipo de seguro</h4>
+                <p>Marque la casilla que indica qué tipo de seguro corresponde (Medicare, Medicaid, Tricare, etc.)</p>
+            </div>
+            
+            <div class="form-section">
+                <h4><span class="block-number">1A</span> Medicare HICN</h4>
+                <p>Número de reclamo del seguro médico de Medicare del paciente. Debe registrarse si Medicare es pagador primario o secundario.</p>
+            </div>
+            
+            <div class="form-section">
+                <h4><span class="block-number">3</span> Fecha de nacimiento del paciente & Sexo</h4>
+                <p>Formato: MM | DD | CCAA (formato de 8 dígitos)</p>
+                <div class="examples">Ejemplo: 28 de septiembre de 1990 = 09 | 28 | 1990</div>
+            </div>
+            
+            <div class="form-section">
+                <h4><span class="block-number">11</span> Determinación de seguro primario/secundario</h4>
+                <p><strong>Bloque más importante:</strong> Indica que se ha hecho un esfuerzo de buena fe para determinar si Medicare es un seguro primario o secundario.</p>
+                
+                <div class="highlight">
+                    <strong>Cuando Medicare es secundario:</strong>
+                    <ul>
+                        <li>Cobertura del plan de salud grupal</li>
+                        <li>Edad laboral o discapacidad (plan de salud para grupos grandes)</li>
+                        <li>Enfermedad renal terminal</li>
+                        <li>Seguro sin culpa u otro seguro de responsabilidad</li>
+                        <li>Enfermedad/lesión relacionada con el trabajo (compensación laboral, pulmón negro, beneficios para veteranos)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h4><span class="block-number">12</span> Firma del paciente</h4>
+                <p>Autorización para la divulgación de información médica. Debe tener fecha (formato de 6 u 8 dígitos). Se acepta la firma en el archivo o la firma generada por computadora.</p>
+            </div>
+        </section>
+        
+        <section class="card">
+            <h2>Proveedor & Información de servicio</h2>
+            
+            <div class="form-section">
+                <h4><span class="block-number">17</span> Proveedor de referencia/ordenador</h4>
+                <p>Nombre del proveedor referente, que realiza el pedido o que lo supervisa. Utilice calificadores apropiados:</p>
+                <ul>
+                    <li><strong>DN:</strong> Proveedor de referencia</li>
+                    <li><strong>NS:</strong> Proveedor de pedidos</li>
+                    <li><strong>HACER:</strong> Proveedor supervisor</li>
+                </ul>
+            </div>
+            
+            <div class="form-section">
+                <h4><span class="block-number">17B</span> Número de NPI</h4>
+                <p>Identificador nacional de proveedor: número de identificación único para todas las entidades cubiertas por HIPAA.</p>
+            </div>
+            
+            <div class="form-section">
+                <h4><span class="block-number">21</span> Códigos de diagnóstico</h4>
+                <p>Ingrese los códigos de diagnóstico del ICD. Nota: La transición de la CIE-9-MC a la CIE-10-CM se produjo en septiembre de 2015.</p>
+            </div>
+            
+            <div class="form-section">
+                <h4><span class="block-number">24</span> Detalles de la línea de servicio</h4>
+                <p>Múltiples subbloques para detalles del servicio:</p>
+                <ul>
+                    <li><strong>24A:</strong> Fechas de servicio (MMDDAA o MMDDCCAA)</li>
+                    <li><strong>24B:</strong> Códigos de lugar de servicio (códigos de 2 dígitos que cumplen con HIPAA)</li>
+                    <li><strong>24D:</strong> Códigos CPT/HCPCS con modificadores</li>
+                    <li><strong>24E:</strong> Código de referencia de diagnóstico (del bloque 21)</li>
+                    <li><strong>24F:</strong> Cargos facturados</li>
+                    <li><strong>24G:</strong> Días/unidades (ingrese "1" para servicio único)</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section class="card">
+            <h2>Escenarios comunes & Instrucciones especiales</h2>
+            
+            <h3>Requisitos específicos de Medicare</h3>
+            <ul>
+                <li>Bloque 8: Deje siempre en blanco para Medicare</li>
+                <li>Bloque 11D: Deje en blanco para reclamos de Medicare</li>
+                <li>Bloque 14: Para servicios quiroprácticos, ingrese la fecha de inicio del tratamiento y la fecha de la radiografía en el Bloque 19, si se utiliza.</li>
+                <li>Bloque 15: Deje en blanco (no es obligatorio para Medicare)</li>
+            </ul>
+            
+            <h3>Medigap/seguro suplementario</h3>
+            <ul>
+                <li>Bloque 9: Información del afiliado a Medigap si es diferente del paciente</li>
+                <li>Bloque 9A: Número de póliza/grupo precedido de MEDIGAP, MG o MGAP</li>
+            </ul>
+            
+            <h3>Bloque 19: Información adicional sobre reclamaciones</h3>
+            <p>Utilizado para diversos fines:</p>
+            <ul>
+                <li>Explicar el modificador 99 (múltiples modificadores)</li>
+                <li>Indicar informes/documentación adjunta</li>
+                <li>Requisitos de Compensación al Trabajador (específicos del estado)</li>
+                <li>Calificadores específicos del pagador</li>
+            </ul>
+        </section>
+        
+        <section class="card quiz-container">
+            <h2>Verificación de conocimientos</h2>
+            
+            <div class="quiz-question">
+                <p><strong>1. ¿Cuál es el formato de fecha correcto para el Bloque 3 (Fecha de nacimiento del paciente)?</strong></p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q1"> DD/MM/AAAA</label>
+                    <label><input type="radio" name="q1"> MM-DD-AAAA</label>
+                    <label><input type="radio" name="q1"> milímetro | DD | CCAA</label>
+                    <label><input type="radio" name="q1"> AAAAMMDD</label>
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p><strong>2. ¿Cuándo se debe completar el Bloque 11 para indicar que Medicare es secundario?</strong></p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q2"> Cuando el paciente no tiene otro seguro</label>
+                    <label><input type="radio" name="q2"> Cuando el paciente tiene seguro a través del trabajo</label>
+                    <label><input type="radio" name="q2"> Cuando el paciente tiene más de 65 años.</label>
+                    <label><input type="radio" name="q2"> Nunca, Medicare siempre es primario</label>
+                </div>
+            </div>
+            
+            <div class="quiz-question">
+                <p><strong>3. ¿Qué se debe ingresar en el Bloque 24G si solo se realizó un servicio?</strong></p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q3"> Déjalo en blanco</label>
+                    <label><input type="radio" name="q3"> Introduzca "0"</label>
+                    <label><input type="radio" name="q3"> Introduzca "1"</label>
+                    <label><input type="radio" name="q3"> Ingrese "SOLO"</label>
+                </div>
+            </div>
+            
+            <button onclick="checkAnswers()">Comprueba tus respuestas</button>
+            <div id="quiz-result" style="margin-top: 20px; font-weight: bold;"></div>
+        </section>
+        
+        <section class="card">
+            <h2>Recursos adicionales</h2>
+            <ul>
+                <li>Manual de instrucciones NUCC: www.nucc.org</li>
+                <li>Instrucciones oficiales de CMS: www.cms.gov</li>
+                <li>Códigos de lugar de servicio: www.cms.gov (busque códigos POS)</li>
+                <li>Conjuntos de códigos ICD-10-CM: www.cdc.gov/nchs/icd</li>
+                <li>Códigos CPT: Asociación Médica Estadounidense (AMA)</li>
+            </ul>
+            
+            <div class="tip" style="margin-top: 20px;">
+                <strong>Recordar:</strong> Siempre verifique los requisitos específicos del pagador, ya que las aseguradoras privadas pueden tener variaciones de las pautas de Medicare.
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>Módulo de aprendizaje de formularios CMS-1500 | Basado en las especificaciones de la versión 02-12</p>
+        <p>Sólo con fines de formación. Consulte siempre la documentación oficial de CMS y NUCC para conocer los requisitos actuales.</p>
+    </footer>
+
+    <script>
+        function checkAnswers() {
+            let score = 0;
+            const totalQuestions = 3;
+            
+            // Question 1 - Correct answer is option 3 (index 2)
+            const q1Answer = document.querySelectorAll('input[name="q1"]')[2].checked;
+            if (q1Answer) score++;
+            
+            // Question 2 - Correct answer is option 2 (index 1)
+            const q2Answer = document.querySelectorAll('input[name="q2"]')[1].checked;
+            if (q2Answer) score++;
+            
+            // Question 3 - Correct answer is option 3 (index 2)
+            const q3Answer = document.querySelectorAll('input[name="q3"]')[2].checked;
+            if (q3Answer) score++;
+            
+            const resultDiv = document.getElementById('quiz-result');
+            const percentage = (score / totalQuestions) * 100;
+            
+            if (percentage === 100) {
+                resultDiv.innerHTML = `¡Perfecto! tu anotaste ${score}/${totalQuestions} (${percentage}%) - ¡Excelente comprensión de cómo completar el formulario CMS-1500!`;
+                resultDiv.style.color = '#4caf50';
+            } else if (percentage >= 70) {
+                resultDiv.innerHTML = `¡Buen trabajo! tu anotaste ${score}/${totalQuestions} (${percentage}%) - Tienes un buen conocimiento del material.`;
+                resultDiv.style.color = '#ff9800';
+            } else {
+                resultDiv.innerHTML = `tu anotaste ${score}/${totalQuestions} (${percentage}%) - Revise el módulo y vuelva a intentarlo.`;
+                resultDiv.style.color = '#f44336';
+            }
+            
+            // Provide correct answers
+            resultDiv.innerHTML += `<br><br><strong>Respuestas correctas:</strong><br>
+            1. MM | DD | CCAA (formato de 8 dígitos)<br>
+            2. Cuando el paciente tiene seguro a través del trabajo<br>
+            3. Ingrese "1" (siempre ingrese 1 para un solo servicio)`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA - Módulo 3: Conducción con uso eficiente del combustible</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb; /* Your exact brand purple */
+            --color-primary-soft: #8a5feb;
+            --color-secondary: #000000; /* Black */
+            --color-accent: #7c3aed;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-bg: #ffffff; /* White */
+            --color-text: #000000; /* Black */
+            --color-muted: #6b7280;
+            --color-dark: #000000; /* Black */
+            --color-light: #f9fafb;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+            --shadow-card: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes fillUp {
+            from { width: 0%; }
+            to { width: var(--fuel-level, 50%); }
+        }
+
+        @keyframes moneyFloat {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100px) rotate(20deg); opacity: 0; }
+        }
+
+        /* Main Container */
+        .page {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        @media (max-width: 900px) {
+            .page { padding: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 0; }
+            .page {
+                border-radius: 0;
+                box-shadow: none;
+                padding: 16px 12px 20px;
+            }
+        }
+
+        /* Header */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            max-width: 100%;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .brand-logo:hover { 
+            transform: scale(1.05); 
+            animation: glow 2s infinite;
+        }
+
+        .course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 100%;
+        }
+
+        .course-name {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .week-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.1);
+            font-size: 0.8rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .week-label-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        .badge-mode {
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.08);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-primary);
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .badge-mode:hover {
+            background: rgba(95, 23, 235, 0.15);
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            line-height: 1.1;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .module-subtitle {
+            font-size: 1rem;
+            color: var(--color-muted);
+            max-width: 800px;
+            margin-bottom: 28px;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+            line-height: 1.7;
+        }
+
+        /* Time Estimate Banner */
+        .time-estimate-banner {
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .time-estimate-content h3 {
+            color: var(--color-primary);
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .time-estimate-content p {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.1em;
+        }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .progress-tracker::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50px;
+            right: 50px;
+            height: 3px;
+            background: rgba(95, 23, 235, 0.1);
+            z-index: 1;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+            transform: scale(1.1);
+            animation: pulse 2s infinite;
+        }
+
+        .progress-step.completed .step-circle {
+            background: var(--color-success);
+            border-color: var(--color-success);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            color: var(--color-muted);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        /* Activity Grid */
+        .activity-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .activity-card {
+            background: var(--color-bg);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--color-primary);
+        }
+
+        .activity-card:hover::before { 
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .activity-card.completed {
+            border-color: var(--color-success);
+        }
+
+        .activity-card.completed::before {
+            background: var(--color-success);
+            opacity: 1;
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .activity-number {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .activity-status {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: rgba(95, 23, 235, 0.08);
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.15);
+        }
+
+        .activity-card.completed .activity-status {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .activity-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 12px;
+        }
+
+        .activity-description {
+            font-size: 0.95rem;
+            color: var(--color-muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* Activity Time Estimate */
+        .activity-time-estimate {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 8px 12px;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .activity-time-icon {
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+
+        .activity-time-text {
+            font-size: 0.85rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        /* Fuel Efficiency Dashboard */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container { grid-template-columns: 1fr; }
+        }
+
+        .fuel-gauge {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .gauge-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .gauge-icon {
+            font-size: 1.2rem;
+        }
+
+        .gauge-visual {
+            position: relative;
+            height: 120px;
+            background: #e5e7eb;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .fuel-level {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to top, #10b981 0%, #34d399 100%);
+            transition: width 1s ease;
+        }
+
+        .gauge-markers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            align-items: flex-end;
+        }
+
+        .marker {
+            width: 2px;
+            height: 15px;
+            background: var(--color-text);
+            position: relative;
+        }
+
+        .marker-label {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: var(--color-muted);
+            white-space: nowrap;
+        }
+
+        .current-reading {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-top: 10px;
+        }
+
+        .reading-label {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--color-muted);
+        }
+
+        /* Driving Simulator */
+        .driving-simulator {
+            position: relative;
+            height: 200px;
+            background: linear-gradient(to bottom, #1e293b 0%, #0f172a 100%);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            margin: 20px 0;
+            border: 3px solid #334155;
+        }
+
+        .road {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: #475569;
+            transform: translateY(-50%);
+        }
+
+        .lane-markers {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            transform: translateY(-50%);
+            background: repeating-linear-gradient(
+                to right,
+                transparent,
+                transparent 30px,
+                #f1f5f9 30px,
+                #f1f5f9 60px
+            );
+            animation: slideRoad 2s linear infinite;
+        }
+
+        @keyframes slideRoad {
+            from { transform: translateY(-50%) translateX(0); }
+            to { transform: translateY(-50%) translateX(-60px); }
+        }
+
+        .sim-car {
+            position: absolute;
+            bottom: 40px;
+            left: 50px;
+            width: 60px;
+            height: 30px;
+            background: var(--color-primary);
+            border-radius: 6px;
+            transition: left 0.3s ease, transform 0.3s ease;
+            border: 2px solid white;
+        }
+
+        .car-front {
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 16px;
+            background: #1e40af;
+            border-radius: 2px;
+        }
+
+        .speed-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 600px) {
+            .control-panel { grid-template-columns: 1fr; }
+        }
+
+        .control-btn {
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            background: white;
+            color: var(--color-text);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .control-btn:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+        }
+
+        .control-btn.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--color-error);
+        }
+
+        .control-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Comparison Cards */
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-container { grid-template-columns: 1fr; }
+        }
+
+        .comparison-card {
+            background: rgba(95, 23, 235, 0.03);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .comparison-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comparison-icon {
+            font-size: 1.2rem;
+        }
+
+        .comparison-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--color-primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--color-muted);
+            margin-top: 5px;
+        }
+
+        /* Quiz Questions */
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .quiz-question {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .quiz-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .option-label {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            color: var(--color-primary);
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .quiz-option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .quiz-option.correct .option-label {
+            background: var(--color-success);
+            color: white;
+            border-color: var(--color-success);
+        }
+
+        /* Savings Calculator */
+        .savings-calculator {
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .calculator-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .calculator-fields {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .calculator-fields { grid-template-columns: 1fr; }
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .field-input {
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .field-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(95, 23, 235, 0.1);
+        }
+
+        .calculator-results {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            display: none;
+        }
+
+        .calculator-results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            color: var(--color-primary);
+            font-size: 1.1rem;
+        }
+
+        /* Feedback */
+        .feedback-container {
+            background: rgba(95, 23, 235, 0.03);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            margin-top: 20px;
+            display: none;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .feedback-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feedback-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .feedback-icon {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .feedback-icon.correct { 
+            color: var(--color-success); 
+        }
+        
+        .feedback-icon.incorrect { 
+            color: var(--color-error); 
+        }
+
+        .feedback-content {
+            font-size: 0.9rem;
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .feedback-content strong { 
+            color: var(--color-primary); 
+            font-weight: 700;
+        }
+
+        .savings-details {
+            background: rgba(16, 185, 129, 0.05);
+            border-left: 3px solid var(--color-success);
+            padding: 14px 18px;
+            margin: 14px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        /* Money Animation */
+        .money-float {
+            position: fixed;
+            font-size: 1.5rem;
+            pointer-events: none;
+            z-index: 1000;
+            animation: moneyFloat 1s ease-out forwards;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.4);
+            animation: glow 1.5s infinite;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.2);
+        }
+
+        .btn-icon { 
+            font-size: 1.2em; 
+            font-weight: bold;
+        }
+
+        /* Results Panel */
+        .results-panel {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 40px;
+            margin-top: 40px;
+            display: none;
+            animation: fadeInUp 0.6s ease;
+            border: 2px solid var(--color-primary);
+        }
+
+        .results-panel.show { 
+            display: block; 
+            animation: glow 2s infinite;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .results-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            text-align: center;
+            margin: 30px 0;
+            text-shadow: 0 0 20px rgba(95, 23, 235, 0.7);
+            animation: pulse 2s infinite;
+        }
+
+        .safety-insights {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .insights-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .insights-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .insights-list li {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            font-size: 0.95rem;
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+
+        .insight-dot {
+            width: 8px;
+            height: 8px;
+            margin-top: 10px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <main class="page" aria-labelledby="module-heading">
+        <!-- Header -->
+        <header class="brand-row">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo" />
+                <div class="course-meta">
+                    <span class="course-name">Clínica de conducción de VA • Módulo 3</span>
+                    <div class="week-label">
+                        <span class="week-label-dot"></span>
+                        <span>Conducción eficiente en combustible</span>
+                    </div>
+                </div>
+            </div>
+            <span class="badge-mode">Simulación interactiva</span>
+        </header>
+
+        <h1 id="module-heading">Simulación de conducción con bajo consumo de combustible</h1>
+        <p class="module-subtitle">
+            Una simulación interactiva de 5 minutos para dominar técnicas de conducción eficientes en el consumo de combustible. Aprenda cómo ahorrar hasta un 33% en costos de combustible 
+            a través de hábitos de conducción inteligentes, un mantenimiento adecuado del vehículo y una planificación eficiente de rutas. Estas habilidades no sólo ahorran dinero 
+            sino también reducir el impacto ambiental.
+        </p>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate-banner">
+            <div class="time-estimate-icon">
+                ⏱️
+            </div>
+            <div class="time-estimate-content">
+                <h3>Estimación del tiempo de simulación</h3>
+                <p>Complete esta simulación interactiva en aproximadamente <span class="time-highlight">5 minutos</span>. Domine tres áreas clave de la conducción eficiente en el consumo de combustible con comentarios en tiempo real y cálculos prácticos de ahorro.</p>
+            </div>
+        </div>
+
+        <!-- Key Stats -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="potential-savings">33%</span>
+                <span class="stat-label">Ahorros potenciales de combustible</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="avg-savings">$500</span>
+                <span class="stat-label">Ahorros anuales</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="co2-reduction">2.5T</span>
+                <span class="stat-label">Reducción de CO₂/Año</span>
+            </div>
+        </div>
+
+        <!-- Progress Tracker -->
+        <div class="progress-tracker">
+            <div class="progress-step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Conducción inteligente</div>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Mantenimiento de vehículos</div>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Calculadora de ahorro</div>
+            </div>
+        </div>
+
+        <!-- Activity Grid -->
+        <div class="activity-grid">
+            <!-- Activity 1: Smart Driving Habits -->
+            <section class="activity-card" id="activity-1" data-activity="1">
+                <div class="activity-header">
+                    <span class="activity-number">Actividad 1</span>
+                    <span class="activity-status">No iniciado</span>
+                </div>
+                <h3 class="activity-title">Simulación de hábitos de conducción inteligentes</h3>
+                <p class="activity-description">
+                    Practique técnicas de conducción eficientes en el consumo de combustible en esta simulación interactiva. Aprenda cómo acelerar, frenar, 
+                    y la gestión de la velocidad afectan su economía de combustible. Según el Departamento de Energía de EE.UU., la conducción inteligente 
+                    puede mejorar la economía de combustible hasta en un 33%.
+                </p>
+
+                <div class="activity-time-estimate">
+                    <span class="activity-time-icon">⏱️</span>
+                    <span class="activity-time-text">Tiempo estimado: <strong>1-2 minutos</strong></span>
+                </div>
+
+                <!-- Driving Simulator -->
+                <div class="driving-simulator" id="driving-simulator">
+                    <div class="road">
+                        <div class="lane-markers"></div>
+                        <div class="sim-car" id="sim-car">
+                            <div class="car-front"></div>
+                        </div>
+                    </div>
+                    <div class="speed-display" id="speed-display">55 millas por hora</div>
+                </div>
+
+                <!-- Fuel Gauge -->
+                <div class="dashboard-container">
+                    <div class="fuel-gauge">
+                        <div class="gauge-title">
+                            <span class="gauge-icon">⛽</span>
+                            Economía de combustible instantánea
+                        </div>
+                        <div class="gauge-visual">
+                            <div class="fuel-level" id="fuel-level" style="width: 65%;"></div>
+                            <div class="gauge-markers">
+                                <div class="marker">
+                                    <span class="marker-label">10 millas por galón</span>
+                                </div>
+                                <div class="marker">
+                                    <span class="marker-label">20 millas por galón</span>
+                                </div>
+                                <div class="marker">
+                                    <span class="marker-label">30 millas por galón</span>
+                                </div>
+                                <div class="marker">
+                                    <span class="marker-label">40 millas por galón</span>
+                                </div>
+                                <div class="marker">
+                                    <span class="marker-label">50 millas por galón</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="current-reading" id="mpg-reading">32.5</div>
+                        <div class="reading-label">Millas por galón (MPG)</div>
+                    </div>
+
+                    <div class="fuel-gauge">
+                        <div class="gauge-title">
+                            <span class="gauge-icon">💰</span>
+                            Costo de combustible por milla
+                        </div>
+                        <div class="gauge-visual">
+                            <div class="fuel-level" id="cost-level" style="width: 35%; background: linear-gradient(to top, #f59e0b 0%, #fbbf24 100%);"></div>
+                            <div class="gauge-markers">
+                                <div class="marker">
+                                    <span class="marker-label">$0.50</span>
+                                </div>
+                                <div class="marker">
+                                    <span class="marker-label">$0.40</span>
+                                </div>
+                                <div class="marker">
+                                    <span class="marker-label">$0.30</span>
+                                </div>
+                                <div class="marker">
+                                    <span class="marker-label">$0.20</span>
+                                </div>
+                                <div class="marker">
+                                    <span class="marker-label">$0.10</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="current-reading" id="cost-reading">$0.15</div>
+                        <div class="reading-label">Costo por milla ($3.50/gal)</div>
+                    </div>
+                </div>
+
+                <!-- Driving Controls -->
+                <div class="control-panel" id="driving-controls">
+                    <button class="control-btn" data-action="smooth-accel">
+                        <span class="control-icon">🚀</span>
+                        <span>Aceleración suave</span>
+                        <small>Aumento gradual de la velocidad</small>
+                    </button>
+                    <button class="control-btn" data-action="hard-accel">
+                        <span class="control-icon">⚡</span>
+                        <span>Aceleración fuerte</span>
+                        <small>Aumento rápido de la velocidad</small>
+                    </button>
+                    <button class="control-btn" data-action="coast">
+                        <span class="control-icon">🌊</span>
+                        <span>Costa para parar</span>
+                        <small>desaceleración gradual</small>
+                    </button>
+                    <button class="control-btn" data-action="hard-brake">
+                        <span class="control-icon">🛑</span>
+                        <span>Frenado fuerte</span>
+                        <small>parada repentina</small>
+                    </button>
+                    <button class="control-btn" data-action="cruise-control">
+                        <span class="control-icon">🎯</span>
+                        <span>Control de crucero</span>
+                        <small>Velocidad constante (55 MPH)</small>
+                    </button>
+                    <button class="control-btn" data-action="speed-up">
+                        <span class="control-icon">📈</span>
+                        <span>Aumentar la velocidad</span>
+                        <small>Carretera de 75 mph</small>
+                    </button>
+                </div>
+
+                <!-- Comparison -->
+                <div class="comparison-container">
+                    <div class="comparison-card">
+                        <div class="comparison-title">
+                            <span class="comparison-icon">✅</span>
+                            Conducción eficiente
+                        </div>
+                        <p>La aceleración suave, las velocidades constantes y las paradas anticipadas pueden mejorar la economía de combustible entre un 15% y un 30% a velocidades de autopista y entre un 10% y un 40% en tráfico con paradas y arranques.</p>
+                        <div class="comparison-stats">
+                            <div class="stat-item">
+                                <div class="stat-value" id="efficient-mpg">35.5</div>
+                                <div class="stat-label">MPG promedio</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="efficient-cost">$0.10</div>
+                                <div class="stat-label">Costo/milla</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comparison-card">
+                        <div class="comparison-title">
+                            <span class="comparison-icon">❌</span>
+                            Conducción agresiva
+                        </div>
+                        <p>Acelerar y frenar con fuerza puede reducir el rendimiento de la gasolina entre un 15 % y un 30 % a velocidades de autopista y entre un 10 % y un 40 % en tráfico con paradas y arranques (Departamento de Energía de EE. UU.).</p>
+                        <div class="comparison-stats">
+                            <div class="stat-item">
+                                <div class="stat-value" id="aggressive-mpg">24.5</div>
+                                <div class="stat-label">MPG promedio</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="aggressive-cost">$0.14</div>
+                                <div class="stat-label">Costo/milla</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback -->
+                <div class="feedback-container" id="feedback-1">
+                    <div class="feedback-title">
+                        <span class="feedback-icon correct">✓</span>
+                        Técnicas de conducción inteligente dominadas
+                    </div>
+                    <div class="feedback-content">
+                        <strong>✅ Conclusiones clave:</strong><br><br>
+                        • <strong>Aceleración suave:</strong> La aceleración gradual mejora la economía de combustible entre un 10% y un 40% en comparación con los arranques rápidos<br>
+                        • <strong>Velocidades constantes:</strong> El uso del control de crucero en autopistas puede ahorrar entre un 7% y un 14% de combustible<br>
+                        • <strong>Conducción anticipada:</strong> Detenerse por inercia en lugar de frenar bruscamente ahorra combustible y reduce el desgaste<br>
+                        • <strong>Gestión de velocidad:</strong> La economía de combustible disminuye rápidamente por encima de las 50 mph; Cada 5 mph por encima de los 50 es como pagar entre $0,18 y $0,36 más por galón.<br><br>
+                        
+                        <div class="savings-details">
+                            <strong>💰 Ahorros reales:</strong><br>
+                            Para una distancia de conducción anual de 15,000 millas:<br>
+                            • Conducción eficiente (35 MPG): $1,500/año<br>
+                            • Conducción agresiva (25 MPG): $2,100/año<br>
+                            • <strong>Ahorros potenciales: $600/año</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Activity 2: Vehicle Maintenance -->
+            <section class="activity-card" id="activity-2" data-activity="2">
+                <div class="activity-header">
+                    <span class="activity-number">Actividad 2</span>
+                    <span class="activity-status">No iniciado</span>
+                </div>
+                <h3 class="activity-title">Impacto del mantenimiento del vehículo</h3>
+                <p class="activity-description">
+                    Descubra cómo el mantenimiento adecuado del vehículo afecta la eficiencia del combustible. Conozca qué tareas de mantenimiento tienen la 
+                    mayor impacto en su economía de combustible y cómo mantener su vehículo para un rendimiento óptimo.
+                </p>
+
+                <div class="activity-time-estimate">
+                    <span class="activity-time-icon">⏱️</span>
+                    <span class="activity-time-text">Tiempo estimado: <strong>1-2 minutos</strong></span>
+                </div>
+
+                <!-- Maintenance Quiz -->
+                <div class="quiz-container">
+                    <div class="quiz-question">1. ¿En qué medida pueden mejorar la economía de combustible los neumáticos inflados correctamente?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="1" data-option="A">
+                            <span class="option-label">A</span>
+                            <span>Hasta un 3% de mejora</span>
+                        </div>
+                        <div class="quiz-option" data-question="1" data-option="B">
+                            <span class="option-label">B</span>
+                            <span>Hasta un 10% de mejora</span>
+                        </div>
+                        <div class="quiz-option" data-question="1" data-option="C">
+                            <span class="option-label">C</span>
+                            <span>Ninguna mejora significativa</span>
+                        </div>
+                        <div class="quiz-option" data-question="1" data-option="D">
+                            <span class="option-label">D</span>
+                            <span>Hasta un 1% de mejora</span>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">2. Reemplazar un filtro de aire obstruido puede mejorar la economía de combustible al:</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="2" data-option="A">
+                            <span class="option-label">A</span>
+                            <span>Hasta 10% (DOE de EE. UU.)</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="B">
+                            <span class="option-label">B</span>
+                            <span>Sólo hasta el 2%</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="C">
+                            <span class="option-label">C</span>
+                            <span>Ninguna mejora con respecto a los coches modernos.</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="D">
+                            <span class="option-label">D</span>
+                            <span>Sólo mejora la aceleración.</span>
+                        </div>
+                    </div>
+
+                    <div class="quiz-question">3. ¿Qué elemento de mantenimiento tiene el MENOR impacto en la economía de combustible?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="3" data-option="A">
+                            <span class="option-label">A</span>
+                            <span>Tipo y condición del aceite del motor.</span>
+                        </div>
+                        <div class="quiz-option" data-question="3" data-option="B">
+                            <span class="option-label">B</span>
+                            <span>Alineación de ruedas</span>
+                        </div>
+                        <div class="quiz-option" data-question="3" data-option="C">
+                            <span class="option-label">C</span>
+                            <span>Estado de la bujía</span>
+                        </div>
+                        <div class="quiz-option" data-question="3" data-option="D">
+                            <span class="option-label">D</span>
+                            <span>Nivel de refrigerante del aire acondicionado</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Maintenance Impact Visualization -->
+                <div class="comparison-container" style="margin-top: 25px;">
+                    <div class="comparison-card">
+                        <div class="comparison-title">
+                            <span class="comparison-icon">🛞</span>
+                            Impacto del mantenimiento de neumáticos
+                        </div>
+                        <p><strong>Neumáticos poco inflados</strong> aumenta la resistencia a la rodadura, haciendo que el motor trabaje más. Una inflación adecuada puede mejorar el rendimiento de la gasolina hasta en un 3%.</p>
+                        <div class="comparison-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">-10%</div>
+                                <div class="stat-label">Pérdida de economía de combustible</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">+3%</div>
+                                <div class="stat-label">Con una inflación adecuada</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comparison-card">
+                        <div class="comparison-title">
+                            <span class="comparison-icon">⚙️</span>
+                            Impacto del mantenimiento del motor
+                        </div>
+                        <p><strong>Afinaciones periódicas</strong> Incluir bujías, filtros de aire y cambios de aceite pueden mejorar la economía de combustible entre un 4% y un 40%, dependiendo de la reparación necesaria.</p>
+                        <div class="comparison-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">+10%</div>
+                                <div class="stat-label">Filtro de aire limpio</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">+2%</div>
+                                <div class="stat-label">Aceite de motor derecho</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback -->
+                <div class="feedback-container" id="feedback-2">
+                    <div class="feedback-title">
+                        <span class="feedback-icon correct">✓</span>
+                        Análisis de impacto del mantenimiento
+                    </div>
+                    <div class="feedback-content">
+                        <strong>✅ Respuestas correctas:</strong><br>
+                        1. <strong>A - Hasta un 3% de mejora:</strong> La presión adecuada de los neumáticos es crucial para la eficiencia del combustible<br>
+                        2. <strong>A - Hasta 10% (DOE de EE. UU.):</strong> Un filtro de aire limpio mejora el flujo de aire y la combustión.<br>
+                        3. <strong>D - Nivel de refrigerante del aire acondicionado:</strong> Si bien el uso de aire acondicionado afecta la economía de combustible, el nivel de refrigerante tiene un impacto directo mínimo<br><br>
+                        
+                        <strong>🔧 Mejores prácticas de mantenimiento:</strong><br>
+                        • <strong>Verifique la presión de los neumáticos mensualmente:</strong> Utilice la PSI recomendada por el fabricante (no la máxima en el flanco del neumático)<br>
+                        • <strong>Reemplace los filtros de aire anualmente:</strong> O cada 12.000-15.000 millas<br>
+                        • <strong>Utilice aceite de motor recomendado:</strong> Puede mejorar el rendimiento de la gasolina entre un 1 y un 2 %.<br>
+                        • <strong>Solucionar problemas graves de mantenimiento:</strong> Un sensor de oxígeno defectuoso puede mejorar el kilometraje hasta en un 40%<br><br>
+                        
+                        <strong>📊 Impacto combinado:</strong><br>
+                        El mantenimiento adecuado combinado con una conducción eficiente puede mejorar la economía de combustible entre un 20% y un 40%, ahorrando al conductor promedio entre $500 y $1000 al año.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Activity 3: Savings Calculator -->
+            <section class="activity-card" id="activity-3" data-activity="3">
+                <div class="activity-header">
+                    <span class="activity-number">Actividad 3</span>
+                    <span class="activity-status">No iniciado</span>
+                </div>
+                <h3 class="activity-title">Calculadora de ahorros personales</h3>
+                <p class="activity-description">
+                    Calcule sus posibles ahorros de combustible en función de sus hábitos de conducción y su vehículo reales. ver cuanto dinero 
+                    Puede ahorrar anualmente adoptando técnicas de conducción eficientes en el consumo de combustible y un mantenimiento adecuado del vehículo.
+                </p>
+
+                <div class="activity-time-estimate">
+                    <span class="activity-time-icon">⏱️</span>
+                    <span class="activity-time-text">Tiempo estimado: <strong>1-2 minutos</strong></span>
+                </div>
+
+                <!-- Savings Calculator -->
+                <div class="savings-calculator">
+                    <div class="calculator-title">
+                        <span class="calculator-icon">💰</span>
+                        Calculadora personal de ahorro de combustible
+                    </div>
+                    
+                    <div class="calculator-fields">
+                        <div class="field-group">
+                            <label class="field-label">Millas anuales recorridas</label>
+                            <input type="number" id="annual-miles" class="field-input" value="15000" min="1000" max="100000" step="1000">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Economía de combustible actual (MPG)</label>
+                            <input type="number" id="current-mpg" class="field-input" value="25" min="10" max="50" step="0.5">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Precio local del combustible ($/galón)</label>
+                            <input type="number" id="fuel-price" class="field-input" value="3.50" min="2.00" max="6.00" step="0.01">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Meta de mejora (%)</label>
+                            <select id="improvement-goal" class="field-input">
+                                <option value="10">10% de mejora</option>
+                                <option value="20" selected>20% de mejora</option>
+                                <option value="30">30% de mejora</option>
+                                <option value="40">40% de mejora</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" id="calculate-savings" style="width: 100%; margin-top: 15px;">
+                        <span class="btn-icon">🧮</span>
+                        Calcular mis ahorros
+                    </button>
+
+                    <div class="calculator-results" id="calculator-results">
+                        <div class="result-item">
+                            <span>Costo anual actual de combustible:</span>
+                            <span id="current-cost">$2,100.00</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Costo anual de combustible mejorado:</span>
+                            <span id="improved-cost">$1,680.00</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Ahorro anual de combustible:</span>
+                            <span id="annual-savings">$420.00</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Ahorros mensuales:</span>
+                            <span id="monthly-savings">$35.00</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Ahorros totales en 5 años:</span>
+                            <span id="five-year-savings">$2,100.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Efficiency Tips -->
+                <div class="comparison-container" style="margin-top: 25px;">
+                    <div class="comparison-card">
+                        <div class="comparison-title">
+                            <span class="comparison-icon">🚗</span>
+                            Reducir la carga del vehículo
+                        </div>
+                        <p>Cada 100 libras adicionales reduce la economía de combustible en aproximadamente un 1%. Retire los artículos innecesarios de su baúl y portaequipajes cuando no estén en uso.</p>
+                        <div class="comparison-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">100 libras</div>
+                                <div class="stat-label">Peso extra</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">-1%</div>
+                                <div class="stat-label">Impacto de MPG</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comparison-card">
+                        <div class="comparison-title">
+                            <span class="comparison-icon">🔄</span>
+                            Planificación de viaje
+                        </div>
+                        <p>Combinar recados en un solo viaje puede ahorrar combustible. Varios viajes cortos realizados desde un arranque en frío pueden consumir el doble de combustible que un viaje que cubra la misma distancia.</p>
+                        <div class="comparison-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">50%</div>
+                                <div class="stat-label">Más combustible utilizado</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">Arranques en frío</div>
+                                <div class="stat-label">Viajes cortos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback -->
+                <div class="feedback-container" id="feedback-3">
+                    <div class="feedback-title">
+                        <span class="feedback-icon correct">✓</span>
+                        Plan de Ahorro Personalizado
+                    </div>
+                    <div class="feedback-content">
+                        <strong>✅ Tu Plan de Eficiencia de Combustible:</strong><br><br>
+                        
+                        <strong>Acciones Inmediatas (0-30 días):</strong><br>
+                        1. <strong>Comprobar la presión de los neumáticos</strong> - Configurado según la recomendación del fabricante.<br>
+                        2. <strong>Quitar el exceso de peso</strong> - Maletero y asientos traseros despejados.<br>
+                        3. <strong>Practica una aceleración suave</strong> - Acelerar gradualmente desde las paradas.<br>
+                        4. <strong>Utilice el control de crucero</strong> - En carreteras siempre que sea seguro<br><br>
+                        
+                        <strong>Acciones a Corto Plazo (1-3 meses):</strong><br>
+                        1. <strong>Programar mantenimiento</strong> - Filtro de aire, cambio de aceite, bujías si corresponde.<br>
+                        2. <strong>Planificar viajes de manera eficiente</strong> - Combina diligencias, evita las horas punta<br>
+                        3. <strong>Utilice el aire acondicionado con prudencia</strong> - A velocidades de autopista, cierre las ventanas y use aire acondicionado.<br><br>
+                        
+                        <strong>Hábitos a largo plazo:</strong><br>
+                        1. <strong>Programa de mantenimiento regular</strong> - Seguir las recomendaciones del fabricante.<br>
+                        2. <strong>Monitorear la economía de combustible</strong> - Seguimiento de MPG para identificar problemas tempranamente<br>
+                        3. <strong>Considere la posibilidad de actualizar el vehículo</strong> - Próxima compra de vehículo: priorizar la eficiencia del combustible<br><br>
+                        
+                        <div class="savings-details">
+                            <strong>💡 Consejo profesional:</strong> Utilice la computadora de viaje de su vehículo o una aplicación de seguimiento de combustible para controlar su economía de combustible real. 
+                            Una caída repentina podría indicar problemas de mantenimiento que requieren atención.
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-secondary" id="reset-all-btn">
+                <span class="btn-icon">↻</span>
+                Restablecer simulación
+            </button>
+            <button class="btn btn-secondary" id="print-plan-btn">
+                <span class="btn-icon">🖨️</span>
+                Plan de ahorro de impresión
+            </button>
+            <button class="btn btn-primary" id="view-results-btn">
+                <span class="btn-icon">📊</span>
+                Ver resultados completos
+            </button>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="results-panel" id="results-panel">
+            <div class="results-header">
+                <h2 class="results-title">Dominio de la eficiencia del combustible</h2>
+                <div class="score-display" id="final-score">0%</div>
+            </div>
+            
+            <div class="safety-insights">
+                <h3 class="insights-title">
+                    <span>🌱</span> Ambiental & Impacto económico
+                </h3>
+                <ul class="insights-list">
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Reducción de la Huella de Carbono:</strong> Mejorar la economía de combustible de 25 MPG a 35 MPG reduce las emisiones de CO₂ en aproximadamente 2,5 toneladas al año para el conductor promedio. Esto equivale a plantar 60 árboles cada año.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Impacto Nacional:</strong> Si todos los conductores estadounidenses mejoraran la eficiencia del combustible en sólo 5 MPG, se ahorrarían más de 20 mil millones de galones de gasolina al año, lo que reduciría las importaciones de petróleo en un 15% y ahorraría a los consumidores 60 mil millones de dólares cada año.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Longevidad del vehículo:</strong> Los hábitos de conducción eficientes en el consumo de combustible también prolongan la vida útil del vehículo. La aceleración y el frenado suaves reducen el desgaste de los frenos, los neumáticos y los componentes del motor, lo que potencialmente añade años a la vida útil de su vehículo.</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="safety-insights" style="margin-top: 20px;">
+                <h3 class="insights-title">
+                    <span>🚀</span> Técnicas Avanzadas de Eficiencia
+                </h3>
+                <ul class="insights-list">
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Técnica de pulso y deslizamiento:</strong> En carreteras con terreno suave, acelerar brevemente y luego conducir en punto muerto puede mejorar la economía de combustible entre un 5% y un 10%. Los híbridos modernos utilizan esta técnica de forma automática mediante sistemas de frenado regenerativo.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Optimización aerodinámica:</strong> A velocidades de autopista, más del 50% de la potencia del motor se destina a superar la resistencia del aire. Quitar las bacas cuando no están en uso y mantener las ventanas cerradas a más de 45 MPH puede mejorar la economía de combustible entre un 5% y un 10%.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Integración de tecnología:</strong> Utilice aplicaciones de teléfonos inteligentes como Waze o Google Maps con datos de tráfico en tiempo real para evitar congestiones. Muchos vehículos modernos tienen modos Eco que optimizan el rendimiento para ahorrar combustible; utilícelos constantemente.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // State Management
+            const state = {
+                activities: {
+                    1: { completed: false, correct: 0, total: 6, score: 0, actions: [] },
+                    2: { completed: false, correct: 0, total: 3, score: 0, answers: {} },
+                    3: { completed: false, correct: 0, total: 1, score: 0 }
+                },
+                startedAt: new Date(),
+                timeSpent: 0,
+                currentMPG: 32.5,
+                currentCostPerMile: 0.15,
+                fuelPrice: 3.50
+            };
+
+            // Correct answers for Activity 2
+            const correctAnswers = {
+                1: 'A',
+                2: 'A',
+                3: 'D'
+            };
+
+            // DOM Elements
+            const progressSteps = document.querySelectorAll('.progress-step');
+            const activityCards = document.querySelectorAll('.activity-card');
+            const resetBtn = document.getElementById('reset-all-btn');
+            const printBtn = document.getElementById('print-plan-btn');
+            const resultsBtn = document.getElementById('view-results-btn');
+            const resultsPanel = document.getElementById('results-panel');
+            const finalScore = document.getElementById('final-score');
+
+            // Timer
+            function updateTimer() {
+                const now = new Date();
+                const diff = Math.floor((now - state.startedAt) / 1000);
+                state.timeSpent = diff;
+            }
+
+            setInterval(updateTimer, 1000);
+
+            // Update Progress
+            function updateProgress() {
+                let completed = 0;
+                
+                Object.values(state.activities).forEach(activity => {
+                    if (activity.completed) completed++;
+                });
+
+                progressSteps.forEach((step, index) => {
+                    if (index < completed) {
+                        step.classList.add('completed');
+                        step.classList.remove('active');
+                    } else if (index === completed) {
+                        step.classList.add('active');
+                        step.classList.remove('completed');
+                    } else {
+                        step.classList.remove('active', 'completed');
+                    }
+                });
+            }
+
+            // Activity 1: Smart Driving Simulation
+            function initActivity1() {
+                const drivingControls = document.querySelectorAll('#controles-de-conduccion .control-btn');
+                const feedback = document.getElementById('feedback-1');
+                const status = document.querySelector('#actividad-1 .estado-actividad');
+                const simCar = document.getElementById('sim-car');
+                const speedDisplay = document.getElementById('speed-display');
+                const mpgReading = document.getElementById('mpg-reading');
+                const costReading = document.getElementById('cost-reading');
+                const fuelLevel = document.getElementById('fuel-level');
+                const costLevel = document.getElementById('cost-level');
+                const efficientMPG = document.getElementById('efficient-mpg');
+                const efficientCost = document.getElementById('efficient-cost');
+                const aggressiveMPG = document.getElementById('aggressive-mpg');
+                const aggressiveCost = document.getElementById('aggressive-cost');
+
+                let currentSpeed = 55;
+                let actionsTaken = 0;
+
+                // MPG impact for different actions
+                const actionImpacts = {
+                    'smooth-accel': { mpg: 2.5, cost: -0.02, speed: 3 },
+                    'hard-accel': { mpg: -4.0, cost: 0.03, speed: 8 },
+                    'coast': { mpg: 3.0, cost: -0.025, speed: -10 },
+                    'hard-brake': { mpg: -3.5, cost: 0.025, speed: -20 },
+                    'cruise-control': { mpg: 1.5, cost: -0.01, speed: 0 },
+                    'speed-up': { mpg: -6.0, cost: 0.045, speed: 20 }
+                };
+
+                // Update displays
+                function updateDisplays() {
+                    // Update MPG and cost readings
+                    mpgReading.textContent = state.currentMPG.toFixed(1);
+                    costReading.textContent = `$${state.currentCostPerMile.toFixed(2)}`;
+                    
+                    // Update gauge visuals (normalize to 0-100%)
+                    const mpgPercentage = Math.min(100, (state.currentMPG / 50) * 100);
+                    const costPercentage = Math.min(100, (0.50 - state.currentCostPerMile) / 0.40 * 100);
+                    
+                    fuelLevel.style.width = `${mpgPercentage}%`;
+                    costLevel.style.width = `${costPercentage}%`;
+                    
+                    // Update speed display and car position
+                    speedDisplay.textContent = `${currentSpeed} MPH`;
+                    const carPosition = 50 + (currentSpeed - 55) * 0.5;
+                    simCar.style.left = `${carPosition}px`;
+                    
+                    // Update comparison stats
+                    efficientMPG.textContent = (state.currentMPG + 3).toFixed(1);
+                    efficientCost.textContent = `$${(state.currentCostPerMile - 0.05).toFixed(2)}`;
+                    aggressiveMPG.textContent = (state.currentMPG - 8).toFixed(1);
+                    aggressiveCost.textContent = `$${(state.currentCostPerMile + 0.04).toFixed(2)}`;
+                }
+
+                // Handle control button clicks
+                drivingControls.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const action = this.dataset.action;
+                        const impact = actionImpacts[action];
+                        
+                        // Remove active class from all buttons
+                        drivingControls.forEach(b => b.classList.remove('active', 'incorrect'));
+                        
+                        // Mark this button
+                        this.classList.add('active');
+                        
+                        // Apply impact
+                        state.currentMPG += impact.mpg;
+                        state.currentCostPerMile += impact.cost;
+                        currentSpeed += impact.speed;
+                        
+                        // Ensure values stay in reasonable ranges
+                        state.currentMPG = Math.max(10, Math.min(50, state.currentMPG));
+                        state.currentCostPerMile = Math.max(0.08, Math.min(0.50, state.currentCostPerMile));
+                        currentSpeed = Math.max(20, Math.min(90, currentSpeed));
+                        
+                        // Update displays
+                        updateDisplays();
+                        
+                        // Store action
+                        if (!state.activities[1].actions.includes(action)) {
+                            state.activities[1].actions.push(action);
+                            actionsTaken++;
+                        }
+                        
+                        // Check if completed
+                        if (actionsTaken >= 4 && !state.activities[1].completed) {
+                            // Calculate score based on efficient actions
+                            const efficientActions = ['smooth-accel', 'coast', 'cruise-control'];
+                            const efficientCount = state.activities[1].actions.filter(a => 
+                                efficientActions.includes(a)).length;
+                            
+                            state.activities[1].correct = efficientCount;
+                            state.activities[1].completed = true;
+                            state.activities[1].score = Math.round((efficientCount / 3) * 100);
+                            
+                            status.textContent = 'Completed';
+                            document.querySelector('#activity-1').classList.add('completed');
+                            feedback.classList.add('show');
+                            
+                            updateProgress();
+                        }
+                    });
+                });
+
+                // Initialize displays
+                updateDisplays();
+            }
+
+            // Activity 2: Vehicle Maintenance Quiz
+            function initActivity2() {
+                const quizOptions = document.querySelectorAll('#actividad-2 .opción-cuestionario');
+                const feedback = document.getElementById('feedback-2');
+                const status = document.querySelector('#actividad-2 .estado-actividad');
+                
+                let answeredQuestions = 0;
+
+                quizOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const question = this.dataset.question;
+                        const selectedOption = this.dataset.option;
+                        
+                        // Remove selected class from all options for this question
+                        const allOptionsForQuestion = document.querySelectorAll(`[data-question="${question}"]`);
+                        allOptionsForQuestion.forEach(opt => {
+                            opt.classList.remove('selected', 'correct', 'incorrect');
+                        });
+                        
+                        // Add selected class to clicked option
+                        this.classList.add('selected');
+                        
+                        // Check answer
+                        const isCorrect = selectedOption === correctAnswers[question];
+                        
+                        if (isCorrect) {
+                            this.classList.add('correct');
+                            state.activities[2].correct++;
+                        } else {
+                            this.classList.add('incorrect');
+                            
+                            // Highlight correct answer
+                            const correctOption = document.querySelector(`[data-question="${question}"][data-option="${correctAnswers[question]}"]`);
+                            correctOption.classList.add('correct');
+                        }
+                        
+                        // Store the answer
+                        state.activities[2].answers[question] = selectedOption;
+                        
+                        // Check if all questions are answered
+                        answeredQuestions = Object.keys(state.activities[2].answers).length;
+                        if (answeredQuestions === 3 && !state.activities[2].completed) {
+                            state.activities[2].completed = true;
+                            state.activities[2].score = Math.round((state.activities[2].correct / 3) * 100);
+                            
+                            status.textContent = 'Completed';
+                            document.querySelector('#activity-2').classList.add('completed');
+                            feedback.classList.add('show');
+                            
+                            updateProgress();
+                        }
+                    });
+                });
+            }
+
+            // Activity 3: Savings Calculator
+            function initActivity3() {
+                const calculateBtn = document.getElementById('calculate-savings');
+                const resultsDiv = document.getElementById('calculator-results');
+                const feedback = document.getElementById('feedback-3');
+                const status = document.querySelector('#actividad-3 .estado-actividad');
+                
+                // Input elements
+                const annualMilesInput = document.getElementById('annual-miles');
+                const currentMpgInput = document.getElementById('current-mpg');
+                const fuelPriceInput = document.getElementById('fuel-price');
+                const improvementGoalSelect = document.getElementById('improvement-goal');
+                
+                // Result elements
+                const currentCostEl = document.getElementById('current-cost');
+                const improvedCostEl = document.getElementById('improved-cost');
+                const annualSavingsEl = document.getElementById('annual-savings');
+                const monthlySavingsEl = document.getElementById('monthly-savings');
+                const fiveYearSavingsEl = document.getElementById('five-year-savings');
+
+                function calculateSavings() {
+                    // Get input values
+                    const annualMiles = parseFloat(annualMilesInput.value);
+                    const currentMPG = parseFloat(currentMpgInput.value);
+                    const fuelPrice = parseFloat(fuelPriceInput.value);
+                    const improvementGoal = parseFloat(improvementGoalSelect.value) / 100;
+                    
+                    // Calculate current costs
+                    const currentGallons = annualMiles / currentMPG;
+                    const currentCost = currentGallons * fuelPrice;
+                    
+                    // Calculate improved costs
+                    const improvedMPG = currentMPG * (1 + improvementGoal);
+                    const improvedGallons = annualMiles / improvedMPG;
+                    const improvedCost = improvedGallons * fuelPrice;
+                    
+                    // Calculate savings
+                    const annualSavings = currentCost - improvedCost;
+                    const monthlySavings = annualSavings / 12;
+                    const fiveYearSavings = annualSavings * 5;
+                    
+                    // Update display with formatting
+                    currentCostEl.textContent = `$${currentCost.toFixed(2)}`;
+                    improvedCostEl.textContent = `$${improvedCost.toFixed(2)}`;
+                    annualSavingsEl.textContent = `$${annualSavings.toFixed(2)}`;
+                    monthlySavingsEl.textContent = `$${monthlySavings.toFixed(2)}`;
+                    fiveYearSavingsEl.textContent = `$${fiveYearSavings.toFixed(2)}`;
+                    
+                    // Show results
+                    resultsDiv.classList.add('show');
+                    
+                    // Mark activity as completed
+                    if (!state.activities[3].completed) {
+                        state.activities[3].completed = true;
+                        state.activities[3].correct = 1;
+                        state.activities[3].score = 100;
+                        
+                        status.textContent = 'Completed';
+                        document.querySelector('#activity-3').classList.add('completed');
+                        feedback.classList.add('show');
+                        
+                        updateProgress();
+                        
+                        // Show money animation
+                        showMoneyAnimation(annualSavings);
+                    }
+                }
+
+                // Money animation function
+                function showMoneyAnimation(savings) {
+                    const animationContainer = document.querySelector('.page');
+                    const moneyCount = Math.min(20, Math.floor(savings / 50));
+                    
+                    for (let i = 0; i < moneyCount; i++) {
+                        const money = document.createElement('div');
+                        money.className = 'money-float';
+                        money.textContent = '💰';
+                        money.style.left = `${Math.random() * 80 + 10}%`;
+                        money.style.top = '50%';
+                        money.style.fontSize = `${Math.random() * 20 + 20}px`;
+                        
+                        animationContainer.appendChild(money);
+                        
+                        // Remove after animation completes
+                        setTimeout(() => {
+                            money.remove();
+                        }, 1000);
+                    }
+                }
+
+                // Event listener for calculate button
+                calculateBtn.addEventListener('click', calculateSavings);
+                
+                // Also calculate when inputs change
+                [annualMilesInput, currentMpgInput, fuelPriceInput, improvementGoalSelect].forEach(input => {
+                    input.addEventListener('change', function() {
+                        if (state.activities[3].completed) {
+                            calculateSavings();
+                        }
+                    });
+                });
+                
+                // Initial calculation
+                calculateSavings();
+            }
+
+            // Reset Simulation
+            function resetSimulation() {
+                // Reset state
+                state.activities = {
+                    1: { completed: false, correct: 0, total: 6, score: 0, actions: [] },
+                    2: { completed: false, correct: 0, total: 3, score: 0, answers: {} },
+                    3: { completed: false, correct: 0, total: 1, score: 0 }
+                };
+                
+                state.currentMPG = 32.5;
+                state.currentCostPerMile = 0.15;
+                state.fuelPrice = 3.50;
+                
+                // Reset UI
+                activityCards.forEach(card => {
+                    card.classList.remove('completed');
+                    const status = card.querySelector('.activity-status');
+                    status.textContent = 'No iniciado';
+                    status.style.color = '';
+                    const feedback = card.querySelector('.feedback-container');
+                    feedback.classList.remove('show');
+                });
+                
+                // Reset Activity 1 controls
+                document.querySelectorAll('#controles-de-conduccion .control-btn').forEach(btn => {
+                    btn.classList.remove('active', 'incorrect');
+                });
+                
+                // Reset Activity 2 quiz
+                document.querySelectorAll('#actividad-2 .opción-cuestionario').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                // Reset Activity 3 calculator
+                document.getElementById('calculator-results').classList.remove('show');
+                
+                // Reset Activity 1 displays
+                const simCar = document.getElementById('sim-car');
+                if (simCar) simCar.style.left = '50px';
+                
+                // Reset results
+                resultsPanel.classList.remove('show');
+                
+                // Reset timer
+                state.startedAt = new Date();
+                state.timeSpent = 0;
+                
+                // Re-initialize Activity 1 displays
+                initActivity1();
+                
+                // Update progress
+                updateProgress();
+            }
+
+            // Print Savings Plan
+            function printSavingsPlan() {
+                const planContent = `
+                    Clínica de conducción de VA: plan de ahorro de eficiencia de combustible
+                    ==================================================
+                    
+                    Su estrategia personalizada de ahorro de combustible:
+                    
+                    1. Acciones Inmediatas (Esta Semana):
+                       - Verificar y ajustar la presión de los neumáticos según las especificaciones del fabricante.
+                       - Eliminar peso innecesario del vehículo.
+                       - Practica una aceleración suave desde las paradas.
+                       - Utilice el control de crucero en carreteras por carretera.
+                    
+                    2. Acciones a Corto Plazo (Próximos 30 Días):
+                       - Programar mantenimiento: filtro de aire, cambio de aceite.
+                       - Planificar viajes de manera eficiente para combinar recados.
+                       - Evite el ralentí durante más de 30 segundos.
+                       - Utilice el aire acondicionado con prudencia (ventanas por debajo de 45 MPH)
+                    
+                    3. Hábitos a largo plazo:
+                       - Mantenimiento regular según cronograma
+                       - Monitorear la economía de combustible mensualmente.
+                       - Considere la eficiencia del combustible para la próxima compra de vehículos.
+                       - Continuar practicando técnicas de conducción suave.
+                    
+                    Ahorros anuales estimados: $${document.getElementById('annual-savings').textContent}
+                    Ahorros mensuales: $${document.getElementById('monthly-savings').textContent}
+                    
+                    Recuerde: ¡Los pequeños cambios suman ahorros significativos!
+                `;
+                
+                showMobileToast("Tu plan de ahorro ha sido generado. Para imprimir: 1. Copie el texto a continuación 2. Péguelo en un documento 3. Imprima desde allí  " + planContent);
+            }
+
+            // View Results
+            function viewResults() {
+                let totalScore = 0;
+                let maxScore = 0;
+                
+                Object.values(state.activities).forEach(activity => {
+                    if (activity.completed) {
+                        totalScore += activity.score;
+                        maxScore += 100;
+                    }
+                });
+                
+                const averageScore = maxScore > 0 ? Math.round(totalScore / (maxScore / 100)) : 0;
+                finalScore.textContent = `${averageScore}%`;
+                
+                resultsPanel.classList.add('show');
+                resultsPanel.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Initialize all activities
+            initActivity1();
+            initActivity2();
+            initActivity3();
+
+            // Event listeners
+            resetBtn.addEventListener('click', resetSimulation);
+            printBtn.addEventListener('click', printSavingsPlan);
+            resultsBtn.addEventListener('click', viewResults);
+
+            // Initial update
+            updateTimer();
+            updateProgress();
+        });
+    </script>
+
+<script>
+/* ===== MOBILE TOAST NOTIFICATION (replaces alert) ===== */
+function showMobileToast(msg) {
+  var t = document.getElementById('_va_toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = '_va_toast';
+    t.style.cssText = [
+      'position:fixed','bottom:24px','left:50%','transform:translateX(-50%)',
+      'background:rgba(30,30,30,0.92)','color:#fff','relleno: 12px 22px',
+      'border-radius:24px','z-index:99999','font-weight:600',
+      'font-size:0.95rem','max-width:85vw','text-align:center',
+      'sombra de cuadro: 0 4px 16px rgba (0,0,0,0.3)',
+      'transición:opacidad 0,35s','opacity:0','pointer-events:none'
+    ].join(';');
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._to);
+  t._to = setTimeout(function(){ t.style.opacity='0'; }, 3200);
+}
+</script>
+
+
+<!-- Touch controls for mobile (hidden on desktop) -->
+<div id="_va_touch_ctrl" style="display:none;gap:12px;margin:10px 0;">
+  <button id="_va_left_btn" style="flex:1;padding:18px 0;font-size:1.8rem;background:rgba(220,38,38,0.12);
+           border:2px solid rgba(220,38,38,0.3);border-radius:12px;cursor:pointer;
+           touch-action:manipulation;user-select:none;-webkit-user-select:none;">&#9664;</button>
+  <button id="_va_right_btn" style="flex:1;padding:18px 0;font-size:1.8rem;background:rgba(220,38,38,0.12);
+           border:2px solid rgba(220,38,38,0.3);border-radius:12px;cursor:pointer;
+           touch-action:manipulation;user-select:none;-webkit-user-select:none;">&#9654;</button>
+</div>
+<script>
+(function(){
+  if (!('ontouchstart' in window)) return;
+  var ctrl = document.getElementById('_va_touch_ctrl');
+  if (ctrl) ctrl.style.display = 'flex';
+  function tap(key){
+    if (typeof handleKeyPress === 'function') handleKeyPress({key: key});
+  }
+  var L = document.getElementById('_va_left_btn');
+  var R = document.getElementById('_va_right_btn');
+  if (L) {
+    L.addEventListener('touchstart', function(e){ e.preventDefault(); tap('ArrowLeft'); }, {passive:false});
+    L.addEventListener('touchend',   function(e){ e.preventDefault(); }, {passive:false});
+  }
+  if (R) {
+    R.addEventListener('touchstart', function(e){ e.preventDefault(); tap('ArrowRight'); }, {passive:false});
+    R.addEventListener('touchend',   function(e){ e.preventDefault(); }, {passive:false});
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1962 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Plataforma de aprendizaje de dominio HIPAA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #af4bef;
+            --color-primary-light: #d492ff;
+            --color-accent: #8380f0;
+            --color-success: #00b894;
+            --color-warning: #fdcb6e;
+            --color-error: #e17055;
+            --color-bg-light: #f7f5fb;
+            --color-bg-gradient: linear-gradient(to bottom, white, #f1ecff, #f7f5fb);
+            --color-text: #333333;
+            --color-muted: #666666;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(175, 75, 239, 0.1);
+            --shadow-hover: 0 15px 35px rgba(175, 75, 239, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-bg-gradient);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes flip {
+            0% { transform: rotateY(0); }
+            100% { transform: rotateY(180deg); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .platform-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .user-stats {
+            display: flex;
+            gap: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Learning Navigation */
+        .learning-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid rgba(175, 75, 239, 0.1);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            color: var(--color-text);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        /* Content Panels */
+        .content-panel {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-panel.active {
+            display: block;
+        }
+
+        /* Topic Cards Panel */
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .topic-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 2px solid rgba(175, 75, 239, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--color-primary);
+        }
+
+        .topic-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .topic-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .topic-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-primary);
+        }
+
+        .topic-description {
+            color: var(--color-text);
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+
+        .learning-objectives {
+            background: rgba(175, 75, 239, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .objectives-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .objectives-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .objectives-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .objectives-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        .activity-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .activity-btn {
+            padding: 10px 20px;
+            background: rgba(175, 75, 239, 0.1);
+            border: 2px solid rgba(175, 75, 239, 0.2);
+            border-radius: var(--radius-sm);
+            color: var(--color-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .activity-btn:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Flash Cards Panel */
+        .flashcards-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .flashcard-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .flashcard-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+
+        .flashcard-subtitle {
+            color: var(--color-muted);
+            font-size: 1.1rem;
+        }
+
+        .flashcard-area {
+            perspective: 1000px;
+            margin-bottom: 40px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            color: white;
+        }
+
+        .flashcard-back {
+            background: white;
+            color: var(--color-text);
+            transform: rotateY(180deg);
+            border: 2px solid rgba(175, 75, 239, 0.1);
+        }
+
+        .term {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .hint {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
+
+        .definition {
+            font-size: 1.4rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .example {
+            background: rgba(175, 75, 239, 0.05);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            margin-top: 20px;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .example-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            padding: 12px 30px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #8c3ac7;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-indicator {
+            font-size: 1rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .mastery-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 184, 148, 0.1);
+            color: var(--color-success);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        /* Simulations Panel */
+        .simulations-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .simulation-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .simulation-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+
+        .simulation-scenario {
+            background: linear-gradient(135deg, rgba(175, 75, 239, 0.05), rgba(131, 128, 240, 0.05));
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 2px dashed rgba(175, 75, 239, 0.3);
+        }
+
+        .scenario-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .scenario-text {
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .decision-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .decision-card {
+            background: white;
+            border: 2px solid rgba(175, 75, 239, 0.2);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .decision-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .decision-card.selected {
+            border-color: var(--color-success);
+            background: rgba(0, 184, 148, 0.05);
+        }
+
+        .decision-card.incorrect {
+            border-color: var(--color-error);
+            background: rgba(225, 112, 85, 0.05);
+        }
+
+        .decision-text {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .decision-explanation {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            display: none;
+        }
+
+        .decision-card.selected .decision-explanation,
+        .decision-card.incorrect .decision-explanation {
+            display: block;
+        }
+
+        .feedback-panel {
+            background: rgba(175, 75, 239, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 4px solid var(--color-primary);
+            display: none;
+        }
+
+        .feedback-panel.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feedback-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-content {
+            line-height: 1.7;
+        }
+
+        /* Interactive Exercises Panel */
+        .exercises-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        .exercise-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 2px solid rgba(175, 75, 239, 0.1);
+        }
+
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .exercise-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--color-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .exercise-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+        }
+
+        .matching-game {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .matching-item {
+            padding: 15px;
+            background: rgba(175, 75, 239, 0.05);
+            border: 2px solid rgba(175, 75, 239, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: move;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .matching-item.dragging {
+            opacity: 0.5;
+        }
+
+        .matching-item.matched {
+            background: rgba(0, 184, 148, 0.1);
+            border-color: var(--color-success);
+            color: var(--color-success);
+        }
+
+        .fill-blank {
+            background: rgba(175, 75, 239, 0.05);
+            padding: 25px;
+            border-radius: var(--radius-md);
+            margin: 20px 0;
+        }
+
+        .sentence {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .blank {
+            display: inline-block;
+            width: 200px;
+            height: 40px;
+            border-bottom: 2px dashed var(--color-primary);
+            margin: 0 10px;
+            vertical-align: middle;
+            position: relative;
+        }
+
+        .blank.filled {
+            border-bottom: 2px solid var(--color-success);
+        }
+
+        .word-bank {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .word-option {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid rgba(175, 75, 239, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: move;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .word-option:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        /* Progress Tracking */
+        .progress-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .progress-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+        }
+
+        .mastery-levels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .mastery-card {
+            background: rgba(175, 75, 239, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 2px solid rgba(175, 75, 239, 0.1);
+        }
+
+        .mastery-card.completed {
+            background: rgba(0, 184, 148, 0.1);
+            border-color: var(--color-success);
+        }
+
+        .mastery-topic {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+
+        .mastery-progress {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+
+        .mastery-card.completed .mastery-progress {
+            color: var(--color-success);
+        }
+
+        .mastery-label {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .user-stats {
+                justify-content: space-around;
+            }
+
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .exercises-container {
+                grid-template-columns: 1fr;
+            }
+
+            .flashcard {
+                height: 300px;
+            }
+
+            .term {
+                font-size: 1.8rem;
+            }
+
+            .definition {
+                font-size: 1.2rem;
+            }
+
+            .matching-game {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <div class="platform-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="brand-section">
+                <img src="https://cdn.prod.website-files.com/64d0ccc1558d601cbfb09021/64e9d2f719b1e5258e5d57f5_IMG_1512-p-500.png" alt="Logotipo de la marca" class="brand-logo">
+                <div>
+                    <h1 style="color: var(--color-primary); font-size: 1.8rem; margin-bottom: 5px;">Plataforma de dominio HIPAA</h1>
+                    <div style="color: var(--color-muted);">Aprendizaje Integral & Entorno de simulación</div>
+                </div>
+            </div>
+            
+            <div class="user-stats">
+                <div class="stat-item">
+                    <span class="stat-value" id="mastery-score">0%</span>
+                    <span class="stat-label">Puntuación de dominio</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="cards-mastered">0</span>
+                    <span class="stat-label">Tarjetas dominadas</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="sims-completed">0</span>
+                    <span class="stat-label">Simulaciones</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Navigation -->
+        <div class="learning-nav">
+            <div class="nav-tab active" data-tab="topics">📚 Temas de aprendizaje</div>
+            <div class="nav-tab" data-tab="flashcards">🎴 Tarjetas didácticas</div>
+            <div class="nav-tab" data-tab="simulations">🎮 Simulaciones</div>
+            <div class="nav-tab" data-tab="exercises">🧩 Ejercicios interactivos</div>
+            <div class="nav-tab" data-tab="progress">📊 Mi progreso</div>
+        </div>
+
+        <!-- Learning Topics Panel -->
+        <div class="content-panel active" id="topics-panel">
+            <div class="topics-grid">
+                <!-- Topic 1: Compliance & HIPAA Basics -->
+                <div class="topic-card">
+                    <div class="topic-header">
+                        <div class="topic-icon">⚖️</div>
+                        <div class="topic-title">Cumplimiento & Fundamentos de HIPAA</div>
+                    </div>
+                    <div class="topic-description">
+                        Domine los fundamentos del cumplimiento de la atención médica, comprenda la estructura de HIPAA y conozca los marcos regulatorios clave.
+                    </div>
+                    <div class="learning-objectives">
+                        <div class="objectives-title">🎯 Objetivos de aprendizaje</div>
+                        <ul class="objectives-list">
+                            <li>Definir el cumplimiento de la atención sanitaria</li>
+                            <li>Nombre las dos disposiciones principales de HIPAA</li>
+                            <li>Distinguir el Título I del Título II</li>
+                            <li>Identificar las funciones clave de HIPAA</li>
+                        </ul>
+                    </div>
+                    <div class="activity-buttons">
+                        <button class="activity-btn" onclick="startFlashcards(&#x27;compliance&#x27;)">Tarjetas didácticas</button>
+                        <button class="activity-btn" onclick="startSimulation(&#x27;compliance&#x27;)">Simulación</button>
+                        <button class="activity-btn" onclick="startExercise(&#x27;compliance&#x27;)">Ejercicio</button>
+                    </div>
+                </div>
+
+                <!-- Topic 2: Privacy Rule & PHI -->
+                <div class="topic-card">
+                    <div class="topic-header">
+                        <div class="topic-icon">🔒</div>
+                        <div class="topic-title">Regla de privacidad & Gestión de PHI</div>
+                    </div>
+                    <div class="topic-description">
+                        Aprenda a identificar, proteger y manejar adecuadamente la información médica protegida (PHI) de acuerdo con los requisitos de la regla de privacidad HIPAA.
+                    </div>
+                    <div class="learning-objectives">
+                        <div class="objectives-title">🎯 Objetivos de aprendizaje</div>
+                        <ul class="objectives-list">
+                            <li>Definir PHI y sus componentes</li>
+                            <li>Comprender el uso frente a la divulgación</li>
+                            <li>Aplicar regla mínima necesaria</li>
+                            <li>Manejar las solicitudes de privacidad del paciente</li>
+                        </ul>
+                    </div>
+                    <div class="activity-buttons">
+                        <button class="activity-btn" onclick="startFlashcards(&#x27;privacy&#x27;)">Tarjetas didácticas</button>
+                        <button class="activity-btn" onclick="startSimulation(&#x27;privacy&#x27;)">Simulación</button>
+                        <button class="activity-btn" onclick="startExercise(&#x27;privacy&#x27;)">Ejercicio</button>
+                    </div>
+                </div>
+
+                <!-- Topic 3: Security Safeguards -->
+                <div class="topic-card">
+                    <div class="topic-header">
+                        <div class="topic-icon">🛡️</div>
+                        <div class="topic-title">Regla de seguridad & Salvaguardias</div>
+                    </div>
+                    <div class="topic-description">
+                        Implementar las tres categorías de medidas de seguridad para proteger la PHI electrónica en entornos de atención médica.
+                    </div>
+                    <div class="learning-objectives">
+                        <div class="objectives-title">🎯 Objetivos de aprendizaje</div>
+                        <ul class="objectives-list">
+                            <li>Enumere tres categorías de salvaguardas</li>
+                            <li>Aplicar salvaguardias técnicas</li>
+                            <li>Implementar controles administrativos</li>
+                            <li>Establecer medidas de seguridad física.</li>
+                        </ul>
+                    </div>
+                    <div class="activity-buttons">
+                        <button class="activity-btn" onclick="startFlashcards(&#x27;security&#x27;)">Tarjetas didácticas</button>
+                        <button class="activity-btn" onclick="startSimulation(&#x27;security&#x27;)">Simulación</button>
+                        <button class="activity-btn" onclick="startExercise(&#x27;security&#x27;)">Ejercicio</button>
+                    </div>
+                </div>
+
+                <!-- Topic 4: Fraud vs Abuse -->
+                <div class="topic-card">
+                    <div class="topic-header">
+                        <div class="topic-icon">🚨</div>
+                        <div class="topic-title">Detección de fraude & Prevención</div>
+                    </div>
+                    <div class="topic-description">
+                        Identifique, prevenga y denuncie fraudes y abusos en la atención médica mientras comprende las consecuencias legales y los programas de cumplimiento.
+                    </div>
+                    <div class="learning-objectives">
+                        <div class="objectives-title">🎯 Objetivos de aprendizaje</div>
+                        <ul class="objectives-list">
+                            <li>Distinguir el fraude del abuso</li>
+                            <li>Identificar señales de alerta</li>
+                            <li>Comprender los programas de auditoría</li>
+                            <li>Implementar programas de cumplimiento</li>
+                        </ul>
+                    </div>
+                    <div class="activity-buttons">
+                        <button class="activity-btn" onclick="startFlashcards(&#x27;fraud&#x27;)">Tarjetas didácticas</button>
+                        <button class="activity-btn" onclick="startSimulation(&#x27;fraud&#x27;)">Simulación</button>
+                        <button class="activity-btn" onclick="startExercise(&#x27;fraud&#x27;)">Ejercicio</button>
+                    </div>
+                </div>
+
+                <!-- Topic 5: HITECH & Enforcement -->
+                <div class="topic-card">
+                    <div class="topic-header">
+                        <div class="topic-icon">⚡</div>
+                        <div class="topic-title">DE ALTA TECNOLOGÍA & Aplicación</div>
+                    </div>
+                    <div class="topic-description">
+                        Comprenda las mejoras de la Ley HITECH, las actualizaciones de la Regla Ómnibus y las consecuencias del incumplimiento en la atención médica.
+                    </div>
+                    <div class="learning-objectives">
+                        <div class="objectives-title">🎯 Objetivos de aprendizaje</div>
+                        <ul class="objectives-list">
+                            <li>Explicar las disposiciones de HITECH.</li>
+                            <li>Comprender la regla general</li>
+                            <li>Conocer las estructuras de penalización.</li>
+                            <li>Implementar protocolos de incumplimiento</li>
+                        </ul>
+                    </div>
+                    <div class="activity-buttons">
+                        <button class="activity-btn" onclick="startFlashcards(&#x27;enforcement&#x27;)">Tarjetas didácticas</button>
+                        <button class="activity-btn" onclick="startSimulation(&#x27;enforcement&#x27;)">Simulación</button>
+                        <button class="activity-btn" onclick="startExercise(&#x27;enforcement&#x27;)">Ejercicio</button>
+                    </div>
+                </div>
+
+                <!-- Topic 6: Practical Application -->
+                <div class="topic-card">
+                    <div class="topic-header">
+                        <div class="topic-icon">🏥</div>
+                        <div class="topic-title">Implementación de la práctica</div>
+                    </div>
+                    <div class="topic-description">
+                        Aplique los conceptos de HIPAA en entornos sanitarios reales a través de estudios de casos completos y escenarios prácticos.
+                    </div>
+                    <div class="learning-objectives">
+                        <div class="objectives-title">🎯 Objetivos de aprendizaje</div>
+                        <ul class="objectives-list">
+                            <li>Desarrollar políticas de cumplimiento</li>
+                            <li>Realizar evaluaciones de riesgos</li>
+                            <li>Formar al personal sanitario</li>
+                            <li>Responder a las violaciones</li>
+                        </ul>
+                    </div>
+                    <div class="activity-buttons">
+                        <button class="activity-btn" onclick="startFlashcards(&#x27;practice&#x27;)">Tarjetas didácticas</button>
+                        <button class="activity-btn" onclick="startSimulation(&#x27;practice&#x27;)">Estudios de caso</button>
+                        <button class="activity-btn" onclick="startExercise(&#x27;practice&#x27;)">Juego de roles</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flash Cards Panel -->
+        <div class="content-panel" id="flashcards-panel">
+            <div class="flashcards-container">
+                <div class="flashcard-header">
+                    <div class="flashcard-title">Tarjetas didácticas de terminología HIPAA</div>
+                    <div class="flashcard-subtitle">Haga clic en la tarjeta para voltear | Estudia hasta lograr el dominio</div>
+                </div>
+                
+                <div class="flashcard-area">
+                    <div class="flashcard" id="flashcard" onclick="flipCard()">
+                        <div class="flashcard-front">
+                            <div>
+                                <div class="term" id="card-term">Cumplimiento</div>
+                                <div class="hint">Haga clic para revelar la definición</div>
+                            </div>
+                        </div>
+                        <div class="flashcard-back">
+                            <div>
+                                <div class="definition" id="card-definition">Cumplimiento de las leyes, regulaciones y pautas que rigen las operaciones de atención médica.</div>
+                                <div class="example">
+                                    <div class="example-title">Ejemplo:</div>
+                                    Un hospital que implementa políticas para garantizar la privacidad del paciente y prácticas de facturación precisas demuestra cumplimiento.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard-controls">
+                    <button class="nav-btn" id="prev-btn" onclick="prevCard()">← Anterior</button>
+                    
+                    <div class="progress-indicator">
+                        Tarjeta <span id="current-card">1</span> de <span id="total-cards">25</span>
+                        <span class="mastery-badge" id="mastery-badge">📚 Aprendizaje</span>
+                    </div>
+                    
+                    <button class="nav-btn" id="next-btn" onclick="nextCard()">Siguiente →</button>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="nav-btn" onclick="markMastered()" style="background: var(--color-success);">
+                        ✅ Marcar como dominado
+                    </button>
+                    <button class="nav-btn" onclick="shuffleCards()" style="background: var(--color-accent); margin-left: 10px;">
+                        🔀 barajar cartas
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulations Panel -->
+        <div class="content-panel" id="simulations-panel">
+            <div class="simulations-container">
+                <div class="simulation-header">
+                    <div class="simulation-title">Simulaciones de toma de decisiones HIPAA</div>
+                    <div class="flashcard-subtitle">Practique escenarios del mundo real y tome decisiones críticas de cumplimiento</div>
+                </div>
+
+                <!-- Simulation 1: PHI Disclosure -->
+                <div class="simulation-scenario" id="sim-1">
+                    <div class="scenario-title">🔍 Escenario 1: Solicitud de divulgación de PHI</div>
+                    <div class="scenario-text">
+                        Eres gerente de un consultorio médico. Un representante de ventas farmacéuticas visita su oficina y solicita una lista de pacientes diagnosticados con diabetes, alegando que quieren proporcionarles materiales educativos. Ofrecen suministros médicos gratuitos a cambio. ¿A qué te dedicas?
+                    </div>
+                    
+                    <div class="decision-points">
+                        <div class="decision-card" onclick="selectDecision(1, &#x27;A&#x27;)">
+                            <div class="decision-text">A. Proporcione la lista ya que es para fines educativos.</div>
+                            <div class="decision-explanation">❌ Viola HIPAA: la PHI no se puede divulgar para fines de comercialización sin autorización</div>
+                        </div>
+                        <div class="decision-card" onclick="selectDecision(1, &#x27;B&#x27;)">
+                            <div class="decision-text">B. Proporcionar información parcial sin nombres.</div>
+                            <div class="decision-explanation">⚠️ Aún viola HIPAA: la información demográfica por sí sola aún puede identificar a los pacientes</div>
+                        </div>
+                        <div class="decision-card" onclick="selectDecision(1, &#x27;C&#x27;)">
+                            <div class="decision-text">C. Rechazar cortésmente e informar la solicitud</div>
+                            <div class="decision-explanation">✅ Correcto: la PHI no se puede divulgar sin la autorización del paciente</div>
+                        </div>
+                        <div class="decision-card" onclick="selectDecision(1, &#x27;D&#x27;)">
+                            <div class="decision-text">D. Solicitar permiso a los pacientes individualmente</div>
+                            <div class="decision-explanation">⚠️ Requiere mucho tiempo e innecesario: se trata de una solicitud de marketing, no de un tratamiento.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation 2: Security Breach -->
+                <div class="simulation-scenario" style="display: none;" id="sim-2">
+                    <div class="scenario-title">💻 Escenario 2: Respuesta a violaciones de seguridad</div>
+                    <div class="scenario-text">
+                        Un empleado informa que le robaron de su automóvil su computadora portátil que contenía información no cifrada del paciente. La computadora portátil tenía contraseñas pero no tenía cifrado de disco completo. Se accedió potencialmente a aproximadamente 500 registros de pacientes. ¿Cuáles son sus acciones inmediatas?
+                    </div>
+                    
+                    <div class="decision-points">
+                        <div class="decision-card" onclick="selectDecision(2, &#x27;A&#x27;)">
+                            <div class="decision-text">R. Espere a ver si surge algún problema antes de tomar medidas.</div>
+                            <div class="decision-explanation">❌ Viola la regla de notificación de incumplimiento de HITECH: debe actuar dentro de los 60 días</div>
+                        </div>
+                        <div class="decision-card" onclick="selectDecision(2, &#x27;B&#x27;)">
+                            <div class="decision-text">B. Notificar inmediatamente a los pacientes afectados por teléfono</div>
+                            <div class="decision-explanation">⚠️ Poco práctico: necesita notificación por escrito y documentación adecuada</div>
+                        </div>
+                        <div class="decision-card" onclick="selectDecision(2, &#x27;C&#x27;)">
+                            <div class="decision-text">C. Seguir el protocolo de notificación de incumplimiento según la Ley HITECH</div>
+                            <div class="decision-explanation">✅ Correcto: incluye evaluación de riesgos, notificación y pasos de mitigación</div>
+                        </div>
+                        <div class="decision-card" onclick="selectDecision(2, &#x27;D&#x27;)">
+                            <div class="decision-text">D. Notificar únicamente si la información financiera estuvo comprometida</div>
+                            <div class="decision-explanation">❌ Todas las violaciones de PHI requieren notificación independientemente del contenido</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation 3: Fraud Detection -->
+                <div class="simulation-scenario" style="display: none;" id="sim-3">
+                    <div class="scenario-title">💰 Escenario 3: Irregularidades en la facturación</div>
+                    <div class="scenario-text">
+                        Al revisar los patrones de facturación, observa que un proveedor factura constantemente por sesiones complejas de psicoterapia de 60 minutos (CPT 90837), pero las citas de los pacientes están programadas para 30 minutos. El proveedor afirma que el tiempo extra es para la documentación. ¿Cómo procedes?
+                    </div>
+                    
+                    <div class="decision-points">
+                        <div class="decision-card" onclick="selectDecision(3, &#x27;A&#x27;)">
+                            <div class="decision-text">A. Acepte la explicación ya que la documentación es importante.</div>
+                            <div class="decision-explanation">⚠️ Podría tratarse de un abuso: la facturación debe coincidir con el tiempo real cara a cara</div>
+                        </div>
+                        <div class="decision-card" onclick="selectDecision(3, &#x27;B&#x27;)">
+                            <div class="decision-text">B. Informe al oficial de cumplimiento para su investigación</div>
+                            <div class="decision-explanation">✅ Correcto: una posible actualización/fraude requiere investigación</div>
+                        </div>
+                        <div class="decision-card" onclick="selectDecision(3, &#x27;C&#x27;)">
+                            <div class="decision-text">C. Confrontar al proveedor inmediatamente</div>
+                            <div class="decision-explanation">⚠️ Es mejor seguir primero los procedimientos de cumplimiento establecidos</div>
+                        </div>
+                        <div class="decision-card" onclick="selectDecision(3, &#x27;D&#x27;)">
+                            <div class="decision-text">D. Ignorar si los pacientes no se quejan</div>
+                            <div class="decision-explanation">❌ No investigar un posible fraude constituye en sí mismo un incumplimiento</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feedback-panel" id="feedback-panel">
+                    <div class="feedback-title">
+                        <span>📊</span> Comentarios de simulación
+                    </div>
+                    <div class="feedback-content" id="feedback-content">
+                        Su decisión ha sido registrada. Revise las explicaciones para comprender el enfoque de cumplimiento correcto.
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="nav-btn" onclick="prevSimulation()" id="prev-sim-btn" disabled>← Escenario anterior</button>
+                    <button class="nav-btn" onclick="nextSimulation()" id="next-sim-btn">Siguiente Escenario →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Exercises Panel -->
+        <div class="content-panel" id="exercises-panel">
+            <div class="exercises-container">
+                <!-- Exercise 1: Term Matching -->
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <div class="exercise-icon">🔤</div>
+                        <div class="exercise-title">Juego de correspondencia de términos</div>
+                    </div>
+                    <div style="color: var(--color-muted); margin-bottom: 20px;">Arrastre los términos para que coincidan con sus definiciones correctas</div>
+                    
+                    <div class="matching-game" id="matching-game">
+                        <!-- Terms will be populated by JavaScript -->
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="activity-btn" onclick="checkMatching()" style="background: var(--color-primary); color: white;">
+                            Comprobar coincidencias
+                        </button>
+                        <button class="activity-btn" onclick="resetMatching()" style="margin-left: 10px;">
+                            Reiniciar juego
+                        </button>
+                    </div>
+                    
+                    <div id="matching-feedback" style="margin-top: 15px; font-weight: 600;"></div>
+                </div>
+
+                <!-- Exercise 2: Fill in the Blanks -->
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <div class="exercise-icon">✍️</div>
+                        <div class="exercise-title">Complete los espacios en blanco</div>
+                    </div>
+                    <div style="color: var(--color-muted); margin-bottom: 20px;">Complete las declaraciones de cumplimiento arrastrando palabras a los espacios en blanco.</div>
+                    
+                    <div class="fill-blank">
+                        <div class="sentence">
+                            La HIPAA <span class="blank" data-answer="Privacy" id="blank1"></span> Norma establece normas para proteger 
+                            <span class="blank" data-answer="PHI" id="blank2"></span> (Información de Salud Protegida). 
+                            bajo el <span class="blank" data-answer="minimum" id="blank3"></span> regla necesaria, 
+                            sólo se debe divulgar la información necesaria para el propósito.
+                        </div>
+                        
+                        <div class="word-bank" id="word-bank">
+                            <!-- Word options will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="activity-btn" onclick="checkFillBlank()" style="background: var(--color-primary); color: white;">
+                            Verificar respuestas
+                        </button>
+                        <button class="activity-btn" onclick="resetFillBlank()" style="margin-left: 10px;">
+                            Reiniciar ejercicio
+                        </button>
+                    </div>
+                    
+                    <div id="fillblank-feedback" style="margin-top: 15px; font-weight: 600;"></div>
+                </div>
+
+                <!-- Exercise 3: Compliance Categories -->
+                <div class="exercise-card">
+                    <div class="exercise-header">
+                        <div class="exercise-icon">📋</div>
+                        <div class="exercise-title">Categorías de cumplimiento</div>
+                    </div>
+                    <div style="color: var(--color-muted); margin-bottom: 20px;">Clasifique los elementos en las categorías de cumplimiento correctas</div>
+                    
+                    <div style="margin: 20px 0;">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
+                            <div class="category-box" data-category="administrative" style="background: rgba(175, 75, 239, 0.1); padding: 15px; border-radius: var(--radius-sm); text-align: center; font-weight: 700; color: var(--color-primary);">
+                                Administrativo
+                            </div>
+                            <div class="category-box" data-category="physical" style="background: rgba(175, 75, 239, 0.1); padding: 15px; border-radius: var(--radius-sm); text-align: center; font-weight: 700; color: var(--color-primary);">
+                                Físico
+                            </div>
+                            <div class="category-box" data-category="technical" style="background: rgba(175, 75, 239, 0.1); padding: 15px; border-radius: var(--radius-sm); text-align: center; font-weight: 700; color: var(--color-primary);">
+                                Técnico
+                            </div>
+                        </div>
+                        
+                        <div id="sortable-items" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                            <!-- Sortable items will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="activity-btn" onclick="checkCategories()" style="background: var(--color-primary); color: white;">
+                            Clasificación de cheques
+                        </button>
+                        <button class="activity-btn" onclick="resetCategories()" style="margin-left: 10px;">
+                            Reiniciar
+                        </button>
+                    </div>
+                    
+                    <div id="category-feedback" style="margin-top: 15px; font-weight: 600;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Tracking Panel -->
+        <div class="content-panel" id="progress-panel">
+            <div class="progress-section">
+                <div class="progress-title">📊 Tu progreso de aprendizaje</div>
+                
+                <div class="mastery-levels">
+                    <div class="mastery-card" id="compliance-mastery">
+                        <div class="mastery-topic">Conceptos básicos de cumplimiento</div>
+                        <div class="mastery-progress">0%</div>
+                        <div class="mastery-label">Nivel de maestría</div>
+                    </div>
+                    <div class="mastery-card" id="privacy-mastery">
+                        <div class="mastery-topic">Regla de privacidad</div>
+                        <div class="mastery-progress">0%</div>
+                        <div class="mastery-label">Nivel de maestría</div>
+                    </div>
+                    <div class="mastery-card" id="security-mastery">
+                        <div class="mastery-topic">Medidas de seguridad</div>
+                        <div class="mastery-progress">0%</div>
+                        <div class="mastery-label">Nivel de maestría</div>
+                    </div>
+                    <div class="mastery-card" id="fraud-mastery">
+                        <div class="mastery-topic">Prevención de fraude</div>
+                        <div class="mastery-progress">0%</div>
+                        <div class="mastery-label">Nivel de maestría</div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="nav-btn" onclick="generateProgressReport()" style="background: var(--color-success);">
+                        📄 Generar informe de progreso
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Learning Platform State
+        const learningState = {
+            currentTopic: 'compliance',
+            flashcardDeck: [],
+            currentCardIndex: 0,
+            masteredCards: new Set(),
+            simulationProgress: 0,
+            exerciseScores: {},
+            topicMastery: {
+                compliance: 0,
+                privacy: 0,
+                security: 0,
+                fraud: 0,
+                enforcement: 0,
+                practice: 0
+            }
+        };
+
+        // Flashcard Data
+        const flashcardData = {
+            compliance: [
+                { term: "Compliance", definition: "Cumplimiento de las leyes, regulaciones y pautas que rigen las operaciones de atención médica.", example: "Implementar políticas para garantizar la privacidad del paciente y una facturación precisa" },
+                { term: "HIPAA", definition: "Ley de Responsabilidad y Portabilidad del Seguro Médico de 1996", example: "Ley federal que establece estándares de privacidad y seguridad para la atención médica" },
+                { term: "Título I", definition: "Reforma de seguros: garantiza la continuidad de la cobertura y protege las condiciones preexistentes", example: "Previene la denegación de seguro basada en el estado de salud." },
+                { term: "Título II", definition: "Simplificación administrativa: establece estándares de privacidad/seguridad para la PHI", example: "Exige estándares de transacciones electrónicas y protecciones de la privacidad del paciente." },
+                { term: "Entidad cubierta", definition: "Proveedores, planes y cámaras de compensación de atención médica que transmiten información de salud electrónicamente", example: "Hospitales, compañías de seguros, administradores de beneficios de farmacia." }
+            ],
+            privacy: [
+                { term: "PHI", definition: "Información de salud protegida: cualquier información de salud identificable", example: "Registros médicos, información de facturación, conversaciones sobre tratamiento." },
+                { term: "Regla de privacidad", definition: "Disposición de HIPAA que establece estándares de protección de PHI", example: "Requiere autorización del paciente para ciertas divulgaciones" },
+                { term: "Mínimo Necesario", definition: "Principio que limita el uso/divulgación de la PHI solo a lo necesario", example: "Compartir solo los resultados de las pruebas relevantes con un especialista" },
+                { term: "Authorization", definition: "Permiso por escrito del paciente para el uso/divulgación de PHI más allá de la TPO", example: "Formulario de consentimiento para revelar registros a un abogado" },
+                { term: "NPP", definition: "Aviso de prácticas de privacidad: explica cómo se utiliza la PHI y los derechos de los pacientes", example: "Documento entregado a los pacientes en la primera visita." }
+            ],
+            security: [
+                { term: "Regla de seguridad", definition: "Disposición de HIPAA que establece salvaguardas para la PHI electrónica", example: "Requiere cifrado, controles de acceso y pistas de auditoría" },
+                { term: "Salvaguardias administrativas", definition: "Políticas/procedimientos para la gestión de la seguridad y la capacitación de la fuerza laboral", example: "Programas de formación en seguridad y planes de respuesta a incidentes." },
+                { term: "Salvaguardias físicas", definition: "Medidas para proteger los sistemas e instalaciones electrónicos", example: "Salas de servidores cerradas y áreas seguras para estaciones de trabajo" },
+                { term: "Salvaguardias técnicas", definition: "Tecnología y políticas que protegen la ePHI y controlan el acceso", example: "Cifrado, contraseñas y controles de auditoría." },
+                { term: "Análisis de riesgos", definition: "Proceso para identificar vulnerabilidades a la confidencialidad de ePHI", example: "Evaluación anual de amenazas y debilidades de seguridad" }
+            ],
+            fraud: [
+                { term: "Fraud", definition: "Engaño intencional para beneficio no autorizado", example: "Facturación por servicios no prestados." },
+                { term: "Abuse", definition: "Prácticas inconsistentes con estándares médicos/comerciales sólidos.", example: "Cargos excesivos o servicios innecesarios" },
+                { term: "Ley de reclamaciones falsas", definition: "Ley que permite al gobierno recuperar fondos de reclamaciones fraudulentas", example: "Demandas de denunciantes contra el fraude a Medicare" },
+                { term: "Ley estricta", definition: "Prohíbe las autorreferencias de médicos a entidades con relaciones financieras", example: "Médico remitiendo pacientes a su propio centro de imágenes." },
+                { term: "Estatuto antisobornos", definition: "Prohíbe incentivos inadecuados para referencias de Medicare/Medicaid", example: "Pagar a los médicos por las derivaciones de pacientes" }
+            ]
+        };
+
+        // Initialize Platform
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation Setup
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.dataset.tab;
+                    switchTab(tabId);
+                });
+            });
+
+            // Initialize Flashcards
+            loadFlashcards('compliance');
+            
+            // Initialize Exercises
+            setupMatchingGame();
+            setupFillBlank();
+            setupCategorySort();
+            
+            // Update Stats
+            updateUserStats();
+        });
+
+        // Tab Navigation
+        function switchTab(tabId) {
+            // Update active tab
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+            
+            // Show correct panel
+            document.querySelectorAll('.content-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            document.getElementById(`${tabId}-panel`).classList.add('active');
+        }
+
+        // Flashcard Functions
+        function loadFlashcards(topic) {
+            learningState.currentTopic = topic;
+            learningState.flashcardDeck = [...flashcardData[topic]];
+            learningState.currentCardIndex = 0;
+            shuffleArray(learningState.flashcardDeck);
+            displayCurrentCard();
+        }
+
+        function displayCurrentCard() {
+            const card = learningState.flashcardDeck[learningState.currentCardIndex];
+            const flashcard = document.getElementById('flashcard');
+            
+            document.getElementById('card-term').textContent = card.term;
+            document.getElementById('card-definition').textContent = card.definition;
+            
+            // Reset card to front
+            flashcard.classList.remove('flipped');
+            
+            // Update counters
+            document.getElementById('current-card').textContent = learningState.currentCardIndex + 1;
+            document.getElementById('total-cards').textContent = learningState.flashcardDeck.length;
+            
+            // Update mastery badge
+            const masteryBadge = document.getElementById('mastery-badge');
+            if (learningState.masteredCards.has(card.term)) {
+                masteryBadge.textContent = '✅ Dominado';
+                masteryBadge.style.background = 'rgba(0, 184, 148, 0.1)';
+                masteryBadge.style.color = 'var(--color-success)';
+            } else {
+                masteryBadge.textContent = '📚 Aprendizaje';
+                masteryBadge.style.background = 'rgba(175, 75, 239, 0.1)';
+                masteryBadge.style.color = 'var(--color-primary)';
+            }
+            
+            // Update button states
+            document.getElementById('prev-btn').disabled = learningState.currentCardIndex === 0;
+            document.getElementById('next-btn').disabled = learningState.currentCardIndex === learningState.flashcardDeck.length - 1;
+        }
+
+        function flipCard() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            if (learningState.currentCardIndex < learningState.flashcardDeck.length - 1) {
+                learningState.currentCardIndex++;
+                displayCurrentCard();
+            }
+        }
+
+        function prevCard() {
+            if (learningState.currentCardIndex > 0) {
+                learningState.currentCardIndex--;
+                displayCurrentCard();
+            }
+        }
+
+        function markMastered() {
+            const currentCard = learningState.flashcardDeck[learningState.currentCardIndex];
+            learningState.masteredCards.add(currentCard.term);
+            displayCurrentCard();
+            updateUserStats();
+            updateTopicMastery();
+        }
+
+        function shuffleCards() {
+            shuffleArray(learningState.flashcardDeck);
+            learningState.currentCardIndex = 0;
+            displayCurrentCard();
+        }
+
+        // Simulation Functions
+        let currentSimulation = 1;
+
+        function selectDecision(simNumber, choice) {
+            const cards = document.querySelectorAll(`#sim-${simNumber} .tarjeta de decisión`);
+            cards.forEach(card => {
+                card.classList.remove('selected', 'incorrect');
+                const decision = card.querySelector('.decision-text').textContent.charAt(0);
+                
+                if (decision === choice) {
+                    if (choice === 'C') {
+                        card.classList.add('selected');
+                    } else {
+                        card.classList.add('incorrect');
+                    }
+                }
+                
+                if (decision === 'C') {
+                    card.classList.add('selected');
+                }
+            });
+            
+            // Show feedback
+            document.getElementById('feedback-panel').classList.add('show');
+            
+            // Update progress
+            learningState.simulationProgress = Math.max(learningState.simulationProgress, simNumber);
+            updateUserStats();
+            updateTopicMastery();
+        }
+
+        function nextSimulation() {
+            document.getElementById(`sim-${currentSimulation}`).style.display = 'none';
+            currentSimulation = Math.min(3, currentSimulation + 1);
+            document.getElementById(`sim-${currentSimulation}`).style.display = 'block';
+            document.getElementById('feedback-panel').classList.remove('show');
+            updateSimulationButtons();
+        }
+
+        function prevSimulation() {
+            document.getElementById(`sim-${currentSimulation}`).style.display = 'none';
+            currentSimulation = Math.max(1, currentSimulation - 1);
+            document.getElementById(`sim-${currentSimulation}`).style.display = 'block';
+            document.getElementById('feedback-panel').classList.remove('show');
+            updateSimulationButtons();
+        }
+
+        function updateSimulationButtons() {
+            document.getElementById('prev-sim-btn').disabled = currentSimulation === 1;
+            document.getElementById('next-sim-btn').disabled = currentSimulation === 3;
+        }
+
+        // Exercise Functions
+        function setupMatchingGame() {
+            const terms = [
+                { term: "PHI", definition: "Información de salud protegida" },
+                { term: "HIPAA", definition: "Ley de Responsabilidad y Portabilidad del Seguro Médico" },
+                { term: "HITECH", definition: "Ley de tecnología de la información sanitaria para la salud económica y clínica" },
+                { term: "NPP", definition: "Aviso de prácticas de privacidad" },
+                { term: "RAC", definition: "Contratista de auditoría de recuperación" }
+            ];
+            
+            // Shuffle terms and definitions
+            const shuffledTerms = [...terms].sort(() => Math.random() - 0.5);
+            const shuffledDefs = [...terms.map(t => t.definition)].sort(() => Math.random() - 0.5);
+            
+            const gameContainer = document.getElementById('matching-game');
+            gameContainer.innerHTML = '';
+            
+            // Add terms
+            shuffledTerms.forEach((item, index) => {
+                const termDiv = document.createElement('div');
+                termDiv.className = 'matching-item';
+                termDiv.textContent = item.term;
+                termDiv.draggable = true;
+                termDiv.dataset.type = 'term';
+                termDiv.dataset.value = item.term;
+                termDiv.addEventListener('dragstart', handleDragStart);
+                gameContainer.appendChild(termDiv);
+            });
+            
+            // Add definitions
+            shuffledDefs.forEach((def, index) => {
+                const defDiv = document.createElement('div');
+                defDiv.className = 'matching-item';
+                defDiv.textContent = def;
+                defDiv.draggable = true;
+                defDiv.dataset.type = 'definition';
+                defDiv.dataset.value = def;
+                defDiv.addEventListener('dragstart', handleDragStart);
+                defDiv.addEventListener('dragover', handleDragOver);
+                defDiv.addEventListener('drop', handleDrop);
+                gameContainer.appendChild(defDiv);
+            });
+        }
+
+        let dragElement = null;
+
+        function handleDragStart(e) {
+            dragElement = this;
+            this.classList.add('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            if (dragElement.dataset.type !== this.dataset.type) {
+                // Check if match is correct
+                const terms = flashcardData.compliance.concat(flashcardData.privacy)
+                    .concat(flashcardData.security).concat(flashcardData.fraud);
+                
+                const termObj = terms.find(t => t.term === dragElement.dataset.value);
+                const defObj = terms.find(t => t.definition === this.dataset.value);
+                
+                if (termObj && defObj && termObj.term === defObj.term) {
+                    dragElement.classList.add('matched');
+                    this.classList.add('matched');
+                    dragElement.style.opacity = '0.5';
+                    this.style.opacity = '0.5';
+                    dragElement.draggable = false;
+                    this.draggable = false;
+                }
+            }
+            dragElement.classList.remove('dragging');
+            dragElement = null;
+        }
+
+        function checkMatching() {
+            const matched = document.querySelectorAll('.matching-item.matched').length;
+            const total = document.querySelectorAll('.matching-item').length;
+            const score = (matched / total) * 100;
+            
+            const feedback = document.getElementById('matching-feedback');
+            if (score === 100) {
+                feedback.textContent = '🎉 ¡Perfecto! ¡Todas las coincidencias son correctas!';
+                feedback.style.color = 'var(--color-success)';
+                learningState.exerciseScores.matching = score;
+                updateTopicMastery();
+            } else {
+                feedback.textContent = `📊 ${Math.round(score)}% correcto. ¡Sigue intentándolo!`;
+                feedback.style.color = 'var(--color-warning)';
+            }
+        }
+
+        function resetMatching() {
+            setupMatchingGame();
+            document.getElementById('matching-feedback').textContent = '';
+        }
+
+        function setupFillBlank() {
+            const words = ['Privacy', 'PHI', 'minimum', 'Security', 'electronic', 'authorization'];
+            const shuffledWords = [...words].sort(() => Math.random() - 0.5);
+            
+            const wordBank = document.getElementById('word-bank');
+            wordBank.innerHTML = '';
+            
+            shuffledWords.forEach(word => {
+                const wordDiv = document.createElement('div');
+                wordDiv.className = 'word-option';
+                wordDiv.textContent = word;
+                wordDiv.draggable = true;
+                wordDiv.dataset.word = word;
+                wordDiv.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', word);
+                });
+                wordBank.appendChild(wordDiv);
+            });
+            
+            // Setup blank drop zones
+            document.querySelectorAll('.blank').forEach(blank => {
+                blank.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                });
+                
+                blank.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    const word = e.dataTransfer.getData('text/plain');
+                    if (word === this.dataset.answer) {
+                        this.textContent = word;
+                        this.classList.add('filled');
+                    }
+                });
+            });
+        }
+
+        function checkFillBlank() {
+            let correct = 0;
+            let total = 0;
+            
+            document.querySelectorAll('.blank').forEach(blank => {
+                total++;
+                if (blank.textContent === blank.dataset.answer) {
+                    correct++;
+                    blank.style.borderBottomColor = 'var(--color-success)';
+                } else {
+                    blank.style.borderBottomColor = 'var(--color-error)';
+                    if (!blank.textContent) {
+                        blank.textContent = blank.dataset.answer;
+                        blank.style.color = 'var(--color-error)';
+                    }
+                }
+            });
+            
+            const score = (correct / total) * 100;
+            const feedback = document.getElementById('fillblank-feedback');
+            
+            if (score === 100) {
+                feedback.textContent = '✅ ¡Perfecto! ¡Todos los espacios en blanco se llenaron correctamente!';
+                feedback.style.color = 'var(--color-success)';
+                learningState.exerciseScores.fillblank = score;
+                updateTopicMastery();
+            } else {
+                feedback.textContent = `📝 ${correct}/${total} correcto. Revise las respuestas correctas arriba.`;
+                feedback.style.color = 'var(--color-warning)';
+            }
+        }
+
+        function resetFillBlank() {
+            document.querySelectorAll('.blank').forEach(blank => {
+                blank.textContent = '';
+                blank.classList.remove('filled');
+                blank.style.borderBottomColor = 'var(--color-primary)';
+                blank.style.color = 'inherit';
+            });
+            document.getElementById('fillblank-feedback').textContent = '';
+        }
+
+        function setupCategorySort() {
+            const items = [
+                { text: "Programas de formación en seguridad.", category: "administrative" },
+                { text: "Software de cifrado", category: "technical" },
+                { text: "Salas de servidores cerradas", category: "physical" },
+                { text: "Políticas de contraseña", category: "administrative" },
+                { text: "Configuración del cortafuegos", category: "technical" },
+                { text: "Ubicación de la estación de trabajo", category: "physical" },
+                { text: "Planes de respuesta a incidentes", category: "administrative" },
+                { text: "Acceso biométrico", category: "technical" },
+                { text: "Contenedores de eliminación seguros", category: "physical" },
+                { text: "Procedimientos de evaluación de riesgos", category: "administrative" }
+            ];
+            
+            const shuffledItems = [...items].sort(() => Math.random() - 0.5);
+            const container = document.getElementById('sortable-items');
+            container.innerHTML = '';
+            
+            shuffledItems.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'word-option';
+                itemDiv.textContent = item.text;
+                itemDiv.draggable = true;
+                itemDiv.dataset.category = item.category;
+                itemDiv.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', item.text);
+                    e.dataTransfer.setData('category', item.category);
+                });
+                container.appendChild(itemDiv);
+            });
+            
+            // Setup category drop zones
+            document.querySelectorAll('.category-box').forEach(box => {
+                box.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                });
+                
+                box.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    const text = e.dataTransfer.getData('text/plain');
+                    const category = e.dataTransfer.getData('category');
+                    
+                    if (category === this.dataset.category) {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.textContent = text;
+                        itemDiv.style.background = 'white';
+                        itemDiv.style.padding = '8px';
+                        itemDiv.style.margin = '5px';
+                        itemDiv.style.borderRadius = '4px';
+                        this.appendChild(itemDiv);
+                    }
+                });
+            });
+        }
+
+        function checkCategories() {
+            // This would check if items are in correct categories
+            const feedback = document.getElementById('category-feedback');
+            feedback.textContent = '✅ ¡Buen trabajo! Artículos ordenados correctamente.';
+            feedback.style.color = 'var(--color-success)';
+            learningState.exerciseScores.categories = 100;
+            updateTopicMastery();
+        }
+
+        function resetCategories() {
+            setupCategorySort();
+            document.getElementById('category-feedback').textContent = '';
+        }
+
+        // Progress Tracking
+        function updateUserStats() {
+            const masteryScore = calculateMasteryScore();
+            const cardsMastered = learningState.masteredCards.size;
+            const simsCompleted = learningState.simulationProgress;
+            
+            document.getElementById('mastery-score').textContent = `${masteryScore}%`;
+            document.getElementById('cards-mastered').textContent = cardsMastered;
+            document.getElementById('sims-completed').textContent = simsCompleted;
+        }
+
+        function calculateMasteryScore() {
+            let totalScore = 0;
+            let count = 0;
+            
+            // Add flashcard mastery
+            const totalCards = Object.values(flashcardData).flat().length;
+            totalScore += (learningState.masteredCards.size / totalCards) * 40; // 40% weight
+            
+            // Add simulation progress
+            totalScore += (learningState.simulationProgress / 3) * 30; // 30% weight
+            
+            // Add exercise scores
+            const exerciseScores = Object.values(learningState.exerciseScores);
+            if (exerciseScores.length > 0) {
+                const avgExercise = exerciseScores.reduce((a, b) => a + b) / exerciseScores.length;
+                totalScore += avgExercise * 0.3; // 30% weight
+            }
+            
+            return Math.round(totalScore);
+        }
+
+        function updateTopicMastery() {
+            // Update each topic's mastery level
+            Object.keys(learningState.topicMastery).forEach(topic => {
+                // Calculate topic-specific mastery
+                let topicScore = 0;
+                
+                // Flashcard mastery for this topic
+                const topicCards = flashcardData[topic] || [];
+                const masteredInTopic = topicCards.filter(card => 
+                    learningState.masteredCards.has(card.term)
+                ).length;
+                
+                if (topicCards.length > 0) {
+                    topicScore += (masteredInTopic / topicCards.length) * 100;
+                }
+                
+                learningState.topicMastery[topic] = topicScore;
+                
+                // Update display
+                const masteryCard = document.getElementById(`${topic}-mastery`);
+                if (masteryCard) {
+                    const progressElement = masteryCard.querySelector('.mastery-progress');
+                    progressElement.textContent = `${Math.round(topicScore)}%`;
+                    
+                    if (topicScore >= 80) {
+                        masteryCard.classList.add('completed');
+                    } else {
+                        masteryCard.classList.remove('completed');
+                    }
+                }
+            });
+            
+            updateUserStats();
+        }
+
+        function generateProgressReport() {
+            const report = `
+Informe de progreso de dominio de HIPAA
+==============================
+Generado: ${new Date().toLocaleDateString()}
+
+Puntuación general de dominio: ${calculateMasteryScore()}%
+
+Desglose del tema:
+${Object.entries(learningState.topicMastery).map(([tema, puntuación]) => 
+    `• ${topic.charAt(0).toUpperCase() + topic.slice(1)}: ${Math.round(score)}%`
+).unirse(' ')}
+
+Logros:
+• Tarjetas didácticas dominadas: ${learningState.masteredCards.size}
+• Simulaciones completadas: ${learningState.simulationProgress}/3
+• Ejercicios intentados: ${Object.keys(learningState.exerciseScores).length}
+
+¡Continúa con el gran trabajo! Continúe practicando para alcanzar el 100% de dominio.
+            `;
+            
+            showMobileToast(report);
+        }
+
+        // Activity Starters
+        function startFlashcards(topic) {
+            switchTab('flashcards');
+            loadFlashcards(topic);
+        }
+
+        function startSimulation(topic) {
+            switchTab('simulations');
+            // Reset to first simulation
+            document.querySelectorAll('.simulation-scenario').forEach((sim, index) => {
+                sim.style.display = index === 0 ? 'block' : 'none';
+            });
+            currentSimulation = 1;
+            updateSimulationButtons();
+        }
+
+        function startExercise(topic) {
+            switchTab('exercises');
+        }
+
+        // Utility Functions
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+    </script>
+
+<script>
+/* ===== MOBILE TOAST NOTIFICATION (replaces alert) ===== */
+function showMobileToast(msg) {
+  var t = document.getElementById('_va_toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = '_va_toast';
+    t.style.cssText = [
+      'position:fixed','bottom:24px','left:50%','transform:translateX(-50%)',
+      'background:rgba(30,30,30,0.92)','color:#fff','relleno: 12px 22px',
+      'border-radius:24px','z-index:99999','font-weight:600',
+      'font-size:0.95rem','max-width:85vw','text-align:center',
+      'sombra de cuadro: 0 4px 16px rgba (0,0,0,0.3)',
+      'transición:opacidad 0,35s','opacity:0','pointer-events:none'
+    ].join(';');
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._to);
+  t._to = setTimeout(function(){ t.style.opacity='0'; }, 3200);
+}
+</script>
+
+
+<script>
+/* ===== TOUCH DRAG-AND-DROP POLYFILL (additive) ===== */
+(function(){
+  if (!('ontouchstart' in window)) return;
+  var _dd = { el: null, data: {}, clone: null, ox: 0, oy: 0 };
+
+  /* Patch DataTransfer so touch-synthesised events carry the stored data */
+  var _origGet = DataTransfer.prototype.getData;
+  DataTransfer.prototype.getData = function(type){
+    var v; try{ v = _origGet.call(this, type); }catch(e){}
+    return (v && v.length) ? v : (_dd.data[type] || _dd.data['text/plain'] || _dd.data['text'] || '');
+  };
+  var _origSet = DataTransfer.prototype.setData;
+  DataTransfer.prototype.setData = function(type, val){
+    _dd.data[type] = val;
+    try{ _origSet.call(this, type, val); }catch(e){}
+  };
+
+  function _makeDT(){ try{ return new DataTransfer(); }catch(e){ return {setData:function(){},getData:function(t){return _dd.data[t]||'';},effectAllowed:'all',dropEffect:'move'}; } }
+
+  function _fireEvent(el, name, dt, bubble){
+    var ev;
+    try{ ev = new DragEvent(name,{bubbles:!!bubble,cancelable:true,dataTransfer:dt}); }
+    catch(e){
+      ev = document.createEvent('Event');
+      ev.initEvent(name,!!bubble,true);
+      ev.dataTransfer = dt;
+    }
+    el.dispatchEvent(ev);
+    return ev;
+  }
+
+  document.addEventListener('touchstart', function(e){
+    var el = e.target && e.target.closest ? e.target.closest('[draggable="true"]') : null;
+    if (!el) return;
+    _dd.el = el; _dd.data = {};
+    var touch = e.touches[0];
+    var rect  = el.getBoundingClientRect();
+    _dd.ox = touch.clientX - rect.left;
+    _dd.oy = touch.clientY - rect.top;
+
+    /* fire dragstart so existing handler stores data via setData */
+    _fireEvent(el, 'dragstart', _makeDT(), true);
+
+    /* visual ghost clone */
+    var cl = el.cloneNode(true);
+    cl.setAttribute('aria-hidden','true');
+    cl.style.cssText = [
+      'position:fixed','z-index:99998','pointer-events:none','margin:0',
+      'width:'+rect.width+'px','height:'+rect.height+'px',
+      'left:'+(touch.clientX - _dd.ox)+'px',
+      'top:'+(touch.clientY - _dd.oy)+'px',
+      'opacity:0.82','transformar: escala (1.07) rotar (2 grados)',
+      'sombra de cuadro: 0 10px 28px rgba (0,0,0,0.25)','border-radius:8px',
+      'transition:none'
+    ].join(';');
+    document.body.appendChild(cl);
+    _dd.clone = cl;
+    e.preventDefault();
+  }, {passive:false});
+
+  document.addEventListener('touchmove', function(e){
+    if (!_dd.clone) return;
+    var t = e.touches[0];
+    _dd.clone.style.left = (t.clientX - _dd.ox)+'px';
+    _dd.clone.style.top  = (t.clientY - _dd.oy)+'px';
+    e.preventDefault();
+  }, {passive:false});
+
+  document.addEventListener('touchend', function(e){
+    if (!_dd.el) return;
+    if (_dd.clone){ _dd.clone.remove(); _dd.clone = null; }
+
+    var t = e.changedTouches[0];
+    /* find element under finger */
+    var hit = document.elementFromPoint(t.clientX, t.clientY);
+    var node = hit;
+    while (node && node !== document.body){
+      var overEv = _fireEvent(node, 'dragover', _makeDT(), false);
+      if (overEv.defaultPrevented){
+        _fireEvent(node, 'drop', _makeDT(), false);
+        break;
+      }
+      node = node.parentElement;
+    }
+    _fireEvent(_dd.el, 'dragend', _makeDT(), true);
+    _dd.el = null; _dd.data = {};
+  }, {passive:false});
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA: conceptos básicos de seguridad en el autobús escolar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb;
+            --color-primary-light: #8a5feb;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #6b7280;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-error: #ef4444;
+            --color-info: #3b82f6;
+            --color-bus: #f59e0b;
+            --color-student: #3b82f6;
+            --color-driver: #10b981;
+            --color-community: #8b5cf6;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(95, 23, 235, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes busDrive {
+            0% { transform: translateX(-100px) rotate(0deg); }
+            100% { transform: translateX(calc(100vw + 100px)) rotate(0deg); }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #5f17eb, #7c3aed);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(95, 23, 235, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .time-estimate {
+            background: rgba(95, 23, 235, 0.1);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(95, 23, 235, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5f17eb, #7c3aed);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* School bus specific styles */
+        .bus-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .bus-stat {
+            text-align: center;
+            padding: 20px;
+            background: rgba(245, 158, 11, 0.05);
+            border-radius: var(--radius-md);
+            border: 2px solid rgba(245, 158, 11, 0.1);
+        }
+
+        .bus-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-bus);
+            margin-bottom: 5px;
+        }
+
+        .bus-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .danger-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--color-error);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .danger-title {
+            font-weight: 700;
+            color: var(--color-error);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-card {
+            border-radius: var(--radius-md);
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .bus-comparison {
+            background: rgba(245, 158, 11, 0.05);
+            border: 2px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .other-comparison {
+            background: rgba(95, 23, 235, 0.05);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .comparison-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comparison-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .comparison-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .bus-list li:before {
+            content: "🚌";
+            position: absolute;
+            left: 0;
+        }
+
+        .other-list li:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+        }
+
+        .safety-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .safety-card {
+            border-radius: var(--radius-md);
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .safety-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .safety-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .student-card {
+            background: rgba(59, 130, 246, 0.05);
+            border: 2px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .student-card::before {
+            background: var(--color-student);
+        }
+
+        .driver-card {
+            background: rgba(16, 185, 129, 0.05);
+            border: 2px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .driver-card::before {
+            background: var(--color-driver);
+        }
+
+        .community-card {
+            background: rgba(139, 92, 246, 0.05);
+            border: 2px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .community-card::before {
+            background: var(--color-community);
+        }
+
+        .safety-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .safety-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .requirement-list, .practice-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 15px;
+        }
+
+        .requirement-list li, .practice-list li {
+            margin-bottom: 8px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .requirement-list li:before {
+            content: "📋";
+            position: absolute;
+            left: 0;
+        }
+
+        .practice-list li:before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+        }
+
+        .zone-diagram {
+            width: 100%;
+            max-width: 400px;
+            height: 250px;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border-radius: var(--radius-md);
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bus-outline {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 80px;
+            background: var(--color-bus);
+            border-radius: 8px;
+        }
+
+        .danger-zone {
+            position: absolute;
+            background: rgba(239, 68, 68, 0.3);
+            border: 2px dashed var(--color-error);
+            border-radius: 10px;
+        }
+
+        .zone-10ft {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 180px;
+        }
+
+        .zone-label {
+            position: absolute;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-error);
+            background: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .label-danger { left: 50%; top: 20%; transform: translateX(-50%); }
+        .label-safe { left: 50%; bottom: 15%; transform: translateX(-50%); }
+
+        .tips-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .tips-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tips-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tips-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .law-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .law-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(59, 130, 246, 0.05);
+            border-radius: var(--radius-md);
+            border: 2px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .law-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--color-info);
+        }
+
+        .law-name {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 5px;
+        }
+
+        .law-description {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+        }
+
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(16, 185, 129, 0.05);
+            border-radius: var(--radius-sm);
+            border: 2px solid rgba(16, 185, 129, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checklist-item:hover {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--color-driver);
+        }
+
+        .checklist-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-checkbox.checked {
+            background: var(--color-driver);
+            border-color: var(--color-driver);
+            color: white;
+        }
+
+        .checklist-checkbox.checked:after {
+            content: "✓";
+            font-weight: bold;
+        }
+
+        .checklist-text {
+            font-size: 0.95rem;
+        }
+
+        .role-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .role-feature {
+            padding: 20px;
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: var(--radius-md);
+            border: 2px solid rgba(139, 92, 246, 0.1);
+            text-align: center;
+        }
+
+        .role-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--color-community);
+        }
+
+        .role-name {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 5px;
+        }
+
+        .role-description {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+        }
+
+        .key-points {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .knowledge-check {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(95, 23, 235, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.6rem;
+            }
+
+            .safety-grid, .law-grid, .checklist-grid, .role-features {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Aprendizaje del tiempo</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Módulo de Seguridad en el Transporte Escolar</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">Conceptos básicos de seguridad en el autobús escolar de 15 minutos</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Seguridad en los autobuses escolares: protegiendo a nuestros niños</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">⏱️</div>
+            <div class="time-estimate-text">
+                Complete esta lección en aproximadamente <span class="time-highlight">15 minutos</span> Dominar los principios esenciales de seguridad en los autobuses escolares.
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Secciones completadas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="quiz-score">0%</span>
+                <span class="stat-label">Puntuación del examen</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Aprendizaje del tiempo</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Progreso de la lección</span>
+                <span>Tiempo de aprendizaje: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: Introduction & Statistics -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🚌</span>
+                    Comprender la importancia de la seguridad en los autobuses escolares
+                </h2>
+                
+                <div class="subsection">
+                    <p class="subsection-content">
+                        La seguridad de los autobuses escolares es una preocupación fundamental para los padres, los educadores y las comunidades. Los autobuses escolares se encuentran entre los modos de transporte más seguros para los niños, pero garantizar su seguridad requiere una combinación de comportamiento adecuado, cumplimiento de los protocolos de seguridad y concienciación tanto de los conductores como de los estudiantes.
+                    </p>
+                    
+                    <div class="bus-stats-grid">
+                        <div class="bus-stat">
+                            <div class="bus-value">25M</div>
+                            <div class="bus-label">Estudiantes transportados diariamente.</div>
+                        </div>
+                        <div class="bus-stat">
+                            <div class="bus-value">70x</div>
+                            <div class="bus-label">Más seguro que los vehículos familiares</div>
+                        </div>
+                        <div class="bus-stat">
+                            <div class="bus-value">17</div>
+                            <div class="bus-label">Promedio de muertes anuales (fuera del autobús)</div>
+                        </div>
+                        <div class="bus-stat">
+                            <div class="bus-value">9x</div>
+                            <div class="bus-label">Es más peligroso caminar/andar en bicicleta</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="danger-box">
+                        <div class="danger-title">⚠️ Zonas críticas de seguridad alrededor de los autobuses</div>
+                        <div class="subsection-content">
+                            <strong>ZONA DE PELIGRO:</strong> 10 pies alrededor del autobús por todos lados (donde el conductor no pueda ver)<br>
+                            <strong>Más Peligroso:</strong> Frente del autobús (punto ciego para el conductor)<br>
+                            <strong>Accidente más común:</strong> Niños atropellados al cruzar la calle<br>
+                            <strong>Regla crítica:</strong> Si no puedes ver al conductor, el conductor no puede verte a ti.<br>
+                            <strong>Distancia segura:</strong> Manténgase a 3 pasos gigantes (6 pies) de la acera mientras espera
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">📊 Comparación de seguridad: autobuses escolares frente a otros medios de transporte</h3>
+                    
+                    <div class="comparison-grid">
+                        <div class="comparison-card bus-comparison">
+                            <div class="comparison-title">🚌 Ventajas del autobús escolar</div>
+                            <ul class="comparison-list bus-list">
+                                <li>70 veces más seguro que los vehículos de pasajeros</li>
+                                <li>Diseño de asientos compartimentados.</li>
+                                <li>Conductores profesionales y capacitados.</li>
+                                <li>Estrictos estándares de seguridad federales</li>
+                                <li>Color y marcas de alta visibilidad.</li>
+                                <li>Cruzar brazos de control & señales de alto</li>
+                                <li>Requisitos de mantenimiento regulares</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-card other-comparison">
+                            <div class="comparison-title">⚠️ Áreas de riesgo que requieren atención</div>
+                            <ul class="comparison-list other-list">
+                                <li>Zonas de carga/descarga más peligrosas</li>
+                                <li>Paso ilegal de autobuses detenidos</li>
+                                <li>Niños chocando contra la carretera en las paradas</li>
+                                <li>Distracción del conductor cerca de las paradas de autobús</li>
+                                <li>Mala visibilidad durante el amanecer/anochecer</li>
+                                <li>Condiciones climáticas de invierno</li>
+                                <li>Comportamiento apresurado por parte de los estudiantes.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Student Safety & Responsibilities -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">👦👧</span>
+                    Seguridad estudiantil: reglas & Responsabilidades
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">⏰ Esperando el autobús con seguridad</h3>
+                    
+                    <div class="safety-grid">
+                        <div class="safety-card student-card">
+                            <div class="safety-icon">⏰</div>
+                            <div class="safety-title">Llegada & Posicionamiento</div>
+                            <ul class="practice-list">
+                                <li>Llegar 5 minutos antes de la hora prevista.</li>
+                                <li>Espere en una zona segura y alejada del tráfico.</li>
+                                <li>Párese a 3 escalones gigantes (6 pies) de la acera</li>
+                                <li>No jugar, correr o empujar</li>
+                                <li>Espere hasta que la parada de autobús esté completa.</li>
+                            </ul>
+                        </div>
+
+                        <div class="safety-card student-card">
+                            <div class="safety-icon">👣</div>
+                            <div class="safety-title">Embarque & Salir</div>
+                            <ul class="practice-list">
+                                <li>Espere la señal del conductor para acercarse</li>
+                                <li>Utilice pasamanos: siempre, en todo momento</li>
+                                <li>No empujar ni apresurarse en las escaleras.</li>
+                                <li>Aléjese inmediatamente del autobús.</li>
+                                <li>Manténgase en la línea de visión del conductor</li>
+                            </ul>
+                        </div>
+
+                        <div class="safety-card student-card">
+                            <div class="safety-icon">🚶</div>
+                            <div class="safety-title">Protocolo de cruce de calles</div>
+                            <ul class="practice-list">
+                                <li>ESPERE la señal manual del conductor</li>
+                                <li>Cruce SÓLO por delante del autobús.</li>
+                                <li>Haga contacto visual con el conductor</li>
+                                <li>Mire de izquierda a derecha antes de pisar.</li>
+                                <li>Camina, no corras, cruza la calle.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🚌 Sobre el comportamiento del autobús</h3>
+                    
+                    <div class="checklist-grid" id="bus-behavior-checklist">
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Permanecer sentado mirando hacia adelante en todo momento.</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Mantenga el pasillo libre de bolsos y pertenencias.</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Habla en voz baja, sin gritar ni chillar.</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Mantenga la cabeza, las manos y los brazos dentro del autobús.</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Siga las instrucciones del conductor inmediatamente.</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">No comer, beber ni masticar chicle.</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Respetar a otros estudiantes y la propiedad.</div>
+                        </div>
+                        <div class="checklist-item" onclick="toggleChecklist(this)">
+                            <div class="checklist-checkbox"></div>
+                            <div class="checklist-text">Conozca las ubicaciones de las salidas de emergencia</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">📍 Comprender la zona de peligro</h3>
+                    
+                    <div class="zone-diagram">
+                        <div class="bus-outline"></div>
+                        <div class="danger-zone zone-10ft"></div>
+                        <div class="zone-label label-danger">ZONA DE PELIGRO: 10 pies alrededor del autobús</div>
+                        <div class="zone-label label-safe">Zona segura: Fuera de la zona roja</div>
+                    </div>
+                    
+                    <div class="tips-box">
+                        <div class="tips-title">🎯 Reglas de seguridad de la zona de peligro</div>
+                        <ul class="tips-list">
+                            <li><strong>NUNCA</strong> caminar cerca del autobús (delante, a los lados o detrás)</li>
+                            <li>Si se le cae algo cerca del autobús, DEJELO - informe al conductor</li>
+                            <li>Siempre cruce FRENTE al autobús donde el conductor pueda verlo.</li>
+                            <li>Haga contacto visual con el conductor antes de cruzar.</li>
+                            <li>Si el conductor no puede verte, estás en la zona de peligro.</li>
+                            <li>Al bajarse, aléjese inmediatamente del autobús.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Driver & Community Responsibilities -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">👨‍✈️👩‍✈️</span>
+                    Conductor, personal & Responsabilidades de la comunidad
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🚍 Responsabilidades del conductor del autobús escolar</h3>
+                    
+                    <div class="safety-grid">
+                        <div class="safety-card driver-card">
+                            <div class="safety-icon">📋</div>
+                            <div class="safety-title">Requisitos profesionales</div>
+                            <ul class="requirement-list">
+                                <li>Licencia de conducir comercial (CDL) con respaldo para autobús escolar</li>
+                                <li>Verificaciones de antecedentes y pruebas de drogas.</li>
+                                <li>Exámenes físicos anuales</li>
+                                <li>Formación continua y certificación.</li>
+                                <li>Evaluaciones periódicas de desempeño</li>
+                            </ul>
+                        </div>
+
+                        <div class="safety-card driver-card">
+                            <div class="safety-icon">🚦</div>
+                            <div class="safety-title">Prácticas de conducción segura</div>
+                            <ul class="requirement-list">
+                                <li>Inspección previa al viaje antes de cada ruta.</li>
+                                <li>Siga todas las leyes de tránsito y límites de velocidad.</li>
+                                <li>Vigilancia constante: escanea los espejos cada 5 a 8 segundos</li>
+                                <li>Uso adecuado del brazo de parada y de las luces intermitentes.</li>
+                                <li>Procedimientos seguros de carga/descarga</li>
+                            </ul>
+                        </div>
+
+                        <div class="safety-card driver-card">
+                            <div class="safety-icon">🔧</div>
+                            <div class="safety-title">Mantenimiento de autobuses & Seguridad</div>
+                            <ul class="requirement-list">
+                                <li>Controles diarios del equipo de seguridad.</li>
+                                <li>Informar todos los problemas mecánicos inmediatamente</li>
+                                <li>Asegúrese de que las salidas de emergencia funcionen correctamente.</li>
+                                <li>Mantenga las ventanas limpias para mayor visibilidad.</li>
+                                <li>Verificar que el botiquín de primeros auxilios esté abastecido</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🏫 Responsabilidades del personal escolar</h3>
+                    
+                    <div class="role-features">
+                        <div class="role-feature">
+                            <div class="role-icon">👁️</div>
+                            <div class="role-name">Supervisión de parada de autobús</div>
+                            <div class="role-description">Monitorear las paradas de autobús, especialmente para estudiantes más jóvenes y áreas de alto tráfico.</div>
+                        </div>
+
+                        <div class="role-feature">
+                            <div class="role-icon">🎓</div>
+                            <div class="role-name">Educación sobre seguridad</div>
+                            <div class="role-description">Implementar capacitación periódica sobre seguridad en los autobuses y simulacros de emergencia.</div>
+                        </div>
+
+                        <div class="role-feature">
+                            <div class="role-icon">🚏</div>
+                            <div class="role-name">Gestión de zonas</div>
+                            <div class="role-description">Supervisar las zonas de carga y descarga en la propiedad escolar.</div>
+                        </div>
+
+                        <div class="role-feature">
+                            <div class="role-icon">📞</div>
+                            <div class="role-name">Comunicación</div>
+                            <div class="role-description">Mantener la comunicación con los conductores, los padres y el departamento de transporte.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🚗 Leyes para conductores & Responsabilidades</h3>
+                    
+                    <div class="law-grid">
+                        <div class="law-item">
+                            <div class="law-icon">🛑</div>
+                            <div class="law-name">Deténgase en rojo intermitente</div>
+                            <div class="law-description">OBLIGATORIO detenerse ante un autobús escolar con las luces rojas parpadeando y el brazo de parada extendido</div>
+                        </div>
+
+                        <div class="law-item">
+                            <div class="law-icon">⚠️</div>
+                            <div class="law-name">Precaución con luz amarilla</div>
+                            <div class="law-description">Prepárese para detenerse cuando las luces amarillas del autobús parpadeen: el autobús está a punto de detenerse</div>
+                        </div>
+
+                        <div class="law-item">
+                            <div class="law-icon">📏</div>
+                            <div class="law-name">Distancia de parada</div>
+                            <div class="law-description">Deténgase al menos a 20 pies del autobús en todas las direcciones.</div>
+                        </div>
+
+                        <div class="law-item">
+                            <div class="law-icon">🚫</div>
+                            <div class="law-name">Zona prohibida para pasar</div>
+                            <div class="law-description">Nunca pase a un autobús escolar parado cargando/descargando niños</div>
+                        </div>
+                    </div>
+
+                    <div class="warning-box">
+                        <div class="warning-title">💰 Sanciones por paso ilegal</div>
+                        <div class="subsection-content">
+                            <strong>Primera infracción:</strong> Multa de $250 a $1000, suspensión de la licencia hasta por 6 meses<br>
+                            <strong>Delitos posteriores:</strong> Multas más altas, suspensiones más largas<br>
+                            <strong>Si ocurre una lesión:</strong> Cargos penales, posible pena de cárcel<br>
+                            <strong>Todos los estados:</strong> Tener leyes estrictas sobre el paso de autobuses escolares.<br>
+                            <strong>Cámaras:</strong> Muchos autobuses ahora están equipados con cámaras en los brazos de parada.<br>
+                            <strong>Recordar:</strong> Las multas son menores en comparación con la posibilidad de salvar la vida de un niño.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">👨‍👩‍👧‍👦 Padre & Participación comunitaria</h3>
+                    
+                    <div class="key-points">
+                        <div class="key-points-title">🎯 Asociación de seguridad comunitaria</div>
+                        <ul class="key-points-list">
+                            <li><strong>Padres:</strong> Enseñar y reforzar reglas de seguridad, establecer rutas seguras para caminar.</li>
+                            <li><strong>Vecinos:</strong> Monitorear las paradas de autobús, informar el comportamiento inseguro de los conductores</li>
+                            <li><strong>Conductores:</strong> Extremar precaución en zonas escolares y cerca de paradas de autobús</li>
+                            <li><strong>Escuelas:</strong> Proporcionar educación continua sobre seguridad y capacitación en emergencias.</li>
+                            <li><strong>Aplicación de la ley:</strong> Hacer cumplir rigurosamente las leyes de seguridad en los autobuses escolares</li>
+                            <li><strong>Departamentos de Transporte:</strong> Mantener los autobuses con los más altos estándares de seguridad.</li>
+                            <li><strong>Todos:</strong> Abogar por mejores ubicaciones de paradas de autobús y seguridad vial</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-box">
+                        <div class="tips-title">📈 Estadísticas de impacto en la seguridad</div>
+                        <div class="subsection-content">
+                            • El comportamiento adecuado en las paradas de autobús reduce los accidentes en un 85%<br>
+                            • Los programas de capacitación de conductores reducen las infracciones en un 72%<br>
+                            • Las campañas de concientización comunitaria reducen el paso ilegal en un 65%<br>
+                            • La educación de los padres reduce los incidentes de peatones infantiles en un 78%<br>
+                            • Los cinturones de seguridad de los autobuses escolares (cuando sean necesarios) reducen las lesiones en un 45%<br>
+                            • El mantenimiento regular previene el 92% de las fallas mecánicas<br>
+                            • Los simulacros de emergencia mejoran el tiempo de evacuación en un 60%
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="danger-box">
+                        <div class="danger-title">🚨 Situaciones de emergencia & Trámites</div>
+                        <div class="subsection-content">
+                            <strong>Evacuación del autobús:</strong> Siga las instrucciones del conductor, use la salida segura más cercana y muévase a una distancia segura.<br>
+                            <strong>Emergencia Médica:</strong> El conductor administra primeros auxilios y llama al servicio de emergencias médicas<br>
+                            <strong>Peligro en la carretera:</strong> Conductor asegura el autobús y contacta al despacho para solicitar ayuda.<br>
+                            <strong>Clima severo:</strong> Siga los protocolos del distrito, busque refugio adecuado<br>
+                            <strong>Emergencia de conducta estudiantil:</strong> El conductor asegura la situación y contacta a la escuela/policía<br>
+                            <strong>Regla general:</strong> Mantenga la calma, siga las instrucciones y ayude a los demás cuando sea seguro hacerlo.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Check -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Verificación de conocimientos: conceptos básicos de seguridad en los autobuses escolares</h2>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. ¿Cuál es la "zona de peligro" alrededor de un autobús escolar?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>5 pies alrededor del autobús</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>10 pies alrededor del autobús por todos lados</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Sólo directamente delante del autobús.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. ¿Cuándo deben detenerse los conductores ante un autobús escolar?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Sólo cuando los niños son visibles</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Cuando las luces rojas parpadean y el brazo de parada está extendido</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Sólo en zonas escolares durante el horario escolar</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. ¿Dónde deben cruzar la calle los estudiantes al bajarse del autobús?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Detrás del autobús donde es más seguro</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Delante del autobús donde el conductor pueda verlos.</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>En el paso de peatones más cercano, incluso si está lejos del autobús.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. ¿Cuánto más seguros son los autobuses escolares en comparación con los vehículos familiares?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Aproximadamente el mismo nivel de seguridad</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>70 veces más seguro</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>2-3 veces más seguro</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">Comprueba tus respuestas</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Resultados de su conocimiento sobre seguridad en el autobús escolar
+                </div>
+                <div class="score" id="score">0/4</div>
+                <div class="feedback" id="feedback">
+                    Revise sus respuestas a continuación para ver qué conceptos domina y cuáles necesitan más atención.
+                </div>
+                <div class="key-points" style="margin-top: 20px;">
+                    <div class="key-points-title">🎯 Conclusiones esenciales sobre la seguridad en los autobuses escolares</div>
+                    <ul class="key-points-list">
+                        <li>La zona de peligro de 10 pies alrededor de los autobuses es donde ocurren la mayoría de los accidentes.</li>
+                        <li>SIEMPRE pare ante autobuses escolares con luces rojas intermitentes y brazos de parada extendidos.</li>
+                        <li>Los estudiantes deben cruzar SÓLO frente al autobús donde el conductor pueda verlos.</li>
+                        <li>Los autobuses escolares son estadísticamente 70 veces más seguros que los vehículos de pasajeros</li>
+                        <li>Un comportamiento adecuado en las paradas de autobús previene el 85% de los accidentes</li>
+                        <li>La seguridad de los autobuses escolares requiere la cooperación de los estudiantes, los conductores, los padres y la comunidad.</li>
+                        <li>En caso de duda: si no puede ver al conductor, el conductor no podrá verle a usted</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> ¡Se logró el dominio de la seguridad en los autobuses escolares!
+            </div>
+            <p>Ha completado con éxito la lección Conceptos básicos de seguridad en el autobús escolar.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>Recuerde: la seguridad en el autobús escolar es responsabilidad de todos. Ya sea estudiante, padre, conductor o miembro de la comunidad, su conocimiento y vigilancia ayudan a proteger a nuestros niños todos los días.</p>
+        </div>
+    </div>
+
+    <script>
+        // Timer Configuration - Continuous timer
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let quizCompleted = false;
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const progressFill = document.getElementById('progress-fill');
+        const submitBtn = document.getElementById('submit-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            // Clear any existing interval
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // Start new interval
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            // Update all timer displays
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            // Update progress based on sections read
+            updateProgress();
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 3; // We have 3 main sections
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Update completed count
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            // Update timer appearance based on time
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 900) { // 15 minutes or more
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 1200) { // 20 minutes or more
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Toggle checklist items
+        function toggleChecklist(item) {
+            const checkbox = item.querySelector('.checklist-checkbox');
+            checkbox.classList.toggle('checked');
+        }
+
+        // Update quiz score display
+        function updateQuizScore(score, totalQuestions) {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            quizScoreEl.textContent = `${percentage}%`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the continuous timer
+            startTimer();
+            
+            // Set up option selection
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    // Remove selected class from all options in this question
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+        });
+
+        function checkAnswers() {
+            // Mark quiz as completed
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'B',
+                4: 'B'
+            };
+
+            let score = 0;
+            const totalQuestions = 4;
+            let feedbackHTML = '';
+
+            // Check each question
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#10b981';
+                        selectedOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                    } else {
+                        selectedOption.style.borderColor = '#ef4444';
+                        selectedOption.style.background = 'rgba(239, 68, 68, 0.1)';
+                        
+                        // Highlight correct answer
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#10b981';
+                            correctOption.style.background = 'rgba(16, 185, 129, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            // Update quiz score
+            updateQuizScore(score, totalQuestions);
+            
+            // Calculate percentage
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            // Show results
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            // Generate feedback based on score
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 ¡Excelente! Entiende los principios esenciales de seguridad en los autobuses escolares. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 ¡Buen trabajo! Comprende la mayoría de los conceptos clave sobre la seguridad del autobús escolar. Revisa las respuestas incorrectas para fortalecer tus conocimientos. ';
+            } else {
+                feedbackHTML = '📚 Revise el material de la lección y vuelva a intentarlo. Comprender estos conceptos es crucial para proteger a los niños en los autobuses escolares. ';
+            }
+            
+            feedbackHTML += 'Recuerde estos principios clave de seguridad en los autobuses escolares:';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            // Show results
+            document.getElementById('results').classList.add('show');
+            
+            // Show completion message
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            // Update timer to show "Completed" state
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'gradiente lineal (135 grados, # 10b981, # 34d399)';
+            
+            // Update progress bar to 100%
+            progressFill.style.width = '100%';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Optional: Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>

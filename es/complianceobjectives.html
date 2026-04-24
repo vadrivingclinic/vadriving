@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cumplimiento de HIPAA & Prevención del fraude sanitario</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #af4bef;
+            --color-primary-light: #d492ff;
+            --color-accent: #8380f0;
+            --color-success: #00b894;
+            --color-bg-light: #f7f5fb;
+            --color-bg-gradient: linear-gradient(to bottom, white, #f1ecff, #f7f5fb);
+            --color-error: #e17055;
+            --color-text: #333333;
+            --color-muted: #666666;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(175, 75, 239, 0.1);
+            --shadow-hover: 0 15px 35px rgba(175, 75, 239, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-bg-gradient);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .lesson-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .lesson-subtitle {
+            font-size: 1.3rem;
+            color: var(--color-text);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .objective-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            box-shadow: var(--shadow-soft);
+            border: 2px solid rgba(175, 75, 239, 0.1);
+            transition: all 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .objective-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--color-primary);
+        }
+
+        .objective-number {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+
+        .objective-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            line-height: 1.6;
+            padding-right: 30px;
+        }
+
+        .progress-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .progress-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+        }
+
+        .progress-count {
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .progress-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .progress-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .progress-item {
+            background: rgba(175, 75, 239, 0.05);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            text-align: center;
+            border: 2px solid rgba(175, 75, 239, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .progress-item:hover {
+            transform: translateY(-3px);
+            border-color: var(--color-primary);
+        }
+
+        .progress-item.completed {
+            background: rgba(0, 184, 148, 0.1);
+            border-color: var(--color-success);
+        }
+
+        .progress-item.in-progress {
+            background: rgba(131, 128, 240, 0.1);
+            border-color: var(--color-accent);
+        }
+
+        .item-icon {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .item-label {
+            font-size: 0.85rem;
+            color: var(--color-text);
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .content-sections {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(175, 75, 239, 0.1);
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--color-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .concepts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .concept-card {
+            background: rgba(175, 75, 239, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border: 2px solid rgba(175, 75, 239, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .concept-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .concept-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .term-highlight {
+            background: rgba(175, 75, 239, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .comparison-table th {
+            background: var(--color-primary);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(175, 75, 239, 0.1);
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(175, 75, 239, 0.05);
+        }
+
+        .key-terms-section {
+            background: rgba(131, 128, 240, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin: 30px 0;
+            border-left: 4px solid var(--color-accent);
+        }
+
+        .key-terms-title {
+            font-weight: 800;
+            color: var(--color-accent);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .term-item {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 15px;
+            border: 2px solid rgba(131, 128, 240, 0.2);
+        }
+
+        .term-name {
+            font-weight: 700;
+            color: var(--color-accent);
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .term-definition {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .interactive-activity {
+            background: linear-gradient(135deg, rgba(175, 75, 239, 0.1), rgba(131, 128, 240, 0.1));
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin: 40px 0;
+            border: 2px dashed rgba(175, 75, 239, 0.3);
+        }
+
+        .activity-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .scenario-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .scenario-text {
+            color: var(--color-text);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .question-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: rgba(175, 75, 239, 0.05);
+            border: 2px solid rgba(175, 75, 239, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(175, 75, 239, 0.1);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(175, 75, 239, 0.15);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(175, 75, 239, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #8c3ac7;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(175, 75, 239, 0.3);
+        }
+
+        .results-panel {
+            display: none;
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: var(--shadow-soft);
+            border-top: 4px solid var(--color-primary);
+        }
+
+        .results-panel.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .results-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback-message {
+            color: var(--color-text);
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .completion-section {
+            background: linear-gradient(135deg, var(--color-success), #26d7ab);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin-top: 50px;
+            text-align: center;
+            display: none;
+        }
+
+        .completion-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .completion-message {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .objectives-checklist {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .checklist-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: white;
+        }
+
+        .checklist-item.completed::before {
+            content: "✓";
+            color: var(--color-success);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .checklist-item:not(.completed)::before {
+            content: "○";
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .lesson-title {
+                font-size: 1.8rem;
+            }
+
+            .lesson-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .content-section {
+                padding: 20px;
+            }
+
+            .concepts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .terms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://cdn.prod.website-files.com/64d0ccc1558d601cbfb09021/64e9d2f719b1e5258e5d57f5_IMG_1512-p-500.png" alt="Logotipo de la marca" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Dominio del cumplimiento sanitario</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">HIPAA, Privacidad & Prevención de fraude</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Cumplimiento de HIPAA & Prevención del fraude sanitario</h1>
+        <div class="lesson-subtitle">Dominar las regulaciones, proteger los derechos de los pacientes y prevenir el fraude</div>
+
+        <!-- Learning Objectives Grid -->
+        <div class="objectives-grid">
+            <div class="objective-card" style="animation-delay: 0.1s">
+                <div class="objective-number">1</div>
+                <div class="objective-text">Definir el cumplimiento en el contexto de la atención sanitaria</div>
+            </div>
+            <div class="objective-card" style="animation-delay: 0.2s">
+                <div class="objective-number">2</div>
+                <div class="objective-text">Nombre las dos disposiciones de HIPAA relevantes para la atención médica.</div>
+            </div>
+            <div class="objective-card" style="animation-delay: 0.3s">
+                <div class="objective-number">3</div>
+                <div class="objective-text">Explique la diferencia entre el Título I y el Título II de HIPAA</div>
+            </div>
+            <div class="objective-card" style="animation-delay: 0.4s">
+                <div class="objective-number">4</div>
+                <div class="objective-text">Definir roles, relaciones y términos clave de HIPAA</div>
+            </div>
+            <div class="objective-card" style="animation-delay: 0.5s">
+                <div class="objective-number">5</div>
+                <div class="objective-text">Describa la regla de privacidad según HIPAA</div>
+            </div>
+            <div class="objective-card" style="animation-delay: 0.6s">
+                <div class="objective-number">6</div>
+                <div class="objective-text">Definir y discutir la información de salud protegida (PHI)</div>
+            </div>
+            <div class="objective-card" style="animation-delay: 0.7s">
+                <div class="objective-number">7</div>
+                <div class="objective-text">Identificar la diferencia entre divulgación y uso de PHI</div>
+            </div>
+            <div class="objective-card" style="animation-delay: 0.8s">
+                <div class="objective-number">8</div>
+                <div class="objective-text">Ilustrar la diferencia entre información privilegiada y no privilegiada.</div>
+            </div>
+            <div class="objective-card" style="animation-delay: 0.9s">
+                <div class="objective-number">9</div>
+                <div class="objective-text">Explicar los derechos del paciente según HIPAA</div>
+            </div>
+            <div class="objective-card" style="animation-delay: 1.0s">
+                <div class="objective-number">10</div>
+                <div class="objective-text">Explicar las responsabilidades de la organización de atención médica según HIPAA.</div>
+            </div>
+        </div>
+
+        <!-- Progress Tracker -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <div class="progress-title">Seguimiento del progreso del aprendizaje</div>
+                <div class="progress-count"><span id="completed-items">0</span>/22 Objetivos</div>
+            </div>
+            
+            <div class="progress-grid">
+                <div class="progress-item" data-objective="1">
+                    <div class="item-icon">📋</div>
+                    <div class="item-label">Definir cumplimiento</div>
+                </div>
+                <div class="progress-item" data-objective="2">
+                    <div class="item-icon">⚖️</div>
+                    <div class="item-label">Disposiciones HIPAA</div>
+                </div>
+                <div class="progress-item" data-objective="3">
+                    <div class="item-icon">🔍</div>
+                    <div class="item-label">Título I vs II</div>
+                </div>
+                <div class="progress-item" data-objective="4">
+                    <div class="item-icon">👥</div>
+                    <div class="item-label">Funciones de HIPAA</div>
+                </div>
+                <div class="progress-item" data-objective="5">
+                    <div class="item-icon">🔒</div>
+                    <div class="item-label">Regla de privacidad</div>
+                </div>
+                <div class="progress-item" data-objective="6">
+                    <div class="item-icon">📄</div>
+                    <div class="item-label">Definición de PHI</div>
+                </div>
+                <div class="progress-item" data-objective="7">
+                    <div class="item-icon">↔️</div>
+                    <div class="item-label">Uso versus divulgación</div>
+                </div>
+                <div class="progress-item" data-objective="8">
+                    <div class="item-icon">⚖️</div>
+                    <div class="item-label">Información privilegiada</div>
+                </div>
+                <div class="progress-item" data-objective="9">
+                    <div class="item-icon">👤</div>
+                    <div class="item-label">Derechos del paciente</div>
+                </div>
+                <div class="progress-item" data-objective="10">
+                    <div class="item-icon">🏥</div>
+                    <div class="item-label">Responsabilidades de la organización</div>
+                </div>
+                <div class="progress-item" data-objective="11">
+                    <div class="item-icon">📝</div>
+                    <div class="item-label">Directrices de cumplimiento</div>
+                </div>
+                <div class="progress-item" data-objective="12">
+                    <div class="item-icon">🛡️</div>
+                    <div class="item-label">Medidas de seguridad</div>
+                </div>
+                <div class="progress-item" data-objective="13">
+                    <div class="item-icon">💻</div>
+                    <div class="item-label">Regla de seguridad</div>
+                </div>
+                <div class="progress-item" data-objective="14">
+                    <div class="item-icon">⚡</div>
+                    <div class="item-label">Ley HITECH</div>
+                </div>
+                <div class="progress-item" data-objective="15">
+                    <div class="item-icon">📜</div>
+                    <div class="item-label">Regla general</div>
+                </div>
+                <div class="progress-item" data-objective="16">
+                    <div class="item-icon">⚠️</div>
+                    <div class="item-label">Consecuencias</div>
+                </div>
+                <div class="progress-item" data-objective="17">
+                    <div class="item-icon">🏢</div>
+                    <div class="item-label">Impacto de HIPAA</div>
+                </div>
+                <div class="progress-item" data-objective="18">
+                    <div class="item-icon">🚨</div>
+                    <div class="item-label">Fraude versus abuso</div>
+                </div>
+                <div class="progress-item" data-objective="19">
+                    <div class="item-icon">⚖️</div>
+                    <div class="item-label">Leyes de fraude</div>
+                </div>
+                <div class="progress-item" data-objective="20">
+                    <div class="item-icon">🔍</div>
+                    <div class="item-label">Programas de auditoría</div>
+                </div>
+                <div class="progress-item" data-objective="21">
+                    <div class="item-icon">✅</div>
+                    <div class="item-label">Programa de cumplimiento</div>
+                </div>
+                <div class="progress-item" data-objective="22">
+                    <div class="item-icon">📋</div>
+                    <div class="item-label">Políticas & Trámites</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Sections -->
+        <div class="content-sections">
+            <!-- Section 1: HIPAA Fundamentals -->
+            <div class="content-section">
+                <div class="section-header">
+                    <div class="section-icon">⚖️</div>
+                    <div>
+                        <h2 class="section-title">Fundamentos de HIPAA</h2>
+                        <div class="section-subtitle">Comprender las dos disposiciones principales</div>
+                    </div>
+                </div>
+
+                <div class="concepts-grid">
+                    <div class="concept-card">
+                        <div class="concept-title">📋 ¿Qué es el Cumplimiento?</div>
+                        <div class="concept-content">
+                            <span class="term-highlight">Cumplimiento</span> en la atención médica implica cumplir con las leyes, regulaciones y pautas que rigen las operaciones de atención médica. Garantiza la seguridad del paciente, la confidencialidad, la facturación precisa y previene actividades fraudulentas.
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <div class="concept-title">🔒 Título I: Reforma de Seguros</div>
+                        <div class="concept-content">
+                            Se centra en la disponibilidad y continuidad de la cobertura del seguro médico. Protege a las personas con condiciones preexistentes y garantiza la portabilidad del seguro entre trabajos.
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <div class="concept-title">💻 Título II: Simplificación Administrativa</div>
+                        <div class="concept-content">
+                            Establece estándares nacionales para transacciones electrónicas de atención médica. Incluye regla de privacidad, regla de seguridad y regla de cumplimiento para proteger la información del paciente.
+                        </div>
+                    </div>
+                </div>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Característica</th>
+                            <th>Título I: Reforma del Seguro</th>
+                            <th>Título II: Simplificación Administrativa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Enfoque primario</strong></td>
+                            <td>Coberturas de seguros y portabilidad</td>
+                            <td>Privacidad y seguridad de la información de salud.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Propósito clave</strong></td>
+                            <td>Proteger a personas con condiciones preexistentes.</td>
+                            <td>Establecer estándares nacionales para transacciones electrónicas.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Componentes principales</strong></td>
+                            <td>Reformas del mercado de seguros</td>
+                            <td>Regla de privacidad, regla de seguridad, regla de cumplimiento</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Impacto en los pacientes</strong></td>
+                            <td>Continuidad de la cobertura del seguro</td>
+                            <td>Protección de la información personal de salud</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Section 2: Privacy & Security -->
+            <div class="content-section">
+                <div class="section-header">
+                    <div class="section-icon">🔐</div>
+                    <div>
+                        <h2 class="section-title">Regla de privacidad & Información de salud protegida</h2>
+                        <div class="section-subtitle">Comprensión de la PHI, la divulgación y los derechos del paciente</div>
+                    </div>
+                </div>
+
+                <div class="concepts-grid">
+                    <div class="concept-card">
+                        <div class="concept-title">📄 Información de salud protegida (PHI)</div>
+                        <div class="concept-content">
+                            Cualquier información en un registro médico que pueda identificar a un individuo, creada, utilizada o divulgada durante la prestación de atención médica. Incluye datos demográficos, historial médico, resultados de pruebas, información del seguro.
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <div class="concept-title">🔍 Uso versus divulgación</div>
+                        <div class="concept-content">
+                            <strong>Usar:</strong> Compartir PHI dentro de la organización<br>
+                            <strong>Divulgación:</strong> Divulgar PHI fuera de la organización<br>
+                            HIPAA requiere un uso y divulgación mínimos necesarios
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <div class="concept-title">⚖️ Privilegiados vs no privilegiados</div>
+                        <div class="concept-content">
+                            <strong>Privilegiado:</strong> Información relacionada con el tratamiento que requiere autorización<br>
+                            <strong>No privilegiados:</strong> Datos básicos como nombre, dirección, información del seguro.<br>
+                            Se aplican reglas diferentes para la divulgación
+                        </div>
+                    </div>
+                </div>
+
+                <div class="key-terms-section">
+                    <div class="key-terms-title">📚 Términos clave de privacidad</div>
+                    <div class="terms-grid">
+                        <div class="term-item">
+                            <div class="term-name">Entidad cubierta</div>
+                            <div class="term-definition">Planes de salud, cámaras de compensación, proveedores que transmiten información de salud electrónicamente</div>
+                        </div>
+                        <div class="term-item">
+                            <div class="term-name">Socio comercial</div>
+                            <div class="term-definition">Persona/entidad que realiza funciones que involucran PHI en nombre de la entidad cubierta</div>
+                        </div>
+                        <div class="term-item">
+                            <div class="term-name">Formulario de autorización</div>
+                            <div class="term-definition">Permiso por escrito para el uso/divulgación de PHI más allá del tratamiento, pago y operaciones.</div>
+                        </div>
+                        <div class="term-item">
+                            <div class="term-name">central nuclear</div>
+                            <div class="term-definition">Aviso de prácticas de privacidad: explica cómo se utiliza la PHI y los derechos de los pacientes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Security & HITECH -->
+            <div class="content-section">
+                <div class="section-header">
+                    <div class="section-icon">🛡️</div>
+                    <div>
+                        <h2 class="section-title">Medidas de seguridad & Ley HITECH</h2>
+                        <div class="section-subtitle">Tres categorías de salvaguardias y protecciones mejoradas</div>
+                    </div>
+                </div>
+
+                <div class="concepts-grid">
+                    <div class="concept-card">
+                        <div class="concept-title">1️⃣ Garantías administrativas</div>
+                        <div class="concept-content">
+                            Políticas y procedimientos para la gestión de seguridad, capacitación de la fuerza laboral, gestión del acceso a la información, procedimientos de incidentes de seguridad y planificación de contingencias.
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <div class="concept-title">2️⃣ Salvaguardias físicas</div>
+                        <div class="concept-content">
+                            Controles de acceso a instalaciones, seguridad de estaciones de trabajo, controles de dispositivos y medios, y barreras físicas para proteger sistemas electrónicos y edificios.
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <div class="concept-title">3️⃣ Garantías técnicas</div>
+                        <div class="concept-content">
+                            Sistemas de control de acceso, controles de auditoría, controles de integridad, autenticación de persona/entidad y medidas de seguridad de transmisión.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concepts-grid" style="margin-top: 20px;">
+                    <div class="concept-card">
+                        <div class="concept-title">⚡ Disposiciones de la Ley HITECH</div>
+                        <div class="concept-content">
+                            Parte de la Ley Estadounidense de Recuperación y Reinversión. Amplía HIPAA a los socios comerciales, aumenta las sanciones, exige notificaciones de incumplimiento y promueve la adopción de EHR.
+                        </div>
+                    </div>
+
+                    <div class="concept-card">
+                        <div class="concept-title">📜 Regla general de HIPAA</div>
+                        <div class="concept-content">
+                            Fortalece las protecciones de privacidad/seguridad, amplía los derechos de los pacientes, aumenta las sanciones e incorpora los requisitos de la Ley HITECH en las regulaciones HIPAA.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Fraud & Abuse -->
+            <div class="content-section">
+                <div class="section-header">
+                    <div class="section-icon">🚨</div>
+                    <div>
+                        <h2 class="section-title">Prevención de fraude versus abuso</h2>
+                        <div class="section-subtitle">Programas de detección, prevención y cumplimiento</div>
+                    </div>
+                </div>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Aspecto</th>
+                            <th>Fraude</th>
+                            <th>Abuso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Definición</strong></td>
+                            <td>Engaño intencional para beneficio no autorizado</td>
+                            <td>Prácticas incompatibles con buenas prácticas médicas/comerciales</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Intención</strong></td>
+                            <td>Clara intención de defraudar</td>
+                            <td>Puede ser involuntario o negligente</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ejemplos</strong></td>
+                            <td>Facturación de servicios no prestados, upcoding, facturas fantasmas</td>
+                            <td>Cargos excesivos, servicios innecesarios, documentación deficiente.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Consecuencias legales</strong></td>
+                            <td>Sanciones penales y civiles</td>
+                            <td>Sanciones civiles, acciones correctivas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="key-terms-section">
+                    <div class="key-terms-title">⚖️ Fraude & Términos clave de abuso</div>
+                    <div class="terms-grid">
+                        <div class="term-item">
+                            <div class="term-name">qui-tam</div>
+                            <div class="term-definition">Disposición para denunciantes que permite a los ciudadanos privados presentar demandas en nombre del gobierno</div>
+                        </div>
+                        <div class="term-item">
+                            <div class="term-name">RAC</div>
+                            <div class="term-definition">Contratista de auditoría de recuperación: identifica pagos inadecuados de Medicare</div>
+                        </div>
+                        <div class="term-item">
+                            <div class="term-name">ZPIC</div>
+                            <div class="term-definition">Contratista de Integridad del Programa de Zona: investiga patrones de facturación sospechosos</div>
+                        </div>
+                        <div class="term-item">
+                            <div class="term-name">CALOR</div>
+                            <div class="term-definition">Equipo de acción para la prevención y el cumplimiento del fraude en la atención médica</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Activity -->
+        <div class="interactive-activity">
+            <h2 class="activity-title">📝 Aplicación de conocimientos: escenarios HIPAA</h2>
+            
+            <!-- Scenario 1 -->
+            <div class="scenario-card">
+                <div class="scenario-title">Escenario 1: Decisión de divulgación de PHI</div>
+                <div class="scenario-text">
+                    Un codificador médico en una clínica recibe una llamada de una compañía de seguros solicitando detalles específicos del tratamiento de un paciente. El representante del seguro dice que necesitan esta información para procesar un reclamo. El paciente no ha firmado un formulario de autorización para esta divulgación específica. ¿Qué debe hacer el codificador?
+                </div>
+                
+                <div class="question-options">
+                    <div class="option" data-scenario="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Proporcione la información ya que es para fines de pago.</div>
+                    </div>
+                    <div class="option" data-scenario="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Verificar la información mínima necesaria y revelar sólo aquella</div>
+                    </div>
+                    <div class="option" data-scenario="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Requerir autorización del paciente antes de cualquier divulgación.</div>
+                    </div>
+                    <div class="option" data-scenario="1" data-answer="D">
+                        <div class="option-label">D</div>
+                        <div>Remitir a la persona que llama al Oficial de Privacidad</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 2 -->
+            <div class="scenario-card">
+                <div class="scenario-title">Escenario 2: Identificación de fraude versus abuso</div>
+                <div class="scenario-text">
+                    Un proveedor de atención médica factura constantemente por sesiones de psicoterapia de 60 minutos, pero normalmente sólo dedica entre 30 y 40 minutos a los pacientes. El proveedor cree que esto es aceptable ya que la calidad de la atención no se ve afectada. ¿Qué término describe mejor esta situación?
+                </div>
+                
+                <div class="question-options">
+                    <div class="option" data-scenario="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Fraude: engaño intencional para obtener un pago más alto</div>
+                    </div>
+                    <div class="option" data-scenario="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Abuso: incompatible con buenas prácticas de facturación</div>
+                    </div>
+                    <div class="option" data-scenario="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Facturación conforme: el tiempo no determina la selección del código</div>
+                    </div>
+                    <div class="option" data-scenario="2" data-answer="D">
+                        <div class="option-label">D</div>
+                        <div>Tanto el fraude como el abuso están presentes.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 3 -->
+            <div class="scenario-card">
+                <div class="scenario-title">Escenario 3: Implementación de salvaguardas de seguridad</div>
+                <div class="scenario-text">
+                    Una pequeña práctica médica está implementando los requisitos de la regla de seguridad HIPAA. Han instalado software antivirus y firewalls (protecciones técnicas) y han desarrollado políticas para la capacitación de la fuerza laboral (protecciones administrativas). ¿Qué tipo de salvaguardia aún se necesita para completar las tres categorías requeridas?
+                </div>
+                
+                <div class="question-options">
+                    <div class="option" data-scenario="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Medidas de seguridad físicas como puertas cerradas con llave y estaciones de trabajo seguras.</div>
+                    </div>
+                    <div class="option" data-scenario="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Más salvaguardias técnicas como el cifrado</div>
+                    </div>
+                    <div class="option" data-scenario="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Garantías financieras para la seguridad de la facturación</div>
+                    </div>
+                    <div class="option" data-scenario="3" data-answer="D">
+                        <div class="option-label">D</div>
+                        <div>Garantías legales a través de la revisión de abogados</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">Enviar respuestas</button>
+
+            <div class="results-panel" id="results-panel">
+                <div class="results-header">
+                    <div class="results-title">Resultados de la evaluación</div>
+                </div>
+                
+                <div class="score-display" id="score-display">0/3</div>
+                
+                <div class="feedback-message" id="feedback-message">
+                    Revise sus respuestas para ver qué tan bien ha aplicado los conceptos de HIPAA a escenarios del mundo real.
+                </div>
+
+                <div class="key-terms-section" style="background: rgba(175, 75, 239, 0.1); border-left-color: var(--color-primary);">
+                    <div class="key-terms-title" style="color: var(--color-primary);">🎯 Conclusiones clave</div>
+                    <div class="terms-grid">
+                        <div class="term-item" style="background: white;">
+                            <div class="term-name" style="color: var(--color-primary);">Regla mínima necesaria</div>
+                            <div class="term-definition">Divulgue siempre solo la PHI mínima necesaria para el propósito previsto.</div>
+                        </div>
+                        <div class="term-item" style="background: white;">
+                            <div class="term-name" style="color: var(--color-primary);">Tres categorías de salvaguardias</div>
+                            <div class="term-definition">Se deben implementar salvaguardias administrativas, físicas y técnicas.</div>
+                        </div>
+                        <div class="term-item" style="background: white;">
+                            <div class="term-name" style="color: var(--color-primary);">Intención de fraude</div>
+                            <div class="term-definition">El engaño intencional distingue el fraude del abuso involuntario</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Section -->
+        <div class="completion-section" id="completion-section">
+            <div class="completion-title">🎉 ¡Módulo dominado!</div>
+            
+            <div class="completion-message">
+                Ha explorado con éxito los 22 objetivos de aprendizaje para el cumplimiento de HIPAA. & Prevención del fraude sanitario. Ahora comprende las regulaciones críticas, los derechos de los pacientes, los requisitos de seguridad y las estrategias de prevención de fraude esenciales para los profesionales de la salud.
+            </div>
+
+            <div class="objectives-checklist">
+                <div class="checklist-title">Objetivos de aprendizaje alcanzados</div>
+                <div class="checklist-item completed">Definir cumplimiento</div>
+                <div class="checklist-item completed">Nombre Disposiciones de HIPAA</div>
+                <div class="checklist-item completed">Explique el Título I vs II</div>
+                <div class="checklist-item completed">Definir roles HIPAA</div>
+                <div class="checklist-item completed">Describir la regla de privacidad</div>
+                <div class="checklist-item completed">Discutir PHI</div>
+                <div class="checklist-item completed">Identificar uso versus divulgación</div>
+                <div class="checklist-item completed">Ilustrar información privilegiada</div>
+                <div class="checklist-item completed">Explicar los derechos del paciente.</div>
+                <div class="checklist-item completed">Explicar las responsabilidades de la organización.</div>
+                <div class="checklist-item completed">Pautas de cumplimiento estatales</div>
+                <div class="checklist-item completed">Listar medidas de seguridad</div>
+                <div class="checklist-item completed">Discutir la regla de seguridad</div>
+                <div class="checklist-item completed">Definir la Ley HITECH</div>
+                <div class="checklist-item completed">Explicar la regla general</div>
+                <div class="checklist-item completed">Lista de consecuencias</div>
+                <div class="checklist-item completed">Discutir el impacto de HIPAA</div>
+                <div class="checklist-item completed">Identificar fraude versus abuso</div>
+                <div class="checklist-item completed">Identificar las leyes de fraude</div>
+                <div class="checklist-item completed">Listar programas de auditoría</div>
+                <div class="checklist-item completed">Describir el programa de cumplimiento</div>
+                <div class="checklist-item completed">Discutir políticas & procedimientos</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Progress tracking
+        const completedItems = new Set();
+        let scenarioAnswers = {
+            1: null,
+            2: null,
+            3: null
+        };
+
+        // Update progress display
+        function updateProgress() {
+            const completedCount = completedItems.size;
+            document.getElementById('completed-items').textContent = completedCount;
+            
+            // Update progress items
+            document.querySelectorAll('.progress-item').forEach(item => {
+                const objective = item.dataset.objective;
+                if (completedItems.has(objective)) {
+                    item.classList.add('completed');
+                    item.classList.remove('in-progress');
+                }
+            });
+            
+            // Check if all objectives completed
+            if (completedItems.size === 22) {
+                document.getElementById('completion-section').classList.add('show');
+            }
+        }
+
+        // Mark objective as completed
+        function completeObjective(objectiveNumber) {
+            completedItems.add(objectiveNumber.toString());
+            updateProgress();
+        }
+
+        // Set up progress item clicks
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up progress item interactions
+            document.querySelectorAll('.progress-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const objective = this.dataset.objective;
+                    if (!completedItems.has(objective)) {
+                        this.classList.add('in-progress');
+                        // In a full implementation, this would track which sections are viewed
+                    }
+                });
+            });
+
+            // Set up scenario option selection
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const scenario = this.dataset.scenario;
+                    const answer = this.dataset.answer;
+                    
+                    // Remove selected class from other options in same scenario
+                    document.querySelectorAll(`.option[data-scenario="${scenario}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    // Store answer
+                    scenarioAnswers[scenario] = answer;
+                    
+                    // Mark relevant objectives as completed
+                    if (scenario === '1') {
+                        completeObjective('5'); // Privacy Rule
+                        completeObjective('6'); // PHI
+                        completeObjective('7'); // Use vs Disclosure
+                    } else if (scenario === '2') {
+                        completeObjective('18'); // Fraud vs Abuse
+                    } else if (scenario === '3') {
+                        completeObjective('12'); // Security Safeguards
+                        completeObjective('13'); // Security Rule
+                    }
+                });
+            });
+
+            // Mark initial objectives as completed based on viewing content
+            setTimeout(() => {
+                completeObjective('1'); // Define compliance
+                completeObjective('2'); // HIPAA provisions
+                completeObjective('3'); // Title I vs II
+                completeObjective('4'); // HIPAA roles
+                completeObjective('8'); // Privileged info
+                completeObjective('9'); // Patient rights
+                completeObjective('10'); // Org responsibilities
+                completeObjective('14'); // HITECH Act
+                completeObjective('15'); // Omnibus Rule
+                completeObjective('16'); // Consequences
+                completeObjective('17'); // HIPAA impact
+                completeObjective('19'); // Fraud laws
+                completeObjective('20'); // Audit programs
+                completeObjective('21'); // Compliance program
+                completeObjective('22'); // Policies & procedures
+            }, 1000);
+        });
+
+        // Check scenario answers
+        function checkAnswers() {
+            const correctAnswers = {
+                1: 'B', // Minimum necessary disclosure
+                2: 'A', // Fraud
+                3: 'A'  // Physical safeguards
+            };
+
+            let score = 0;
+            let feedback = '';
+
+            // Check each scenario
+            for (let i = 1; i <= 3; i++) {
+                const userAnswer = scenarioAnswers[i];
+                const correctAnswer = correctAnswers[i];
+                
+                if (userAnswer === correctAnswer) {
+                    score++;
+                    
+                    // Mark correct option
+                    const correctOption = document.querySelector(`.option[data-scenario="${i}"][data-answer="${correctAnswer}"]`);
+                    if (correctOption) {
+                        correctOption.style.borderColor = '#00b894';
+                        correctOption.style.background = 'rgba(0, 184, 148, 0.1)';
+                    }
+                } else if (userAnswer) {
+                    // Mark incorrect option
+                    const userOption = document.querySelector(`.option[data-scenario="${i}"][data-answer="${userAnswer}"]`);
+                    if (userOption) {
+                        userOption.style.borderColor = '#e17055';
+                        userOption.style.background = 'rgba(225, 112, 85, 0.1)';
+                    }
+                    
+                    // Highlight correct option
+                    const correctOption = document.querySelector(`.option[data-scenario="${i}"][data-answer="${correctAnswer}"]`);
+                    if (correctOption) {
+                        correctOption.style.borderColor = '#00b894';
+                        correctOption.style.background = 'rgba(0, 184, 148, 0.1)';
+                        correctOption.style.fontWeight = '600';
+                    }
+                }
+            }
+
+            // Update score display
+            document.getElementById('score-display').textContent = `${score}/3`;
+            
+            // Provide feedback
+            if (score === 3) {
+                feedback = '🎉 ¡Excelente! Aplicó perfectamente los conceptos de HIPAA a escenarios del mundo real.';
+            } else if (score >= 2) {
+                feedback = '👍 ¡Buen trabajo! Entiendes la mayoría de los conceptos pero revisas las respuestas incorrectas.';
+            } else {
+                feedback = '📚 Revise el material de la lección para fortalecer su comprensión de las aplicaciones de HIPAA.';
+            }
+            
+            document.getElementById('feedback-message').textContent = feedback;
+            
+            // Show results panel
+            document.getElementById('results-panel').classList.add('show');
+            
+            // Mark additional objectives as completed
+            completeObjective('11'); // Compliance guidelines
+            
+            // Scroll to results
+            document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>

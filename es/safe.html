@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA: prácticas de conducción segura</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #1a73e8;
+            --color-primary-light: #8ab4f8;
+            --color-secondary: #000000;
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-muted: #5f6368;
+            --color-danger: #ea4335;
+            --color-warning: #f9ab00;
+            --color-success: #34a853;
+            --color-caution: #fbbc04;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(26, 115, 232, 0.1);
+            --shadow-hover: 0 15px 35px rgba(26, 115, 232, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e8f0fe 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(26, 115, 232, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(26, 115, 232, 0.8); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .lesson-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Timer Styles */
+        .timer-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .timer {
+            background: linear-gradient(135deg, #1a73e8, #4285f4);
+            color: white;
+            border-radius: 50px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(26, 115, 232, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            background: linear-gradient(135deg, #f9ab00, #fbbc04);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.critical {
+            background: linear-gradient(135deg, #ea4335, #f28b82);
+            animation: blink 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(26, 115, 232, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(26, 115, 232, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(26, 115, 232, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .module-title {
+            font-size: 1.1rem;
+            color: var(--color-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .lesson-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .time-estimate {
+            background: rgba(26, 115, 232, 0.1);
+            border: 2px solid rgba(26, 115, 232, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+
+        .time-estimate-text {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.2em;
+        }
+
+        .progress-indicator {
+            margin: 20px 0 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(26, 115, 232, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1a73e8, #4285f4);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-muted);
+            font-weight: 600;
+        }
+
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(26, 115, 232, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .section:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 1.2rem;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(26, 115, 232, 0.1);
+        }
+
+        .subsection:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subsection-content {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        .danger-box {
+            background: rgba(234, 67, 53, 0.1);
+            border-left: 4px solid var(--color-danger);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .danger-title {
+            font-weight: 700;
+            color: var(--color-danger);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .danger-content {
+            color: var(--color-text);
+            font-size: 0.95rem;
+        }
+
+        .warning-box {
+            background: rgba(249, 171, 0, 0.1);
+            border-left: 4px solid var(--color-warning);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: var(--color-warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .warning-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .warning-list li:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .success-box {
+            background: rgba(52, 168, 83, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        }
+
+        .success-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .success-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .success-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .success-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+        }
+
+        .distraction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .distraction-card {
+            background: rgba(26, 115, 232, 0.05);
+            border: 2px solid rgba(26, 115, 232, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .distraction-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-3px);
+        }
+
+        .distraction-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .distraction-name {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+        }
+
+        .distraction-description {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .knowledge-check {
+            background: rgba(26, 115, 232, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 40px;
+            border: 2px dashed rgba(26, 115, 232, 0.3);
+        }
+
+        .knowledge-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(26, 115, 232, 0.1);
+        }
+
+        .quiz-question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid rgba(26, 115, 232, 0.2);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: rgba(26, 115, 232, 0.05);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(26, 115, 232, 0.1);
+            font-weight: 600;
+        }
+
+        .option-label {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(26, 115, 232, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #0d62d9;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(26, 115, 232, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            background: rgba(26, 115, 232, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .results-title {
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .feedback {
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .key-points {
+            background: rgba(52, 168, 83, 0.1);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .key-points-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key-points-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #34a853, #4caf50);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: glow 2s infinite;
+        }
+
+        .completion-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .completion-time {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .timer-container {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .timer {
+                justify-content: center;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .lesson-title {
+                font-size: 1.6rem;
+            }
+
+            .distraction-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <!-- Timer Display -->
+    <div class="timer-container">
+        <div class="timer" id="timer">
+            <div class="timer-icon">⏱️</div>
+            <div class="timer-display" id="timer-display">00:00</div>
+            <div class="timer-label">Aprendizaje del tiempo</div>
+        </div>
+    </div>
+
+    <div class="lesson-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo">
+                <div class="module-info">
+                    <div class="module-title">Módulo de Prácticas de Conducción Segura</div>
+                    <div style="color: var(--color-muted); font-size: 0.9rem;">Guía de seguridad esencial de 10 minutos</div>
+                </div>
+            </div>
+        </div>
+
+        <h1 class="lesson-title">Prácticas de conducción segura & Seguridad Vial</h1>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate">
+            <div class="time-estimate-icon">⏱️</div>
+            <div class="time-estimate-text">
+                Complete esta lección en aproximadamente <span class="time-highlight">10 minutos</span> para dominar las prácticas esenciales de conducción segura
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="completed-count">0</span>
+                <span class="stat-label">Secciones completadas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="quiz-score">0%</span>
+                <span class="stat-label">Puntuación del examen</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Aprendizaje del tiempo</span>
+            </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Progreso de la lección</span>
+                <span>Tiempo de aprendizaje: <span id="time-learning">0:00</span></span>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Section 1: Distracted Driving -->
+            <div class="section" style="animation-delay: 0.1s" data-section="1">
+                <div class="section-number">1</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">📵</span>
+                    Conducir distraído: el asesino silencioso
+                </h2>
+                
+                <div class="subsection">
+                    <p class="subsection-content">
+                        Conducir distraído implica cualquier actividad que desvíe la atención de la conducción, incluido hablar o enviar mensajes de texto por teléfono, 
+                        comer y beber, hablar con la gente en su vehículo o jugar con el estéreo, el entretenimiento o el sistema de navegación.
+                    </p>
+                    
+                    <div class="danger-box">
+                        <div class="danger-title">⚠️ Estadísticas críticas (NHTSA)</div>
+                        <div class="danger-content">
+                            • Cada día en los EE. UU., más de <strong>9 personas mueren</strong><br>
+                            • Encima <strong>1.153 personas resultan heridas diariamente</strong><br>
+                            • Todo en accidentes que involucran a un conductor distraído<br>
+                            • Enviar mensajes de texto mientras conduces te hace <strong>23 veces más probable</strong> estrellarse
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: var(--color-danger);">👁️</span> Tres tipos de distracciones
+                    </h3>
+                    
+                    <div class="distraction-grid">
+                        <div class="distraction-card">
+                            <div class="distraction-icon">👀</div>
+                            <div class="distraction-name">Visual</div>
+                            <div class="distraction-description">
+                                Quitando tus ojos del camino<br>
+                                Ejemplos: leer mapas, GPS, mirar algo afuera
+                            </div>
+                        </div>
+
+                        <div class="distraction-card">
+                            <div class="distraction-icon">✋</div>
+                            <div class="distraction-name">Manual</div>
+                            <div class="distraction-description">
+                                Quitando las manos del volante<br>
+                                Ejemplos: ajustar el asiento, cambiar la radio, arreglarse
+                            </div>
+                        </div>
+
+                        <div class="distraction-card">
+                            <div class="distraction-icon">🧠</div>
+                            <div class="distraction-name">Cognitivo</div>
+                            <div class="distraction-description">
+                                Dejando de pensar en conducir<br>
+                                Ejemplos: conversación, problemas personales, soñar despierto.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: var(--color-success);">🛡️</span> Estrategias de prevención
+                    </h3>
+                    
+                    <div class="success-box">
+                        <div class="success-title">✅ Hábitos de conducción segura</div>
+                        <ul class="success-list">
+                            <li>Haz llamadas telefónicas, come y acicala antes de empezar a conducir.</li>
+                            <li>Utilice dispositivos manos libres si debe utilizar su teléfono</li>
+                            <li>Programe el GPS y ajuste los controles antes de conducir.</li>
+                            <li>Deténgase en un lugar seguro si necesita atender algo.</li>
+                            <li>Mantenga su atención en la carretera y sus alrededores en todo momento</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Impaired & Aggressive Driving -->
+            <div class="section" style="animation-delay: 0.2s" data-section="2">
+                <div class="section-number">2</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🚫🍷</span>
+                    Dañado & Conducción agresiva
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: var(--color-danger);">🍺</span> Beber y conducir
+                    </h3>
+                    <p class="subsection-content">
+                        Beber y conducir es extremadamente peligroso e ilegal. El alcohol afecta su capacidad para conducir, 
+                        afectando su tiempo de reacción, coordinación y juicio.
+                    </p>
+                    
+                    <div class="danger-box">
+                        <div class="danger-title">📊 Estadísticas fatales (NHTSA 2019)</div>
+                        <div class="danger-content">
+                            • <strong>10.142 personas murieron</strong> en accidentes por conducción bajo los efectos del alcohol<br>
+                            • Contabilización de <strong>28% de todas las muertes relacionadas con el tráfico</strong> en los EE.UU.<br>
+                            • Una muerte relacionada con el alcohol cada <strong>52 minutos</strong>
+                        </div>
+                    </div>
+
+                    <div class="warning-box">
+                        <div class="warning-title">⚡ Efectos del alcohol</div>
+                        <ul class="warning-list">
+                            <li>Reducción de la coordinación y deterioro del juicio.</li>
+                            <li>Tiempos de reacción más lentos: segundos críticos perdidos</li>
+                            <li>Disminución de la capacidad para tomar decisiones rápidas.</li>
+                            <li>Falso sentido de confianza y capacidad.</li>
+                            <li>Visión deteriorada y concentración reducida.</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <div class="success-title">✅ Consejos de Prevención</div>
+                        <ul class="success-list">
+                            <li>Planifique con anticipación un conductor designado si planea beber</li>
+                            <li>Utilice el transporte público, taxis o servicios de viajes compartidos.</li>
+                            <li>Pasa la noche si no puedes encontrar un transporte seguro a casa.</li>
+                            <li>Nunca aceptes que te lleve alguien que ha estado bebiendo.</li>
+                            <li>Sea un anfitrión responsable: no permita que sus amigos conduzcan en estado de ebriedad</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">
+                        <span style="color: var(--color-warning);">😠</span> Conducción agresiva & Furia en la carretera
+                    </h3>
+                    <p class="subsection-content">
+                        La conducción agresiva incluye comportamientos como exceso de velocidad, seguir demasiado cerca al vehículo, entrar y salir del tráfico, 
+                        saltarse semáforos en rojo y otras maniobras peligrosas. La ira al volante es una forma extrema que llega a 
+                        comportamiento violento.
+                    </p>
+
+                    <div class="warning-box">
+                        <div class="warning-title">⚠️ Causas comunes</div>
+                        <ul class="warning-list">
+                            <li>Congestión del tráfico y retrasos</li>
+                            <li>Llegar tarde y la presión del tiempo</li>
+                            <li>Estrés por problemas laborales o personales.</li>
+                            <li>Desprecio general hacia los demás usuarios de la vía</li>
+                            <li>Anonimato de estar dentro de un vehículo</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <div class="success-title">✅ Estrategias de Prevención</div>
+                        <ul class="success-list">
+                            <li>Deje suficiente tiempo para su viaje.</li>
+                            <li>Mantén la calma y la paciencia, incluso con mucho tráfico.</li>
+                            <li>Siga las leyes de tránsito y mantenga distancias seguras.</li>
+                            <li>Evite interactuar con conductores agresivos</li>
+                            <li>No hagas contacto visual ni respondas a una provocación.</li>
+                            <li>Informe la conducción agresiva a las autoridades si se intensifica</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Safe Driving Strategies -->
+            <div class="section" style="animation-delay: 0.3s" data-section="3">
+                <div class="section-number">3</div>
+                <h2 class="section-title">
+                    <span class="section-title-icon">🛡️</span>
+                    Estrategias proactivas de conducción segura
+                </h2>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🌟 Principios esenciales de conducción segura</h3>
+                    
+                    <div class="success-box">
+                        <div class="success-title">✅ Manténgase enfocado</div>
+                        <ul class="success-list">
+                            <li>Mantén el 100% de tu atención en la conducción.</li>
+                            <li>Evite usar su teléfono u otras distracciones.</li>
+                            <li>Escanee la carretera 10-15 segundos por delante de su vehículo</li>
+                            <li>Revisa los espejos cada 5-8 segundos</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <div class="success-title">✅ Manténgase alerta</div>
+                        <ul class="success-list">
+                            <li>Evite conducir cuando esté cansado o fatigado.</li>
+                            <li>Tome descansos cada 2 horas en viajes largos</li>
+                            <li>Nunca conduzca bajo la influencia de sustancias.</li>
+                            <li>Esté atento a las condiciones cambiantes de la carretera.</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <div class="success-title">✅ Sigue la regla de los 2 segundos</div>
+                        <ul class="success-list">
+                            <li>Mantenga una distancia segura con respecto al vehículo que le precede</li>
+                            <li>Mínimo de 2 segundos en buenas condiciones.</li>
+                            <li>Aumenta a 4+ segundos en lluvia, niebla u oscuridad</li>
+                            <li>Más de 6 segundos en condiciones de hielo o nieve</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🌙 Seguridad en la conducción nocturna</h3>
+                    <p class="subsection-content">
+                        La conducción nocturna presenta desafíos únicos debido a la visibilidad reducida y la mayor probabilidad de 
+                        encontrarse con conductores ebrios o fatigados.
+                    </p>
+                    
+                    <div class="danger-box">
+                        <div class="danger-title">📊 Estadísticas de conducción nocturna (Consejo Nacional de Seguridad)</div>
+                        <div class="danger-content">
+                            • Las tasas de mortalidad por accidentes de tráfico son <strong>tres veces más alto por la noche</strong><br>
+                            • El 50% de las muertes por accidentes de tránsito ocurren de noche.<br>
+                            • La visibilidad reducida representa el 90% de la capacidad de reacción del conductor.
+                        </div>
+                    </div>
+
+                    <div class="success-box">
+                        <div class="success-title">✅ Consejos para conducir de noche</div>
+                        <ul class="success-list">
+                            <li>Utilice los faros correctamente y asegúrese de que estén correctamente orientados.</li>
+                            <li>Reducir la velocidad y aumentar las distancias de seguimiento.</li>
+                            <li>Evite mirar directamente a los faros que vienen en sentido contrario para reducir el deslumbramiento.</li>
+                            <li>Mantenga el parabrisas y los espejos limpios para una máxima visibilidad.</li>
+                            <li>Tenga mucho cuidado en las intersecciones y pasos de peatones</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">🚦 Seguridad en las intersecciones</h3>
+                    <p class="subsection-content">
+                        Acercarse a las intersecciones requiere atención cuidadosa y cumplimiento de las reglas de tránsito para evitar 
+                        colisiones. Un número importante de accidentes de tráfico ocurren en las intersecciones.
+                    </p>
+
+                    <div class="success-box">
+                        <div class="success-title">✅ Consejos de seguridad en intersecciones</div>
+                        <ul class="success-list">
+                            <li><strong>Intersecciones controladas:</strong> Siga los semáforos y las señales de alto</li>
+                            <li><strong>Intersecciones no controladas:</strong> Reduzca la velocidad y prepárese para ceder</li>
+                            <li><strong>Derecho de paso:</strong> El vehículo de la izquierda cede al vehículo de la derecha.</li>
+                            <li><strong>Rotondas:</strong> Ceda el paso al tráfico que ya está en el círculo.</li>
+                            <li><strong>Siempre:</strong> Mire hacia la izquierda, hacia la derecha y luego nuevamente hacia la izquierda antes de continuar.</li>
+                            <li><strong>Nunca asumas:</strong> Otros conductores seguirán las reglas o señales.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="key-points">
+                    <div class="key-points-title">🎯 Resumen de conducción segura</div>
+                    <ul class="key-points-list">
+                        <li><strong>Conducir distraído mata a más de 9 personas al día</strong> - mantén tu atención en la carretera</li>
+                        <li><strong>El alcohol causa el 28% de las muertes por accidentes de tráfico</strong> - nunca bebas y conduzcas</li>
+                        <li><strong>Conducir de noche es 3 veces más peligroso</strong> - reducir la velocidad y aumentar la distancia</li>
+                        <li><strong>Mantén la calma y la paciencia.</strong> - la furia al volante no ayuda a nadie y pone en peligro a todos</li>
+                        <li><strong>Sigue la regla de los 2 segundos</strong> - te da tiempo para reaccionar con seguridad</li>
+                        <li><strong>Conducir con seguridad es una responsabilidad compartida</strong> - protégete a ti mismo y a los demás</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Check -->
+        <div class="knowledge-check">
+            <h2 class="knowledge-title">📝 Verificación de conocimientos: pruebe sus conocimientos sobre conducción segura</h2>
+            
+            <div class="quiz-question">
+                <div class="question-text">1. ¿Cuántas personas mueren diariamente en los EE. UU. debido a la conducción distraída?</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Menos de 1 persona por día.</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Más de 9 personas por día</div>
+                    </div>
+                    <div class="option" data-question="1" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Aproximadamente 5 personas por día.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">2. ¿Qué porcentaje de muertes relacionadas con el tráfico en 2019 se debieron a efectos del alcohol?</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>10%</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>28%</div>
+                    </div>
+                    <div class="option" data-question="2" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>15%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">3. ¿Cuánto más peligroso es conducir de noche que de día?</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>Igualmente peligroso</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>Dos veces más peligroso</div>
+                    </div>
+                    <div class="option" data-question="3" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>Tres veces más peligroso</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <div class="question-text">4. ¿Cuál es la distancia mínima de seguridad en buenas condiciones?</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-answer="A">
+                        <div class="option-label">A</div>
+                        <div>1 segundo</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="B">
+                        <div class="option-label">B</div>
+                        <div>2 segundos</div>
+                    </div>
+                    <div class="option" data-question="4" data-answer="C">
+                        <div class="option-label">C</div>
+                        <div>3 segundos</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">Comprueba tus respuestas</button>
+
+            <div class="results" id="results">
+                <div class="results-title">
+                    <span>📊</span> Los resultados de su conocimiento sobre conducción segura
+                </div>
+                <div class="score" id="score">0/4</div>
+                <div class="feedback" id="feedback">
+                    Revise sus respuestas a continuación para ver qué conceptos de conducción segura domina y cuáles necesitan más atención.
+                </div>
+                <div class="key-points" style="margin-top: 20px;">
+                    <div class="key-points-title">🎯 Conclusiones clave sobre una conducción segura</div>
+                    <ul class="key-points-list">
+                        <li>Conducir distraído se puede prevenir: concéntrese en la carretera</li>
+                        <li>Nunca beba mientras conduzca: planifique con anticipación un transporte seguro</li>
+                        <li>La conducción nocturna requiere especial precaución y velocidades reducidas</li>
+                        <li>Mantenga distancias de seguridad: la regla de los 2 segundos salva vidas</li>
+                        <li>Mantenga la calma y sea paciente: conducir agresivamente no ayuda a nadie</li>
+                        <li>La conducción segura lo protege a usted, a sus pasajeros y a todos los que se encuentran en la carretera</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div class="completion-message" id="completion-message">
+            <div class="completion-title">
+                <span>🎉</span> ¡Lección de conducción segura completada!
+            </div>
+            <p>Ha completado con éxito la lección Prácticas de conducción segura. Recuerde, conducir de forma segura no es sólo una habilidad: es una responsabilidad.</p>
+            <div class="completion-time" id="completion-time">00:00</div>
+            <p>Aplique estas prácticas cada vez que conduzca. Sus hábitos de conducción seguros lo protegen a usted, a sus seres queridos y a todos los que comparten la carretera con usted.</p>
+        </div>
+    </div>
+
+    <script>
+        // Timer Configuration - Continuous timer
+        let timerInterval;
+        let totalSeconds = 0;
+        let sectionsCompleted = new Set();
+        let quizCompleted = false;
+        
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const timeSpentEl = document.getElementById('time-spent');
+        const timeLearningSpan = document.getElementById('time-learning');
+        const completedCountEl = document.getElementById('completed-count');
+        const quizScoreEl = document.getElementById('quiz-score');
+        const progressFill = document.getElementById('progress-fill');
+        const submitBtn = document.getElementById('submit-btn');
+        const completionMessage = document.getElementById('completion-message');
+        const completionTime = document.getElementById('completion-time');
+
+        // Format time as MM:SS or HH:MM:SS
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Start the continuous timer
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(function() {
+                totalSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display across all elements
+        function updateTimerDisplay() {
+            const timeString = formatTime(totalSeconds);
+            
+            timerDisplay.textContent = timeString;
+            timeSpentEl.textContent = timeString;
+            timeLearningSpan.textContent = timeString;
+            
+            updateProgress();
+        }
+
+        // Update progress based on sections read
+        function updateProgress() {
+            const totalSections = 3;
+            const progressPercentage = Math.min((sectionsCompleted.size / totalSections) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            completedCountEl.textContent = sectionsCompleted.size;
+            
+            const timerElement = document.getElementById('timer');
+            if (totalSeconds >= 600) { // 10 minutes or more
+                timerElement.classList.add('warning');
+                timerElement.classList.remove('critical');
+            } else if (totalSeconds >= 900) { // 15 minutes or more
+                timerElement.classList.add('critical');
+                timerElement.classList.remove('warning');
+            } else {
+                timerElement.classList.remove('warning', 'critical');
+            }
+        }
+
+        // Update quiz score display
+        function updateQuizScore(score, totalQuestions) {
+            const percentage = Math.round((score / totalQuestions) * 100);
+            quizScoreEl.textContent = `${percentage}%`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start the continuous timer
+            startTimer();
+            
+            // Set up option selection
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const question = this.dataset.question;
+                    document.querySelectorAll(`.option[data-question="${question}"]`)
+                        .forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            // Track section reading progress
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionNumber = entry.target.dataset.section;
+                        if (!sectionsCompleted.has(sectionNumber)) {
+                            sectionsCompleted.add(sectionNumber);
+                            updateProgress();
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(section => observer.observe(section));
+        });
+
+        function checkAnswers() {
+            quizCompleted = true;
+            
+            const correctAnswers = {
+                1: 'B',
+                2: 'B',
+                3: 'C',
+                4: 'B'
+            };
+
+            let score = 0;
+            const totalQuestions = 4;
+            let feedbackHTML = '';
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedOption = document.querySelector(`.option.selected[data-question="${i}"]`);
+                if (selectedOption) {
+                    const userAnswer = selectedOption.dataset.answer;
+                    const isCorrect = userAnswer === correctAnswers[i];
+                    
+                    if (isCorrect) {
+                        score++;
+                        selectedOption.style.borderColor = '#34a853';
+                        selectedOption.style.background = 'rgba(52, 168, 83, 0.1)';
+                    } else {
+                        selectedOption.style.borderColor = '#ea4335';
+                        selectedOption.style.background = 'rgba(234, 67, 53, 0.1)';
+                        
+                        const correctOption = document.querySelector(`.option[data-question="${i}"][data-answer="${correctAnswers[i]}"]`);
+                        if (correctOption) {
+                            correctOption.style.borderColor = '#34a853';
+                            correctOption.style.background = 'rgba(52, 168, 83, 0.1)';
+                            correctOption.style.fontWeight = '600';
+                        }
+                    }
+                }
+            }
+
+            updateQuizScore(score, totalQuestions);
+            
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            document.getElementById('score').textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            
+            if (score === totalQuestions) {
+                feedbackHTML = '🎉 ¡Excelente! Ha dominado conceptos esenciales de conducción segura. ';
+            } else if (score >= totalQuestions * 0.7) {
+                feedbackHTML = '👍 ¡Buen trabajo! Usted comprende la mayoría de los principios de conducción segura. ';
+            } else {
+                feedbackHTML = '📚 Revisa el material de la lección. Estos conceptos podrían salvar vidas. ';
+            }
+            
+            feedbackHTML += 'Recuerde: La conducción segura protege a todos en la carretera.';
+            document.getElementById('feedback').innerHTML = feedbackHTML;
+            
+            document.getElementById('results').classList.add('show');
+            
+            completionTime.textContent = formatTime(totalSeconds);
+            completionMessage.classList.add('show');
+            
+            timerDisplay.textContent = formatTime(totalSeconds);
+            const timerElement = document.getElementById('timer');
+            timerElement.style.background = 'gradiente lineal (135 grados, # 34a853, # 4caf50)';
+            
+            progressFill.style.width = '100%';
+            
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !quizCompleted) {
+                checkAnswers();
+            }
+        });
+    </script>
+</body>
+</html>

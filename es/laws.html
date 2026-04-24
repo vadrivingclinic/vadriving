@@ -1,0 +1,2179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA - Módulo 6: Leyes de tráfico oscuras en Virginia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-primary: #5f17eb; /* Your exact brand purple */
+            --color-primary-soft: #8a5feb;
+            --color-secondary: #000000; /* Black */
+            --color-accent: #7c3aed;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-bg: #ffffff; /* White */
+            --color-text: #000000; /* Black */
+            --color-muted: #6b7280;
+            --color-dark: #000000; /* Black */
+            --color-light: #f9fafb;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(95, 23, 235, 0.1);
+            --shadow-hover: 0 15px 35px rgba(95, 23, 235, 0.15);
+            --shadow-card: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(2deg); }
+            75% { transform: rotate(-2deg); }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(95, 23, 235, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(95, 23, 235, 0.8); }
+        }
+
+        /* Main Container */
+        .page {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        @media (max-width: 900px) {
+            .page { padding: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 0; }
+            .page {
+                border-radius: 0;
+                box-shadow: none;
+                padding: 16px 12px 20px;
+            }
+        }
+
+        /* Header */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            width: 100%;
+            animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .brand-logo {
+            height: 50px;
+            width: auto;
+            max-width: 100%;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .brand-logo:hover { 
+            transform: scale(1.05); 
+            animation: glow 2s infinite;
+        }
+
+        .course-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 100%;
+        }
+
+        .course-name {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .week-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.1);
+            font-size: 0.8rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .week-label-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        .badge-mode {
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(95, 23, 235, 0.08);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-primary);
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .badge-mode:hover {
+            background: rgba(95, 23, 235, 0.15);
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            line-height: 1.1;
+            color: var(--color-text);
+            margin-bottom: 10px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .module-subtitle {
+            font-size: 1rem;
+            color: var(--color-muted);
+            max-width: 800px;
+            margin-bottom: 28px;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+            line-height: 1.7;
+        }
+
+        /* Time Estimate Banner */
+        .time-estimate-banner {
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .time-estimate-icon {
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .time-estimate-content h3 {
+            color: var(--color-primary);
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .time-estimate-content p {
+            color: var(--color-text);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .time-highlight {
+            color: var(--color-primary);
+            font-weight: 800;
+            font-size: 1.1em;
+        }
+
+        /* Stats Display */
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-display { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .progress-tracker::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50px;
+            right: 50px;
+            height: 3px;
+            background: rgba(95, 23, 235, 0.1);
+            z-index: 1;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid rgba(95, 23, 235, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .step-circle {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            color: white;
+            transform: scale(1.1);
+            animation: pulse 2s infinite;
+        }
+
+        .progress-step.completed .step-circle {
+            background: var(--color-success);
+            border-color: var(--color-success);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            color: var(--color-muted);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        /* Activity Card */
+        .activity-card {
+            background: var(--color-bg);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .activity-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--color-primary);
+        }
+
+        .activity-card:hover::before { 
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+
+        .activity-card.completed {
+            border-color: var(--color-success);
+        }
+
+        .activity-card.completed::before {
+            background: var(--color-success);
+            opacity: 1;
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .activity-number {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .activity-status {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: rgba(95, 23, 235, 0.08);
+            color: var(--color-primary);
+            font-weight: 600;
+            border: 1px solid rgba(95, 23, 235, 0.15);
+        }
+
+        .activity-card.completed .activity-status {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--color-success);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .activity-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+
+        .activity-description {
+            font-size: 0.95rem;
+            color: var(--color-muted);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        /* Law Categories */
+        .law-categories {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        @media (max-width: 900px) {
+            .law-categories { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .law-categories { grid-template-columns: 1fr; }
+        }
+
+        .law-category {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .law-category:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .law-category.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            animation: glow 2s infinite;
+        }
+
+        .category-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--color-primary);
+        }
+
+        .category-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .category-count {
+            font-size: 0.85rem;
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        /* Law Cards */
+        .law-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        @media (max-width: 900px) {
+            .law-cards { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .law-cards { grid-template-columns: 1fr; }
+        }
+
+        .law-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .law-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.1);
+        }
+
+        .law-card.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .law-card.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .law-card.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.05);
+            animation: shake 0.5s ease;
+        }
+
+        .law-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .law-card.correct .law-status {
+            background: var(--color-success);
+            color: white;
+            opacity: 1;
+        }
+
+        .law-card.incorrect .law-status {
+            background: var(--color-error);
+            color: white;
+            opacity: 1;
+        }
+
+        .law-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--color-primary);
+        }
+
+        .law-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+
+        .law-description {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .law-penalty {
+            font-size: 0.8rem;
+            color: var(--color-error);
+            font-weight: 700;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(95, 23, 235, 0.1);
+        }
+
+        /* Scenario Simulation */
+        .scenario-simulation {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            margin: 25px 0;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            position: relative;
+        }
+
+        .scenario-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scenario-content {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            line-height: 1.6;
+        }
+
+        .scenario-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .scenario-options { grid-template-columns: 1fr; }
+        }
+
+        .scenario-option {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .scenario-option:hover {
+            transform: translateY(-3px);
+            border-color: var(--color-primary);
+            box-shadow: 0 5px 15px rgba(95, 23, 235, 0.1);
+        }
+
+        .scenario-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+        }
+
+        .scenario-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .scenario-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.05);
+            animation: shake 0.5s ease;
+        }
+
+        .option-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: var(--color-primary);
+        }
+
+        .scenario-option.selected .option-number {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        /* Myth vs Reality */
+        .myth-reality {
+            background: linear-gradient(135deg, rgba(95, 23, 235, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            margin: 25px 0;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .myth-reality-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .myth-reality-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .myth-reality-grid { grid-template-columns: 1fr; }
+        }
+
+        .myth-card, .reality-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .myth-card {
+            border-color: rgba(239, 68, 68, 0.3);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .reality-card {
+            border-color: rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .myth-icon {
+            color: var(--color-error);
+            font-size: 1.5rem;
+        }
+
+        .reality-icon {
+            color: var(--color-success);
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--color-text);
+        }
+
+        .myth-title {
+            color: var(--color-error);
+        }
+
+        .reality-title {
+            color: var(--color-success);
+        }
+
+        /* Quiz Questions */
+        .quiz-section {
+            background: rgba(95, 23, 235, 0.05);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            margin: 25px 0;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+        }
+
+        .quiz-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quiz-question {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-options { grid-template-columns: 1fr; }
+        }
+
+        .quiz-option {
+            padding: 18px;
+            border-radius: var(--radius-sm);
+            border: 2px solid rgba(95, 23, 235, 0.2);
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(95, 23, 235, 0.1);
+            font-weight: 600;
+        }
+
+        .quiz-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .option-letter {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(95, 23, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            color: var(--color-primary);
+            border: 1px solid rgba(95, 23, 235, 0.2);
+        }
+
+        .quiz-option.selected .option-letter {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        /* Penalty Display */
+        .penalty-display {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .penalty-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--color-error);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .penalty-items {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .penalty-item {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            border-left: 4px solid var(--color-error);
+        }
+
+        .penalty-law {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 8px;
+        }
+
+        .penalty-amount {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--color-error);
+        }
+
+        .penalty-details {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            margin-top: 8px;
+        }
+
+        /* Feedback */
+        .feedback-container {
+            background: rgba(95, 23, 235, 0.03);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            border: 1px solid rgba(95, 23, 235, 0.15);
+            margin-top: 20px;
+            display: none;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .feedback-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feedback-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .feedback-icon {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .feedback-icon.correct { 
+            color: var(--color-success); 
+        }
+        
+        .feedback-icon.incorrect { 
+            color: var(--color-error); 
+        }
+
+        .feedback-content {
+            font-size: 0.9rem;
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .feedback-content strong { 
+            color: var(--color-primary); 
+            font-weight: 700;
+        }
+
+        .law-code {
+            font-family: monospace;
+            background: rgba(95, 23, 235, 0.1);
+            padding: 3px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(95, 23, 235, 0.2);
+            font-size: 0.85rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-primary:hover {
+            background: #4c0fcf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(95, 23, 235, 0.4);
+            animation: glow 1.5s infinite;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(95, 23, 235, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(95, 23, 235, 0.2);
+        }
+
+        .btn-icon { 
+            font-size: 1.2em; 
+            font-weight: bold;
+        }
+
+        /* Results Panel */
+        .results-panel {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 40px;
+            margin-top: 40px;
+            display: none;
+            animation: fadeInUp 0.6s ease;
+            border: 2px solid var(--color-primary);
+        }
+
+        .results-panel.show { 
+            display: block; 
+            animation: glow 2s infinite;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .results-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            text-align: center;
+            margin: 30px 0;
+            text-shadow: 0 0 20px rgba(95, 23, 235, 0.7);
+            animation: pulse 2s infinite;
+        }
+
+        .safety-insights {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .insights-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .insights-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .insights-list li {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            font-size: 0.95rem;
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+
+        .insight-dot {
+            width: 8px;
+            height: 8px;
+            margin-top: 10px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        /* Law Visualization */
+        .law-visualization {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            box-shadow: var(--shadow-card);
+        }
+
+        .visual-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .visual-scene {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .visual-element {
+            text-align: center;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border: 2px solid rgba(95, 23, 235, 0.1);
+            background: rgba(95, 23, 235, 0.05);
+            min-width: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .visual-element.wrong {
+            border-color: var(--color-error);
+            background: rgba(239, 68, 68, 0.1);
+            animation: wobble 0.5s ease;
+        }
+
+        .visual-element.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .visual-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .visual-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <main class="page" aria-labelledby="module-heading">
+        <!-- Header -->
+        <header class="brand-row">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo" />
+                <div class="course-meta">
+                    <span class="course-name">Clínica de conducción de VA • Módulo 6</span>
+                    <div class="week-label">
+                        <span class="week-label-dot"></span>
+                        <span>Leyes de tráfico oscuras en Virginia</span>
+                    </div>
+                </div>
+            </div>
+            <span class="badge-mode">Descubrimiento interactivo</span>
+        </header>
+
+        <h1 id="module-heading">Las leyes de tráfico más oscuras de Virginia</h1>
+        <p class="module-subtitle">
+            Descubra las normas de tráfico ocultas de Virginia que la mayoría de los conductores no saben que existen. Estas leyes oscuras aún pueden dar lugar a multas y sanciones, y comprenderlas puede evitar infracciones sorprendentes y al mismo tiempo mejorar la seguridad vial.
+        </p>
+
+        <!-- Time Estimate Banner -->
+        <div class="time-estimate-banner">
+            <div class="time-estimate-icon">
+                🕵️
+            </div>
+            <div class="time-estimate-content">
+                <h3>Estimación del tiempo del módulo</h3>
+                <p>Complete esta lección interactiva en aproximadamente <span class="time-highlight">8 minutos</span>. Descubra las leyes de tránsito más oscuras de Virginia a través de escenarios interactivos y revelaciones sorprendentes.</p>
+            </div>
+        </div>
+
+        <!-- Stats Display -->
+        <div class="stats-display">
+            <div class="stat-card">
+                <span class="stat-number" id="laws-discovered">0</span>
+                <span class="stat-label">Se encontraron leyes oscuras</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="myths-busted">0</span>
+                <span class="stat-label">Mitos desacreditados</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="time-spent">0:00</span>
+                <span class="stat-label">Aprendizaje del tiempo</span>
+            </div>
+        </div>
+
+        <!-- Progress Tracker -->
+        <div class="progress-tracker">
+            <div class="progress-step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Descubra las leyes</div>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Prueba de conocimiento</div>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Evitar sanciones</div>
+            </div>
+        </div>
+
+        <!-- Main Activity Card -->
+        <div class="activity-card" id="main-activity">
+            <div class="activity-header">
+                <span class="activity-number">Explorador de leyes oscuras</span>
+                <span class="activity-status">En curso</span>
+            </div>
+            <h3 class="activity-title">Regulaciones de tráfico ocultas de Virginia</h3>
+            <p class="activity-description">
+                Explore las leyes de tránsito más oscuras de Virginia a través del descubrimiento interactivo. Haga clic en las categorías para descubrir regulaciones sorprendentes que aún pueden resultar en multas y sanciones para conductores desprevenidos.
+            </p>
+
+            <!-- Part 1: Law Discovery -->
+            <div id="discovery-part">
+                <div class="law-categories">
+                    <div class="law-category selected" data-category="driving">
+                        <div class="category-icon">🚗</div>
+                        <div class="category-title">Leyes de conducción inusuales</div>
+                        <div class="category-count">4 leyes oscuras</div>
+                    </div>
+                    
+                    <div class="law-category" data-category="pedestrian">
+                        <div class="category-icon">🚶</div>
+                        <div class="category-title">Reglas para peatones</div>
+                        <div class="category-count">3 reglas ocultas</div>
+                    </div>
+                    
+                    <div class="law-category" data-category="vehicle">
+                        <div class="category-icon">🚙</div>
+                        <div class="category-title">Reglamento de vehículos</div>
+                        <div class="category-count">4 reglas oscuras</div>
+                    </div>
+                    
+                    <div class="law-category" data-category="bicycle">
+                        <div class="category-icon">🚲</div>
+                        <div class="category-title">Bicicleta & Motocicleta</div>
+                        <div class="category-count">3 leyes especiales</div>
+                    </div>
+                </div>
+
+                <div class="law-cards" id="law-cards-container">
+                    <!-- Driving Laws -->
+                    <div class="law-card" data-category="driving" data-law="barefoot">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">👣</div>
+                        <div class="law-title">Conducir descalzo</div>
+                        <div class="law-description">Es legal conducir descalzo en Virginia, pero se desaconseja por razones de seguridad.</div>
+                        <div class="law-penalty">No hay sanción directa, pero se puede citar por conducción imprudente si provoca un accidente.</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="driving" data-law="horses">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🐎</div>
+                        <div class="law-title">Tocando la bocina a los caballos</div>
+                        <div class="law-description">La ley de Virginia prohíbe tocar la bocina a los vehículos tirados por caballos o a los caballos en la carretera.</div>
+                        <div class="law-penalty">Multa: $100-250</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="driving" data-law="dooring">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🚪</div>
+                        <div class="law-title">Abrir puertas del coche</div>
+                        <div class="law-description">Debe verificar el tráfico (incluidas las bicicletas) antes de abrir la puerta del lado del tráfico.</div>
+                        <div class="law-penalty">Multa: $100 + responsabilidad por lesiones</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="driving" data-law="uturn">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">↪️</div>
+                        <div class="law-title">Restricciones de giro en U</div>
+                        <div class="law-description">Ilegal donde la visibilidad está obstruida por 500 pies en cualquier dirección.</div>
+                        <div class="law-penalty">Multa: $150 + 3 puntos de demérito</div>
+                    </div>
+                    
+                    <!-- Pedestrian Laws -->
+                    <div class="law-card" data-category="pedestrian" data-law="jaywalking">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🚷</div>
+                        <div class="law-title">Definición de cruzar imprudentemente</div>
+                        <div class="law-description">Cruzar entre intersecciones donde existan semáforos, sin utilizar paso de peatones.</div>
+                        <div class="law-penalty">Multa: $50-100</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="pedestrian" data-law="ped-yield">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🤚</div>
+                        <div class="law-title">Paso de peatones</div>
+                        <div class="law-description">Los conductores deben ceder el paso a los peatones en CUALQUIER cruce de peatones (marcado o no).</div>
+                        <div class="law-penalty">Multa: $100 + 4 puntos de demérito</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="pedestrian" data-law="crosswalk-distance">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">📏</div>
+                        <div class="law-title">Distancia del cruce de peatones</div>
+                        <div class="law-description">Cuando no existe un cruce de peatones, los peatones deben cruzar en la intersección (no dentro de los 100 pies).</div>
+                        <div class="law-penalty">Multa: $50</div>
+                    </div>
+                    
+                    <!-- Vehicle Regulations -->
+                    <div class="law-card" data-category="vehicle" data-law="obstruction">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🙈</div>
+                        <div class="law-title">Ver obstrucción</div>
+                        <div class="law-description">Ningún objeto puede obstruir la visión del conductor (incluidos los objetos que cuelgan del espejo).</div>
+                        <div class="law-penalty">Multa: $75-150</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="vehicle" data-law="parking-direction">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🅿️</div>
+                        <div class="law-title">Dirección de estacionamiento</div>
+                        <div class="law-description">Debe estacionarse en la dirección del flujo del tráfico (no estacionarse en contra del tráfico).</div>
+                        <div class="law-penalty">Multa: $50-100</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="vehicle" data-law="mudflaps">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">💨</div>
+                        <div class="law-title">Requisito de guardabarros</div>
+                        <div class="law-description">Los vehículos comerciales que superen cierto peso deben tener guardabarros para evitar escombros.</div>
+                        <div class="law-penalty">Multa: $100-250</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="vehicle" data-law="snow-removal">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">❄️</div>
+                        <div class="law-title">Remoción de nieve</div>
+                        <div class="law-description">Debe quitar TODA la nieve/hielo del vehículo antes de conducir (no solo el parabrisas).</div>
+                        <div class="law-penalty">Multa: $100 + responsabilidad por daños</div>
+                    </div>
+                    
+                    <!-- Bike & Motorcycle -->
+                    <div class="law-card" data-category="bicycle" data-law="bike-rights">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🚴</div>
+                        <div class="law-title">Derechos de los ciclistas</div>
+                        <div class="law-description">Los ciclistas tienen los mismos derechos y deberes que los vehículos motorizados en las carreteras.</div>
+                        <div class="law-penalty">Igual que los vehículos por infracciones.</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="bicycle" data-law="motorcycle-passenger">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🏍️</div>
+                        <div class="law-title">Pasajero de motocicleta</div>
+                        <div class="law-description">Los pasajeros deben tener un asiento y reposapiés designados (no montar en el manillar).</div>
+                        <div class="law-penalty">Multa: $100-250</div>
+                    </div>
+                    
+                    <div class="law-card" data-category="bicycle" data-law="bike-reflectors">
+                        <div class="law-status">✓</div>
+                        <div class="law-icon">🔦</div>
+                        <div class="law-title">Requisitos para la noche en bicicleta</div>
+                        <div class="law-description">Las bicicletas deben tener luz delantera, reflector trasero y reflectores laterales durante la noche.</div>
+                        <div class="law-penalty">Multa: $25-50</div>
+                    </div>
+                </div>
+
+                <div class="feedback-container" id="discovery-feedback">
+                    <div class="feedback-title">
+                        <span class="feedback-icon correct">🕵️</span>
+                        Leyes oscuras descubiertas
+                    </div>
+                    <div class="feedback-content">
+                        <strong>Referencias del Código de Virginia:</strong><br><br>
+                        
+                        • <strong>§ 46.2-816:</strong> Abrir las puertas del vehículo: no debe abrirse "a menos y hasta que sea razonablemente seguro hacerlo".<br>
+                        • <strong>§ 46.2-817:</strong> Vehículos tirados por caballos: no se permite tocar la bocina al pasar<br>
+                        • <strong>§ 46.2-921.1:</strong> Giros en U: prohibidos donde la visibilidad esté obstruida por 500 pies<br>
+                        • <strong>§ 46.2-1049:</strong> Vista obstruida: no hay objetos que "obstruyan o reduzcan la visión clara del conductor".<br><br>
+                        
+                        <strong>Por qué son importantes estas leyes:</strong> Si bien son oscuras, estas leyes abordan preocupaciones de seguridad específicas. La ley de "puertas" previene los accidentes de bicicletas, las leyes sobre caballos previenen el pánico de los animales y las leyes de obstrucciones mantienen la visibilidad.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 2: Scenario Testing -->
+            <div id="scenario-part" style="display: none;">
+                <div class="scenario-simulation">
+                    <h4 class="scenario-title">Escenario 1: El dilema del caballo</h4>
+                    
+                    <div class="scenario-content">
+                        Estás conduciendo por la Virginia rural cerca de Lexington. Te acercas a un buggy Amish tirado por caballos que circula lentamente por la estrecha carretera. Hay tráfico en sentido contrario, por lo que debes esperar para pasar. El caballo parece asustadizo. ¿Qué deberías hacer?
+                    </div>
+                    
+                    <div class="scenario-options">
+                        <div class="scenario-option" data-scenario="1" data-option="A">
+                            <div class="option-number">A</div>
+                            <div>
+                                <strong>Toca la bocina ligeramente para alertar al conductor del buggy.</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">Hazles saber que estás esperando para pasar</div>
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-option" data-scenario="1" data-option="B">
+                            <div class="option-number">B</div>
+                            <div>
+                                <strong>Enciende las luces de emergencia y espera pacientemente.</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">Haga señales a los demás mientras permanece en silencio</div>
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-option" data-scenario="1" data-option="C">
+                            <div class="option-number">C</div>
+                            <div>
+                                <strong>Acelere ligeramente el motor para estimular el movimiento.</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">El caballo podría moverse más rápido si se le anima.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-option" data-scenario="1" data-option="D">
+                            <div class="option-number">D</div>
+                            <div>
+                                <strong>Pase rápidamente cuando sea seguro, manteniéndose lo más a la izquierda posible</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">Minimizar el tiempo cerca del caballo.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="scenario-title" style="margin-top: 40px;">Escenario 2: La mañana nevada</h4>
+                    
+                    <div class="scenario-content">
+                        Nevó durante la noche en Charlottesville. Quitas suficiente nieve del parabrisas para poder ver. Llegas tarde al trabajo. La ley de Virginia requiere que usted:
+                    </div>
+                    
+                    <div class="scenario-options">
+                        <div class="scenario-option" data-scenario="2" data-option="A">
+                            <div class="option-number">A</div>
+                            <div>
+                                <strong>Limpiar sólo el parabrisas y las ventanillas laterales delanteras.</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">Estos son los mínimos para una conducción segura</div>
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-option" data-scenario="2" data-option="B">
+                            <div class="option-number">B</div>
+                            <div>
+                                <strong>Quite TODA la nieve/hielo de todo el vehículo</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">Techo, capó, baúl, ventanas, luces.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-option" data-scenario="2" data-option="C">
+                            <div class="option-number">C</div>
+                            <div>
+                                <strong>Simplemente conduzca: la nieve se llevará a velocidades de autopista</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">Esto es lo que hace la mayoría de la gente.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-option" data-scenario="2" data-option="D">
+                            <div class="option-number">D</div>
+                            <div>
+                                <strong>Limpia solo lo que bloquea tu vista y tus luces.</strong>
+                                <div style="font-size: 0.85rem; color: var(--color-muted); margin-top: 8px;">El enfoque práctico</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="feedback-container" id="scenario-feedback">
+                        <div class="feedback-title">
+                            <span class="feedback-icon correct">✓</span>
+                            Análisis de escenarios
+                        </div>
+                        <div class="feedback-content">
+                            <strong>Respuestas correctas:</strong><br><br>
+                            
+                            <strong>Escenario 1: B: enciende las luces de emergencia y espera pacientemente</strong><br>
+                            • La ley de Virginia prohíbe específicamente tocar la bocina en vehículos tirados por caballos.<br>
+                            • Los caballos pueden asustarse, provocando accidentes que lesionan a jinetes y conductores.<br>
+                            • Debe pasar lentamente con al menos 3 pies de distancia cuando sea seguro<br>
+                            • Multas de hasta $250 por infracciones<br><br>
+                            
+                            <strong>Escenario 2: B - Quitar TODA la nieve/hielo de todo el vehículo</strong><br>
+                            • La ley de Virginia (§ 46.2-1145) requiere la remoción completa de nieve/hielo<br>
+                            • La nieve del techo puede deslizarse sobre el parabrisas o golpear a los vehículos que vienen detrás.<br>
+                            • Multas de hasta $100 + responsabilidad por daños/lesiones causadas<br>
+                            • Incluye capó, techo, baúl, todas las ventanas, luces y matrícula.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 3: Myth vs Reality & Penalties -->
+            <div id="quiz-part" style="display: none;">
+                <div class="quiz-section">
+                    <h4 class="quiz-title">Prueba de mito versus realidad</h4>
+                    
+                    <div class="myth-reality">
+                        <h5 class="myth-reality-title">Conceptos erróneos comunes</h5>
+                        
+                        <div class="myth-reality-grid">
+                            <div class="myth-card">
+                                <div class="card-header">
+                                    <div class="myth-icon">❌</div>
+                                    <div class="card-title myth-title">Mito</div>
+                                </div>
+                                <div class="law-description">
+                                    Es ilegal conducir descalzo en Virginia. Recibirás una multa si te detienes sin zapatos.
+                                </div>
+                            </div>
+                            
+                            <div class="reality-card">
+                                <div class="card-header">
+                                    <div class="reality-icon">✅</div>
+                                    <div class="card-title reality-title">Realidad</div>
+                                </div>
+                                <div class="law-description">
+                                    Conducir descalzo es legal en Virginia. Sin embargo, si ocurre un accidente y el hecho de conducir descalzo contribuyó, podría recibir una multa por conducción imprudente.
+                                </div>
+                            </div>
+                            
+                            <div class="myth-card">
+                                <div class="card-header">
+                                    <div class="myth-icon">❌</div>
+                                    <div class="card-title myth-title">Mito</div>
+                                </div>
+                                <div class="law-description">
+                                    Sólo es necesario ceder el paso a los peatones en los pasos de peatones señalizados. Las intersecciones no señalizadas no cuentan.
+                                </div>
+                            </div>
+                            
+                            <div class="reality-card">
+                                <div class="card-header">
+                                    <div class="reality-icon">✅</div>
+                                    <div class="card-title reality-title">Realidad</div>
+                                </div>
+                                <div class="law-description">
+                                    La ley de Virginia exige ceder el paso a los peatones en CUALQUIER cruce de peatones, marcado o no, en las intersecciones.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="penalty-display" style="margin-top: 30px;">
+                        <h5 class="penalty-title">Sanciones en Virginia por infracciones oscuras</h5>
+                        
+                        <div class="penalty-items">
+                            <div class="penalty-item">
+                                <div class="penalty-law">Tocar la bocina en vehículos tirados por caballos</div>
+                                <div class="penalty-amount">$100 - $250</div>
+                                <div class="penalty-details">Más responsabilidad civil potencial si ocurre un accidente</div>
+                            </div>
+                            
+                            <div class="penalty-item">
+                                <div class="penalty-law">"Dooring" a un ciclista (abrir la puerta al tráfico)</div>
+                                <div class="penalty-amount">Multa de $100 + Responsabilidad Civil</div>
+                                <div class="penalty-details">Facturas médicas + daños en bicicleta + dolor/sufrimiento</div>
+                            </div>
+                            
+                            <div class="penalty-item">
+                                <div class="penalty-law">Vista del conductor obstruida (artículos colgantes)</div>
+                                <div class="penalty-amount">$75 - $150</div>
+                                <div class="penalty-details">Los ambientadores, las decoraciones y los soportes para GPS pueden violar</div>
+                            </div>
+                            
+                            <div class="penalty-item">
+                                <div class="penalty-law">Estacionamiento contra el flujo de tráfico</div>
+                                <div class="penalty-amount">$50 - $100</div>
+                                <div class="penalty-details">Violación común en zonas residenciales</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="law-visualization" style="margin-top: 30px;">
+                        <h5 class="visual-title">Requisito de visibilidad de giro en U</h5>
+                        <div class="scenario-content" style="margin-bottom: 20px;">
+                            La ley de Virginia prohíbe los giros en U cuando la visibilidad esté obstruida por 500 pies en cualquier dirección. ¡Eso es más largo que 1,5 campos de fútbol!
+                        </div>
+                        
+                        <div class="visual-scene">
+                            <div class="visual-element correct">
+                                <div class="visual-icon">👁️</div>
+                                <div class="visual-label">Despeja más de 500 pies</div>
+                                <div style="font-size: 0.8rem; color: var(--color-muted); margin-top: 5px;">✅ Cambio de sentido legal</div>
+                            </div>
+                            
+                            <div class="visual-element wrong">
+                                <div class="visual-icon">🙈</div>
+                                <div class="visual-label">Vista obstruida</div>
+                                <div style="font-size: 0.8rem; color: var(--color-muted); margin-top: 5px;">❌ Cambio de sentido ilegal</div>
+                            </div>
+                            
+                            <div class="visual-element">
+                                <div class="visual-icon">🏈</div>
+                                <div class="visual-label">1.5 Campos de fútbol</div>
+                                <div style="font-size: 0.8rem; color: var(--color-muted); margin-top: 5px;">Requisito visual de 500 pies.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-question" style="margin-top: 30px;">
+                        Verdadero o falso: en Virginia, te pueden multar por tener demasiados ambientadores colgando del espejo retrovisor.
+                    </div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="1" data-option="A">
+                            <span class="option-letter">A</span>
+                            <span>Verdadero: se puede multar cualquier obstrucción de la vista.</span>
+                        </div>
+                        <div class="quiz-option" data-question="1" data-option="B">
+                            <span class="option-letter">B</span>
+                            <span>Falso - Los ambientadores están exentos de las leyes de obstrucción</span>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-question" style="margin-top: 30px;">
+                        ¿Cuál es la autorización mínima que debe dar al rebasar a un ciclista en Virginia?
+                    </div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-question="2" data-option="A">
+                            <span class="option-letter">A</span>
+                            <span>1 pie: lo suficiente para evitar golpearlos.</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="B">
+                            <span class="option-letter">B</span>
+                            <span>3 pies: requerido por la ley "Tres pies para pasar" de Virginia</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="C">
+                            <span class="option-letter">C</span>
+                            <span>6 pies: medio ancho de carril por seguridad</span>
+                        </div>
+                        <div class="quiz-option" data-question="2" data-option="D">
+                            <span class="option-letter">D</span>
+                            <span>No hay requisitos específicos: simplemente pase con seguridad</span>
+                        </div>
+                    </div>
+                    
+                    <div class="feedback-container" id="quiz-feedback">
+                        <div class="feedback-title">
+                            <span class="feedback-icon correct">✓</span>
+                            Resultados del examen & Conclusiones clave
+                        </div>
+                        <div class="feedback-content">
+                            <strong>Respuestas correctas:</strong><br><br>
+                            
+                            1. <strong>A - Verdadero</strong> - La ley de Virginia prohíbe CUALQUIER objeto que obstruya la vista del conductor, incluidos ambientadores, soportes para GPS o decoraciones.<br><br>
+                            
+                            2. <strong>B - 3 pies</strong> - La ley de Virginia "Tres pies para rebasar" (§ 46.2-839) requiere al menos un espacio de 3 pies al rebasar bicicletas.<br><br>
+                            
+                            <div class="law-code" style="margin: 10px 0; padding: 10px;">
+                                <strong>Código de Virginia § 46.2-1054:</strong><br>
+                                "Ninguna persona podrá conducir ningún vehículo motorizado con objetos o señales colocados o suspendidos dentro o sobre el vehículo que obstruyan, oscurezcan o afecten materialmente la visión clara del conductor de la carretera..."
+                            </div>
+                            
+                            <strong>Implicaciones de seguridad:</strong> Estas oscuras leyes no son sólo tecnicismos: abordan preocupaciones reales de seguridad. La ley de "puertas" previene accidentes graves de bicicletas, las leyes sobre caballos previenen lesiones de pánico en los animales y las leyes de obstrucciones mantienen una visibilidad crítica.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-secondary" id="reset-btn">
+                <span class="btn-icon">↻</span>
+                Restablecer lección
+            </button>
+            <button class="btn btn-secondary" id="next-part-btn">
+                <span class="btn-icon">→</span>
+                Siguiente sección
+            </button>
+            <button class="btn btn-primary" id="complete-btn" disabled>
+                <span class="btn-icon">🏆</span>
+                Descubrimiento completo
+            </button>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="results-panel" id="results-panel">
+            <div class="results-header">
+                <h2 class="results-title">Dominio de las leyes oscuras</h2>
+                <div class="score-display" id="final-score">0%</div>
+            </div>
+            
+            <div class="safety-insights">
+                <h3 class="insights-title">
+                    <span>🎯</span> Por qué son importantes las leyes oscuras
+                </h3>
+                <ul class="insights-list">
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Contexto histórico:</strong> Muchas leyes oscuras tienen raíces históricas. La ley de bocinazos de caballos se remonta a principios del siglo XX, cuando los carruajes tirados por caballos eran comunes en las zonas rurales de Virginia. La ley de remoción de nieve se fortaleció después de un incidente en 2005 en el que el hielo del techo mató a otro conductor en la I-81.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Seguridad pasada por alto:</strong> La ley de "puertas" previene más de 1.000 accidentes de bicicleta al año en Virginia. Cada año, solo en Richmond y el norte de Virginia, entre 15 y 20 ciclistas resultan gravemente heridos por las puertas de un automóvil que se abren repentinamente. Revisar los espejos toma 2 segundos pero previene lesiones que cambian la vida.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Realidad de la aplicación de la ley:</strong> Si bien son oscuras, estas leyes SE hacen cumplir. La policía estatal de Virginia realiza operaciones de "remoción de nieve" después de las tormentas invernales. La policía local en la región de los caballos (Valle de Shenandoah) hace cumplir activamente la ley de no tocar la bocina durante la temporada turística.</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="safety-insights" style="margin-top: 20px;">
+                <h3 class="insights-title">
+                    <span>🚗</span> Aplicaciones específicas de Virginia
+                </h3>
+                <ul class="insights-list">
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Consideraciones sobre el país de los caballos:</strong> En áreas como Lexington, Staunton y Shenandoah Valley, los vehículos tirados por caballos son comunes. La ley de adelantamiento de 3 pies también se aplica a ellos. Las comunidades amish y menonitas dependen de estas protecciones para su seguridad.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Diferencias urbanas versus rurales:</strong> En el norte de Virginia, con frecuencia se aplican leyes sobre "puertas" y bicicletas. En las zonas rurales, las leyes sobre caballos y equipos agrícolas son más importantes. Las leyes de remoción de nieve son aplicables en todo el estado, pero se aplican más en las regiones montañosas.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Conciencia estacional:</strong> Las leyes de remoción de nieve se aplican de noviembre a marzo. Las leyes sobre caballos son más relevantes durante la temporada turística (abril-octubre). Las restricciones para dar vuelta en U están vigentes durante todo el año, pero son más peligrosas durante las mañanas de otoño con niebla en Blue Ridge.</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="safety-insights" style="margin-top: 20px;">
+                <h3 class="insights-title">
+                    <span>📊</span> Aplicación & Estadística
+                </h3>
+                <ul class="insights-list">
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Estadísticas de puertas:</strong> Virginia sufre más de 1200 incidentes de "puertas" al año, de los cuales el 85% ocurre en áreas urbanas. Costo médico promedio: $15,000 por incidente. Richmond lidera con más de 300 al año, principalmente en The Fan y el centro de la ciudad.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Cumplimiento de la remoción de nieve:</strong> Después de grandes tormentas de nieve, la Policía Estatal de Virginia emite entre 500 y 800 citaciones por remoción de nieve. El peligro del "hielo volador" causa entre 50 y 75 accidentes al año en las I-81, I-66 y I-95.</span>
+                    </li>
+                    <li>
+                        <span class="insight-dot"></span>
+                        <span><strong>Enjuiciamiento Histórico:</strong> El oscuro caso legal más famoso de Virginia involucró una sentencia civil por valor de 10.000 dólares contra un conductor que le tocó la bocina a un caballo, lo que provocó que se desbocara e hiriera a su jinete. El caso de 1998 sentó un precedente para penas más severas.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // State Management
+            const state = {
+                currentPart: 1,
+                partsCompleted: 0,
+                lawsDiscovered: 0,
+                mythsBusted: 0,
+                selectedCategory: 'driving',
+                scenarioAnswers: {},
+                quizAnswers: {},
+                startedAt: new Date()
+            };
+
+            // Correct answers
+            const correctAnswers = {
+                scenario1: 'B', // Hazard lights, no honking
+                scenario2: 'B', // Clear ALL snow
+                quiz1: 'A',     // True - obstruction laws apply
+                quiz2: 'B'      // 3 feet minimum
+            };
+
+            // DOM Elements
+            const activityParts = document.querySelectorAll('#parte-descubrimiento, #parte-escenario, #parte-cuestionario');
+            const lawCategories = document.querySelectorAll('.law-category');
+            const lawCards = document.querySelectorAll('.law-card');
+            const scenarioOptions = document.querySelectorAll('.scenario-option');
+            const quizOptions = document.querySelectorAll('.quiz-option');
+            const nextBtn = document.getElementById('next-part-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const completeBtn = document.getElementById('complete-btn');
+            const resultsPanel = document.getElementById('results-panel');
+            const finalScore = document.getElementById('final-score');
+            const lawsDiscoveredEl = document.getElementById('laws-discovered');
+            const mythsBustedEl = document.getElementById('myths-busted');
+            const timeSpentEl = document.getElementById('time-spent');
+
+            // Timer for time spent
+            function updateTimer() {
+                const now = new Date();
+                const diff = Math.floor((now - state.startedAt) / 1000);
+                const minutes = Math.floor(diff / 60);
+                const seconds = diff % 60;
+                timeSpentEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            setInterval(updateTimer, 1000);
+
+            // Update progress steps
+            function updateProgress() {
+                const progressSteps = document.querySelectorAll('.progress-step');
+                progressSteps.forEach((step, index) => {
+                    if (state.currentPart === 1 && index === 0) {
+                        step.classList.add('active');
+                        step.classList.remove('completed');
+                        progressSteps[1].classList.remove('active', 'completed');
+                        progressSteps[2].classList.remove('active', 'completed');
+                    } else if (state.currentPart === 2 && index === 1) {
+                        step.classList.add('active');
+                        progressSteps[0].classList.add('completed');
+                        progressSteps[0].classList.remove('active');
+                        progressSteps[2].classList.remove('active', 'completed');
+                    } else if (state.currentPart === 3 && index === 2) {
+                        step.classList.add('active');
+                        progressSteps[0].classList.add('completed');
+                        progressSteps[1].classList.add('completed');
+                        progressSteps[1].classList.remove('active');
+                    }
+                });
+            }
+
+            // Show/hide activity parts
+            function showActivityPart(partNumber) {
+                activityParts.forEach((part, index) => {
+                    if (index === partNumber - 1) {
+                        part.style.display = 'block';
+                    } else {
+                        part.style.display = 'none';
+                    }
+                });
+            }
+
+            // Part 1: Law Discovery
+            function initDiscovery() {
+                // Category selection
+                lawCategories.forEach(category => {
+                    category.addEventListener('click', function() {
+                        const categoryType = this.dataset.category;
+                        
+                        // Update selection
+                        lawCategories.forEach(cat => cat.classList.remove('selected'));
+                        this.classList.add('selected');
+                        state.selectedCategory = categoryType;
+                        
+                        // Show/hide law cards
+                        lawCards.forEach(card => {
+                            if (card.dataset.category === categoryType) {
+                                card.style.display = 'block';
+                                card.classList.add('selected');
+                            } else {
+                                card.style.display = 'none';
+                                card.classList.remove('selected');
+                            }
+                        });
+                        
+                        // Update discovery count
+                        const categoryCards = document.querySelectorAll(`.law-card[data-category="${categoryType}"]`);
+                        state.lawsDiscovered = categoryCards.length;
+                        lawsDiscoveredEl.textContent = state.lawsDiscovered;
+                        
+                        // Show feedback after first category selection
+                        if (!state.partsCompleted) {
+                            state.partsCompleted = 1;
+                            setTimeout(() => {
+                                document.getElementById('discovery-feedback').classList.add('show');
+                                nextBtn.disabled = false;
+                            }, 500);
+                        }
+                    });
+                });
+                
+                // Law card interactions
+                lawCards.forEach(card => {
+                    card.addEventListener('click', function() {
+                        this.classList.toggle('selected');
+                        
+                        // Count selected cards
+                        const selectedCards = document.querySelectorAll('.law-card.selected').length;
+                        lawsDiscoveredEl.textContent = selectedCards;
+                    });
+                });
+                
+                // Initialize with first category
+                lawCategories[0].click();
+            }
+
+            // Part 2: Scenario Testing
+            function initScenarios() {
+                scenarioOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const scenario = this.dataset.scenario;
+                        const selectedOption = this.dataset.option;
+                        
+                        // Remove selection from other options for same scenario
+                        const allOptions = document.querySelectorAll(`[data-scenario="${scenario}"]`);
+                        allOptions.forEach(opt => opt.classList.remove('selected', 'correct', 'incorrect'));
+                        
+                        // Select this option
+                        this.classList.add('selected');
+                        state.scenarioAnswers[scenario] = selectedOption;
+                        
+                        // Check if correct
+                        const isCorrect = selectedOption === correctAnswers[`scenario${scenario}`];
+                        
+                        if (isCorrect) {
+                            this.classList.add('correct');
+                        } else {
+                            this.classList.add('incorrect');
+                            // Highlight correct answer
+                            const correctOption = document.querySelector(`[data-scenario="${scenario}"][data-option="${correctAnswers[`scenario${scenario}`]}"]`);
+                            if (correctOption) correctOption.classList.add('correct');
+                        }
+                        
+                        // Check if both scenarios answered
+                        if (Object.keys(state.scenarioAnswers).length === 2 && state.partsCompleted < 2) {
+                            state.partsCompleted = 2;
+                            state.mythsBusted = 2;
+                            mythsBustedEl.textContent = state.mythsBusted;
+                            
+                            setTimeout(() => {
+                                document.getElementById('scenario-feedback').classList.add('show');
+                                nextBtn.disabled = false;
+                            }, 500);
+                        }
+                    });
+                });
+            }
+
+            // Part 3: Quiz
+            function initQuiz() {
+                quizOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const question = this.dataset.question;
+                        const answer = this.dataset.option;
+                        
+                        // Remove selection from other options for same question
+                        const allOptions = document.querySelectorAll(`[data-question="${question}"]`);
+                        allOptions.forEach(opt => opt.classList.remove('selected', 'correct', 'incorrect'));
+                        
+                        // Select this option
+                        this.classList.add('selected');
+                        state.quizAnswers[question] = answer;
+                        
+                        // Check if correct
+                        const isCorrect = answer === correctAnswers[`quiz${question}`];
+                        
+                        if (isCorrect) {
+                            this.classList.add('correct');
+                        } else {
+                            this.classList.add('incorrect');
+                            // Highlight correct answer
+                            const correctOption = document.querySelector(`[data-question="${question}"][data-option="${correctAnswers[`quiz${question}`]}"]`);
+                            if (correctOption) correctOption.classList.add('correct');
+                        }
+                        
+                        // Check if all questions answered
+                        if (Object.keys(state.quizAnswers).length === 2 && state.partsCompleted < 3) {
+                            state.partsCompleted = 3;
+                            state.mythsBusted += 2;
+                            mythsBustedEl.textContent = state.mythsBusted;
+                            
+                            setTimeout(() => {
+                                document.getElementById('quiz-feedback').classList.add('show');
+                                completeBtn.disabled = false;
+                            }, 500);
+                        }
+                    });
+                });
+            }
+
+            // Next part button
+            nextBtn.addEventListener('click', function() {
+                if (state.currentPart < 3) {
+                    // Show next part
+                    state.currentPart++;
+                    showActivityPart(state.currentPart);
+                    
+                    // Update progress
+                    updateProgress();
+                    
+                    // Initialize next part
+                    if (state.currentPart === 2) {
+                        initScenarios();
+                    } else if (state.currentPart === 3) {
+                        initQuiz();
+                    }
+                    
+                    // Update button text for last part
+                    if (state.currentPart === 3) {
+                        this.textContent = 'Descubrimiento completo';
+                    }
+                    
+                    // Disable until interaction
+                    this.disabled = true;
+                }
+            });
+
+            // Complete lesson
+            completeBtn.addEventListener('click', function() {
+                // Calculate final score
+                const totalCorrect = 
+                    (state.scenarioAnswers['1'] === correctAnswers.scenario1 ? 1 : 0) +
+                    (state.scenarioAnswers['2'] === correctAnswers.scenario2 ? 1 : 0) +
+                    (state.quizAnswers['1'] === correctAnswers.quiz1 ? 1 : 0) +
+                    (state.quizAnswers['2'] === correctAnswers.quiz2 ? 1 : 0);
+                
+                const score = Math.round((totalCorrect / 4) * 100);
+                finalScore.textContent = `${score}%`;
+                
+                // Show results
+                resultsPanel.classList.add('show');
+                resultsPanel.scrollIntoView({ behavior: 'smooth' });
+                
+                // Update activity status
+                document.querySelector('.activity-status').textContent = 'Completed';
+                document.querySelector('.activity-status').style.color = '#10b981';
+                document.getElementById('main-activity').classList.add('completed');
+                
+                // Update progress steps to completed
+                const progressSteps = document.querySelectorAll('.progress-step');
+                progressSteps.forEach(step => {
+                    step.classList.add('completed');
+                    step.classList.remove('active');
+                });
+            });
+
+            // Reset lesson
+            resetBtn.addEventListener('click', function() {
+                // Reset state
+                state.currentPart = 1;
+                state.partsCompleted = 0;
+                state.lawsDiscovered = 0;
+                state.mythsBusted = 0;
+                state.selectedCategory = 'driving';
+                state.scenarioAnswers = {};
+                state.quizAnswers = {};
+                state.startedAt = new Date();
+                
+                // Show first part
+                showActivityPart(1);
+                
+                // Reset UI
+                lawCategories.forEach((category, index) => {
+                    category.classList.toggle('selected', index === 0);
+                });
+                
+                lawCards.forEach(card => {
+                    card.style.display = 'block';
+                    card.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                scenarioOptions.forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                quizOptions.forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                // Hide feedback
+                document.querySelectorAll('.feedback-container').forEach(feedback => {
+                    feedback.classList.remove('show');
+                });
+                
+                // Reset buttons
+                nextBtn.disabled = true;
+                completeBtn.disabled = true;
+                nextBtn.textContent = 'Siguiente sección';
+                resultsPanel.classList.remove('show');
+                
+                // Reset stats
+                lawsDiscoveredEl.textContent = '0';
+                mythsBustedEl.textContent = '0';
+                
+                // Reset activity status
+                document.querySelector('.activity-status').textContent = 'En curso';
+                document.querySelector('.activity-status').style.color = '';
+                document.getElementById('main-activity').classList.remove('completed');
+                
+                // Update progress and timer
+                updateProgress();
+                updateTimer();
+                
+                // Reinitialize
+                initDiscovery();
+            });
+
+            // Initialize
+            initDiscovery();
+            updateTimer();
+            updateProgress();
+            showActivityPart(1);
+        });
+    </script>
+</body>
+</html>

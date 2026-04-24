@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clínica de conducción de VA: concienciación sobre la conducción agresiva</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root {
+            --color-danger: #dc2626;
+            --color-warning: #f59e0b;
+            --color-success: #10b981;
+            --color-info: #3b82f6;
+            --color-dark: #1e293b;
+            --color-bg: #ffffff;
+            --color-text: #1e293b;
+            --color-muted: #64748b;
+            --radius: 12px;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--color-text);
+            line-height: 1.5;
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        .module-container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            height: 45px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .module-title {
+            font-size: 1rem;
+            color: var(--color-danger);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .main-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--color-muted);
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        /* Timer */
+        .timer-container {
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            color: white;
+            border-radius: 40px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        /* Progress Navigation */
+        .progress-nav {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .nav-step {
+            background: white;
+            border: 2px solid rgba(220, 38, 38, 0.2);
+            border-radius: var(--radius);
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .nav-step.active {
+            background: var(--color-danger);
+            color: white;
+            border-color: var(--color-danger);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--color-text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Statistics Banner */
+        .stats-banner {
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.2);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .stat-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+
+        /* Aggressive Behaviors Grid */
+        .behaviors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .behavior-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 2px solid rgba(220, 38, 38, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .behavior-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--color-danger);
+        }
+
+        .behavior-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .behavior-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(220, 38, 38, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--color-danger);
+            flex-shrink: 0;
+        }
+
+        .behavior-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--color-text);
+        }
+
+        .behavior-desc {
+            color: var(--color-muted);
+            line-height: 1.5;
+        }
+
+        .risk-level {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .risk-high { background: rgba(220, 38, 38, 0.2); color: var(--color-danger); }
+        .risk-medium { background: rgba(245, 158, 11, 0.2); color: var(--color-warning); }
+        .risk-low { background: rgba(59, 130, 246, 0.2); color: var(--color-info); }
+
+        /* Text Scenario Game */
+        .scenario-game {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin: 25px 0;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scenario-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .scenario-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #86efac;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .scenario-progress {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 0.9rem;
+        }
+
+        .scenario-description {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin: 20px 0;
+            line-height: 1.6;
+            border-left: 4px solid var(--color-info);
+            font-size: 1.1rem;
+        }
+
+        .scenario-choices {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .choice-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 20px;
+            color: white;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .choice-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: var(--color-info);
+            transform: translateY(-2px);
+        }
+
+        .choice-btn.correct {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--color-success);
+        }
+
+        .choice-btn.incorrect {
+            background: rgba(220, 38, 38, 0.2);
+            border-color: var(--color-danger);
+        }
+
+        .choice-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+        }
+
+        .choice-content {
+            flex: 1;
+        }
+
+        .choice-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .choice-desc {
+            opacity: 0.8;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .scenario-feedback {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 4px solid var(--color-success);
+            display: none;
+        }
+
+        .scenario-feedback.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #86efac;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-content {
+            line-height: 1.6;
+        }
+
+        .scenario-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .scenario-nav-btn {
+            padding: 12px 25px;
+            background: var(--color-info);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .scenario-nav-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .scenario-nav-btn.secondary {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .scenario-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .scenario-stat {
+            text-align: center;
+        }
+
+        .scenario-stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-success);
+        }
+
+        .scenario-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Real Cases */
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .case-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 1px solid rgba(220, 38, 38, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--color-danger);
+        }
+
+        .case-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .case-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(220, 38, 38, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--color-danger);
+            flex-shrink: 0;
+        }
+
+        .case-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--color-text);
+        }
+
+        .case-details {
+            margin-bottom: 15px;
+        }
+
+        .case-detail {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .case-detail strong {
+            color: var(--color-danger);
+            min-width: 100px;
+        }
+
+        .consequences {
+            background: rgba(220, 38, 38, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid var(--color-danger);
+        }
+
+        .consequences-title {
+            font-weight: 700;
+            color: var(--color-danger);
+            margin-bottom: 8px;
+        }
+
+        /* Prevention Strategies */
+        .strategies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .strategy-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            text-align: center;
+            border: 2px solid rgba(16, 185, 129, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .strategy-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--color-success);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.1);
+        }
+
+        .strategy-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .strategy-title {
+            font-weight: 700;
+            color: var(--color-success);
+            margin-bottom: 10px;
+        }
+
+        .strategy-desc {
+            color: var(--color-muted);
+            line-height: 1.5;
+        }
+
+        /* Interactive Quiz */
+        .quiz-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            margin: 25px 0;
+            border: 2px solid rgba(220, 38, 38, 0.1);
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--color-text);
+            line-height: 1.4;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            padding: 15px;
+            background: white;
+            border: 2px solid rgba(220, 38, 38, 0.2);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--color-danger);
+            background: rgba(220, 38, 38, 0.05);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--color-danger);
+            background: rgba(220, 38, 38, 0.1);
+            font-weight: 600;
+        }
+
+        .quiz-option.correct {
+            border-color: var(--color-success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--color-danger);
+            background: rgba(220, 38, 38, 0.1);
+        }
+
+        .option-label {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(220, 38, 38, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--color-danger);
+            flex-shrink: 0;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 14px 35px;
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            min-width: 180px;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.3);
+        }
+
+        .action-btn.secondary {
+            background: white;
+            border: 2px solid var(--color-warning);
+            color: var(--color-warning);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .action-btn:disabled {
+            background: var(--color-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Completion Screen */
+        .completion-screen {
+            display: none;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: var(--radius);
+            padding: 40px;
+            text-align: center;
+            border: 2px solid var(--color-success);
+            color: white;
+        }
+
+        .completion-screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: #86efac;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .completion-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        @media (max-width: 768px) {
+            .completion-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .completion-stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-success);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .pledge-card {
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px solid var(--color-success);
+        }
+
+        .pledge-title {
+            font-weight: 700;
+            color: #86efac;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .pledge-list {
+            text-align: left;
+            display: inline-block;
+            margin: 0 auto;
+            color: #cbd5e1;
+        }
+
+        .pledge-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .pledge-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--color-success);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Feedback Messages */
+        .feedback-message {
+            background: rgba(220, 38, 38, 0.05);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--color-danger);
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            color: var(--color-danger);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .main-title { font-size: 1.8rem; }
+            .section-title { font-size: 1.4rem; }
+            .stat-number { font-size: 2.5rem; }
+            .action-buttons { flex-direction: column; align-items: center; }
+            .action-btn { width: 100%; max-width: 300px; }
+            .choice-btn { padding: 15px; }
+        }
+    
+  /* ===== MOBILE RESPONSIVE PATCH (additive) ===== */
+  @media (max-width: 640px) {
+    .progress-section { grid-template-columns: 1fr !important; }
+    .score-display { min-width: unset !important; width: 100%; }
+    .action-buttons { flex-direction: column !important; align-items: stretch !important; }
+    .lesson-title, .main-title { font-size: 1.4rem !important; }
+    .stats-display, .results-stats { grid-template-columns: repeat(2, 1fr) !important; }
+    .types-grid, .distraction-grid { grid-template-columns: 1fr !important; }
+    .timer-container { top: max(10px, env(safe-area-inset-top, 10px)) !important; }
+  }
+  button, [role="button"], .quiz-option, .action-btn, .control-btn,
+  .activity-tab, .distraction-btn, .demo-btn, .distraction-btn,
+  .check-btn, .sequence-item, .document-item, .signal-item, .seat-type {
+    touch-action: manipulation;
+  }
+  input, select, textarea, button, .quiz-option {
+    font-size: max(16px, 1em);
+  }
+
+  </style>
+</head>
+<body>
+    <div class="module-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand">
+                <img src="https://lwfiles.mycourse.app/vadrivingclinic-public/9f5c6b8121721c8ef241f929fd983b3e.png" alt="Logotipo de la clínica de conducción VA" class="brand-logo">
+                <div class="module-title">Conciencia de conducción agresiva</div>
+            </div>
+        </div>
+
+        <!-- Main Title -->
+        <h1 class="main-title">Conducción agresiva: el camino hacia el desastre</h1>
+        <div class="subtitle">Módulo interactivo de concientización de 10 minutos</div>
+
+        <!-- Timer -->
+        <div class="timer-container">
+            <div class="timer-display" id="timer">10:00</div>
+        </div>
+
+        <!-- Progress Navigation -->
+        <div class="progress-nav">
+            <div class="nav-step active" onclick="showSection(1)">El problema</div>
+            <div class="nav-step" onclick="showSection(2)">Casos reales</div>
+            <div class="nav-step" onclick="showSection(3)">Juego de escenario</div>
+            <div class="nav-step" onclick="showSection(4)">Cuestionario de prevención</div>
+        </div>
+
+        <!-- Section 1: The Problem -->
+        <div class="content-section active" id="section-1">
+            <h2 class="section-title">
+                <span class="section-icon">⚠️</span>
+                Comprender la conducción agresiva
+            </h2>
+
+            <div class="stats-banner">
+                <div class="stat-number">1/3</div>
+                <div class="stat-text">de todos los accidentes implican comportamientos de conducción agresivos</div>
+            </div>
+
+            <p style="margin-bottom: 20px; line-height: 1.6;">
+                La conducción agresiva se refiere a un patrón de conductas de conducción que son hostiles, peligrosas y intencionadas. 
+                intimidar o dañar a otros usuarios de la vía. No son sólo los malos modales: es el comportamiento criminal lo que mata.
+            </p>
+
+            <h3 style="margin: 25px 0 15px 0; color: var(--color-danger);">Comportamientos agresivos comunes:</h3>
+            
+            <div class="behaviors-grid">
+                <div class="behavior-card">
+                    <div class="risk-level risk-high">Alto riesgo</div>
+                    <div class="behavior-header">
+                        <div class="behavior-icon">🏎️</div>
+                        <div class="behavior-title">Exceso de velocidad & Carreras</div>
+                    </div>
+                    <div class="behavior-desc">
+                        Exceso de velocidad, carreras con otros vehículos y competir en vías públicas. 
+                        Aumenta la distancia de frenado y reduce el control.
+                    </div>
+                </div>
+
+                <div class="behavior-card">
+                    <div class="risk-level risk-high">Alto riesgo</div>
+                    <div class="behavior-header">
+                        <div class="behavior-icon">🚘</div>
+                        <div class="behavior-title">Seguir de cerca</div>
+                    </div>
+                    <div class="behavior-desc">
+                        Seguir demasiado de cerca, a menudo con luces altas intermitentes. No deja reacción 
+                        tiempo si el vehículo que va delante se detiene repentinamente.
+                    </div>
+                </div>
+
+                <div class="behavior-card">
+                    <div class="risk-level risk-medium">Riesgo medio</div>
+                    <div class="behavior-header">
+                        <div class="behavior-icon">🔄</div>
+                        <div class="behavior-title">Atravesando el tráfico</div>
+                    </div>
+                    <div class="behavior-desc">
+                        Cambios de carril frecuentes e inseguros sin señalización. Asusta a otros conductores 
+                        y provoca reacciones en cadena.
+                    </div>
+                </div>
+
+                <div class="behavior-card">
+                    <div class="risk-level risk-high">Alto riesgo</div>
+                    <div class="behavior-header">
+                        <div class="behavior-icon">🚦</div>
+                        <div class="behavior-title">Luces rojas encendidas</div>
+                    </div>
+                    <div class="behavior-desc">
+                        Ignorar deliberadamente las señales de tráfico. Provoca colisiones entre huesos en 
+                        intersecciones, a menudo fatales.
+                    </div>
+                </div>
+            </div>
+
+            <div class="feedback-message">
+                <div class="feedback-title">🎯 Dato clave</div>
+                <div>La conducción agresiva desempeña un papel en aproximadamente dos tercios de todas las muertes por accidentes de tránsito en las carreteras de Estados Unidos.</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" onclick="showSection(2)">
+                    Ver Casos Reales →
+                </button>
+            </div>
+        </div>
+
+        <!-- Section 2: Real Cases -->
+        <div class="content-section" id="section-2">
+            <h2 class="section-title">
+                <span class="section-icon">📰</span>
+                2024 Consecuencias de la vida real
+            </h2>
+
+            <p style="margin-bottom: 25px;">
+                Estos casos recientes muestran con qué rapidez la conducción agresiva puede volverse mortal:
+            </p>
+
+            <div class="cases-grid">
+                <!-- Case 1: New York -->
+                <div class="case-card">
+                    <div class="case-header">
+                        <div class="case-icon">🗽</div>
+                        <div class="case-title">Furia en la carretera de Nueva York</div>
+                    </div>
+                    <div class="case-details">
+                        <div class="case-detail">
+                            <strong>Situación:</strong> Frustración por el tráfico intenso
+                        </div>
+                        <div class="case-detail">
+                            <strong>Comportamientos:</strong> Seguir muy cerca, bocinazos agresivos
+                        </div>
+                        <div class="case-detail">
+                            <strong>Escalada:</strong> Intento de adelantamiento inseguro
+                        </div>
+                        <div class="case-detail">
+                            <strong>Resultado:</strong> Colisión de varios vehículos
+                        </div>
+                    </div>
+                    <div class="consequences">
+                        <div class="consequences-title">🚨 Consecuencias</div>
+                        <div>• Lesiones múltiples</div>
+                        <div>• Daños materiales importantes</div>
+                        <div>• Cargos por conducción imprudente</div>
+                        <div>• Reclamaciones de seguros que superan los $50,000</div>
+                    </div>
+                </div>
+
+                <!-- Case 2: California -->
+                <div class="case-card">
+                    <div class="case-header">
+                        <div class="case-icon">🌉</div>
+                        <div class="case-title">Accidente fatal en Los Ángeles</div>
+                    </div>
+                    <div class="case-details">
+                        <div class="case-detail">
+                            <strong>Situación:</strong> Intentando recuperar el tiempo
+                        </div>
+                        <div class="case-detail">
+                            <strong>Comportamientos:</strong> Exceso de velocidad, zigzagueo
+                        </div>
+                        <div class="case-detail">
+                            <strong>Resultado:</strong> Pérdida de control, colisión.
+                        </div>
+                        <div class="case-detail">
+                            <strong>Muertes:</strong> 2 pasajeros muertos
+                        </div>
+                    </div>
+                    <div class="consequences">
+                        <div class="consequences-title">⚖️ Consecuencias legales</div>
+                        <div>• Cargos por homicidio vehicular</div>
+                        <div>• Conducción imprudente con lesiones</div>
+                        <div>• Sentencia de prisión de 5 a 10 años</div>
+                        <div>• Revocación de la licencia de conducir de por vida</div>
+                    </div>
+                </div>
+
+                <!-- Case 3: Texas -->
+                <div class="case-card">
+                    <div class="case-header">
+                        <div class="case-icon">🤠</div>
+                        <div class="case-title">Enfrentamiento en la carretera de Texas</div>
+                    </div>
+                    <div class="case-details">
+                        <div class="case-detail">
+                            <strong>Situación:</strong> Impaciencia en la carretera
+                        </div>
+                        <div class="case-detail">
+                            <strong>Comportamientos:</strong> Seguir muy cerca, encender los faros
+                        </div>
+                        <div class="case-detail">
+                            <strong>Resultado:</strong> El conductor intimidado entra en pánico
+                        </div>
+                        <div class="case-detail">
+                            <strong>Chocar:</strong> Choque de varios autos
+                        </div>
+                    </div>
+                    <div class="consequences">
+                        <div class="consequences-title">💸 Costos & Penalizaciones</div>
+                        <div>• Lesiones múltiples que requieren hospitalización</div>
+                        <div>• Carretera cerrada durante 4 horas</div>
+                        <div>• Citación por conducción agresiva</div>
+                        <div>• Demandas civiles de otros conductores</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feedback-message">
+                <div class="feedback-title">📊 Costos promedio de la conducción agresiva</div>
+                <div>• Primera infracción: multa de $500 a $1000 + suspensión de la licencia por 30 días</div>
+                <div>• Con lesión: multa de $2,500 a $5,000 + 6 meses de cárcel + suspensión de 90 días</div>
+                <div>• Accidente fatal: cargos por delitos graves, de 1 a 10 años de prisión, revocación permanente de la licencia</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn secondary" onclick="showSection(1)">
+                    ← Volver al problema
+                </button>
+                <button class="action-btn" onclick="showSection(3)">
+                    Jugar al juego de escenarios →
+                </button>
+            </div>
+        </div>
+
+        <!-- Section 3: Text Scenario Game -->
+        <div class="content-section" id="section-3">
+            <h2 class="section-title">
+                <span class="section-icon">🎮</span>
+                Desafío del escenario de conducción
+            </h2>
+
+            <p style="margin-bottom: 25px;">
+                Experimente escenarios de conducción del mundo real y tome decisiones para manejar situaciones de conducción agresivas de forma segura:
+            </p>
+
+            <div class="scenario-game">
+                <div class="scenario-header">
+                    <div class="scenario-title">
+                        <span>🚗</span>
+                        <span id="scenario-current-title">Escenario 1: El que sigue de cerca</span>
+                    </div>
+                    <div class="scenario-progress">
+                        <span id="scenario-progress">Escenario 1 de 3</span>
+                    </div>
+                </div>
+
+                <div class="scenario-description" id="scenario-description">
+                    Estás conduciendo por una carretera muy transitada de dos carriles a 65 mph (límite de velocidad). De repente aparece una camioneta grande detrás de usted, acercándose peligrosamente a su parachoques. El conductor enciende las luces altas y le hace un gesto para que se haga a un lado, pero usted ya está en el carril derecho y hay tráfico más adelante. ¿A qué te dedicas?
+                </div>
+
+                <div class="scenario-stats">
+                    <div class="scenario-stat">
+                        <div class="scenario-stat-value" id="scenario-score">0</div>
+                        <div class="scenario-stat-label">Puntos de seguridad</div>
+                    </div>
+                    <div class="scenario-stat">
+                        <div class="scenario-stat-value" id="scenario-completed">0/3</div>
+                        <div class="scenario-stat-label">Escenarios completados</div>
+                    </div>
+                </div>
+
+                <div class="scenario-choices" id="scenario-choices">
+                    <!-- Choices will be populated by JavaScript -->
+                </div>
+
+                <div class="scenario-feedback" id="scenario-feedback">
+                    <div class="feedback-title" id="feedback-title">✅ ¡Elección correcta!</div>
+                    <div class="feedback-content" id="feedback-content">
+                        Tomaste la decisión segura. Mantener la velocidad y la posición evita maniobras bruscas que podrían provocar accidentes.
+                    </div>
+                </div>
+
+                <div class="scenario-controls">
+                    <button class="scenario-nav-btn secondary" onclick="restartScenario()">
+                        ↻ Reiniciar escenario
+                    </button>
+                    <button class="scenario-nav-btn" onclick="nextScenario()" id="next-scenario-btn" style="display: none;">
+                        Siguiente escenario →
+                    </button>
+                </div>
+            </div>
+
+            <div class="strategies-grid">
+                <div class="strategy-card">
+                    <div class="strategy-icon">😌</div>
+                    <div class="strategy-title">mantén la calma</div>
+                    <div class="strategy-desc">Respire profundamente, no se tome el comportamiento agresivo como algo personal</div>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-icon">🚗</div>
+                    <div class="strategy-title">Déjalos pasar</div>
+                    <div class="strategy-desc">Apártese con seguridad del camino: ahora es problema de otra persona.</div>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-icon">📱</div>
+                    <div class="strategy-title">Informar de forma segura</div>
+                    <div class="strategy-desc">Si el comportamiento es peligroso, deténgase y llame a la policía con una descripción.</div>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-icon">⏰</div>
+                    <div class="strategy-title">Planifique con anticipación</div>
+                    <div class="strategy-desc">Salir temprano para evitar la presión del tiempo que causa agresión.</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn secondary" onclick="showSection(2)">
+                    ← Volver a Casos
+                </button>
+                <button class="action-btn" onclick="showSection(4)">
+                    Realice el cuestionario de prevención →
+                </button>
+            </div>
+        </div>
+
+        <!-- Section 4: Prevention Quiz -->
+        <div class="content-section" id="section-4">
+            <h2 class="section-title">
+                <span class="section-icon">🧠</span>
+                Prueba de conocimientos sobre prevención
+            </h2>
+
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <div class="question-text" id="question-text">
+                        ¿Qué porcentaje de todos los accidentes de tránsito involucran conductas de conducción agresivas?
+                    </div>
+                    <div class="quiz-options" id="quiz-options">
+                        <div class="quiz-option" onclick="selectAnswer(0)">
+                            <div class="option-label">A</div>
+                            <div>Alrededor del 10%</div>
+                        </div>
+                        <div class="quiz-option" onclick="selectAnswer(1)">
+                            <div class="option-label">B</div>
+                            <div>Alrededor del 20%</div>
+                        </div>
+                        <div class="quiz-option" onclick="selectAnswer(2)">
+                            <div class="option-label">C</div>
+                            <div>Alrededor del 33% (un tercio)</div>
+                        </div>
+                        <div class="quiz-option" onclick="selectAnswer(3)">
+                            <div class="option-label">D</div>
+                            <div>Alrededor del 50%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="quiz-feedback" style="display: none;">
+                    <div class="feedback-message">
+                        <div class="feedback-title" id="feedback-title">📝 Comentarios</div>
+                        <div id="feedback-message"></div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="checkAnswer()" id="check-btn">
+                        Verificar respuesta
+                    </button>
+                    <button class="action-btn secondary" onclick="nextQuestion()" id="next-btn" style="display: none;">
+                        Siguiente pregunta
+                    </button>
+                </div>
+            </div>
+
+            <div style="background: rgba(245, 158, 11, 0.1); border-radius: var(--radius); padding: 20px; margin: 25px 0;">
+                <h3 style="color: var(--color-warning); margin-bottom: 15px;">🚨 Pasos de acción inmediata</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                    <div>
+                        <div style="font-weight: 700; margin-bottom: 8px;">Cuando TÚ te sientes agresivo:</div>
+                        <ul style="padding-left: 20px; font-size: 0.9rem;">
+                            <li>Deténgase y respire profundamente 5 veces.</li>
+                            <li>Escuche música relajante</li>
+                            <li>Llamar a alguien para desahogarse</li>
+                            <li>Ajusta tus expectativas de horario</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700; margin-bottom: 8px;">Cuando OTROS son agresivos:</div>
+                        <ul style="padding-left: 20px; font-size: 0.9rem;">
+                            <li>No hagas contacto visual</li>
+                            <li>No hagas gestos ni tomes represalias</li>
+                            <li>Crear espacio entre vehículos</li>
+                            <li>Cambiar de carril o tomar una salida</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn secondary" onclick="showSection(3)">
+                    ← Volver al juego de escenarios
+                </button>
+                <button class="action-btn" onclick="completeModule()">
+                    Módulo completo
+                </button>
+            </div>
+        </div>
+
+        <!-- Completion Screen -->
+        <div class="completion-screen" id="completion-screen">
+            <h2 class="completion-title">
+                <span>🎓</span>
+                ¡Módulo completado!
+            </h2>
+            <p style="font-size: 1.1rem; color: #cbd5e1; margin-bottom: 20px;">
+                Ha aprendido a reconocer y prevenir la conducción agresiva.
+            </p>
+
+            <div class="completion-stats">
+                <div class="completion-stat">
+                    <div class="stat-value" id="time-stat">10:00</div>
+                    <div class="stat-label">Aprendizaje del tiempo</div>
+                </div>
+                <div class="completion-stat">
+                    <div class="stat-value" id="quiz-stat">0%</div>
+                    <div class="stat-label">Precisión del cuestionario</div>
+                </div>
+                <div class="completion-stat">
+                    <div class="stat-value" id="scenario-stat">0</div>
+                    <div class="stat-label">Puntos de seguridad</div>
+                </div>
+            </div>
+
+            <div class="pledge-card">
+                <div class="pledge-title">📋 Su compromiso de conducir con calma</div>
+                <ul class="pledge-list">
+                    <li>Nunca dejaré que las frustraciones del tráfico controlen mi forma de conducir.</li>
+                    <li>Siempre saldré temprano para evitar la presión del tiempo.</li>
+                    <li>Nunca tomaré represalias contra conductores agresivos.</li>
+                    <li>Crearé un espacio seguro cuando me encuentre con agresión.</li>
+                    <li>Me detendré y me calmaré si siento ira en la carretera.</li>
+                </ul>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" onclick="location.reload()">
+                    Revisar de nuevo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== GLOBAL STATE ==========
+        const moduleState = {
+            currentSection: 1,
+            quizScore: 0,
+            totalQuestions: 0,
+            scenarioScore: 0,
+            currentScenarioIndex: 0,
+            startTime: Date.now()
+        };
+
+        // ========== SCENARIO DATA ==========
+        const scenarios = [
+            {
+                id: 1,
+                title: "Escenario 1: El que sigue de cerca",
+                description: "Estás conduciendo por una carretera muy transitada de dos carriles a 65 mph (límite de velocidad). De repente aparece una camioneta grande detrás de usted, acercándose peligrosamente a su parachoques. El conductor enciende las luces altas y le hace un gesto para que se haga a un lado, pero usted ya está en el carril derecho y hay tráfico más adelante. ¿A qué te dedicas?",
+                choices: [
+                    {
+                        title: "Mantenga la velocidad y mantenga la calma",
+                        description: "Mantenga su velocidad actual, mantenga su posición en el carril y concéntrese en el camino que tiene por delante. Ignora el comportamiento agresivo.",
+                        correct: true,
+                        points: 10,
+                        feedback: "✅Excelente! Mantener la velocidad y la posición es la opción más segura. Frenar o virar bruscamente podría provocar un accidente. Los conductores agresivos a menudo siguen adelante cuando no obtienen una reacción."
+                    },
+                    {
+                        title: "Revisión de frenos para enseñarles",
+                        description: "Toque los frenos repetidamente para advertirles que retrocedan. Necesitan aprender una lección sobre la distancia de seguimiento segura.",
+                        correct: false,
+                        points: 0,
+                        feedback: "❌ ¡Peligroso! La revisión de los frenos agrava la situación y podría provocar una colisión por alcance. Incluso un golpe menor podría asustarlos y hacer que se desvíen o lo golpeen."
+                    },
+                    {
+                        title: "Acelera para escapar",
+                        description: "Acelere para crear más distancia, incluso si eso significa exceder el límite de velocidad entre 10 y 15 mph.",
+                        correct: false,
+                        points: 0,
+                        feedback: "❌ ¡Arriesgado! Acelerar para escapar de un conductor agresivo lo pone en riesgo de perder el control y violar las leyes de tránsito. Es posible que encuentre más peligros en el futuro."
+                    },
+                    {
+                        title: "Encuentre un lugar seguro para detenerse",
+                        description: "Haga señales y muévase con cuidado hacia el arcén cuando sea seguro, dejándolos pasar antes de continuar.",
+                        correct: true,
+                        points: 8,
+                        feedback: "✅ ¡Buena opción segura! Si existe una oportunidad segura para dejarlos pasar, esto elimina la amenaza inmediata. Sólo asegúrese de estar completamente fuera de la carretera y ser visible."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Escenario 2: El tejedor de carriles",
+                description: "En una interestatal abarrotada, observa un automóvil que zigzaguea rápidamente entre carriles sin señalizar. Te cortan el paso de cerca y luego frenan de repente. Un momento después, están siguiendo al coche de delante. Estás en el carril central con tráfico moderado. ¿Cuál es tu respuesta?",
+                choices: [
+                    {
+                        title: "Crea espacio y quédate quieto",
+                        description: "Aumente la distancia de seguimiento de todos los vehículos, mantenga su carril y evite el contacto visual con el conductor agresivo.",
+                        correct: true,
+                        points: 10,
+                        feedback: "✅ ¡Perfecto! Crear una \"burbuja de seguridad\" le brinda más tiempo de reacción. Permanecer en su carril reduce la posibilidad de interacciones impredecibles con el tejedor."
+                    },
+                    {
+                        title: "Toca la bocina y hazles gestos",
+                        description: "Utilice la bocina y haga contacto visual para mostrar desaprobación por su conducción peligrosa.",
+                        correct: false,
+                        points: 0,
+                        feedback: "❌ ¡Escalando! Enfrentarse a conductores agresivos a menudo los vuelve más peligrosos. Podrían tomar represalias con un comportamiento aún más imprudente."
+                    },
+                    {
+                        title: "Tome la siguiente salida y espere",
+                        description: "Salga en la próxima oportunidad, espere 5 minutos en una gasolinera y luego continúe su viaje.",
+                        correct: true,
+                        points: 9,
+                        feedback: "✅ ¡Muy inteligente! Alejarte por completo de la situación es la mejor opción segura. Un breve retraso es mejor que un peligro potencial."
+                    },
+                    {
+                        title: "Haga coincidir su velocidad para monitorear",
+                        description: "Acelera ligeramente para mantenerlos a la vista mientras consideras llamar a la policía.",
+                        correct: false,
+                        points: 0,
+                        feedback: "❌ ¡No recomendado! Tratar de monitorear a un conductor agresivo mientras conduce lo distrae y podría involucrarlo en sus peligrosas maniobras."
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Escenario 3: El encuentro con la furia en la carretera",
+                description: "Después de un pequeño desacuerdo en un punto de incorporación, otro conductor lo sigue fuera de la carretera. Están gritando y gesticulando agresivamente. Ahora estás en una zona residencial. ¿A qué te dedicas?",
+                choices: [
+                    {
+                        title: "Conducir a la estación de policía",
+                        description: "No te vayas a casa. Conduzca directamente a la comisaría de policía más cercana o a un área pública bien iluminada y con gente.",
+                        correct: true,
+                        points: 10,
+                        feedback: "✅ ¡Excelente gestión de crisis! Nunca lleve a un conductor agresivo a su casa. Las comisarías de policía son destinos seguros que normalmente disuaden más enfrentamientos."
+                    },
+                    {
+                        title: "Enfréntalos con calma",
+                        description: "Deténgase en un lugar seguro e intente tener una conversación tranquila para resolver el malentendido.",
+                        correct: false,
+                        points: 0,
+                        feedback: "❌ ¡Muy peligroso! Nunca interactúes con alguien que muestre ira al volante. Las emociones son demasiado intensas para una conversación racional y la confrontación física es posible."
+                    },
+                    {
+                        title: "Utilice luces intermitentes de emergencia",
+                        description: "Encienda las luces de emergencia y conduzca normalmente, lo que indica que está consciente de la situación pero no participa.",
+                        correct: true,
+                        points: 7,
+                        feedback: "✅¡Buena señal de concientización! Los peligros alertan a otros conductores de que algo inusual está sucediendo. Combine esto con conducir a un lugar público seguro."
+                    },
+                    {
+                        title: "Acelere por el vecindario",
+                        description: "Acelera y haz giros rápidos para perderte por las calles del barrio.",
+                        correct: false,
+                        points: 0,
+                        feedback: "❌ ¡Crea nuevos peligros! El exceso de velocidad en zonas residenciales corre el riesgo de atropellar a niños, mascotas u otros vehículos. También aumenta su propio riesgo de perder el control."
+                    }
+                ]
+            }
+        ];
+
+        // ========== SCENARIO GAME FUNCTIONS ==========
+        function loadScenario(index) {
+            moduleState.currentScenarioIndex = index;
+            const scenario = scenarios[index];
+            
+            // Update UI
+            document.getElementById('scenario-current-title').textContent = scenario.title;
+            document.getElementById('scenario-description').textContent = scenario.description;
+            document.getElementById('scenario-progress').textContent = `Guión ${index + 1} de ${scenarios.length}`;
+            
+            // Load choices
+            const choicesContainer = document.getElementById('scenario-choices');
+            choicesContainer.innerHTML = '';
+            
+            scenario.choices.forEach((choice, choiceIndex) => {
+                const choiceBtn = document.createElement('div');
+                choiceBtn.className = 'choice-btn';
+                choiceBtn.onclick = () => selectScenarioChoice(choiceIndex);
+                choiceBtn.innerHTML = `
+                    <div class="choice-icon">${String.fromCharCode(65 + choiceIndex)}</div>
+                    <div class="choice-content">
+                        <div class="choice-title">${choice.title}</div>
+                        <div class="choice-desc">${choice.description}</div>
+                    </div>
+                `;
+                choicesContainer.appendChild(choiceBtn);
+            });
+            
+            // Reset feedback and next button
+            document.getElementById('scenario-feedback').classList.remove('show');
+            document.getElementById('next-scenario-btn').style.display = 'none';
+            
+            // Update stats
+            updateScenarioStats();
+        }
+
+        function selectScenarioChoice(choiceIndex) {
+            const scenario = scenarios[moduleState.currentScenarioIndex];
+            const choice = scenario.choices[choiceIndex];
+            const choiceButtons = document.querySelectorAll('.choice-btn');
+            
+            // Remove any previous selections
+            choiceButtons.forEach(btn => {
+                btn.classList.remove('correct', 'incorrect');
+            });
+            
+            // Mark selected choice
+            choiceButtons[choiceIndex].classList.add(choice.correct ? 'correct' : 'incorrect');
+            
+            // Show feedback
+            const feedback = document.getElementById('scenario-feedback');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackContent = document.getElementById('feedback-content');
+            
+            if (choice.correct) {
+                feedbackTitle.innerHTML = '✅ ¡Elección segura!';
+                moduleState.scenarioScore += choice.points;
+            } else {
+                feedbackTitle.innerHTML = '❌ Elección arriesgada';
+            }
+            
+            feedbackContent.textContent = choice.feedback;
+            feedback.classList.add('show');
+            
+            // Show next scenario button if available
+            const nextBtn = document.getElementById('next-scenario-btn');
+            nextBtn.style.display = 'block';
+            nextBtn.textContent = moduleState.currentScenarioIndex < scenarios.length - 1 
+                ? 'Siguiente Escenario →' 
+                : 'Terminar escenarios →';
+            
+            // Update stats
+            updateScenarioStats();
+        }
+
+        function nextScenario() {
+            if (moduleState.currentScenarioIndex < scenarios.length - 1) {
+                loadScenario(moduleState.currentScenarioIndex + 1);
+            } else {
+                // All scenarios completed
+                document.getElementById('scenario-completed').textContent = `${scenarios.length}/${scenarios.length}`;
+                showMobileToast(`¡Todos los escenarios completados! te ganaste ${moduleState.scenarioScore} puntos de seguridad.`);
+            }
+        }
+
+        function restartScenario() {
+            loadScenario(moduleState.currentScenarioIndex);
+        }
+
+        function updateScenarioStats() {
+            document.getElementById('scenario-score').textContent = moduleState.scenarioScore;
+            document.getElementById('scenario-completed').textContent = `${moduleState.currentScenarioIndex}/${scenarios.length}`;
+        }
+
+        // ========== TIMER MANAGEMENT ==========
+        let moduleTimer;
+        let timeLeft = 600; // 10 minutes
+
+        function startTimer() {
+            moduleTimer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    completeModule();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // ========== SECTION NAVIGATION ==========
+        function showSection(sectionNum) {
+            moduleState.currentSection = sectionNum;
+            
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Update navigation
+            document.querySelectorAll('.nav-step').forEach((step, index) => {
+                step.classList.remove('active');
+                if (index === sectionNum - 1) {
+                    step.classList.add('active');
+                }
+            });
+            
+            // Show selected section
+            document.getElementById(`section-${sectionNum}`).classList.add('active');
+            
+            // Initialize scenario game if on section 3
+            if (sectionNum === 3) {
+                loadScenario(0);
+            }
+        }
+
+        // ========== QUIZ SYSTEM ==========
+        const quizQuestions = [
+            {
+                question: "¿Qué porcentaje de todos los accidentes de tránsito involucran conductas de conducción agresivas?",
+                options: ["Alrededor del 10%", "Alrededor del 20%", "Alrededor del 33% (un tercio)", "Alrededor del 50%"],
+                correct: 2,
+                explanation: "✅ ¡Correcto! La NHTSA informa que la conducción agresiva desempeña un papel en aproximadamente un tercio de todos los accidentes de tráfico."
+            },
+            {
+                question: "¿Cuál es la respuesta más segura ante un conductor que lo sigue muy de cerca?",
+                options: ["Revisión de frenos para darles una lección", "Acelera para alejarte de ellos", "Mantenga la velocidad y déjelos pasar cuando sea seguro.", "Haga parpadear las luces de freno repetidamente"],
+                correct: 2,
+                explanation: "✅ ¡Correcto! Mantenga su velocidad y déjelos pasar con seguridad. Las respuestas agresivas aumentan el peligro para todos."
+            },
+            {
+                question: "¿Qué factor NO es una causa común de conducción agresiva?",
+                options: ["Congestión del tráfico", "Llegando tarde", "Buenas condiciones climáticas", "Sensación de anonimato"],
+                correct: 2,
+                explanation: "✅ ¡Correcto! El buen tiempo no provoca agresión. El tráfico, los retrasos y el anonimato son los principales contribuyentes."
+            },
+            {
+                question: "¿Qué debe hacer si siente que aumenta la ira al volante?",
+                options: ["Desquitate con otros conductores", "Deténgase y respire profundamente", "Conduce más rápido para liberar energía.", "Pon música agresiva a todo volumen"],
+                correct: 1,
+                explanation: "✅ ¡Perfecto! Detenerse para calmarse es la única opción segura cuando siente furia al volante."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let selectedAnswer = null;
+
+        function loadQuestion() {
+            const question = quizQuestions[currentQuestion];
+            document.getElementById('question-text').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'quiz-option';
+                optionDiv.onclick = () => selectAnswer(index);
+                optionDiv.innerHTML = `
+                    <div class="option-label">${String.fromCharCode(65 + index)}</div>
+                    <div>${option}</div>
+                `;
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('quiz-feedback').style.display = 'none';
+            document.getElementById('check-btn').style.display = 'block';
+            document.getElementById('next-btn').style.display = 'none';
+            selectedAnswer = null;
+        }
+
+        function selectAnswer(index) {
+            selectedAnswer = index;
+            
+            document.querySelectorAll('.quiz-option').forEach((option, i) => {
+                option.classList.remove('selected');
+                if (i === index) {
+                    option.classList.add('selected');
+                }
+            });
+        }
+
+        function checkAnswer() {
+            if (selectedAnswer === null) {
+                showMobileToast('¡Por favor seleccione una respuesta primero!');
+                return;
+            }
+
+            const question = quizQuestions[currentQuestion];
+            const isCorrect = selectedAnswer === question.correct;
+            
+            moduleState.totalQuestions++;
+            if (isCorrect) {
+                moduleState.quizScore++;
+                document.getElementById('feedback-title').innerHTML = '✅ ¡Correcto!';
+                document.getElementById('feedback-message').textContent = question.explanation;
+            } else {
+                document.getElementById('feedback-title').innerHTML = '❌ Incorrecto';
+                document.getElementById('feedback-message').textContent = question.explanation;
+            }
+            
+            // Show correct answer
+            document.querySelectorAll('.quiz-option').forEach((option, i) => {
+                if (i === question.correct) {
+                    option.classList.add('correct');
+                } else if (i === selectedAnswer && !isCorrect) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            document.getElementById('quiz-feedback').style.display = 'block';
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < quizQuestions.length) {
+                loadQuestion();
+            } else {
+                completeModule();
+            }
+        }
+
+        // ========== COMPLETION ==========
+        function completeModule() {
+            clearInterval(moduleTimer);
+            
+            // Calculate stats
+            const accuracy = moduleState.totalQuestions > 0 
+                ? Math.round((moduleState.quizScore / moduleState.totalQuestions) * 100)
+                : 0;
+            
+            const minutes = Math.floor((600 - timeLeft) / 60);
+            const seconds = (600 - timeLeft) % 60;
+            
+            // Update completion screen
+            document.getElementById('time-stat').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('quiz-stat').textContent = `${accuracy}%`;
+            document.getElementById('scenario-stat').textContent = moduleState.scenarioScore;
+            
+            // Show completion screen
+            document.getElementById('completion-screen').classList.add('active');
+            
+            // Hide other sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+        }
+
+        // ========== INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            startTimer();
+            loadQuestion();
+            loadScenario(0);
+        });
+    </script>
+
+<script>
+/* ===== MOBILE TOAST NOTIFICATION (replaces alert) ===== */
+function showMobileToast(msg) {
+  var t = document.getElementById('_va_toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = '_va_toast';
+    t.style.cssText = [
+      'position:fixed','bottom:24px','left:50%','transform:translateX(-50%)',
+      'background:rgba(30,30,30,0.92)','color:#fff','relleno: 12px 22px',
+      'border-radius:24px','z-index:99999','font-weight:600',
+      'font-size:0.95rem','max-width:85vw','text-align:center',
+      'sombra de cuadro: 0 4px 16px rgba (0,0,0,0.3)',
+      'transición:opacidad 0,35s','opacity:0','pointer-events:none'
+    ].join(';');
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._to);
+  t._to = setTimeout(function(){ t.style.opacity='0'; }, 3200);
+}
+</script>
+
+</body>
+</html>
